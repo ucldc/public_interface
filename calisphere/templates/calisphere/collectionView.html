@@ -26,7 +26,7 @@
             data-ga-code="{{ repository.google_analytics_tracking_code }}"
             data-ga-dim2="{%if 'campus' in repository %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
           >
-            {% if 'campus' in repository %}{{ repository.campus.0.name }}, {% endif %}{{ repository.name }}
+            {% if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.name }}, {% endif %}{{ repository.name }}
           </a>
         {% endfor %}
       </h2>

@@ -1,14 +1,504 @@
 <!doctype html>
 <!-- [include:library-header.html, {title: 'Collections - Themed - California History', test_class: ''}] -->
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Collections - Themed - California History</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- <link rel="stylesheet" href="bower_components/slick.js/slick/slick.css" />
+    <link rel="stylesheet" href="bower_components/slick.js/slick/slick-theme.css" /> -->
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/mediaelement/build/mediaelementplayer.css" />
+    <link rel="stylesheet" href="bower_components/flickity/css/flickity.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="scripts/vendor/modernizr-dev.js"></script>
+    <!-- endbuild -->
+    <!-- <link rel="stylesheet" href="styles/component_pages.css"> -->
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+<!-- \[include:library-header.html, {title: 'Collections - Themed - California History', test_class: ''}] -->
 
   <!-- [include:components/header-component.html] -->
+        <!-- Begin Global Header -->
+        
+        <header class="global-header">
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-4">
+              <div class="row">
+                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
+                  <i class="fa fa-bars"></i>
+                </div>
+                <div class="col-xs-8 col-sm-12 global-header__logo">
+                  <a class="global-header__logo-link" href="/">
+                  </a>
+                </div>
+                <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
+                  <i class="fa fa-search"></i>
+                </div>
+              </div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
+              <form class="global-header__search-form" role="search" action="add-url-here" method="get">
+                <label for="global-search__field" class="global-search__label">Search the collections</label>
+                <div class="input-group">
+                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+            
+            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
+              <ul class="global-header__nav-list">
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
+              </ul>
+            </div>
+            
+          </div>
+
+          <div class="global-header__bar">
+            <ul class="global-header__bar-list">
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Contributing Institutions</a>
+              </li>
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Collections</a>
+              </li>
+            </ul>
+          </div>
+
+        </header>
+
+        <!-- End Global Header -->
+        <!-- \[include:components/header-component.html] -->
 
   <h1>Collections in Calisphere</h1>
 
   <!-- [include:components/collections-intro-component.html] -->
+      <!-- Begin Collections Intro Component -->
+
+      <div class="collect-intro">
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 collect-intro__overview">
+            <p>All of the items on Calisphere are organized into collections. Collections bring context to images, documents, videos, and audio recordings. Some collections represent a particular topic or format, some have items created by the same person, and some showcase an institution’s special project or initiative. Use the tabs below to explore the hundreds of collections on Calisphere.</p>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            <div class="collect-intro__sidebar">
+              <div class="col-xs-6 col-sm-4">
+                <img class="collect-intro__sidebar-img" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/awaiting-evacuation-bus.jpg" alt="Grandfather and grandchildren awaiting evacuation bus">
+              </div>
+              <div class="col-xs-6 col-sm-8">
+                <h2 class="collect-intro__sidebar-heading">Looking for JARDA and other themed collections?</h2>
+                <p>The Japanese American Relocation Digital Archive (JARDA), California Cultures, and California History themed collections are currently still hosted on the old Calisphere site.</p>
+                <p>Click the “Themed Collections” tab below to browse them before making the jump.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamically add class 'button__secondary' to <a> elements below for selected state -->
+
+        <div class="collect-intro__button-container">
+
+          <a class="btn btn-default collect-intro__button" href="">Random Explore</a>
+        
+          <a class="btn btn-default collect-intro__button" href="">A - Z</a>
+        
+          <a class="btn btn-default collect-intro__button" href="">Title Search</a>
+        
+          <a class="btn btn-default collect-intro__button" href="">Themed Collections</a>
+
+        </div>
+
+      </div>
+
+      <!-- End Collections Intro Component -->
+<!-- \[include:components/collections-intro-component.html] -->
 
   <!-- [include:components/collections-themed-history-component.html] -->
+<!-- Begin Collections - Themed Component -->
+
+<div class="themed">
+
+  <div class="themed__triangle"></div>
+
+  <div class="themed__subnav">
+
+    <a class="btn btn-default themed__button button__secondary" href="">California History</a>
+
+    <a class="btn btn-default themed__button" href="">California Cultures</a>
+
+    <a class="btn btn-default themed__button" href=""><abbr title="Japanese American Relocation Digital Archives">JARDA</abbr></a>
+    
+  </div>
+
+  <div class="themed__hosted-box">
+
+    <span class="themed__hosted-text">The California History page is still hosted on the old Calisphere site. We encourage you to continue your exploration there.</span>
+
+    <a class="btn btn-default themed__hosted-button" href="">Main California History Page</a>
+
+  </div>
+
+
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_mission-sb.jpg" alt="Santa Barbara mission in the countryside">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1780-1880: California in Transition</h2>
+        <p>Several social, political, and economic transitions marked the conquest and cultural exchange of California's early history. Native American communities were transformed as a result of European exploration and settlement in the late 18th century. Spain constructed missions and military presidios in Alta California to increase Spanish settlement in the new colony and encourage religious conversion among Native Americans. The mission structures remained long after the collapse of Spanish authority. Following Mexico's independence from Spain in 1821, vast land grants helped elite Californio society flourish until the 1880s. Today, the state's wealth continues to be defined through the utilization of its rich resources and its immense natural and human potential.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics0.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic0c.html">Early California Exploration and Settlement</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic0b.html">California Missions</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic0a.html">Californio Society</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic0d.html">Rich Resources</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic0e.html">Everyday Life</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_ca-gold-diggers.jpg" alt="Men at a camp mining for gold">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1848-1865: The Gold Rush Era</h2>
+        <p>The few short years of the Gold Rush changed California's population and environment dramatically. Ethnic diversity grew as people from all over the world poured into the state, ignoring numerous dangers and the ever-present risk of earthquakes to follow their dreams of striking gold. This sudden influx, and the gold mining industry in general, had a significant impact on the environment and contributed to the rapid growth of cities throughout the state. The state's legal infrastructure lagged behind this growth, however, and the lawless atmosphere of the gold mining communities led to a growing problem of murder and mayhem. Law-abiding citizens began to see the need to strengthen existing legal and judicial institutions to ensure a more peaceful approach to everyday life.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics1.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic1a.html">Murder and Mayhem</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic1b.html">Disasters</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic1c.html">Everyday Life and People</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic1d.html">Environmental Impact</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic1e.html">Growth of Cities</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic1f.html">Diversity in the Changing State</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_chinese-butcher.jpg" alt="Two Chinese men standing outside a shop">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1870-1900: Closing of the Frontier</h2>
+        <p>During the final decades of 19th century, a transcontinental railroad was built. For the first time, the east and west coasts of the United States were connected. This opened the West to the rest of the country and, in the words of Frederick Turner, effectively "closed the frontier": the vast continent no longer seemed limitless. Native Americans felt the impact of the increasing numbers of European Americans, who attempted to remove them from their tribal lands and assimilate them into Western culture. Chinese citizens also faced daily prejudice, resulting in The Chinese Exclusion Act of 1882, which closed the United States to further Chinese immigration. The new railroad made travel faster and safer, and westward expansion brought more and more people. As open range became settled, the emerging conservation movement advocated for laws and restrictions to protect the natural wonders and beauty that remained.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics2.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic2a.html">Chinese Exclusion Act</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic2b.html">The Transcontinental Railroad</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic2c.html">Native Americans and Contact</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic2d.html">Preservation of the West</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collection/john-muir-letters">The Letters of John Muir</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic2e.html">Everyday Life and People</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_canning-tables.jpg" alt="Workers at tables at a cannery">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1900–1940s: Emerging Industrial Order</h2>
+        <p>Technological innovation and rapid cultural change marked the first few decades of the 20th century in the United States, and California was no exception. Advances in technology led to rapid industrialization of the workplace. Factories and assembly lines became the norm, changing the way Americans worked. As people continued to migrate to California from other parts of the country and around the world in search of work and a better life, the state grew more diverse. With factories producing greater quantities of products, a need emerged for a better way to promote those products to more people, sparking the beginning of the modern advertising industry. Technological innovations and improved communications also influenced popular culture and the way people spent their free time. The movie industry in particular put Southern California on the map, making the area a magnet for would-be stars and star-gazers.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics3.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic3a.html">The Changing Workplace</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic3b.html">The Rise of Technology</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic3c.html">Growing Ethnic Diversity</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic3d.html">Early Advertising</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic3e.html">Popular Culture</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic3f.html">Everyday Life and People</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_picket-parade.jpg" alt="Protestors marching down a street">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1929-1939: The Great Depression</h2>
+        <p>For California, the nation, and the world, the 1930s was a period of particularly hard times. The US stock market crash of 1929 set off the most severe economic depression in the Western world. In the American Midwest, this was compounded by a severe drought that destroyed crops and farms. Of the 2.5 million Dust Bowl immigrants who left the Plains states, about 200,000 moved to California. They joined a population that was already facing massive unemployment and low wages. During the Great Depression, labor issues were commonplace and strikes occurred frequently. One of the best known was the 1934 San Francisco General Strike. President Franklin D. Roosevelt's New Deal offered ordinary Americans relief and help by funding a range of public works projects and regional development of bridges, dams, and power plants.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics4.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic4a.html">Dust Bowl Migration</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic4b.html">Hard Times</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic4c.html">Help and a New Deal</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic4d.html">San Francisco General Strike</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic4e.html">Building Bridges, Dams, Power Plants</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic4f.html">Everyday Life in Hard Times</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_shipyard-training.jpg" alt="A woman welding metal">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1939–1945: World War II</h2>
+        <p>American mobilization for World War II spurred significant changes in the nation's social and economic landscape. Americans who remained on the home front contributed to the war effort in various ways. With so many men in the armed services, industry had a lot of jobs to fill. For the first time, women joined the workforce in record numbers, finding work in previously male-dominated industries such as factories and shipyards. The acute need for workers also opened up new employment possibilities for African Americans, who migrated to the West Coast from other parts of the country. Many Mexicans came to California through the government-sponsored Bracero Program, which was organized to fill the need for agricultural field workers. After the Japanese bombing of Pearl Harbor, the government saw Japanese Americans as possible enemies. Nearly 122,000 Japanese Americans were relocated against their will to internment camps in the West and Northwest, where they spent the duration of the war. Some Japanese American men voluntarily joined special fighting units, such as the much-decorated 442nd Regimental Combat Team.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics5.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5a.html">Women in the Workforce
+</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5b.html">Life on the Home Front</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5c.html">The Bracero Program</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5d.html">Richmond Shipyards</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5e.html">Japanese American Internment</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5f.html">The 442nd Regimental Combat Team</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5g.html">California and the Postwar Suburban Home</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic5h.html">Everyday Life During World War II</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="row themed__collection-row">
+    
+    <div class="col-sm-3">
+      <img class="themed__collection-row-image" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/themed_black-panthers.jpg" alt="Black Panthers press conference">
+    </div>
+
+    <div class="col-sm-6">
+      <div class="themed__collection-row-text">
+        <h2 class="themed__collection-row-heading">1950s-1970s: Social Reform</h2>
+        <p>From the period of the 1950s through the 1970s, struggles for civil and social rights, equality, and justice swept the United States. At universities and colleges, students championed the Free Speech Movement, demanding their right to free speech, political protest, and academic freedom. African Americans struggled for civil rights, and many groups fought for social justice — demanding equal rights, better working conditions, and an end to the Vietnam War. In 1965, feelings about racial inequality and economic and social injustice boiled over into widespread violence for the first time in Los Angeles's African American community of Watts. The community's transformation from angry frustration to hopeful growth is just one example of what was taking place in similar neighborhoods across the country during this tumultuous time.</p>
+      </div>
+    </div>
+
+    <a class="btn themed__collection-row-button" href="http://www.calisphere.universityofcalifornia.edu/themed_collections/topics6.html">View More</a>
+
+    <div class="col-sm-3">
+      <ul class="themed__collection-row-list">
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic6a.html">The Civil Rights Movement</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic6b.html">The Free Speech Movement</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic6c.html">Watts</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic6d.html">Struggles for Social Justice</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collections/subtopic6e.html">Everyday Life</a></li>
+        <li class="themed__collection-row-list-item"><a href="http://www.calisphere.universityofcalifornia.edu/themed_collection/LGBT-Pride-Parade/">The LGBT Pride Parade</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+
+</div>
+
+<!-- End Collections - Themed Component -->
+<!-- \[include:components/collections-themed-history-component.html] -->
       
 	<!-- [include:components/footer-component.html] -->
+    <!-- Begin Global Footer Component -->
+
+    <div class="col-xs-12">
+
+      <footer class="global-footer">
+
+        <div class="global-footer__search">
+          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
+          <div class="input-group">
+            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+              
+        <div class="global-footer__nav">
+          <ul class="global-footer__nav-list--mobile">
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
+          </ul>
+          <ul class="global-footer__nav-list">
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
+          </ul>
+        </div>
+
+        <div class="global-footer__copyright">
+          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
+
+          <div class="col-xs-6 global-footer__social-icons-text">
+            <p>Connect with us:</p>
+          </div>
+          <div class="col-xs-6 global-footer__social-icons">
+            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+          </div>
+          
+        </div>
+    
+      </footer>
+
+    </div>
+
+    <!-- End Global Footer Component -->
+<!-- \[include:components/footer-component.html] -->
 
 <!-- [include:library-footer.html] -->
+  </div> <!-- end of .container-fluid -->
+
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/modernizr/modernizr.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <script src="bower_components/jquery-pjax/jquery.pjax.js"></script>
+  <script src="bower_components/slick.js/slick/slick.min.js"></script>
+  <script src="bower_components/picturefill/dist/picturefill.js"></script>
+  <script src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
+  <script src="bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js"></script>
+  <script src="bower_components/get-style-property/get-style-property.js"></script>
+  <script src="bower_components/get-size/get-size.js"></script>
+  <script src="bower_components/matches-selector/matches-selector.js"></script>
+  <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+  <script src="bower_components/eventie/eventie.js"></script>
+  <script src="bower_components/doc-ready/doc-ready.js"></script>
+  <script src="bower_components/classie/classie.js"></script>
+  <script src="bower_components/unipointer/unipointer.js"></script>
+  <script src="bower_components/unidragger/unidragger.js"></script>
+  <script src="bower_components/fizzy-ui-utils/utils.js"></script>
+  <script src="bower_components/tap-listener/tap-listener.js"></script>
+  <script src="bower_components/flickity/dist/flickity.pkgd.js"></script>
+  <script src="bower_components/jQuery.dotdotdot/src/js/jquery.dotdotdot.min.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({app,.tmp}) scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <!-- endbuild -->
+  
+</body>
+</html>
+<!-- \[include:library-footer.html] -->

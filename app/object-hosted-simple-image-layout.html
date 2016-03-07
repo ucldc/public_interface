@@ -1,34 +1,596 @@
 <!doctype html>
 <!-- [include:library-header.html, {title: 'Object View Layout', test_class: ''}] -->
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Object View Layout</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- <link rel="stylesheet" href="bower_components/slick.js/slick/slick.css" />
+    <link rel="stylesheet" href="bower_components/slick.js/slick/slick-theme.css" /> -->
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/mediaelement/build/mediaelementplayer.css" />
+    <link rel="stylesheet" href="bower_components/flickity/css/flickity.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="scripts/vendor/modernizr-dev.js"></script>
+    <!-- endbuild -->
+    <!-- <link rel="stylesheet" href="styles/component_pages.css"> -->
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+<!-- \[include:library-header.html, {title: 'Object View Layout', test_class: ''}] -->
 
   <!-- [include:components/header-component.html] -->
+        <!-- Begin Global Header -->
+        
+        <header class="global-header">
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-4">
+              <div class="row">
+                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
+                  <i class="fa fa-bars"></i>
+                </div>
+                <div class="col-xs-8 col-sm-12 global-header__logo">
+                  <a class="global-header__logo-link" href="/">
+                  </a>
+                </div>
+                <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
+                  <i class="fa fa-search"></i>
+                </div>
+              </div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
+              <form class="global-header__search-form" role="search" action="add-url-here" method="get">
+                <label for="global-search__field" class="global-search__label">Search the collections</label>
+                <div class="input-group">
+                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+            
+            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
+              <ul class="global-header__nav-list">
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
+              </ul>
+            </div>
+            
+          </div>
+
+          <div class="global-header__bar">
+            <ul class="global-header__bar-list">
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Contributing Institutions</a>
+              </li>
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Collections</a>
+              </li>
+            </ul>
+          </div>
+
+        </header>
+
+        <!-- End Global Header -->
+        <!-- \[include:components/header-component.html] -->
 
   <!-- [include:components/carousel-component.html] -->
+<!-- Begin Carousel Component -->
+<div id="js-carouselContainer">
+  
+<div class="carousel__search-results">
+  <a href="">Search results for "Orange County"</a>
+</div>
+
+<div class="carousel__items-number">
+  <!-- Displaying 1 - 6 of 67 -->
+  67 items found.
+</div>
+
+<div class="carousel">
+  
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz1.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">The name of this object if it were a long title lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item--selected">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img src="images/lazyfonz2.png" class="carousel__image--selected" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">Here is a shorter caption
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz3.png" alt="The Fonz">
+        <div class="carousel__overlay-icon fa-volume-up"></div>
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <div class="carousel__tile-icon fa-file-text-o"></div>
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz4.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">The name of this object if it were a long title lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <div class="carousel__tile-icon fa-volume-up"></div>
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz5.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">Here is a shorter caption
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz6.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz1.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">The name of this object if it were a long title lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz2.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">Here is a shorter caption
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz3.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+</div>
+</div>
+
+<!-- End Carousel Component -->
+<!-- \[include:components/carousel-component.html] -->
 
   <p class="text__breadcrumb-nav"><a href="">[Institution]</a> > <a href="">[Collection]</a> > Walther League Picnic</p>
   
   <!-- [include:components/object-hosted-simple-image-component.html] -->
+<!-- Object - Image Component -->
+
+<div class="object__base">
+
+	<h1>Image / <strong>Walther League Picnic</strong></h1>
+  
+  <div class="obj__container-osd">
+    
+    <div id="obj__osd"></div>
+
+    <div class="obj__osd-button-group">
+      
+      <a id="obj__osd-button-home" class="btn btn-default obj__osd-button" href="#">
+        <span class="fa fa-refresh fa-fw"></span>
+      </a>
+      <a id="obj__osd-button-zoom-in" class="btn btn-default obj__osd-button" href="#">
+        <span class="fa fa-plus fa-fw"></span>
+      </a>
+      <a id="obj__osd-button-zoom-out" class="btn btn-default obj__osd-button" href="#">
+        <span class="fa fa-minus fa-fw"></span>
+      </a>
+      <a id="obj__osd-button-fullscreen" class="btn btn-default obj__osd-button" href="">
+        <span class="fa fa-expand fa-fw"></span>
+      </a>
+
+    </div>
+
+    <script src="bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js"></script>
+    
+    <script type="text/javascript">
+        var viewer = OpenSeadragon({
+            id: "obj__osd",
+            tileSources: [{"profile": ["http://iiif.io/api/image/2/level2.json", {"supports": ["canonicalLinkHeader", "profileLinkHeader", "mirroring", "rotationArbitrary", "sizeAboveFull"], "qualities": ["default", "bitonal", "gray", "color"], "formats": ["jpg", "png", "gif", "webp"]}], "tiles": [{"width": 1024, "scaleFactors": [1, 2, 4, 8, 16, 32, 64, 128]}], "protocol": "http://iiif.io/api/image", "sizes": [{"width": 35, "height": 48}, {"width": 70, "height": 95}, {"width": 140, "height": 189}, {"width": 280, "height": 377}, {"width": 559, "height": 753}, {"width": 1117, "height": 1506}, {"width": 2233, "height": 3011}, {"width": 4466, "height": 6022}], "height": 6022, "width": 4466, "@context": "http://iiif.io/api/image/2/context.json", "@id": "http://ucldciiifwest-env.elasticbeanstalk.com/001687cd-e327-4ed1-9788-da3899715794"}],
+            zoomInButton:   "obj__osd-button-zoom-in",
+            zoomOutButton:  "obj__osd-button-zoom-out",
+            homeButton:     "obj__osd-button-home",
+            fullPageButton: "obj__osd-button-fullscreen"
+        });
+    </script>
+
+	</div>
+
+</div>
+
+<!-- Object - Image Component -->
+<!-- \[include:components/object-hosted-simple-image-component.html] -->
 
   <div class="obj-buttons">
 
     <!-- [include:components/object-buttons-hosted-component.html] -->
+<!-- Object - Buttons Component -->
+
+<div class="obj-buttons__group1">
+
+  <a class="btn btn-xs obj-buttons__envelope" title="Email" href="">
+    <span class="fa fa-envelope-o fa-fw"></span>
+  </a>
+
+  <a class="obj-buttons__twitter" title="Twitter" href="">
+    <span class="fa fa-twitter-square"></span>
+  </a>
+
+  <a class="obj-buttons__facebook" title="Facebook" href="">
+    <span class="fa fa-facebook-square"></span>
+  </a>
+
+  <a class="btn btn-xs obj-buttons__citation" href="">
+    Get Citation
+  </a>
+
+</div>
+
+<div class="obj-buttons__group2">
+
+  <span class="obj-buttons__contact-text">Have a question about this item?</span>
+
+  <a class="btn btn-xs button__contact-owner" href="">
+    <span class="fa fa-envelope"></span>
+    Contact Owner 
+  </a>
+
+  <a class="btn btn-xs obj-buttons__download-image" href="">
+    <span class="icon__download-image">
+      <span class="fa fa-arrow-circle-o-down"></span>
+    </span> Download image
+  </a>
+
+</div>
+
+<!-- Object - Buttons Component -->
+<!-- \[include:components/object-buttons-hosted-component.html] -->
 
   </div>
 
   <div class="meta-block">
 
     <!-- [include:components/metadata-block-component1.html] -->
+<!-- Begin Metadata Block Component -->
+
+<dl class="meta-block__list">
+  <dt class="meta-block__type">Title</dt>
+  <dd class="meta-block__defin">Portrait of Karlheinz Stockhausen, composer</dd>
+
+  <dt class="meta-block__type">Creator</dt>
+  <dd class="meta-block__defin">Freeman, Betty, 1921-2009</dd>
+
+  <dt class="meta-block__type">Date Created and/or Issued</dt>
+  <dd class="meta-block__defin">1966<br>2003</dd>
+
+  <dt class="meta-block__type">Publication Information</dt>
+  <dd class="meta-block__defin">Los Angeles Philharmonic Association</dd>
+
+  <dt class="meta-block__type">Contributing Institution</dt>
+  <dd class="meta-block__defin">Los Angeles Philharmonic Archives</dd>
+
+  <dt class="meta-block__type">Collection</dt>
+  <dd class="meta-block__defin">Records of the Los Angeles Philharmonic Archives</dd>
+
+  <dt class="meta-block__type">Rights Information</dt>
+  <dd class="meta-block__defin">Copyrighted<br>
+  Transmission or reproduction of materials protected by copyright beyond that allowed by fair use requires the written permission of the copyright owners. In addition, the reproduction of some materials may be restricted by terms of gift or purchase agreements, donor restrictions, privacy and publicity rights, licensing and trademarks. Works not in the public domain cannot be commercially exploited without permission of the copyright owner. Responsibility for any use rests exclusively with the user.</dd>
+
+  <dt class="meta-block__type">Rights Holder and Contact</dt>
+  <dd class="meta-block__defin">Los Angeles Philharmonic Association<br>
+  Los Angeles Philharmonic Archives (213) 972-7689, archives@laphil.org</dd>
+
+  <dt class="meta-block__type">Date of Copyright</dt>
+  <dd class="meta-block__defin">1966</dd>
+
+  <dt class="meta-block__type">Description</dt>
+  <dd class="meta-block__defin">Karlheinz Stockhausen at Disneyland</dd>
+
+  <dt class="meta-block__type">Type</dt>
+  <dd class="meta-block__defin">Image</dd>
+
+  <dt class="meta-block__type">Format</dt>
+  <dd class="meta-block__defin">1 photographic print; 25.5 x 20 cm</dd>
+
+  <dt class="meta-block__type">Identifier</dt>
+  <dd class="meta-block__defin">claphila_015<br> 
+  ark:/13030/kt3b69r9cn</dd>
+
+  <dt class="meta-block__type">Language</dt>
+  <dd class="meta-block__defin">eng</dd>
+
+  <dt class="meta-block__type">Subject</dt>
+  <dd class="meta-block__defin">Stackhausen, Karlheinz, 1928-2007 <br>
+  Composers</dd>
+
+  <dt class="meta-block__type">Place</dt>
+  <dd class="meta-block__defin">Disneyland (Calif.)</dd>
+
+  <dt class="meta-block__type">Source</dt>
+  <dd class="meta-block__defin">Selected photograph from the Betty Freeman Papers (SC.MSS.FREE)</dd>
+
+</dl>
+
+<!-- End Metadata Block Component -->
+<!-- \[include:components/metadata-block-component1.html] -->
     
   </div>
 
   <div class="related-coll--object-page">
   <!-- [include:components/related-collections-component.html] -->
+    <!-- Begin Related Collections Group Component -->
+
+    <div class="related-coll" id="related-coll">
+
+      <h3 class="related-coll__title">12 Collections Found with Similar Objects</h3>
+
+      <div class="col-xs-12 col-sm-4">
+        <a class="related-coll__link" href="">
+          <div class="related-coll__container">
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__thumbnail-container1">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+                <div class="related-coll__overlay-icon--large fa-video-camera"></div>
+              </div>
+              <div class="related-coll__thumbnail-container2">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+              <div class="related-coll__thumbnail-container3">
+                <div class="related-coll__tile-icon fa-file-text-o"></div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 related-coll__caption">
+              <p>Los Angeles Times Photographic Archive</p>
+              <p>Institution: UCLA, Library Special Collections, Charles E. Young Research Library</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-xs-12 col-sm-4">
+        <a class="related-coll__link" href="">
+          <div class="related-coll__container">
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__thumbnail-container1">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+              <div class="related-coll__thumbnail-container2">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+                <div class="related-coll__overlay-icon fa-volume-up"></div>
+              </div>
+              <div class="related-coll__thumbnail-container3">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 related-coll__caption">
+              <p>Los Angeles Times Photographic Archive</p>
+              <p>Institution: UCLA, Library Special Collections, Charles E. Young Research Library, Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-xs-12 col-sm-4">
+        <div class="related-coll__container">
+          <a class="related-coll__link" href="">
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__thumbnail-container1">
+                <div class="related-coll__tile-icon--large fa-file-text-o"></div>
+              </div>
+              <div class="related-coll__thumbnail-container2">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+              <div class="related-coll__thumbnail-container3">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__caption">
+                <p>Los Angeles Times Photographic Archive</p>
+                <p>Institution: UCLA, Library Special Collections, Charles E. Young Research Library</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <button class="btn btn-link related-coll__prev-button">
+        <span class="fa fa-caret-left"></span>
+        <abbr title="Previous">Prev</abbr>
+      </button>
+
+      <button class="btn btn-link related-coll__next-button">
+        Next
+        <span class="fa fa-caret-right"></span>
+      </button>
+
+    </div>
+
+    <!-- End Related Collections Group Component -->
+<!-- \[include:components/related-collections-component.html] -->
   </div>
 
   <div class="row">
 
   <!-- [include:components/footer-component.html] -->
+    <!-- Begin Global Footer Component -->
+
+    <div class="col-xs-12">
+
+      <footer class="global-footer">
+
+        <div class="global-footer__search">
+          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
+          <div class="input-group">
+            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+              
+        <div class="global-footer__nav">
+          <ul class="global-footer__nav-list--mobile">
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
+          </ul>
+          <ul class="global-footer__nav-list">
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
+          </ul>
+        </div>
+
+        <div class="global-footer__copyright">
+          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
+
+          <div class="col-xs-6 global-footer__social-icons-text">
+            <p>Connect with us:</p>
+          </div>
+          <div class="col-xs-6 global-footer__social-icons">
+            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+          </div>
+          
+        </div>
+    
+      </footer>
+
+    </div>
+
+    <!-- End Global Footer Component -->
+<!-- \[include:components/footer-component.html] -->
 
   </div>
             
 <!-- [include:library-footer.html] -->
+  </div> <!-- end of .container-fluid -->
+
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/modernizr/modernizr.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <script src="bower_components/jquery-pjax/jquery.pjax.js"></script>
+  <script src="bower_components/slick.js/slick/slick.min.js"></script>
+  <script src="bower_components/picturefill/dist/picturefill.js"></script>
+  <script src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
+  <script src="bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js"></script>
+  <script src="bower_components/get-style-property/get-style-property.js"></script>
+  <script src="bower_components/get-size/get-size.js"></script>
+  <script src="bower_components/matches-selector/matches-selector.js"></script>
+  <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+  <script src="bower_components/eventie/eventie.js"></script>
+  <script src="bower_components/doc-ready/doc-ready.js"></script>
+  <script src="bower_components/classie/classie.js"></script>
+  <script src="bower_components/unipointer/unipointer.js"></script>
+  <script src="bower_components/unidragger/unidragger.js"></script>
+  <script src="bower_components/fizzy-ui-utils/utils.js"></script>
+  <script src="bower_components/tap-listener/tap-listener.js"></script>
+  <script src="bower_components/flickity/dist/flickity.pkgd.js"></script>
+  <script src="bower_components/jQuery.dotdotdot/src/js/jquery.dotdotdot.min.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({app,.tmp}) scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <!-- endbuild -->
+  
+</body>
+</html>
+<!-- \[include:library-footer.html] -->

@@ -16,12 +16,12 @@
       <a class="related-coll__link js-relatedCollection" href="{% url 'calisphere:collectionView' related_collection.collection_id %}" data-pjax="js-pageContent">
         <div class="related-coll__container">
           <div class="col-xs-12 col-sm-12">
-            
+
             {% with related_collection.image_urls as items %}
             {% for item in items %}
             {% if forloop.counter <= 3 %}
             <div class="related-coll__thumbnail-container{{ forloop.counter }}">
-              {% if item.reference_image_md5 %}
+              {% if 'reference_image_md5' in item %}
                 <img
                 src="{{ thumbnailUrl }}crop/300x300/{{ item.reference_image_md5 }}"
                 class="thumbnail__image"
@@ -36,7 +36,7 @@
                 {% elif item.type_ss.0|lower == "dataset" %}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
                 {% endif %}
-              
+
               {% else %}
                 {% if item.type_ss.0|lower == "moving image" %}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-video-camera"></div>
@@ -51,7 +51,7 @@
             </div>
             {% endif %}
             {% endfor %}
-            {% endwith %}            
+            {% endwith %}
           </div>
           <div class="col-xs-12 col-sm-12 related-coll__caption">
             <p>{{ related_collection.name }}</p>
@@ -61,14 +61,14 @@
       </a>
     </div>
   {% endfor %}
-  
+
   {% if rc_page > 0 %}
     <button class="btn btn-link related-coll__prev-button js-rc-page" data-rc_page="{{ rc_page|subtract:1 }}">
       <span class="fa fa-caret-left"></span>
       <abbr title="Previous">Prev</abbr>
     </button>
   {% endif %}
-  
+
   {% if rc_page|multiply:3|add:3 < num_related_collections %}
   <button class="btn btn-link related-coll__next-button js-rc-page" data-rc_page="{{ rc_page|add:1 }}">
     Next

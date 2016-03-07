@@ -29,7 +29,7 @@
   <div
     class="institution-intro"
     data-ga-code="{{ institution.google_analytics_tracking_code }}"
-    data-ga-dim2="{%if institution.campus %}{{ institution.campus.0.slug }}-{% endif %}{{ institution.slug }}"
+    data-ga-dim2="{%if 'campus' in institution %}{{ institution.campus.0.slug }}-{% endif %}{{ institution.slug }}"
   >
 
     {% if campus_slug %}

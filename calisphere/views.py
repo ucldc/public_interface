@@ -86,14 +86,18 @@ def getCollectionData(collection_data=None, collection_id=None):
             collection['id'] = ''
         else:
             collection['id'] = collection_api_url.group('url')
+        collection_details = json_loads_url("{0}?format=json".format(collection['url']))
+        collection['local_id'] = collection_details['local_id']
+        collection['slug'] = collection_details['slug']
     elif collection_id:
         solr_collections = CollectionManager(settings.SOLR_URL, settings.SOLR_API_KEY)
         collection['url'] = "https://registry.cdlib.org/api/v1/collection/{0}/".format(collection_id)
         collection['id'] = collection_id
 
         collection_details = json_loads_url("{0}?format=json".format(collection['url']))
-        collection['name'] = solr_collections.names[collection['url']]
+        collection['name'] = solr_collections.names.get(collection['url']) or collection_details['name']
         collection['local_id'] = collection_details['local_id']
+        collection['slug'] = collection_details['slug']
     return collection
 
 def getCollectionMosaic(collection_url):
@@ -431,11 +435,19 @@ def itemView(request, item_id=''):
             'item_solr_search': item_solr_search,
             'meta_image': meta_image,
         })
+    search_results = { 'reference_image_md5': None }
+    search_results.update(item_solr_search.results[0])
     return render(request, 'calisphere/itemView.html', {
         'q': '',
-        'item': item_solr_search.results[0],
+        'item': search_results,
         'item_solr_search': item_solr_search,
         'meta_image': meta_image,
+        'rc_page': None,
+        'related_collections': None,
+        'slug': None,
+        'title': None,
+        'num_related_collections': None,
+        'rq': None,
     })
 
 
@@ -709,7 +721,7 @@ def relatedCollections(request, queryParams={}):
             'rq': queryParams['rq'],
             'num_related_collections': len(related_collections),
             'related_collections': three_related_collections,
-            'rc_page': queryParams['rc_page']
+            'rc_page': queryParams.get('rc_page'),
         })
 
 def collectionsDirectory(request):
@@ -749,6 +761,7 @@ def collectionsAZ(request, collection_letter):
         'collection_letter': collection_letter,
         'page': page,
         'pages': pages,
+        'random': None,
     }
 
     if page*10 < len(collections_list):
@@ -837,21 +850,21 @@ def collectionView(request, collection_id):
             filter_display[filter_type] = copy.copy(queryParams['filters'][filter_type])
 
     return render(request, 'calisphere/collectionView.html', {
-        'q': queryParams['q'],
-        'rq': queryParams['rq'],
+        'q': queryParams.get('q'),
+        'rq': queryParams.get('rq'),
         'filters': filter_display,
-        'rows': queryParams['rows'],
-        'start': queryParams['start'],
-        'sort': queryParams['sort'],
+        'rows': queryParams.get('rows'),
+        'start': queryParams.get('start'),
+        'sort': queryParams.get('sort'),
         'search_results': solr_search.results,
         'facets': facets,
         'FACET_FILTER_TYPES': list(facet_filter_type for facet_filter_type in FACET_FILTER_TYPES if facet_filter_type['facet'] != 'collection_data' and facet_filter_type['facet'] != 'repository_data'),
         'numFound': solr_search.numFound,
         'pages': int(math.ceil(float(solr_search.numFound)/int(queryParams['rows']))),
-        'view_format': queryParams['view_format'],
+        'view_format': queryParams.get('view_format'),
         'collection': collection_details,
         'collection_id': collection_id,
-        'form_action': reverse('calisphere:collectionView', kwargs={'collection_id': collection_id})
+        'form_action': reverse('calisphere:collectionView', kwargs={'collection_id': collection_id}),
     })
 
 def campusDirectory(request):
@@ -872,8 +885,15 @@ def campusDirectory(request):
     # Use hard-coded campus list so UCLA ends up in the correct order
     # campuses = sorted(list(set([repository['campus'] for repository in repositories])))
 
-    return render(request, 'calisphere/campusDirectory.html', {'repositories': repositories,
-        'campuses': CAMPUS_LIST})
+    return render(
+        request,
+        'calisphere/campusDirectory.html', {
+            'repositories': repositories,
+            'campuses': CAMPUS_LIST,
+            'state_repositories': None,
+            'description': None,
+        }
+    )
 
 def statewideDirectory(request):
     repositories_solr_query = SOLR_select(q='*:*', rows=0, start=0, facet='true', facet_mincount=1, facet_field=['repository_data'], facet_limit='-1')
@@ -905,7 +925,16 @@ def statewideDirectory(request):
             bin.sort()
             binned_repositories.append({char: bin})
 
-    return render(request, 'calisphere/statewideDirectory.html', {'state_repositories': binned_repositories})
+    return render(
+        request,
+        'calisphere/statewideDirectory.html', {
+            'state_repositories': binned_repositories,
+            'campuses': None,
+            'meta_image': None,
+            'description': None,
+            'q': None,
+        }
+    )
 
 
 def institutionView(request, institution_id, subnav=False, institution_type='repository|campus'):
@@ -1114,6 +1143,7 @@ def institutionView(request, institution_id, subnav=False, institution_type='rep
             for campus in CAMPUS_LIST:
                 if institution_id == campus['id'] and 'featuredImage' in campus:
                     context['featuredImage'] = campus['featuredImage']
+            context['repository_id'] = None
 
         if institution_type == 'repository':
             context['repository_id'] = institution_id
@@ -1134,6 +1164,8 @@ def institutionView(request, institution_id, subnav=False, institution_type='rep
                     if unit['id'] == institution_id:
                         context['featuredImage'] = unit['featuredImage']
 
+            if not 'featuredImage' in context:
+                context['featuredImage'] = None
 
         return render(request, 'calisphere/institutionViewCollections.html', context)
 

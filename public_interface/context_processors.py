@@ -15,4 +15,18 @@ def settings(request):
         'gaSiteCode': settings.GA_SITE_CODE,
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
         'permalink': urlparse.urljoin(settings.UCLDC_FRONT, request.path),
+        'q': '',
+        'page': None,
+        'meta_image': None,
+        'campus_slug': None,
+        'form_action': None,
+        'numFound': None,
+        'prev_page': None,
+        'next_page': None,
+        'featuredImage': None,
+        'themedCollections': None,
+        'collection_q': None,
+        'alphabet': None,
+        'referral': None,
     }
+

@@ -2,7 +2,11 @@
 {% load calisphere-extras %}
 
 {% block page-metadata %}
-{% include "calisphere/microdata.html" with title=item.title.0 description=item.description %}
+{% if 'description' in item %}
+  {% include "calisphere/microdata.html" with title=item.title.0 description=item.description %}
+{% else %}
+  {% include "calisphere/microdata.html" with title=item.title.0 description='' %}
+{% endif %}
 {% endblock %}
 
 {% block content %}

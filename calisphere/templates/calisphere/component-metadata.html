@@ -139,7 +139,7 @@
             data-ga-code="{{ repository.ga_code }}"
             data-ga-dim2="{{ repository.slug }}"
           >
-          {% if repository.campus %}
+          {% if 'campus' in repository %}
             {{ repository.campus }},
           {% endif %}
           {{ repository.name }}</a> <br>

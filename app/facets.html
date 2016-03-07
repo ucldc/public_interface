@@ -1,5 +1,37 @@
 <!doctype html>
 <!-- [include:library-header.html, {title: 'Facets Component', test_class: ''}] -->
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Facets Component</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- <link rel="stylesheet" href="bower_components/slick.js/slick/slick.css" />
+    <link rel="stylesheet" href="bower_components/slick.js/slick/slick-theme.css" /> -->
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/mediaelement/build/mediaelementplayer.css" />
+    <link rel="stylesheet" href="bower_components/flickity/css/flickity.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="scripts/vendor/modernizr-dev.js"></script>
+    <!-- endbuild -->
+    <!-- <link rel="stylesheet" href="styles/component_pages.css"> -->
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+<!-- \[include:library-header.html, {title: 'Facets Component', test_class: ''}] -->
 
 <h1>Calisphere UI Library</h1>
 
@@ -8,5 +40,274 @@
 <p><strong>Note:</strong> In this demo, only the first facet, "Type of Object" is functional at small and medium screen sizes. The other three facets are being used as placeholders at those sizes.</p>
 
 <!-- [include:components/facets-component.html] -->
+  <div class="facets">
+
+    <button type="button" class="btn btn-default btn-block check__clear-filters">Clear Filters</button>
+    <!-- For selected state, above class becomes: check__clear-filters[dash][dash]selected -->
+
+    <div class="row">
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+                      
+      <!-- Begin Component -->
+      
+        <div class="check" id="check__type">
+
+          <div class="check__header js-a-check__header">
+            <p class="check__header-text js-a-check__header-text">Type of Object (7)</p>
+            <i class="check__header-arrow-icon js-a-check__header-arrow-icon fa fa-angle-down"></i>
+            <div class="check__header-links">
+              <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select All</a>
+              <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect All</a>
+            </div>
+          </div>
+
+          <div class="check__popdown js-a-check__popdown">
+
+            <div class="check__button-group">
+              <button type="button" disabled class="btn btn-default check__button js-a-check__button-deselect-all">Deselect All</button>
+              <button type="button" class="btn btn-default check__button js-a-check__button-select-all">Select All</button>
+            </div>
+            <div class="check__group">
+              <input id="check__input-1a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-1a">California and the Postwar Suburban Home (2)</label>
+              
+              <input id="check__input-2a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-2a">The Bracero Program (12)</label>
+              
+              <input id="check__input-3a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-3a">Japanese American Internment (1)</label>
+
+              <input id="check__input-4a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-4a">Another Filter (1)</label>
+
+              <input id="check__input-5a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-5a">Another Filter (1)</label>
+
+              <input id="check__input-6a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-6a">Another Filter (1)</label>
+            </div>
+
+            <button class="check__update js-a-check__update">Update Results</button>
+
+          </div>
+
+        </div>
+
+        <!-- End Component -->
+
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+                          
+        <!-- Placeholder checkbox group (not fully functional - do not use in production) -->
+        
+        <div class="check" id="check__date">
+
+          <div class="check__header">
+            <p class="check__header-text">Date Range (7)</p>
+            <i class="check__header-arrow-icon fa fa-angle-down"></i>
+            <div class="check__header-links">
+              <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select All</a>
+              <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect All</a>
+            </div>
+          </div>
+
+          <div class="check__popdown">
+
+            <div class="check__button-group">
+              <button type="button" disabled class="btn btn-default check__button js-a-check__button-deselect-all">Deselect All</button>
+              <button type="button" class="btn btn-default check__button js-a-check__button-select-all">Select All</button>
+            </div>
+            <div class="check__group">
+              <input id="check__input-1b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-1b">California and the Postwar Suburban Home (2)</label>
+              
+              <input id="check__input-2b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-2b">The Bracero Program (12)</label>
+              
+              <input id="check__input-3b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-3b">Japanese American Internment (1)</label>
+
+              <input id="check__input-4b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-4b">Another Filter (1)</label>
+
+              <input id="check__input-5b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-5b">Another Filter (1)</label>
+
+              <input id="check__input-6b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-6b">Another Filter (1)</label>
+            </div>
+
+            <button class="check__update js-a-check__update">Update Results</button>
+
+        </div>
+
+      </div>
+
+      <!-- End Component --> 
+
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+                            
+        <!-- Placeholder checkbox group (not fully functional - do not use in production) -->
+        
+        <div class="check" id="check__inst">
+
+          <div class="check__header">
+            <p class="check__header-text">Institutional Owner (7)</p>
+            <i class="check__header-arrow-icon fa fa-angle-down"></i>
+            <div class="check__header-links">
+              <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select All</a>
+              <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect All</a>
+            </div>
+          </div>
+
+          <div class="check__popdown">
+
+            <div class="check__button-group">
+              <button type="button" disabled class="btn btn-default check__button js-a-check__button-deselect-all">Deselect All</button>
+              <button type="button" class="btn btn-default check__button js-a-check__button-select-all">Select All</button>
+            </div>
+            <div class="check__group">
+              <input id="check__input-1c" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-1c">California and the Postwar Suburban Home (2)</label>
+              
+              <input id="check__input-2c" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-2c">The Bracero Program (12)</label>
+              
+              <input id="check__input-3c" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-3c">Japanese American Internment (1)</label>
+
+              <input id="check__input-4c" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-4c">Another Filter (1)</label>
+
+              <input id="check__input-5c" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-5c">Another Filter (1)</label>
+
+              <input id="check__input-6c" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-6c">Another Filter (1)</label>
+            </div>
+
+            <button class="check__update js-a-check__update">Update Results</button>
+
+          </div>
+
+        </div>
+
+        <!-- End Component -->
+
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+                            
+      <!-- Placeholder checkbox group (not fully functional - do not use in production) -->
+            
+        <div class="check" id="check__coll">
+
+          <div class="check__header">
+            <p class="check__header-text">Collection (7)</p>
+            <i class="check__header-arrow-icon fa fa-angle-down"></i>
+            <div class="check__header-links">
+                <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select All</a>
+                <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect All</a>
+            </div>
+          </div>
+
+          <div class="check__popdown">
+
+            <div class="check__button-group">
+              <button type="button" disabled class="btn btn-default check__button js-a-check__button-deselect-all">Deselect All</button>
+              <button type="button" class="btn btn-default check__button js-a-check__button-select-all">Select All</button>
+            </div>
+            <div class="check__group">
+              <input id="check__input-1d" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-1d">California and the Postwar Suburban Home (2)</label>
+              
+              <input id="check__input-2d" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-2d">The Bracero Program (12)</label>
+              
+              <input id="check__input-3d" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-3d">Japanese American Internment (1)</label>
+
+              <input id="check__input-4d" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-4d">Another Filter (1)</label>
+
+              <input id="check__input-5d" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-5d">Another Filter (1)</label>
+
+              <input id="check__input-6d" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-6d">Another Filter (1)</label>
+            </div>
+
+            <button class="check__update js-a-check__update">Update Results</button>
+
+          </div>
+
+        </div>
+
+      <!-- End Component -->
+
+      </div>
+
+    </div> 
+
+  </div> <!-- facets -->
+
+
+<!-- \[include:components/facets-component.html] -->
         
 <!-- [include:library-footer.html] -->
+  </div> <!-- end of .container-fluid -->
+
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/modernizr/modernizr.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <script src="bower_components/jquery-pjax/jquery.pjax.js"></script>
+  <script src="bower_components/slick.js/slick/slick.min.js"></script>
+  <script src="bower_components/picturefill/dist/picturefill.js"></script>
+  <script src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
+  <script src="bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js"></script>
+  <script src="bower_components/get-style-property/get-style-property.js"></script>
+  <script src="bower_components/get-size/get-size.js"></script>
+  <script src="bower_components/matches-selector/matches-selector.js"></script>
+  <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+  <script src="bower_components/eventie/eventie.js"></script>
+  <script src="bower_components/doc-ready/doc-ready.js"></script>
+  <script src="bower_components/classie/classie.js"></script>
+  <script src="bower_components/unipointer/unipointer.js"></script>
+  <script src="bower_components/unidragger/unidragger.js"></script>
+  <script src="bower_components/fizzy-ui-utils/utils.js"></script>
+  <script src="bower_components/tap-listener/tap-listener.js"></script>
+  <script src="bower_components/flickity/dist/flickity.pkgd.js"></script>
+  <script src="bower_components/jQuery.dotdotdot/src/js/jquery.dotdotdot.min.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({app,.tmp}) scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <!-- endbuild -->
+  
+</body>
+</html>
+<!-- \[include:library-footer.html] -->

@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body">
         <textarea style="width: 100%; height: 11em;" onclick="this.focus();this.select()">
-Title: {{ item.title.0 }}{% if item.date.0 %}
+Title: {{ item.title.0 }}{% if 'date' in item and item.date.0 %}
 Date: {{ item.date.0 }}{% endif %}
 Collection: {{ item.collection_name.0 }}
 Owning Institution: {% if item.parsed_repository_data %}{% if item.parsed_repository_data.0.campus %}{{ item.parsed_repository_data.0.campus }}, {% endif %}{{ item.parsed_repository_data.0.name }}{% else %}{{ item.repository_name.0 }}
@@ -147,7 +147,7 @@ Permalink: {{ permalink }}</textarea>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         {% if item.contentFile.format == 'image' %}
-          {# {% if item.reference_image_md5 %} #}
+          {# {% if 'reference_image_md5' in item %} #}
             <!-- <a type="button" class="btn btn-primary" href="{{ thumbnailUrl }}full/full/{{ item.reference_image_md5 }}" target="_blank">Download</a> -->
           {# {% endif %} #}
           <a type="button" class="btn btn-primary" href="{{ item.contentFile.url }}" download="{{ item.title.0 }}.jpg" target="_blank">Download</a>
@@ -162,7 +162,7 @@ Permalink: {{ permalink }}</textarea>
 </div>
 {% endif %}
 
-<div class="obj-buttons{% if item.structMap %}--complex{% endif %}">
+<div class="obj-buttons{% if 'structMap' in item %}--complex{% endif %}">
 
   <div class="obj-buttons__group1">
 
@@ -203,7 +203,7 @@ href="https://twitter.com/share?text={{ item.title.0 }} /via @Calisphere" class=
       <a class="btn btn-xs obj-buttons__download-image" href="javascript: void(0)" data-toggle="modal" data-target="#downloadModal">
         <span class="icon__download-image">
           <span class="fa fa-arrow-circle-o-down"></span>
-        </span> Download {% if item.structMap %}page{% else %}{{ item.type.0 }}{% endif %}
+        </span> Download {% if 'structMap' in item %}page{% else %}{{ item.type.0 }}{% endif %}
       </a>
     {% endif %}
 

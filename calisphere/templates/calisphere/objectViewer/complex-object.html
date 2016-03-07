@@ -5,19 +5,19 @@
 {% endif %}
 
 <div class="carousel-complex">
-  <!--TODO: if {{ item.selected }} is True apply 'selected' styles -->
+  <!--TODO: if  item.selected is True apply 'selected' styles -->
   <div class="carousel-complex__fixed-item">
-    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if item.selected %}carousel-complex__fixed-link--selected
+    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if 'selected' in item %}carousel-complex__fixed-link--selected
       {% else %}carousel-complex__fixed-link{% endif %} js-set-link">
       <div class="carousel-complex__fixed-content">
       cover page
       </div>
     </a>
   </div>
-  
+
   <div class="carousel-complex__item-container">
   {% for component in item.structMap %}
-    <div class="carousel-complex__{% if component.format|lower != "image" %}tile{% else %}item{% endif %}{% if component.selected %}--selected{% endif %}">
+    <div class="carousel-complex__{% if component.format|lower != "image" %}tile{% else %}item{% endif %}{% if 'selected' in component %}--selected{% endif %}">
       <a class="carousel-complex__link js-component-link" data-item_id="{{ forloop.counter0 }}" href="{% url 'calisphere:itemView' item.id %}">
         {% if component.format|lower != "image" %}
           <div class="carousel-complex__thumbnail-container">
@@ -37,7 +37,7 @@
         {# else #}
           <!-- <span class="fa fa-file-text-o fa-fw carousel-complex__icon-overlay"></span> -->
           <!-- <img src="{% static 'images/transparent.png' %}" alt="{{ item.title.0|truncatewords:12 }}"
-          class="carousel-complex__item-img{% if component.selected %}--selected{% else %}carousel-complex__img--no-image{% endif %}"> -->
+          class="carousel-complex__item-img{% if 'selected' in component %}--selected{% else %}carousel-complex__img--no-image{% endif %}"> -->
         {% endif %}
       </a>
     </div>

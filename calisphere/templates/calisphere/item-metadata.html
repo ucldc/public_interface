@@ -4,32 +4,32 @@
     <dt class="meta-block__type">Title</dt>
     <dd class="meta-block__defin">{{ item.title.0 }}</dd>
 
-    {% if item.alternative_title %}
+    {% if 'alternative_title' in item %}
       <dt class="meta-block__type">Alternative Title</dt>
       <dd class="meta-block__defin">{% for title in item.alternative_title %}{{ title }} <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if item.creator %}
+    {% if 'creator' in item %}
       <dt class="meta-block__type">Creator</dt>
       <dd class="meta-block__defin">{% for creator in item.creator %}{{ creator }} <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if item.contributor %}
+    {% if 'contributor' in item %}
       <dt class="meta-block__type">Contributor</dt>
       <dd class="meta-block__defin">{% for contributor in item.contributor %}{{ contributor }} <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if item.date %}
+    {% if 'date' in item %}
       <dt class="meta-block__type">Date Created and/or Issued</dt>
       <dd class="meta-block__defin">{% for date in item.date %}{{ date }} <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if item.publisher %}
+    {% if 'publisher' in item %}
       <dt class="meta-block__type">Publication Information</dt>
       <dd class="meta-block__defin">{% for publisher in item.publisher %}{{ publisher }} <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if item.parsed_repository_data %}
+    {% if 'parsed_repository_data' in item %}
       <dt class="meta-block__type">Contributing Institution</dt>
       <dd class="meta-block__defin">
         {% for repository in item.parsed_repository_data %}
@@ -47,7 +47,7 @@
       </dd>
     {% endif %}
 
-    {% if item.parsed_collection_data %}
+    {% if 'parsed_collection_data' in item %}
       <dt class="meta-block__type">Collection</dt>
       <dd class="meta-block__defin">{% for collection in item.parsed_collection_data %}
         <a
@@ -58,93 +58,93 @@
         >{{ collection.name }}</a> <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if item.rights %}
+    {% if 'rights' in item %}
       <dt class="meta-block__type">Rights Information</dt>
 			<dd class="meta-block__defin">{% for rights in item.rights %}{{ rights }} <br>{% endfor %}</dd>
     {% endif %}
 
-    {% if item.rights_holder %}
+    {% if 'rights_holder' in item %}
 			<dt class="meta-block__type">Rights Holder and Contact</dt>
 			<dd class="meta-block__defin">{% for rights_holder in item.rights_holder %}{{ rights_holder }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.rights_note %}
+    {% if 'rights_note' in item %}
 			<dt class="meta-block__type">Rights Notes</dt>
 			<dd class="meta-block__defin">{% for rights_note in item.rights_note %}{{ rights_note }} <br> {% endfor %}</dd>
 		{% endif %}
 
     <!-- rights date is not currently multivalued -->
-    {% if item.rights_date %}
+    {% if 'rights_date' in item %}
 			<dt class="meta-block__type">Date of Copyright</dt>
 			<dd class="meta-block__defin">{{ item.rights_date }} <br> </dd>
 		{% endif %}
 
-    {% if item.description %}
+    {% if 'description' in item %}
 			<dt class="meta-block__type">Description</dt>
 			<dd class="meta-block__defin">{% for description in item.description %}{{ description }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.type %}
+    {% if 'type' in item %}
 			<dt class="meta-block__type">Type</dt>
 			<dd class="meta-block__defin">{% for type in item.type %}{{ type }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.format %}
+    {% if 'format' in item %}
 			<dt class="meta-block__type">Format</dt>
 			<dd class="meta-block__defin">{% for format in item.format %}{{ format }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.genre %}
+    {% if 'genre' in item %}
 			<dt class="meta-block__type">Form/Genre</dt>
 			<dd class="meta-block__defin">{% for genre in item.genre %}{{ genre }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.extent %}
+    {% if 'extent' in item %}
 			<dt class="meta-block__type">Extent</dt>
 			<dd class="meta-block__defin">{% for extent in item.extent %}{{ extent }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.identifier %}
+    {% if 'identifier' in item %}
 			<dt class="meta-block__type">Identifier</dt>
 			<dd class="meta-block__defin">{% for identifier in item.identifier %}{{ identifier }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.language %}
+    {% if 'language' in item %}
 			<dt class="meta-block__type">Language</dt>
 			<dd class="meta-block__defin">{% for language in item.language %}{{ language }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.subject %}
+    {% if 'subject' in item %}
       <dt class="meta-block__type">Subject</dt>
 			<dd class="meta-block__defin">{% for subject in item.subject %}{{ subject }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.temporal %}
+    {% if 'temporal' in item %}
 			<dt class="meta-block__type">Time Period</dt>
 			<dd class="meta-block__defin">{% for temporal in item.temporal %}{{ temporal }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.coverage %}
+    {% if 'coverage' in item %}
 			<dt class="meta-block__type">Place</dt>
 			<dd class="meta-block__defin">{% for coverage in item.coverage %}{{ coverage }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.source %}
+    {% if 'source' in item %}
 			<dt class="meta-block__type">Source</dt>
 			<dd class="meta-block__defin">{% for source in item.source %}{{ source }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.relation %}
+    {% if 'relation' in item %}
 			<dt class="meta-block__type">Relation</dt>
 			<dd class="meta-block__defin">{% for relation in item.relation %}{{ relation }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.provenance %}
+    {% if 'provenance' in item %}
 			<dt class="meta-block__type">Provenance</dt>
 			<dd class="meta-block__defin">{% for provenance in item.provenance %}{{ provenance }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if item.location %}
+    {% if 'location' in item %}
 			<dt class="meta-block__type">Location</dt>
 			<dd class="meta-block__defin">{% for location in item.location %}{{ location }} <br> {% endfor %}</dd>
 		{% endif %}

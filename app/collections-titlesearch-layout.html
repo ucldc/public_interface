@@ -1,14 +1,291 @@
 <!doctype html>
 <!-- [include:library-header.html, {title: 'Collections - Title Search', test_class: ''}] -->
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Collections - Title Search</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- <link rel="stylesheet" href="bower_components/slick.js/slick/slick.css" />
+    <link rel="stylesheet" href="bower_components/slick.js/slick/slick-theme.css" /> -->
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/mediaelement/build/mediaelementplayer.css" />
+    <link rel="stylesheet" href="bower_components/flickity/css/flickity.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="scripts/vendor/modernizr-dev.js"></script>
+    <!-- endbuild -->
+    <!-- <link rel="stylesheet" href="styles/component_pages.css"> -->
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+<!-- \[include:library-header.html, {title: 'Collections - Title Search', test_class: ''}] -->
 
   <!-- [include:components/header-component.html] -->
+        <!-- Begin Global Header -->
+        
+        <header class="global-header">
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-4">
+              <div class="row">
+                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
+                  <i class="fa fa-bars"></i>
+                </div>
+                <div class="col-xs-8 col-sm-12 global-header__logo">
+                  <a class="global-header__logo-link" href="/">
+                  </a>
+                </div>
+                <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
+                  <i class="fa fa-search"></i>
+                </div>
+              </div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
+              <form class="global-header__search-form" role="search" action="add-url-here" method="get">
+                <label for="global-search__field" class="global-search__label">Search the collections</label>
+                <div class="input-group">
+                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+            
+            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
+              <ul class="global-header__nav-list">
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
+              </ul>
+            </div>
+            
+          </div>
+
+          <div class="global-header__bar">
+            <ul class="global-header__bar-list">
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Contributing Institutions</a>
+              </li>
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Collections</a>
+              </li>
+            </ul>
+          </div>
+
+        </header>
+
+        <!-- End Global Header -->
+        <!-- \[include:components/header-component.html] -->
 
       <h1>Collections in Calisphere</h1>
 
       <!-- [include:components/collections-intro-component.html] -->
+      <!-- Begin Collections Intro Component -->
+
+      <div class="collect-intro">
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 collect-intro__overview">
+            <p>All of the items on Calisphere are organized into collections. Collections bring context to images, documents, videos, and audio recordings. Some collections represent a particular topic or format, some have items created by the same person, and some showcase an institution’s special project or initiative. Use the tabs below to explore the hundreds of collections on Calisphere.</p>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            <div class="collect-intro__sidebar">
+              <div class="col-xs-6 col-sm-4">
+                <img class="collect-intro__sidebar-img" src="https://s3.amazonaws.com/static.ucldc.cdlib.org/calisphere_images/awaiting-evacuation-bus.jpg" alt="Grandfather and grandchildren awaiting evacuation bus">
+              </div>
+              <div class="col-xs-6 col-sm-8">
+                <h2 class="collect-intro__sidebar-heading">Looking for JARDA and other themed collections?</h2>
+                <p>The Japanese American Relocation Digital Archive (JARDA), California Cultures, and California History themed collections are currently still hosted on the old Calisphere site.</p>
+                <p>Click the “Themed Collections” tab below to browse them before making the jump.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamically add class 'button__secondary' to <a> elements below for selected state -->
+
+        <div class="collect-intro__button-container">
+
+          <a class="btn btn-default collect-intro__button" href="">Random Explore</a>
+        
+          <a class="btn btn-default collect-intro__button" href="">A - Z</a>
+        
+          <a class="btn btn-default collect-intro__button" href="">Title Search</a>
+        
+          <a class="btn btn-default collect-intro__button" href="">Themed Collections</a>
+
+        </div>
+
+      </div>
+
+      <!-- End Collections Intro Component -->
+<!-- \[include:components/collections-intro-component.html] -->
 
       <!-- [include:components/collections-titlesearch-component.html] -->
+      <!-- Begin Collections Title Search Component -->
+
+      <div class="titlesearch">
+
+        <form class="titlesearch__form" role="search" onsubmit="false()">
+          <label for="titlesearch__field" class="sr-only">Search for keywords within the titles of Calisphere's collections</label>
+          <div class="input-group">
+            <input id="titlesearch__field" type="search" placeholder="Search for keywords within the titles of Calisphere's collections" class="form-control">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+              </button>
+            </span>
+          </div>
+        </form>
+
+        <!-- The Recommended Searches box is not currently being used: -->
+
+        <!-- <div class="titlesearch__recommended">
+          
+          <h2 class="titlesearch__list-heading">Recommended Searches</h2>
+
+          <ul class="titlesearch__list">
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Photograph</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Local History</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Moriyuki Shimada</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">George Smith</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Monterey Park</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Catalina Island</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Helen Nestor Free Speech Movement</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Chinese</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Stanislaus Region</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Map Collection</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Disabled Students Program</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Protest Movements</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Migrant Labor Camp</a></li>
+            <li class="titlesearch__listitem"><a class="titlesearch__link" href="">Earthquake</a></li>
+          </ul>
+
+        </div> -->
+
+      </div>
+
+      <!-- End Collections Title Search Component -->
+<!-- \[include:components/collections-titlesearch-component.html] -->
       
 	<!-- [include:components/footer-component.html] -->
+    <!-- Begin Global Footer Component -->
+
+    <div class="col-xs-12">
+
+      <footer class="global-footer">
+
+        <div class="global-footer__search">
+          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
+          <div class="input-group">
+            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+              
+        <div class="global-footer__nav">
+          <ul class="global-footer__nav-list--mobile">
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
+          </ul>
+          <ul class="global-footer__nav-list">
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
+          </ul>
+        </div>
+
+        <div class="global-footer__copyright">
+          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
+
+          <div class="col-xs-6 global-footer__social-icons-text">
+            <p>Connect with us:</p>
+          </div>
+          <div class="col-xs-6 global-footer__social-icons">
+            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+          </div>
+          
+        </div>
+    
+      </footer>
+
+    </div>
+
+    <!-- End Global Footer Component -->
+<!-- \[include:components/footer-component.html] -->
 
 <!-- [include:library-footer.html] -->
+  </div> <!-- end of .container-fluid -->
+
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/modernizr/modernizr.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <script src="bower_components/jquery-pjax/jquery.pjax.js"></script>
+  <script src="bower_components/slick.js/slick/slick.min.js"></script>
+  <script src="bower_components/picturefill/dist/picturefill.js"></script>
+  <script src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
+  <script src="bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js"></script>
+  <script src="bower_components/get-style-property/get-style-property.js"></script>
+  <script src="bower_components/get-size/get-size.js"></script>
+  <script src="bower_components/matches-selector/matches-selector.js"></script>
+  <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+  <script src="bower_components/eventie/eventie.js"></script>
+  <script src="bower_components/doc-ready/doc-ready.js"></script>
+  <script src="bower_components/classie/classie.js"></script>
+  <script src="bower_components/unipointer/unipointer.js"></script>
+  <script src="bower_components/unidragger/unidragger.js"></script>
+  <script src="bower_components/fizzy-ui-utils/utils.js"></script>
+  <script src="bower_components/tap-listener/tap-listener.js"></script>
+  <script src="bower_components/flickity/dist/flickity.pkgd.js"></script>
+  <script src="bower_components/jQuery.dotdotdot/src/js/jquery.dotdotdot.min.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({app,.tmp}) scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <!-- endbuild -->
+  
+</body>
+</html>
+<!-- \[include:library-footer.html] -->

@@ -1,15 +1,198 @@
 <!doctype html>
 <!-- [include:library-header.html, {title: 'Search Results Layout', test_class: ''}] -->
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Search Results Layout</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- <link rel="stylesheet" href="bower_components/slick.js/slick/slick.css" />
+    <link rel="stylesheet" href="bower_components/slick.js/slick/slick-theme.css" /> -->
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/mediaelement/build/mediaelementplayer.css" />
+    <link rel="stylesheet" href="bower_components/flickity/css/flickity.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <!-- build:js scripts/vendor/modernizr.js -->
+    <script src="scripts/vendor/modernizr-dev.js"></script>
+    <!-- endbuild -->
+    <!-- <link rel="stylesheet" href="styles/component_pages.css"> -->
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+<!-- \[include:library-header.html, {title: 'Search Results Layout', test_class: ''}] -->
 
   <!-- [include:components/header-component.html] -->
+        <!-- Begin Global Header -->
+        
+        <header class="global-header">
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-4">
+              <div class="row">
+                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
+                  <i class="fa fa-bars"></i>
+                </div>
+                <div class="col-xs-8 col-sm-12 global-header__logo">
+                  <a class="global-header__logo-link" href="/">
+                  </a>
+                </div>
+                <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
+                  <i class="fa fa-search"></i>
+                </div>
+              </div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
+              <form class="global-header__search-form" role="search" action="add-url-here" method="get">
+                <label for="global-search__field" class="global-search__label">Search the collections</label>
+                <div class="input-group">
+                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+            
+            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
+              <ul class="global-header__nav-list">
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
+              </ul>
+            </div>
+            
+          </div>
+
+          <div class="global-header__bar">
+            <ul class="global-header__bar-list">
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Contributing Institutions</a>
+              </li>
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Collections</a>
+              </li>
+            </ul>
+          </div>
+
+        </header>
+
+        <!-- End Global Header -->
+        <!-- \[include:components/header-component.html] -->
 
   <h1>Collections / <strong>A Henry O. Nightingale Diaries Collection</strong></h1>
 
   <!-- [include:components/collection-intro-component.html] -->
+<!-- Begin Collection Intro Component -->
+
+<div class="collection-intro">
+
+  <div class="col-md-3">
+    <div class="collection-intro__institution">
+      <h2 class="collection-intro__institution-heading"> 
+        Owning Institution:
+        <a href="" class="collection-intro__institution-heading-link">
+          UC Merced, Library and Special Collections
+        </a>
+      </h2>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <div class="collection-intro__about">
+      <h3 class="collection-intro__about-heading">About this Collection</h3>
+      <span class="collection-intro__about-description"><span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus repellat ea aperiam dolorum corrupti doloribus fugiat sit error dignissimos consectetur vitae architecto iusto vel consequatur dicta explicabo quibusdam, repudiandae voluptatibus.</span>
+      <span>Quisquam amet asperiores libero cum illum dicta adipisci vitae ut perferendis odit eius consequatur expedita iste doloribus repudiandae dolores sapiente aliquid suscipit, iusto assumenda quasi consequuntur deleniti omnis mollitia. Animi.</span>
+      </span>
+      <a class="collection-intro__about-link" href="">View this collection on a contributor's website.</a>
+      <a class="collection-intro__about-link" href="">View finding aid.</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- End Collection Intro Component -->
+<!-- \[include:components/collection-intro-component.html] -->
 
   <div class="col-md-9 layout-col__1">
   
     <!-- [include:components/filter-component.html] -->
+    <!-- Begin Filter Component -->
+        
+        <div class="filter">
+
+          <span class="filter__note">Filters you've selected:</span>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Image<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Image Set<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">California and the Postwar Suburban Home<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Japanese American Internment<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">1960 - 1969<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">The Bracero Program<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Another Filter<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <a class="button__view filter__more-link js-filter__more-link" href="">View 6 More Selected Filters</a>
+
+          <span class="filter__more js-filter__more">
+            
+            <button type="button" class="btn btn-default btn-xs button__close">Text<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Video<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Life on the Home Front<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">1950 - 1959<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Richmond Shipyards<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Berkeley Public Library<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <a class="button__view filter__less-link js-filter__less-link" href="">View Less Selected Filters</a>
+
+          </span>
+
+          <button type="button" class="btn btn-default btn-xs button__clear filter__clear-all">Clear Filters
+          </button>
+
+        </div>
+
+        <!-- End Filter Component -->
+<!-- \[include:components/filter-component.html] -->
   
   </div>
 
@@ -29,12 +212,156 @@
       <div class="col-sm-6 col-md-12">
 
         <!-- [include:components/search-collection-component.html] -->
+          <!-- Begin Search Collection Field -->
+
+          <div class="search-collection">
+            <label for="search-collection__field" class="search-collection__label">Search within collection</label>
+            <div class="input-group">
+              <input id="search-collection__field" type="search" name="q" class="form-control search-collection__field">
+              <span class="input-group-btn">
+                <button class="btn btn-default search-collection__button" type="submit">Search
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <!-- End Search Collection Field -->
+<!-- \[include:components/search-collection-component.html] -->
 
       </div>
 
     </div>
 
     <!-- [include:components/collection-facets-component.html] -->
+  <div class="facets">
+
+    <button type="button" class="btn btn-default btn-block check__clear-filters">Clear Filters</button>
+    <!-- For selected state, above class becomes: check__clear-filters[dash][dash]selected -->
+
+    <div class="row">
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+                      
+      <!-- Begin Component -->
+      
+        <div class="check" id="check__type">
+
+          <div class="check__header js-a-check__header">
+            <p class="check__header-text js-a-check__header-text">Type of Item (7)</p>
+            <i class="check__header-arrow-icon js-a-check__header-arrow-icon fa fa-angle-down"></i>
+            <div class="check__header-links">
+              <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select All</a>
+              <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect All</a>
+            </div>
+          </div>
+
+          <div class="check__popdown js-a-check__popdown">
+
+            <div class="check__button-group">
+              <button type="button" disabled class="btn btn-default check__button js-a-check__button-deselect-all">Deselect All</button>
+              <button type="button" class="btn btn-default check__button js-a-check__button-select-all">Select All</button>
+            </div>
+            <div class="check__group">
+              <input id="check__input-1a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-1a">California and the Postwar Suburban Home (2)</label>
+              
+              <input id="check__input-2a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-2a">The Bracero Program (12)</label>
+              
+              <input id="check__input-3a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-3a">Japanese American Internment (1)</label>
+
+              <input id="check__input-4a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-4a">Another Filter (1)</label>
+
+              <input id="check__input-5a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-5a">Another Filter (1)</label>
+
+              <input id="check__input-6a" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-6a">Another Filter (1)</label>
+            </div>
+
+            <button class="check__update js-a-check__update">Update Results</button>
+
+          </div>
+
+        </div>
+
+        <!-- End Component -->
+
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+                          
+        <!-- Placeholder checkbox group (not fully functional - do not use in production) -->
+        
+        <div class="check" id="check__date">
+
+          <div class="check__header">
+            <p class="check__header-text">Decade (7)</p>
+            <i class="check__header-arrow-icon fa fa-angle-down"></i>
+            <div class="check__header-links">
+              <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select All</a>
+              <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect All</a>
+            </div>
+          </div>
+
+          <div class="check__popdown">
+
+            <div class="check__button-group">
+              <button type="button" disabled class="btn btn-default check__button js-a-check__button-deselect-all">Deselect All</button>
+              <button type="button" class="btn btn-default check__button js-a-check__button-select-all">Select All</button>
+            </div>
+            <div class="check__group">
+              <input id="check__input-1b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-1b">California and the Postwar Suburban Home (2)</label>
+              
+              <input id="check__input-2b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-2b">The Bracero Program (12)</label>
+              
+              <input id="check__input-3b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-3b">Japanese American Internment (1)</label>
+
+              <input id="check__input-4b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-4b">Another Filter (1)</label>
+
+              <input id="check__input-5b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-5b">Another Filter (1)</label>
+
+              <input id="check__input-6b" class="check__input" type="checkbox">
+              <label class="check__label" for="check__input-6b">Another Filter (1)</label>
+            </div>
+
+            <button class="check__update js-a-check__update">Update Results</button>
+
+        </div>
+
+      </div>
+
+      <!-- End Component --> 
+
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+        
+
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-md-12">
+        
+
+      </div>
+
+    </div> 
+
+  </div> <!-- facets -->
+
+
+<!-- \[include:components/collection-facets-component.html] -->
 
   </div>
 
@@ -45,23 +372,628 @@
     <div class="row object-view-row">
 
       <!-- [include:components/pagination-dropdown-component1.html] -->
+      <!-- Begin Dropdown Pagination Component 1 -->
+
+      <div class="pag-dropdown">
+
+        <label for="pag-dropdown__view" class="sr-only">View Per Page</label>
+
+        <select id="pag-dropdown__view" class="pag-dropdown__select" name="">
+          <option value="View 50" selected>View 50</option>
+          <option value="View 10">View 10</option>
+        </select>
+
+        <label for="pag-dropdown__sort" class="sr-only">Sort</label>
+
+        <select id="pag-dropdown__sort" class="pag-dropdown__select" name="">
+          <option value="Relevance" selected>Relevance</option>
+          <option value="A-Z">A-Z</option>
+          <option value="Z-A">Z-A</option>
+          <option value="Date - Oldest First">Oldest First</option>
+          <option value="Date - Newest First">Newest First</option>
+        </select>
+
+        <button class="btn btn-link pag-dropdown__arrow-icon">
+          <span class="fa fa-caret-left fa-lg"></span>
+        </button>
+        
+        <label for="pag-dropdown__select1" class="sr-only">Current Number</label>
+        
+        <select id="pag-dropdown__select1" class="pag-dropdown__select--unstyled" name="" id="">
+          <!-- Emmet formula: option[value=$]{$}*3 -->
+          <option value="1" selected>1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="26">26</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="29">29</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+          <option value="32">32</option>
+          <option value="33">33</option>
+          <option value="34">34</option>
+          <option value="35">35</option>
+          <option value="36">36</option>
+          <option value="37">37</option>
+          <option value="38">38</option>
+          <option value="39">39</option>
+          <option value="40">40</option>
+          <option value="41">41</option>
+          <option value="42">42</option>
+          <option value="43">43</option>
+          <option value="44">44</option>
+          <option value="45">45</option>
+          <option value="46">46</option>
+          <option value="47">47</option>
+          <option value="48">48</option>
+          <option value="49">49</option>
+          <option value="50">50</option>
+          <option value="51">51</option>
+          <option value="52">52</option>
+          <option value="53">53</option>
+          <option value="54">54</option>
+          <option value="55">55</option>
+          <option value="56">56</option>
+          <option value="57">57</option>
+          <option value="58">58</option>
+          <option value="59">59</option>
+          <option value="60">60</option>
+          <option value="61">61</option>
+          <option value="62">62</option>
+          <option value="63">63</option>
+          <option value="64">64</option>
+          <option value="65">65</option>
+          <option value="66">66</option>
+          <option value="67">67</option>
+          <option value="68">68</option>
+          <option value="69">69</option>
+          <option value="70">70</option>
+          <option value="71">71</option>
+          <option value="72">72</option>
+          <option value="73">73</option>
+          <option value="74">74</option>
+          <option value="75">75</option>
+          <option value="76">76</option>
+          <option value="77">77</option>
+          <option value="78">78</option>
+          <option value="79">79</option>
+          <option value="80">80</option>
+          <option value="81">81</option>
+          <option value="82">82</option>
+          <option value="83">83</option>
+          <option value="84">84</option>
+          <option value="85">85</option>
+          <option value="86">86</option>
+          <option value="87">87</option>
+          <option value="88">88</option>
+          <option value="89">89</option>
+          <option value="90">90</option>
+          <option value="91">91</option>
+          <option value="92">92</option>
+          <option value="93">93</option>
+          <option value="94">94</option>
+          <option value="95">95</option>
+          <option value="96">96</option>
+          <option value="97">97</option>
+          <option value="98">98</option>
+          <option value="99">99</option>
+          <option value="100">100</option>
+        </select>
+        
+        <span class="pag-dropdown__total-number">of 100</span>
+
+        <button class="btn btn-link pag-dropdown__arrow-icon">
+          <span class="fa fa-caret-right fa-lg"></span>
+        </button>
+
+      </div>
+
+    <!-- End Dropdown Pagination Component 1 -->
+<!-- \[include:components/pagination-dropdown-component1.html] -->
 
       <!-- [include:components/toggle-component.html] -->
+  <!-- Begin Toggle Component -->
+
+  <div class="thumblist-toggle">
+    <button class="btn btn-link thumblist-toggle__thumbnails--selected"><span class="fa fa-th-large"></span>Thumbnails</button>
+    <button class="btn btn-link thumblist-toggle__list"><span class="fa fa-th-list"></span>List</button>
+  </div>
+
+  <!-- End Toggle Component -->
+<!-- \[include:components/toggle-component.html] -->
 
     </div> <!-- .object-view-row -->
 
     <!-- [include:components/thumbnail-component.html] -->
+<!-- Begin thumbnail Component -->
+
+<div class="row thumbnail">
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+        <div class="thumbnail__overlay-icon fa-video-camera"></div>
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+        <div class="thumbnail__overlay-icon fa-volume-up"></div>
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <div class="thumbnail__tile-icon fa-bar-chart"></div>
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <div class="thumbnail__tile-icon fa-file-text-o"></div>
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <a class="thumbnail__link" href="#" data-toggle="tooltip" title="Title of this object">
+      <div class="thumbnail__container">
+        <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+      </div>
+      <div class="thumbnail__caption">Here is a colorful bird. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga eos pariatur perspiciatis et assumenda tenetur dignissimos ipsa recusandae quae adipisci! Dolorem, vitae consequatur nihil sed nemo accusamus amet, voluptas quaerat.
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<!-- End thumbnail Component -->
+<!-- \[include:components/thumbnail-component.html] -->
 
     <div class="row">
 
       <!-- [include:components/pagination-buttons-component.html] -->
+      <!-- Begin Button Pagination Component -->
+
+      <div class="pag-buttons">
+
+        <ul class="pag-buttons__list">
+          <li class="pag-buttons__list-item"><a class="btn btn-default button__prev" href=""><i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr></a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default pag-buttons__list-link--selected" href="">1</a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default" href="">2</a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default" href="">3</a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default" href="">4</a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default" href="">5</a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default" href="">6</a></li>
+          <li class="pag-buttons__list-item"> &#8230; </li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default" href="">10</a></li>
+          <li class="pag-buttons__list-item"><a class="btn btn-default button__next" href="">Next <i class="fa fa-caret-right fa-lg"></i></a></li>
+        </ul>
+
+      </div>
+
+      <!-- End Button Pagination Component -->
+<!-- \[include:components/pagination-buttons-component.html] -->
 
       <!-- [include:components/pagination-dropdown-component2.html] -->
+      <!-- Begin Dropdown Pagination Component 2 -->
+
+      <div class="pag-dropdown">
+
+        <button class="btn btn-link pag-dropdown__arrow-icon">
+          <span class="fa fa-caret-left fa-lg"></span>
+        </button>
+        
+        <label for="pag-dropdown__select2" class="sr-only">Current Number</label>
+        
+        <select id="pag-dropdown__select2" class="pag-dropdown__select" name="" id="">
+          <!-- Emmet formula: option[value=$]{$}*3 -->
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="26">26</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="29">29</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+          <option value="32">32</option>
+          <option value="33">33</option>
+          <option value="34">34</option>
+          <option value="35">35</option>
+          <option value="36">36</option>
+          <option value="37">37</option>
+          <option value="38">38</option>
+          <option value="39">39</option>
+          <option value="40">40</option>
+          <option value="41">41</option>
+          <option value="42">42</option>
+          <option value="43">43</option>
+          <option value="44">44</option>
+          <option value="45">45</option>
+          <option value="46">46</option>
+          <option value="47">47</option>
+          <option value="48">48</option>
+          <option value="49">49</option>
+          <option value="50">50</option>
+          <option value="51">51</option>
+          <option value="52">52</option>
+          <option value="53">53</option>
+          <option value="54">54</option>
+          <option value="55">55</option>
+          <option value="56">56</option>
+          <option value="57">57</option>
+          <option value="58">58</option>
+          <option value="59">59</option>
+          <option value="60">60</option>
+          <option value="61">61</option>
+          <option value="62">62</option>
+          <option value="63">63</option>
+          <option value="64">64</option>
+          <option value="65">65</option>
+          <option value="66">66</option>
+          <option value="67">67</option>
+          <option value="68">68</option>
+          <option value="69">69</option>
+          <option value="70">70</option>
+          <option value="71">71</option>
+          <option value="72">72</option>
+          <option value="73">73</option>
+          <option value="74">74</option>
+          <option value="75">75</option>
+          <option value="76">76</option>
+          <option value="77">77</option>
+          <option value="78">78</option>
+          <option value="79">79</option>
+          <option value="80">80</option>
+          <option value="81">81</option>
+          <option value="82">82</option>
+          <option value="83">83</option>
+          <option value="84">84</option>
+          <option value="85">85</option>
+          <option value="86">86</option>
+          <option value="87">87</option>
+          <option value="88">88</option>
+          <option value="89">89</option>
+          <option value="90">90</option>
+          <option value="91">91</option>
+          <option value="92">92</option>
+          <option value="93">93</option>
+          <option value="94">94</option>
+          <option value="95">95</option>
+          <option value="96">96</option>
+          <option value="97">97</option>
+          <option value="98">98</option>
+          <option value="99">99</option>
+          <option value="100">100</option>
+        </select>
+        
+        <span class="pag-dropdown__total-number">of 100</span>
+
+        <button class="btn btn-link pag-dropdown__arrow-icon">
+          <span class="fa fa-caret-right fa-lg"></span>
+        </button>
+
+      </div>
+
+    <!-- End Dropdown Pagination Component 2 -->
+<!-- \[include:components/pagination-dropdown-component2.html] -->
 
     </div>
 
   </div> <!-- col-md-9 layout-col__3 -->
   
     <!-- [include:components/footer-component.html] -->
+    <!-- Begin Global Footer Component -->
+
+    <div class="col-xs-12">
+
+      <footer class="global-footer">
+
+        <div class="global-footer__search">
+          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
+          <div class="input-group">
+            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+              
+        <div class="global-footer__nav">
+          <ul class="global-footer__nav-list--mobile">
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
+          </ul>
+          <ul class="global-footer__nav-list">
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
+          </ul>
+        </div>
+
+        <div class="global-footer__copyright">
+          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
+
+          <div class="col-xs-6 global-footer__social-icons-text">
+            <p>Connect with us:</p>
+          </div>
+          <div class="col-xs-6 global-footer__social-icons">
+            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+          </div>
+          
+        </div>
+    
+      </footer>
+
+    </div>
+
+    <!-- End Global Footer Component -->
+<!-- \[include:components/footer-component.html] -->
 
 <!-- [include:library-footer.html] -->
+  </div> <!-- end of .container-fluid -->
+
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/modernizr/modernizr.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <script src="bower_components/jquery-pjax/jquery.pjax.js"></script>
+  <script src="bower_components/slick.js/slick/slick.min.js"></script>
+  <script src="bower_components/picturefill/dist/picturefill.js"></script>
+  <script src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
+  <script src="bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js"></script>
+  <script src="bower_components/get-style-property/get-style-property.js"></script>
+  <script src="bower_components/get-size/get-size.js"></script>
+  <script src="bower_components/matches-selector/matches-selector.js"></script>
+  <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+  <script src="bower_components/eventie/eventie.js"></script>
+  <script src="bower_components/doc-ready/doc-ready.js"></script>
+  <script src="bower_components/classie/classie.js"></script>
+  <script src="bower_components/unipointer/unipointer.js"></script>
+  <script src="bower_components/unidragger/unidragger.js"></script>
+  <script src="bower_components/fizzy-ui-utils/utils.js"></script>
+  <script src="bower_components/tap-listener/tap-listener.js"></script>
+  <script src="bower_components/flickity/dist/flickity.pkgd.js"></script>
+  <script src="bower_components/jQuery.dotdotdot/src/js/jquery.dotdotdot.min.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({app,.tmp}) scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <!-- endbuild -->
+  
+</body>
+</html>
+<!-- \[include:library-footer.html] -->

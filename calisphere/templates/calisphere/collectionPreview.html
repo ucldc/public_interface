@@ -6,10 +6,10 @@
     <a href="{% url 'calisphere:collectionView' collection.collection_id %}" data-pjax="js-pageContent">
       <h3 class="collect-row__title">{{ collection.name }}</h3>
     </a>
-    {% if collection.description %}
+    {% if 'description' in collection %}
       <p>{{ collection.description|truncatewords:100 }}</p>
     {% endif %}
-    <p>{% if collection.institutions %}Institution: {% for institution in collection.institutions %}{{ institution }}{% endfor %}{% endif %}</p>
+    <p>{% if 'institutions' in collection %}Institution: {% for institution in collection.institutions %}{{ institution }}{% endfor %}{% endif %}</p>
   </div>
 
   <p class="collect-row__item-number"><strong>{{ collection.numFound|intcomma }} Item{{ collection.numFound|pluralize }}</strong></p>
@@ -19,8 +19,8 @@
   		<div class="col-sm-6">
 	  		{% for item in collection.display_items %}
           {% if forloop.counter <= 6 %}
-          <div class="collect-row__container{{ forloop.counter }}">          
-            {% if item.reference_image_md5 %}
+          <div class="collect-row__container{{ forloop.counter }}">
+            {% if 'reference_image_md5' in item %}
               <img class="thumbnail__image"
               src="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }}"
               srcset="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }} 60w, {{ thumbnailUrl }}crop/310x310/{{ item.reference_image_md5 }} 50w"
@@ -51,7 +51,7 @@
               {% endif %}
             {% endif %}
           </div>
-                    
+
 		    	{% if forloop.counter = 3 %}
 		    		</div>
 		    		<div class="col-sm-6">

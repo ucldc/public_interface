@@ -4,7 +4,7 @@
   <div class="row listview__container">
     <div class="col-xs-3">
       <a class="thumbnail__container js-item-link" href="{% url 'calisphere:itemView' item.id %}" data-item_id="{{ item.id }}" data-item_number="{{ start|add:forloop.counter0 }}">
-        {% if item.reference_image_md5 %}
+        {% if 'reference_image_md5' in item %}
           <img class="thumbnail__image"
           src="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }}"
           srcset="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }} 60w, {{ thumbnailUrl }}crop/310x310/{{ item.reference_image_md5 }} 50w"
@@ -41,38 +41,38 @@
         <dl class="meta-inline__list">
           <dt class="meta-inline__type">Title</dt>
           <dd class="meta-inline__defin">
-            <a class="listview__link js-item-link" href="{% url 'calisphere:itemView' item.id %}" 
+            <a class="listview__link js-item-link" href="{% url 'calisphere:itemView' item.id %}"
             data-item_id="{{ item.id }}" data-item_number="{{ start|add:forloop.counter0 }}">
               {{ item.title.0 }}
             </a>
           </dd>
-          
-          {% if item.creator %}
+
+          {% if 'creator' in item %}
           <dt class="meta-inline__type">Creator/Contributor</dt>
           <dd class="meta-inline__defin">{{ item.creator.0 }}</dd>
           {% endif %}
 
-          {% if item.date %}
+          {% if 'date' in item %}
           <dt class="meta-inline__type">Date Created and/or Issued</dt>
           <dd class="meta-inline__defin">{{ item.date.0 }}</dd>
           {% endif %}
 
-          {% if item.description %}
+          {% if 'description' in item %}
           <dt class="meta-inline__type">Description</dt>
           <dd class="meta-inline__defin">{{ item.description.0 }}</dd>
           {% endif %}
 
-          {% if item.subject %}
+          {% if 'subject' in item %}
           <dt class="meta-inline__type">Subject</dt>
           <dd class="meta-inline__defin">{{ item.subject.0 }}</dd>
           {% endif %}
-          
-          {% if item.repository_name %}
+
+          {% if 'repository_name' in item %}
           <dt class="meta-inline__type">Contributing Institution</dt>
-          <dd class="meta-inline__defin">{% if item.campus_name %}{{ item.campus_name.0 }}, {% endif %}{{ item.repository_name.0 }}</dd>
+          <dd class="meta-inline__defin">{% if 'campus_name' in item %}{{ item.campus_name.0 }}, {% endif %}{{ item.repository_name.0 }}</dd>
           {% endif %}
 
-          {% if item.collection_name %}
+          {% if 'collection_name' in item %}
           <dt class="meta-inline__type">Collection</dt>
           <dd class="meta-inline__defin">{{ item.collection_name.0 }}</dd>
           {% endif %}

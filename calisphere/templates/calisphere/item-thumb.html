@@ -3,8 +3,8 @@
   {% for item in search_results %}
   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
     <a class="thumbnail__link js-item-link" href="{% url 'calisphere:itemView' item.id %}" data-item_id="{{ item.id }}" data-item_number="{{ start|add:forloop.counter0 }}">
-      <div class="thumbnail__container" data-toggle="tooltip" 
-      title="{{ item.title.0|truncatewords:20 }} {% if item.date %}({{ item.date.0 }}){% endif %}">
+      <div class="thumbnail__container" data-toggle="tooltip"
+      title="{{ item.title.0|truncatewords:20 }} {% if 'date' in item %}({{ item.date.0 }}){% endif %}">
         {% if item.reference_image_md5 %}
           <img class="thumbnail__image"
           src="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }}"
@@ -35,7 +35,7 @@
           <div class="thumbnail__tile-icon fa-picture-o"></div>
           {% endif %}
         {% endif %}
-        
+
         </div>
         <div class="thumbnail__caption">{{ item.title.0|truncatewords:12 }}
         </div>

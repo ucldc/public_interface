@@ -1,6 +1,6 @@
-<div class="obj-container__simple-{% if item.reference_image_md5 %}image{% else %}tile{% endif %}">
+<div class="obj-container__simple-{% if 'reference_image_md5' in item %}image{% else %}tile{% endif %}">
 
-  <a class="obj__link" 
+  <a class="obj__link"
     {% if item.harvest_type == "hosted" and item.type_ss.0|lower == "text" %}
       href="javascript: void(0)" data-toggle="modal" data-target="#downloadModal"
     {% elif item.harvest_type == "harvested" %}
@@ -50,10 +50,10 @@
         {% elif item.type_ss.0|lower == "image" %}
           View source image
         {% endif %}
-         on 
+         on
         {% if item.oac == True %}
           the Online Archive of California.
-        {% elif item.harvest_type == 'harvested' %} 
+        {% elif item.harvest_type == 'harvested' %}
           contributor's website.
         {% endif %}
       {% endif %}

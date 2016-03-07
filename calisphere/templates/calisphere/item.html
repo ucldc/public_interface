@@ -14,7 +14,7 @@
    > {{ item.title.0 }}
 </p>
 
-<h1 class="obj__heading">{{ item.type.0|title }}{% if item.structMap %} set{% else %}{% endif %} / <strong>{{ item.title.0|truncatewords:12 }}</strong></h1>
+<h1 class="obj__heading">{{ item.type.0|title }}{% if 'structMap' in item %} set{% else %}{% endif %} / <strong>{{ item.title.0|truncatewords:12 }}</strong></h1>
 
 <div id="js-objectViewport">
 {% if item.harvest_type == 'hosted' and item.structMap %}
@@ -40,7 +40,7 @@
       {% endif %}
     </a>
   {% elif item.harvest_type == 'hosted' %}
-    {% if item.structMap and item.selected == True %}
+    {% if 'structMap' in item and 'select' in item and item.selected == True %}
       Set Information.
     {% elif item.structMap %}
       Page Information. <a href="{% url 'calisphere:itemView' item.id %}" data-pjax="js-pageContent">Go to set information.</a>
@@ -50,7 +50,7 @@
   {% endif %}
 </h3>
 
-{% if item.selected == False %}
+{% if 'selected' in item and item.selected == False %}
   {% include "calisphere/component-metadata.html" %}
 {% else %}
   {% include "calisphere/item-metadata.html" %}

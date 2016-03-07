@@ -95,7 +95,7 @@ def getCollectionData(collection_data=None, collection_id=None):
         collection['id'] = collection_id
 
         collection_details = json_loads_url("{0}?format=json".format(collection['url']))
-        collection['name'] = solr_collections.names[collection['url']] or collection_details['name']
+        collection['name'] = solr_collections.names.get(collection['url']) or collection_details['name']
         collection['local_id'] = collection_details['local_id']
         collection['slug'] = collection_details['slug']
     return collection

@@ -1,0 +1,72 @@
+{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title='About' %}
+{% endblock %}
+
+{% block content %}
+
+<h1>Job Opportunities</h1>
+
+<!-- Begin Static About Component -->
+
+<div class="static">
+
+  <div class="col-sm-8 static__main">
+
+		<p>We are currently hiring for the following positions.</p>
+		<h2>Social Media Strategy Internship / Professional Project</h2>
+		<p>The California Digital Library is seeking an energetic, media-savvy individual to help us develop a social media strategy for Calisphere, a large online collection of historical materials from California’s great libraries, archives, and museums. This short-term, paid project offers the unique opportunity to leave your mark on a high-profile, statewide public initiative.</p>
+		<p>Calisphere (https://calisphere.org) is a website with over 440,000 historical documents and artifacts—such as photographs, letters, diaries, videos, and sound recordings—that have been made freely available by more than 130 institutions throughout California. In September 2015, we released the first new version of the site in almost a decade. Now we are ready to reconnect and reengage with our audiences through social media marketing.</p>
+		<p>For this project, you will mount one or more small social media campaigns through Facebook, Twitter, Instagram, and/or Pinterest and, based on testing and analysis, develop an ongoing social media strategy for Calisphere. You will be given a small budget with which to experiment with paid advertising and/or promoted content, and you will have the full Calisphere database at your disposal for generating creative visuals and copy. The successful candidate will be a good writer with a knack for getting likes and clicks. But you’re also analytical; you can test different approaches and interpret data to make strategic decisions. This is a meaty project that’s not just about churning out posts on a predetermined script. It’s about developing a plan for leveraging social media channels to engage and better serve our user base. This project will be an impressive addition to your portfolio and will have a real impact on our organization.</p>
+		<p>You will work with staff at the California Digital Library, which is a unit in the University of California’s systemwide headquarters, located in the exciting Uptown neighborhood of Oakland, California. Remote applicants will also be considered and are encouraged to apply.</p>
+		
+		<h3>Duties</h3>
+		<ul>
+		<li>In consultation with the project supervisor, create an initial social media strategy and campaign approach: define audiences and goals, select and set up the media channel(s) (as needed), develop audience impact metrics, determine approaches to be tested, and create a series of social media messages.</li>
+		<li>Experiment with different approaches to engage users, build followers, and/or drive traffic. Drawing on Calisphere’s historical materials, research, develop and produce impactful and shareable social media content. Deploy key analytic tools to measure effectiveness of approaches and adjust course as needed. Develop a social media voice for Calisphere.</li>
+		<li>Conduct research into best practices, tools, and techniques for social media marketing, as well as light research into historical eras and topics; apply these as applicable during the campaign.</li>
+		<li>Based on the above, create a holistic social media strategy for Calisphere that includes goals, target audiences, metrics, campaign approaches, calendar, content templates, and tools and technologies to be implemented.</li>
+		</ul>
+		
+		<h3>Skills and Experience</h3>
+		<ul>
+		<li>Bachelor's degree in Communications, English, Journalism, Marketing, or similar field. Advanced undergraduates with significant relevant experience may also be considered.</li>
+		<li>Experience writing for social media channels with a strong understanding of each outlet and their audiences and best practices.</li>
+		<li>Exceptional copywriting and content-creation skills, with the ability to adapt style, tone, and voice to varied content types and audiences, while staying on-brand.</li>
+		<li>Excellent communicator and creative thinker, with an ability to use both data and intuition to inform decisions. A strong grasp of how digital communication can effectively convey and advance messages to various audiences.</li>
+		<li>Fluency in handling and/or creating visual/multimedia content.</li>
+		<li>Interest in California/American history.</li>
+		<li>Knowledge of the essentials of social media strategy and execution (preferred).</li>
+		<li>Familiarity with using social media analytic tools to measure, adapt and optimize strategies and platforms accordingly (preferred).</li>
+		<li>Familiarity with executing paid promotional campaigns for social content (preferred).</li>
+		</ul>
+		
+		<h3>Logistics</h3>
+		<p>This is a paid internship or professional project that is estimated to require about 10-15 hours per week for 2-3 months.</p>
+		
+		<h3>How to Apply</h3>
+		<p>Please send the following to calisphere@ucop.edu by April 15, 2016:</p>
+		<ul>
+		<li>Resume</li>
+		<li>Cover letter</li>
+		<li>Copies of or links to 2-3 written samples of social media content (e.g. blog posts, social media campaign, etc).</li>
+		<li>At least one idea for how you would use social media to engage people with the resources available on Calisphere.</li>
+		</ul>
+
+  </div>
+
+  <div class="col-sm-4 static__sidebar">
+
+  	<h2 class="static__sidebar-heading">Looking for more jobs in digital libraries?</h2>
+
+  	<p>Calisphere is managed by the California Digital Library (CDL) at the University of California Office of the President (UCOP). Other employment and internship opportunities at our organization are listed on the <a href="http://www.cdlib.org/about/jobs.html">CDL website</a> and on the <a href="https://jobs.ucop.edu/">UCOP employment website.</a></p>
+
+
+  </div>
+
+</div>
+
+<!-- End Static About Component -->
+{{ q }}
+{% endblock %}

@@ -12,7 +12,11 @@ from cache_retry import SOLR_select_nocache
 app = apps.get_app_config('calisphere')
 
 
-class StaticSitemap(Sitemap):
+class HttpsSitemap(Sitemap):
+    protocol = 'https'
+
+
+class StaticSitemap(HttpsSitemap):
 
 
     def items(self):
@@ -31,7 +35,7 @@ class StaticSitemap(Sitemap):
         return reverse(item)
 
 
-class InstitutionSitemap(Sitemap):
+class InstitutionSitemap(HttpsSitemap):
 
     def items(self):
         return app.registry.repository_data.keys()
@@ -43,7 +47,7 @@ class InstitutionSitemap(Sitemap):
         )
 
 
-class CollectionSitemap(Sitemap):
+class CollectionSitemap(HttpsSitemap):
 
 
     def items(self):

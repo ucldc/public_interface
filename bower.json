@@ -25,7 +25,9 @@
     "unipointer": "~2.1.0",
     "get-size": "~2.0.2",
     "tap-listener": "~2.0.0",
-    "unidragger": "~2.1.0"
+    "unidragger": "~2.1.0",
+    "chai": "~1.8.0",
+    "mocha": "~1.14.0"
   },
   "resolutions": {
     "slick.js": "~1.5.5",

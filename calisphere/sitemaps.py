@@ -1,4 +1,5 @@
 import re
+import time
 
 from django.contrib.sitemaps import Sitemap
 from django.apps import apps
@@ -115,7 +116,10 @@ class ItemSitemap(object):
 
             nextCursorMark = solr_page.nextCursorMark
 
-    def get_solr_page(self, params, cursor='*'):
+    def get_solr_page(self, params, cursor='*', sleepiness=1):
         params.update({'cursorMark': cursor})
+        t1 = time.time()
         solr_search = SOLR_select_nocache(**params)
+        nap = (time.time() - t1) * sleepiness
+        time.sleep(nap)
         return solr_search

@@ -17,7 +17,6 @@ import copy
 import simplejson as json
 import string
 import urlparse
-import solr
 
 # concat query with 'AND'
 def concat_query(q, rq):

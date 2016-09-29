@@ -20,7 +20,6 @@ if [[ ! -e $name ]]  # have we seen this one before
     aws s3 cp $UCLDC_EXHIBITIONS_DATA .
     gunzip $filename
     python manage.py loaddata $name
-    python manage.py loaddata fixtures/sites.json
 fi
 
 # Copyright (c) 2016, Regents of the University of California

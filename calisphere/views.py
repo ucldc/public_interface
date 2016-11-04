@@ -371,6 +371,13 @@ def getHostedContentFile(structmap):
             'format': 'video',
             'url': access_url
         }
+    if structmap['format'] == 'audio':
+        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
+        contentFile = {
+            'id': structmap['id'],
+            'format': 'audio',
+            'url': access_url
+        }
 
     return contentFile
 

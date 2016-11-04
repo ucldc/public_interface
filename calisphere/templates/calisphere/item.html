@@ -23,6 +23,8 @@
   {% include 'calisphere/objectViewer/hosted-simple-image.html' %}
 {% elif item.harvest_type == 'hosted' and item.contentFile.format == 'video' %}
   {% include 'calisphere/objectViewer/hosted-simple-video.html' %}
+{% elif item.harvest_type == 'hosted' and item.contentFile.format == 'audio' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
 {% else %}
   {% include 'calisphere/objectViewer/object-tiles-and-overlays.html' %}
 {% endif %}

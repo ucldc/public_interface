@@ -1,0 +1,9 @@
+{% load staticfiles %}
+
+  <div class="obj-container__audio">
+
+    <audio controls="controls" class="mejs-player" preload="none">
+      <source src="{{ item.contentFile.url }}" type="audio/mpeg">
+    </audio>
+
+  </div>

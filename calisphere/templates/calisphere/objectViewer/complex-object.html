@@ -9,7 +9,7 @@
 <div class="carousel-complex">
   <!--TODO: if  item.selected is True apply 'selected' styles -->
   <div class="carousel-complex__fixed-item">
-    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if 'selected' in item %}carousel-complex__fixed-link--selected
+    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if item.selected %}carousel-complex__fixed-link--selected
       {% else %}carousel-complex__fixed-link{% endif %} js-set-link">
       <div class="carousel-complex__fixed-content">
       cover page
@@ -25,8 +25,8 @@
           <div class="carousel-complex__thumbnail-container">
           {% if component.format|lower == "moving image" %}
             <div class="carousel-complex__tile-icon fa-play-circle-o"></div>
-          {% elif component.format|lower == "sound"%}
-            <div class="carousel-complex__tile-icon fa-volume-up"></div>
+          {% elif component.format|lower == "sound" or component.format|lower == "audio" %}
+            <div class="carousel-complex__tile-icon fa-volume-up"/carousel-complex__tile-icon></div>
           {% elif component.format|lower == "text" or component.format|lower == "file" %}
             <div class="carousel-complex__tile-icon fa-file-text-o"></div>
           {% endif %}

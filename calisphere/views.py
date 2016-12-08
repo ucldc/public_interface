@@ -427,6 +427,14 @@ def itemView(request, item_id=''):
                         component = structmap_data['structMap'][0]
                         item['contentFile'] = getHostedContentFile(component)
                 item['structMap'] = structmap_data['structMap']
+
+                # single or multi-format object
+                formats = [component['format'] for component in structmap_data['structMap'] if 'format' in component]
+                if len(set(formats)) > 1:
+                    item['multiFormat'] = True
+                else:
+                    item['multiFormat'] = False
+
             else:
                 # simple object
                 if 'format' in structmap_data:

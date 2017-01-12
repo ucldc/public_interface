@@ -25,7 +25,7 @@ fi
 set -u
 
 DIR=ucldc-django-beanstalk
-BUCKET=xtf.dsc.cdlib.org
+BUCKET=ucldc-private-files
 REGION=us-west-2
 APPNAME=ucldc-django-west
 

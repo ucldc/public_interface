@@ -88,6 +88,17 @@ $(document).ready(function() {
       });
       return false;
     });
+
+    $('.button__contact-owner').on('click', function() {
+      ga('send', 'event', 'buttons', 'contact', event.target.href, {
+        'transport': 'beacon',  // use navigator.sendBeacon
+        // click captured and tracked, send the user along
+        'hitCallback': function () {
+          document.location = event.target.href;
+        }
+      });
+      return false;
+    });
   }
   sessionStorageWarning();
 

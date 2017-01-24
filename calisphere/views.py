@@ -406,6 +406,7 @@ def itemView(request, item_id=''):
                     # fetch component object
                     item['selected'] = False
                     order = int(request.GET['order'])
+                    item['selectedComponentIndex'] = order
                     component = structmap_data['structMap'][order]
                     component['selected'] = True
                     if 'format' in component:
@@ -435,6 +436,8 @@ def itemView(request, item_id=''):
                 else:
                     item['multiFormat'] = False
 
+                # number of components
+                item['componentCount'] = len(structmap_data['structMap'])
             else:
                 # simple object
                 if 'format' in structmap_data:

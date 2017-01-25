@@ -6,4 +6,8 @@
       <source src="{{ item.contentFile.url }}" type="audio/mpeg">
     </audio>
 
+    
+    {% if item.harvest_type == 'hosted' and 'structMap' in item %}
+      <div class="text__audio-component-title">{{ item.selectedComponent.label }}</div>
+    {% endif %}
   </div>

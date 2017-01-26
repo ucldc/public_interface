@@ -131,3 +131,11 @@ $carousel-item-size: 80px;
 .carousel-complex img { // Slick carousel reset
   height: $carousel-item-size;
 }
+
+.carousel-complex__thumbnail-caption {
+  height: 2em; // reveal only 2 lines of text
+  margin-top: 0.5em;
+  color: #000;
+  overflow: hidden;
+  line-height: 1;
+}

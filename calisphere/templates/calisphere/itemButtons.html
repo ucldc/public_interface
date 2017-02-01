@@ -136,9 +136,8 @@ Permalink: {{ permalink }}</textarea>
         <h4 class="modal-title" id="downloadModalTitle">Download Item</h4>
       </div>
       <div class="modal-body">
-        <p>Hold on a sec! Before you download, consider:</p>
-        <p><strong>Do you have the rights to use it?</strong> Check the rights information for this item to see if it has copyright restrictions. Even if the item is protected by copyright, you may be able to use it for educational, research, or other purposes. To learn more, read Calisphere's <a href="{% url 'calisphere:termsOfUse' %}">terms of use.</a></p>
-        <p><strong>Is this the version you want?</strong> {% if item.contentFile.format == 'image' %}This file is {{ item.contentFile.size.width }} x {{ item.contentFile.size.height }} px. {% endif %}To obtain an alternate file type or higher resolution copy, please
+        <p><strong>Please use this item responsibly.</strong> Check the rights information for this item to see if it has copyright restrictions. Note that even if the item is protected by copyright, you may be able to use it for educational, research, or other purposes. To learn more, read Calisphere's <a href="{% url 'calisphere:termsOfUse' %}">terms of use.</a></p>
+        <p><strong>Do you need a bigger file?</strong> {% if item.contentFile.format == 'image' %}The file available on this site is {{ item.contentFile.size.width }} x {{ item.contentFile.size.height }} px. {% endif %}To obtain an alternate file type or higher resolution copy, please
           <!-- add contactFlag conditional here -->
           <a href="{% url 'calisphere:repositoryView' item.parsed_repository_data.0.id 'collections' %}"
           >contact the owning institution.</a>

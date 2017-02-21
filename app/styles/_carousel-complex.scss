@@ -110,7 +110,7 @@ $carousel-item-size: 80px;
 .carousel-complex__tile {
   @extend .carousel-complex__item;
   width: $carousel-item-size;
-  height: $carousel-item-size;
+  //height: $carousel-item-size; // specifying height as equal to item height causes captions not to be visible
 }
 
 .carousel-complex__tile--selected {
@@ -133,6 +133,7 @@ $carousel-item-size: 80px;
 }
 
 .carousel-complex__thumbnail-caption {
+  width: $carousel-item-size;
   height: 2em; // reveal only 2 lines of text
   margin-top: 0.5em;
   color: #000;

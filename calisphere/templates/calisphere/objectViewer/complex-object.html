@@ -64,7 +64,9 @@
           class="carousel-complex__item-img{% if 'selected' in component %}--selected{% else %}carousel-complex__img--no-image{% endif %}"> -->
         {% endif %}
       </a>
-      <div class="carousel-complex__thumbnail-caption">{{ component.label }}</div>
+      {% if component.format|lower != "image" %}
+        <div class="carousel-complex__thumbnail-caption">{{ component.label }}</div>
+      {% endif %}
     </div>
   {% endfor %}
   </div>

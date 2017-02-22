@@ -18,7 +18,7 @@ $carousel-item-size: 80px;
   padding-bottom: 10px;
 }
 
-// ***** Fixed Parent-level Thumbnail ***** //
+// ***** Fixed Parent-level Item ***** //
 
 .carousel-complex__fixed-item {
   float: left;
@@ -33,31 +33,32 @@ $carousel-item-size: 80px;
 
 .carousel-complex__fixed-link {
   display: block;
-  position: relative;
-  background-color: #fff;
-  border: 1px solid $design-primary-color;
-
-  &:before {
-    display: block;
-    padding-bottom: 100%;
-    content: "";
-  }
-
 }
 
-.carousel-complex__fixed-link--selected {
-  @extend .carousel-complex__fixed-link;
+
+// ***** Fixed Parent-level Thumbnail Image ***** //
+.carousel-complex__fixed-thumb {
+  border: 1px solid $design-primary-color;
+}
+
+
+.carousel-complex__fixed-thumb--selected {
   border: 5px solid $design-primary-color;
 }
 
-.carousel-complex__fixed-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  font-size: 1.3em;
-  line-height: 1;
+// ***** Fixed Parent-level Icon ***** //
+.carousel-complex__fixed-tile-icon-container {
+  @extend .thumbnail__container;
+  border: 1px solid $design-primary-color;  
+}
+
+.carousel-complex__fixed-tile-icon-container--selected {
+  @extend .thumbnail__container;
+  border: 5px solid $design-primary-color;
+}
+
+.carousel-complex__fixed-tile-icon {
+  @include thumbnail__tile-icon(40px, 40px, 40px, 40px); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)
 }
 
 // ***** Complex Carousel Thumbnails ***** //

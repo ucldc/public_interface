@@ -19,16 +19,18 @@
       Viewing item {{ item.selectedComponentIndex|add:"1" }} of {{ item.componentCount }} in set. <a class="js-set-link" href="{% url 'calisphere:itemView' item.id %}">Go to top of set</a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Go to last item in set</a>
     {% endif %}
   </div>
+
   <div class="carousel-complex__fixed-item">
-    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if item.selected %}carousel-complex__fixed-link--selected
-      {% else %}carousel-complex__fixed-link{% endif %} js-set-link">
-      <div class="carousel-complex__fixed-content">
-         {% if 'reference_image_md5' in item %}
-            <img alt="Top of set" src="{{ thumbnailUrl }}/crop/100x100/{{ item.reference_image_md5 }}" />
-         {% else %}
-            <div class="carousel-complex__tile-icon fa-home"></div> 
-         {% endif %}
-      </div>
+    <a href="{% url 'calisphere:itemView' item.id %}" class="carousel-complex__fixed-link js-set-link">
+      {% if 'reference_image_md5' in item %}
+        <img class="{% if item.selected %}carousel-complex__fixed-thumb--selected
+        {% else %}carousel-complex__fixed-thumb{% endif %}" alt="Home" src="{{ thumbnailUrl }}/crop/100x100/{{ item.reference_image_md5 }}" />
+      {% else %}
+        <div class="{% if item.selected %}carousel-complex__fixed-tile-icon-container--selected
+        {% else %}carousel-complex__fixed-tile-icon-container{% endif %}">
+          <div class="carousel-complex__fixed-tile-icon fa-home"></div>
+        </div>
+      {% endif %}
     </a>
   </div>
 

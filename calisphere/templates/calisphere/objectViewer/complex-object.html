@@ -24,7 +24,7 @@
     <a href="{% url 'calisphere:itemView' item.id %}" class="carousel-complex__fixed-link js-set-link">
       {% if 'reference_image_md5' in item %}
         <img class="{% if item.selected %}carousel-complex__fixed-thumb--selected
-        {% else %}carousel-complex__fixed-thumb{% endif %}" alt="Home" src="{{ thumbnailUrl }}/crop/100x100/{{ item.reference_image_md5 }}" />
+        {% else %}carousel-complex__fixed-thumb{% endif %}" alt="Home" src="{{ thumbnailUrl }}crop/100x100/{{ item.reference_image_md5 }}" />
       {% else %}
         <div class="{% if item.selected %}carousel-complex__fixed-tile-icon-container--selected
         {% else %}carousel-complex__fixed-tile-icon-container{% endif %}">

@@ -150,7 +150,7 @@ Permalink: {{ permalink }}</textarea>
             <!-- <a type="button" class="btn btn-primary" href="{{ thumbnailUrl }}full/full/{{ item.reference_image_md5 }}" target="_blank">Download</a> -->
           {# {% endif %} #}
           <a type="button" class="btn btn-primary" href="{{ item.contentFile.url }}" download="{{ item.title.0 }}.jpg" target="_blank">Download</a>
-        {% elif item.contentFile.format == 'file' %}
+        {% elif item.contentFile.format == 'file' or item.contentFile.format == 'audio' or item.contentFile.format == 'video'%}
           <a type="button" class="btn btn-primary" href="{{ ucldcMedia }}{{ item.contentFile.id }}" target="_blank">Download</a>
         {% else %}
           <a type="button" class="btn btn-primary" href="">Download</a>
@@ -191,7 +191,7 @@ Permalink: {{ permalink }}</textarea>
       <a class="btn btn-xs obj-buttons__download-image" href="javascript: void(0)" data-toggle="modal" data-target="#downloadModal">
         <span class="icon__download-image">
           <span class="fa fa-arrow-circle-o-down"></span>
-        </span> Download {% if 'structMap' in item %}page{% else %}{{ item.type.0 }}{% endif %}
+        </span> Download {% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}
       </a>
       {% endif %}
     {% endif %}

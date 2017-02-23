@@ -14,7 +14,7 @@
    > {{ item.title.0 }}
 </p>
 
-<h1 class="obj__heading">{{ item.type.0|title }}{% if 'structMap' in item %} set{% else %}{% endif %} / <strong>{{ item.title.0|truncatewords:12 }}</strong></h1>
+<h1 class="obj__heading">{% if item.multiFormat %}Multi-format{% else %}{{ item.type.0|title }}{% endif %}{% if 'structMap' in item %} set{% else %}{% endif %} / <strong>{{ item.title.0|truncatewords:12 }}</strong></h1>
 
 <div id="js-objectViewport">
 {% if item.harvest_type == 'hosted' and 'structMap' in item %}

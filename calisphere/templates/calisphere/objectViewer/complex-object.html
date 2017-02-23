@@ -2,18 +2,35 @@
 
 {% if item.contentFile.format|lower == 'image' %}
   {% include 'calisphere/objectViewer/hosted-simple-image.html' %}
+{% elif item.contentFile.format|lower == 'audio' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
+{% elif item.contentFile.format|lower == 'video' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
 {% else %}
   {% include 'calisphere/objectViewer/object-tiles-and-overlays.html' %}
 {% endif %}
 
 <div class="carousel-complex">
   <!--TODO: if  item.selected is True apply 'selected' styles -->
+  <div class="carousel-complex__navigation-text">
+    {% if item.selected %}
+      Viewing top of set. <a class="js-component-link" data-item_id="0" href="{% url 'calisphere:itemView' item.id %}">Go to first item in set</a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Go to last item in set</a>
+    {% else %}
+      Viewing item {{ item.selectedComponentIndex|add:"1" }} of {{ item.componentCount }} in set. <a class="js-set-link" href="{% url 'calisphere:itemView' item.id %}">Go to top of set</a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Go to last item in set</a>
+    {% endif %}
+  </div>
+
   <div class="carousel-complex__fixed-item">
-    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if 'selected' in item %}carousel-complex__fixed-link--selected
-      {% else %}carousel-complex__fixed-link{% endif %} js-set-link">
-      <div class="carousel-complex__fixed-content">
-      cover page
-      </div>
+    <a href="{% url 'calisphere:itemView' item.id %}" class="carousel-complex__fixed-link js-set-link">
+      {% if 'reference_image_md5' in item %}
+        <img class="{% if item.selected %}carousel-complex__fixed-thumb--selected
+        {% else %}carousel-complex__fixed-thumb{% endif %}" alt="Home" src="{{ thumbnailUrl }}/crop/100x100/{{ item.reference_image_md5 }}" />
+      {% else %}
+        <div class="{% if item.selected %}carousel-complex__fixed-tile-icon-container--selected
+        {% else %}carousel-complex__fixed-tile-icon-container{% endif %}">
+          <div class="carousel-complex__fixed-tile-icon fa-home"></div>
+        </div>
+      {% endif %}
     </a>
   </div>
 
@@ -25,7 +42,7 @@
           <div class="carousel-complex__thumbnail-container">
           {% if component.format|lower == "moving image" %}
             <div class="carousel-complex__tile-icon fa-play-circle-o"></div>
-          {% elif component.format|lower == "sound"%}
+          {% elif component.format|lower == "sound" or component.format|lower == "audio" %}
             <div class="carousel-complex__tile-icon fa-volume-up"></div>
           {% elif component.format|lower == "text" or component.format|lower == "file" %}
             <div class="carousel-complex__tile-icon fa-file-text-o"></div>
@@ -47,8 +64,10 @@
           class="carousel-complex__item-img{% if 'selected' in component %}--selected{% else %}carousel-complex__img--no-image{% endif %}"> -->
         {% endif %}
       </a>
+      {% if component.format|lower != "image" %}
+        <div class="carousel-complex__thumbnail-caption">{{ component.label }}</div>
+      {% endif %}
     </div>
   {% endfor %}
   </div>
-
 </div>

@@ -438,6 +438,12 @@ def itemView(request, item_id=''):
 
                 # number of components
                 item['componentCount'] = len(structmap_data['structMap'])
+
+                # has fixed item thumbnail image
+                if 'reference_image_md5' in item:
+                    item['has_fixed_thumb'] = True
+                else:
+                    item['has_fixed_thumb'] = False
             else:
                 # simple object
                 if 'format' in structmap_data:

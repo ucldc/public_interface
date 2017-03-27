@@ -674,6 +674,8 @@ var ComplexCarousel = Backbone.View.extend({
     $('.carousel-complex__item-container').slick(this.carouselConfig);
     if ($('.carousel-complex__item--selected').length > 0) {
       $('.carousel-complex__item-container').slick('slickGoTo', $('.carousel-complex__item--selected').data('slick-index'));
+    } else if ($('.carousel-complex__tile--selected').length > 0) {
+      $('.carousel-complex__item-container').slick('slickGoTo', $('.carousel-complex__tile--selected').data('slick-index'));
     }
   },
 

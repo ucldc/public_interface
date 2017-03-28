@@ -86,7 +86,7 @@ class ItemSitemap(object):
         # https://github.com/ucldc/extent_stats/blob/master/calisphere_arks.py
         base_query = {
             'q': '',
-            'fl': 'id,reference_image_md5',  # fl = field list
+            'fl': 'id,reference_image_md5,timestamp',  # fl = field list
             'rows': 1000,
             'sort': 'score desc,id desc',
         }
@@ -112,7 +112,7 @@ class ItemSitemap(object):
             if len(solr_page.results) == 0:
                 break
             for item in solr_page.results:
-                yield {'id': item.get('id'), 'reference_image_md5': item.get('reference_image_md5')}
+                yield {'id': item.get('id'), 'reference_image_md5': item.get('reference_image_md5'), 'timestamp': item.get('timestamp')}
 
             nextCursorMark = solr_page.nextCursorMark
 

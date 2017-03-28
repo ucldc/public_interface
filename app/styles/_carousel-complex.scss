@@ -125,13 +125,15 @@ $carousel-item-size: 80px;
 }
 
 .carousel-complex__thumbnail-container {
-  @extend .thumbnail__container;
+  @extend .thumbnail__container-complex;
   border: 1px solid $design-dark-gray-color;
+  background-color: #fff;
 }
 
 .carousel-complex__thumbnail-container--selected {
-  @extend .thumbnail__container;
+  @extend .thumbnail__container-complex;
   border: 5px solid $design-primary-color;
+  background-color: #fff;
 }
 
 .carousel-complex__tile {
@@ -145,14 +147,15 @@ $carousel-item-size: 80px;
   opacity: 1;
 
   .carousel-complex__thumbnail-container {
-    @extend .thumbnail__container;
+    @extend .thumbnail__container-complex;
     border: 5px solid $design-primary-color;
+    background-color: #fff;
   }
 
 }
 
 .carousel-complex__tile-icon {
-  @include thumbnail__tile-icon(40px, 40px, 40px, 40px); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)
+  @include thumbnail__tile-icon(55px, 55px, 55px, 55px); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)
 }
 
 .carousel-complex img { // Slick carousel reset

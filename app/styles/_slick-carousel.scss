@@ -56,3 +56,7 @@ $slick-opacity-not-active: 0.25;
 .carousel-complex__item-container .slick-prev {
 	left: -130px;
 }
+
+.carousel-complex__item-container-tall .slick-prev, .carousel-complex__item-container-tall .slick-next {
+        margin-top: -45px;
+}

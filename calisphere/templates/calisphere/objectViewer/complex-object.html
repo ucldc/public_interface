@@ -36,7 +36,7 @@
     </a>
   </div>
 
-  <div class="carousel-complex__item-container">
+  <div class="carousel-complex__item-container {% if item.hasComponentCaptions %}carousel-complex__item-container-tall{% endif %}">
   {% for component in item.structMap %}
     <div class="carousel-complex__{% if component.format|lower != "image" and component.format|lower != "file" %}tile{% else %}item{% endif %}{% if 'selected' in component %}--selected{% endif %}">
       <a class="carousel-complex__link js-component-link" data-item_id="{{ forloop.counter0 }}" href="{% url 'calisphere:itemView' item.id %}">
@@ -66,6 +66,7 @@
           class="carousel-complex__item-img{% if 'selected' in component %}--selected{% else %}carousel-complex__img--no-image{% endif %}"> -->
         {% endif %}
       </a>
+      {# note that this conditional logic for whether or not to display a caption needs to match the logic for setting the context variable item.hasComponentCaptions in calisphere/views.py -- which is used above to to set the parent div class and determine how to position prev/next arrows on the slick carousel #}
       {% if component.format|lower != "image" %}
         <div class="carousel-complex__thumbnail-caption">{{ component.label }}</div>
       {% endif %}

@@ -436,6 +436,12 @@ def itemView(request, item_id=''):
                 else:
                     item['multiFormat'] = False
 
+                # carousel has captions or not
+                if all(f == 'image' for f in formats):
+                    item['hasComponentCaptions'] = False
+                else:
+                    item['hasComponentCaptions'] = True
+
                 # number of components
                 item['componentCount'] = len(structmap_data['structMap'])
 

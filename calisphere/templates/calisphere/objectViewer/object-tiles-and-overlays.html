@@ -1,4 +1,4 @@
-<div class="obj-container__simple-{% if item.reference_image_md5 %}image{% else %}tile{% endif %}">
+<div class="obj-container__simple-{% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}image{% else %}tile{% endif %}">
 
   <a class="obj__link"
     {% if item.harvest_type == "hosted" and item.type_ss.0|lower == "text" %}

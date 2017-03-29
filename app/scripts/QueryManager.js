@@ -15,6 +15,43 @@ var QueryManager = Backbone.Model.extend({
     start: 0
   },
   
+  getQueryFromDOM: function() {
+    if ($('#js-facet').length > 0) {
+      var queryObj = {
+        q: $('[form=js-facet][name=q]').val(),
+        view_format: $('[form=js-facet][name=view_format]').val(),
+        sort: $('[form=js-facet][name=sort]').val(),
+        rows: $('[form=js-facet][name=rows]').val(),
+        start: parseInt($('[form=js-facet][name=start]').val()),
+      };
+      var filters = $('[form=js-facet].js-facet').serializeArray();
+      if (filters.length > 0) {
+        for (var i=0; i<filters.length; i++) {
+          var filter = filters[i];
+          //if attributes has key of this filter type
+          if (_.has(queryObj, filter.name)) {
+            queryObj[filter.name].push(filter.value);
+          } else {
+            queryObj[filter.name] = [filter.value];
+          }
+        }
+      }
+      var refineArray = $('[form=js-facet][name=rq]').serializeArray();
+      if (refineArray > 0) {
+        queryObj.rq = [];
+        for (var j=0; j<refineArray.length; j++) {
+          if (refineArray[j].value !== '') {
+            queryObj.rq.push(refineArray[j].value);
+          }
+        }
+      }
+      return queryObj;
+    } else {
+      console.log('[ERROR]: QueryManager attempting to retrieve query parameters from facet form when no facet form is in DOM.');
+      return {};
+    }
+  },
+
   initialize: function() {
     var attributes;
     if (sessionStorage.length > 0) {
@@ -40,32 +77,7 @@ var QueryManager = Backbone.Model.extend({
       this.set(attributes);
     } 
     else if ($('#js-facet').length > 0) {
-      attributes = {
-        q: $('[form=js-facet][name=q]').val(),
-        view_format: $('[form=js-facet][name=view_format]').val(),
-        sort: $('[form=js-facet][name=sort]').val(),
-        rows: $('[form=js-facet][name=rows]').val(),
-        start: parseInt($('[form=js-facet][name=start]').val()),
-      };
-      if ($('[form=js-facet].js-facet').serializeArray().length > 0) {
-        var filterArray = $('#js-facet .js-facet').serializeArray();
-        for (var i=0; i<filterArray.length; i++) {
-          if (_.has(attributes, filterArray[i].name)) {
-            attributes[filterArray[i].name].push(filterArray[i].value);
-          } else {
-            attributes[filterArray[i].name] = [filterArray[i].value];
-          }
-        }      
-      }
-      if ($('[form=js-facet][name=rq]').serializeArray().length > 0) {
-        var refineArray = $('[form=js-facet][name=rq]').serializeArray();
-        attributes.rq = [];
-        for (var j=0; j<refineArray.length; j++) {
-          if (refineArray[j].value !== '') {
-            attributes.rq.push(refineArray[j].value);
-          }
-        }
-      }
+      attributes = this.getQueryFromDOM();
       this.set(attributes);
     }
   },

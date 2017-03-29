@@ -1,4 +1,4 @@
-<div class="obj-container__simple-{% if item.reference_image_md5 %}image{% else %}tile{% endif %}">
+<div class="obj-container__simple-{% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}image{% else %}tile{% endif %}">
 
   <a class="obj__link"
     {% if item.harvest_type == "hosted" and item.type_ss.0|lower == "text" %}
@@ -40,7 +40,7 @@
     <div class="obj__caption">
       {% if item.harvest_type == "hosted" %}
         {% if item.type_ss.0|lower == "text" %}
-          Download File
+          Click here to view text. May contain additional pages. 
         {% endif %}
       {% elif item.harvest_type == "harvested" %}
         {% if item.type_ss.0|lower == 'moving image' %}

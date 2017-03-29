@@ -73,6 +73,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
                     f.write('<url>')
                     f.write(u'<loc>https://calisphere.org/item/{0}/</loc>'.format(item['id'])) # FIXME hardcoded to only work for Calisphere items
                     # <lastmod>
+                    f.write(u'<lastmod>{0}</lastmod>'.format(item['timestamp']))
                     # <changefreq>
                     # <priority>
                     # <lastmod>

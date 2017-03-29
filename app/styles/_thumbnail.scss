@@ -16,18 +16,21 @@
 // 	height: 16.66vw; // 100 / 6
 // }
 
+.thumbnail__container-complex {
+        display: block;
+        position: relative;
+
+        &:before { // sets container height equal to width
+          display: block;
+          content: "";
+          // width: 100%;
+          padding-top: 100%;
+        }
+}
+
 .thumbnail__container { // creates the container. NOTE: this selector used for all instances of thumbnails throughout website
-	display: block;
-	position: relative;
-	background-color: $design-light-gray-color;
-
-	&:before { // sets container height equal to width
-	  display: block;
-	  content: "";
-	  // width: 100%;
-	  padding-top: 100%;
-	}
-
+        @extend .thumbnail__container-complex;
+        background-color: $design-light-gray-color;
 }
 
 .thumbnail__image { // sets the image within the container. . NOTE: this selector used for all instances of thumbnails throughout website

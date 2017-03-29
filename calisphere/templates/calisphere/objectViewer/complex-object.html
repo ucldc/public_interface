@@ -2,22 +2,41 @@
 
 {% if item.contentFile.format|lower == 'image' %}
   {% include 'calisphere/objectViewer/hosted-simple-image.html' %}
+{% elif item.contentFile.format|lower == 'audio' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
+{% elif item.contentFile.format|lower == 'video' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
 {% else %}
   {% include 'calisphere/objectViewer/object-tiles-and-overlays.html' %}
 {% endif %}
 
 <div class="carousel-complex">
   <!--TODO: if  item.selected is True apply 'selected' styles -->
+  <div class="carousel-complex__navigation-text">
+    {% if item.selected %}
+      Set contains {{ item.componentCount }} items. <a class="js-component-link" data-item_id="0" href="{% url 'calisphere:itemView' item.id %}">Jump to first item </a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Jump to last item</a>
+    {% elif item.selectedComponentIndex|add:"1" == item.componentCount %}
+      Viewing item {{ item.selectedComponentIndex|add:"1" }} of {{ item.componentCount }}. <a class="js-set-link" href="{% url 'calisphere:itemView' item.id %}">Back to summary.</a>
+    {% else %}
+      Viewing item {{ item.selectedComponentIndex|add:"1" }} of {{ item.componentCount }}. <a class="js-set-link" href="{% url 'calisphere:itemView' item.id %}">Back to summary</a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Jump to last item</a>
+    {% endif %}
+  </div>
+
   <div class="carousel-complex__fixed-item">
-    <a href="{% url 'calisphere:itemView' item.id %}" class="{% if 'selected' in item %}carousel-complex__fixed-link--selected
-      {% else %}carousel-complex__fixed-link{% endif %} js-set-link">
-      <div class="carousel-complex__fixed-content">
-      cover page
-      </div>
+    <a href="{% url 'calisphere:itemView' item.id %}" class="carousel-complex__fixed-link js-set-link">
+      {% if item.has_fixed_thumb %}
+        <img class="{% if item.selected %}carousel-complex__fixed-thumb--selected
+        {% else %}carousel-complex__fixed-thumb{% endif %}" alt="Home" src="{{ thumbnailUrl }}crop/100x100/{{ item.reference_image_md5 }}" />
+      {% else %}
+        <div class="{% if item.selected %}carousel-complex__fixed-tile-icon-container--selected
+        {% else %}carousel-complex__fixed-tile-icon-container{% endif %}">
+          <div class="carousel-complex__fixed-tile-icon fa-object-ungroup"></div>
+        </div>
+      {% endif %}
     </a>
   </div>
 
-  <div class="carousel-complex__item-container">
+  <div class="carousel-complex__item-container {% if item.hasComponentCaptions %}carousel-complex__item-container-tall{% endif %}">
   {% for component in item.structMap %}
     <div class="carousel-complex__{% if component.format|lower != "image" and component.format|lower != "file" %}tile{% else %}item{% endif %}{% if 'selected' in component %}--selected{% endif %}">
       <a class="carousel-complex__link js-component-link" data-item_id="{{ forloop.counter0 }}" href="{% url 'calisphere:itemView' item.id %}">
@@ -25,7 +44,7 @@
           <div class="carousel-complex__thumbnail-container">
           {% if component.format|lower == "moving image" %}
             <div class="carousel-complex__tile-icon fa-play-circle-o"></div>
-          {% elif component.format|lower == "sound"%}
+          {% elif component.format|lower == "sound" or component.format|lower == "audio" %}
             <div class="carousel-complex__tile-icon fa-volume-up"></div>
           {% elif component.format|lower == "text" or component.format|lower == "file" %}
             <div class="carousel-complex__tile-icon fa-file-text-o"></div>
@@ -47,8 +66,11 @@
           class="carousel-complex__item-img{% if 'selected' in component %}--selected{% else %}carousel-complex__img--no-image{% endif %}"> -->
         {% endif %}
       </a>
+      {# note that this conditional logic for whether or not to display a caption needs to match the logic for setting the context variable item.hasComponentCaptions in calisphere/views.py -- which is used above to to set the parent div class and determine how to position prev/next arrows on the slick carousel #}
+      {% if component.format|lower != "image" %}
+        <div class="carousel-complex__thumbnail-caption">{{ component.label }}</div>
+      {% endif %}
     </div>
   {% endfor %}
   </div>
-
 </div>

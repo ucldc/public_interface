@@ -130,6 +130,10 @@ $(document).ready(function() {
     $.pjax.defaults.timeout = 5000;
     $(document).pjax('a[data-pjax=js-pageContent]', '#js-pageContent');
 
+    //on page load, create a query manager and global search form
+    //setupObjects inits dotdotdot (text truncation) and infinite scroll
+    //if the appropriate containers are available
+    //then bind pjax event handlers
     qm = new QueryManager();
     globalSearchForm = new GlobalSearchForm({model: qm});
     setupObjects();
@@ -208,6 +212,8 @@ $(document).ready(function() {
           form.reset();
           if ($(form).attr('id') === 'js-facet' || $(form).attr('id') === 'js-carouselForm') {
             var formAfter = _.map($(form).serializeArray(), function(value) { return [value.name, value.value]; });
+            // if formAfter contains, for example: [type_ss, 'image'], [type_ss, 'text']
+            // turn it into: [type_ss, ['image', 'text']]
             for (var i=0; i<formAfter.length; i++) {
               for (var j=i+1; j<formAfter.length; j++) {
                 if (formAfter[i][0] === formAfter[j][0]) {
@@ -219,6 +225,16 @@ $(document).ready(function() {
               }
             }
             formAfter = _.object(formAfter);
+
+            //these are all supposed to be stored in session storage and the query manager as arrays
+            _.each(['rq', 'type_ss', 'facet_decade', 'repository_data', 'collection_data'], (function(formAfter) {
+              return function(elem) {
+                if (_.has(formAfter, elem) && !Array.isArray(formAfter[elem])) {
+                  formAfter[elem] = [formAfter[elem]];
+                }
+              };
+            }(formAfter)));
+
             formAfter = _.defaults(formAfter, {type_ss: '', facet_decade: '', repository_data: '', collection_data: ''});
 
             qm.set(formAfter, {silent: true});

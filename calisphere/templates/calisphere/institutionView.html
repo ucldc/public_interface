@@ -33,7 +33,7 @@
 
 {% block additionalInfo %}
   <div
-    class="institution-intro"
+    class="institution-intro" itemscope itemtype ="http://schema.org/Library"
     data-ga-code="{{ institution.google_analytics_tracking_code }}"
     data-ga-dim2="{% for x in institution.campus %}{{ x.slug }}-{% endfor %}{{ institution.slug }}"
   >
@@ -41,7 +41,7 @@
     {% if campus_slug %}
       <div class="col-md-3">
         <a class="institution-intro__featured-image-link" href="{% if featuredImage.url %}{{ featuredImage.url }}{% else %}#{% endif %}">
-          <img class="institution-intro__featured-image" src="{{ ucldcImages }}{{ featuredImage.src }}" alt="{{ institution.name }}">
+          <img class="institution-intro__featured-image" itemprop="image" src="{{ ucldcImages }}{{ featuredImage.src }}" alt="{{ institution.name }}">
           <div class="institution-intro__featured-image-caption">
             View featured image
           </div>
@@ -51,22 +51,22 @@
 
         <div class="institution-intro__logo-location">
           {% with 'images/logo_'|add:campus_slug|lower|add:'.png' as logo_url %}
-            <img class="institution-intro__logo" src="{% static logo_url %}" alt="{{ institution.name }}">
+            <img class="institution-intro__logo" itemprop="logo" src="{% static logo_url %}" alt="{{ institution.name }}">
           {% endwith %}
 
-          <!-- <h2 class="institution-intro__heading">{{ institution.name }} <br> {% if repository_id and uc_institution %}{{ uc_institution.0.name }}{% endif %}</h2> -->
+          <h2 class="institution-intro__heading hidden" itemprop="name">{{ institution.name }} <br> {% if repository_id and uc_institution %}{{ uc_institution.0.name }}{% endif %}</h2>
           <ul class="institution-intro__location">
             {% if contact_information.city %}
-              <li class="institution-intro__location-list">Location: {{ contact_information.city }}, CA</li>
+              <li class="institution-intro__location-list" itemprop="address">Location: {{ contact_information.city }}, CA</li>
             {% endif %}
             {% if contact_information.phone %}
-              <li class="institution-intro__location-list">Phone: {{ contact_information.phone }}</li>
+              <li class="institution-intro__location-list" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
             {% endif %}
             {% if contact_information.email %}
-              <li class="institution-intro__location-list">Email: <a href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+              <li class="institution-intro__location-list">Email: <a  itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
             {% endif %}
             {% if contact_information.url %}
-              <li class="institution-intro__location-list">Website: <a class="institution-intro__web-link" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+              <li class="institution-intro__location-list">Website: <a class="institution-intro__web-link"  itemprop="url" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
             {% endif %}
           </ul>
           {% if numFound %}
@@ -77,59 +77,27 @@
       </div>
     {% elif repository_id and uc_institution %}
       <div class="col-md-3">
-        <h2 class="institution-intro__heading">{{ institution.name }} <br> {{ uc_institution.0.name }}</h2>
-        <ul class="institution-intro__list">
-          {% if contact_information.city %}
-            <li class="institution-intro__list-item">Location: {{ contact_information.city }}, CA</li>
-          {% endif %}
-          {% if contact_information.phone %}
-            <li class="institution-intro__list-item">Phone: {{ contact_information.phone }}</li>
-          {% endif %}
-          {% if contact_information.email %}
-            <li class="institution-intro__list-item">Email: <a href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
-          {% endif %}
-          {% if contact_information.url %}
-            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
-          {% endif %}
-        </ul>
-        {% if numFound %}
-          <label for="{{ repository_id }}" aria-hidden="true" style="display: none;">Institution ID</label>
-          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data"
-            form="js-facet" type="checkbox" name="repository_data"
-            value="{{ repository_id }}" checked style="display: none;" aria-hidden="true">
-        {% endif %}
-      </div>
-      <div class="col-md-9">
-        {% if contact_information.description %}
-          <p class="institution-intro__description">
-            {{ contact_information.description }}
-            <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
-          </p>
-        {% endif %}
-      </div>
-    {% elif featuredImage %}
-      <div class="col-md-3">
-        <a class="institution-intro__featured-image-link" href="{% if featuredImage.url %}{{ featuredImage.url }}{% else %}#{% endif %}">
-          <img class="institution-intro__featured-image" src="{{ ucldcImages }}{{ featuredImage.src }}" alt="{{ institution.name }}">
+        <a class="institution-intro__featured-image-link" href="{% if collections.0.display_items.0.reference_image_md5 %}{{ collections.0.display_items.0.reference_image_md5 }}{% else %}#{% endif %}">
+          <img class="institution-intro__featured-image" itemprop="image" src="{{ thumbnailUrl }}crop/260x260/{{ collections.0.display_items.0.reference_image_md5 }}" alt="{{ institution.name }}">
           <div class="institution-intro__featured-image-caption">
             View featured image
           </div>
         </a>
       </div>
       <div class="col-md-3">
-        <h2 class="institution-intro__heading">{{ institution.name }}</h2>
+        <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }} <br> {{ uc_institution.0.name }}</h2>
         <ul class="institution-intro__list">
           {% if contact_information.city %}
-            <li class="institution-intro__list-item">Location: {{ contact_information.city }}, CA</li>
+            <li class="institution-intro__list-item" itemprop="address">Location: {{ contact_information.city }}, CA</li>
           {% endif %}
           {% if contact_information.phone %}
-            <li class="institution-intro__list-item">Phone: {{ contact_information.phone }}</li>
+            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
           {% endif %}
           {% if contact_information.email %}
-            <li class="institution-intro__list-item">Email: <a href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
           {% endif %}
           {% if contact_information.url %}
-            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" itemprop="url" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
           {% endif %}
         </ul>
         {% if numFound %}
@@ -141,27 +109,35 @@
       </div>
       <div class="col-md-6">
         {% if contact_information.description %}
-          <p class="institution-intro__description">
+          <p class="institution-intro__description" itemprop="description">
             {{ contact_information.description }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>
         {% endif %}
       </div>
-    {% else %}
+    {% elif featuredImage %}
       <div class="col-md-3">
-        <h2 class="institution-intro__heading">{{ institution.name }}</h2>
+        <a class="institution-intro__featured-image-link" href="{% if featuredImage.url %}{{ featuredImage.url }}{% else %}#{% endif %}">
+          <img class="institution-intro__featured-image" itemprop="image" src="{{ ucldcImages }}{{ featuredImage.src }}" alt="{{ institution.name }}">
+          <div class="institution-intro__featured-image-caption">
+            View featured image
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }}</h2>
         <ul class="institution-intro__list">
           {% if contact_information.city %}
-            <li class="institution-intro__list-item">Location: {{ contact_information.city }}, CA</li>
+            <li class="institution-intro__list-item" itemprop="address">Location: {{ contact_information.city }}, CA</li>
           {% endif %}
           {% if contact_information.phone %}
-            <li class="institution-intro__list-item">Phone: {{ contact_information.phone }}</li>
+            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
           {% endif %}
           {% if contact_information.email %}
-            <li class="institution-intro__list-item">Email: <a href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
           {% endif %}
           {% if contact_information.url %}
-            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+            <li class="institution-intro__list-item">Website: <a itemprop="url" class="institution-intro__web-link" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
           {% endif %}
         </ul>
         {% if numFound %}
@@ -171,9 +147,49 @@
             value="{{ repository_id }}" checked style="display: none;" aria-hidden="true">
         {% endif %}
       </div>
-      <div class="col-md-9">
+      <div class="col-md-6">
         {% if contact_information.description %}
-          <p class="institution-intro__description">
+          <p class="institution-intro__description" itemprop="description">
+            {{ contact_information.description }}
+            <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
+          </p>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="col-md-3">
+        <a class="institution-intro__featured-image-link" href="{% if collections.0.display_items.0.reference_image_md5 %}{{ collections.0.display_items.0.reference_image_md5 }}{% else %}#{% endif %}">
+          <img class="institution-intro__featured-image" itemprop="image" src="{{ thumbnailUrl }}crop/260x260/{{ collections.0.display_items.0.reference_image_md5 }}" alt="{{ institution.name }}">
+          <div class="institution-intro__featured-image-caption">
+            View featured image
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }}</h2>
+        <ul class="institution-intro__list">
+          {% if contact_information.city %}
+            <li class="institution-intro__list-item" itemprop="address">Location: {{ contact_information.city }}, CA</li>
+          {% endif %}
+          {% if contact_information.phone %}
+            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
+          {% endif %}
+          {% if contact_information.email %}
+            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+          {% endif %}
+          {% if contact_information.url %}
+            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" itemprop="url" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+          {% endif %}
+        </ul>
+        {% if numFound %}
+          <label for="{{ repository_id }}" aria-hidden="true" style="display: none;">Institution ID</label>
+          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data"
+            form="js-facet" type="checkbox" name="repository_data"
+            value="{{ repository_id }}" checked style="display: none;" aria-hidden="true">
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        {% if contact_information.description %}
+          <p class="institution-intro__description" itemprop="description">
             {{ contact_information.description }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>

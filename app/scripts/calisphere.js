@@ -1,4 +1,4 @@
-/*global _, QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, CarouselView, ComplexCarouselView */
+/*global _, QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, ItemView, ComplexCarouselView */
 
 /* globals Modernizr: false */
 'use strict';
@@ -37,7 +37,7 @@ var setupComponents = function() {
   }
 
   if ($('#js-carouselContainer').length) {
-    globalSearchForm.carousel = globalSearchForm.carousel || new CarouselView({model: qm});
+    globalSearchForm.carousel = globalSearchForm.carousel || new ItemView({model: qm});
   } else if (globalSearchForm.carousel) {
     globalSearchForm.carousel.destroy();
     delete globalSearchForm.carousel;
@@ -201,10 +201,6 @@ $(document).ready(function() {
     globalSearchForm = new GlobalSearchFormView({model: qm});
     setupComponents();
 
-    $(document).on('pjax:beforeSend', '#js-itemContainer', function(e, xhr) {
-      xhr.setRequestHeader('X-From-Item-Page', 'true');
-    });
-
     $(document).on('pjax:beforeReplace', '#js-pageContent', globalSearchForm.pjax_beforeReplace);
 
     $(document).on('pjax:success', function(e, data, x, xhr, z) {
@@ -215,47 +211,6 @@ $(document).ready(function() {
       $.each($(variable_markup).get().reverse(), function(i, v) {
         $(v).insertAfter(old_start);
       });
-    });
-
-    $(document).on('pjax:end', function() {
-      if($('#obj__mejs').length > 0) {
-        $('.mejs-player').mediaelementplayer();
-      }
-    });
-
-    $(document).on('pjax:end', '#js-itemContainer', function() {
-      var lastItem = $('.carousel__item--selected');
-      if (lastItem.children('a').data('item_id') !== qm.get('itemId')) {
-        lastItem.find('.carousel__image--selected').toggleClass('carousel__image');
-        lastItem.find('.carousel__image--selected').toggleClass('carousel__image--selected');
-        lastItem.toggleClass('carousel__item');
-        lastItem.toggleClass('carousel__item--selected');
-
-        var linkItem = $('.js-item-link[data-item_id="' + qm.get('itemId') + '"]');
-        linkItem.find('.carousel__image').toggleClass('carousel__image--selected');
-        linkItem.find('.carousel__image').toggleClass('carousel__image');
-        linkItem.parent().toggleClass('carousel__item--selected');
-        linkItem.parent().toggleClass('carousel__item');
-      }
-    });
-
-    $(document).on('pjax:end', '#js-exhibit-item__container', function() {
-      if(!($('#js-exhibit-item').is(':visible')) && $('#js-exhibit-item__container').children().length > 0) {
-        $('#js-exhibit-item').modal();
-      } else if ($('#js-exhibit-item__container').children().length <= 0) {
-        $('#js-exhibit-item').modal('hide');
-      }
-    });
-
-    $(document).on('pjax:beforeReplace', '#js-pageContent', function(e) {
-      if (e.target !== $('#js-exhibit-item__container')[0] && $('#js-exhibit-item').is(':visible')) {
-        $('.modal-backdrop').remove();
-        $('body').removeClass('modal-open');
-      }
-    });
-
-    $(document).on('pjax:beforeSend', '#js-exhibit-item__container', function(e, xhr) {
-      xhr.setRequestHeader('X-Exhibit-Item', 'true');
     });
 
     $(document).on('pjax:end', '#js-pageContent', function() {

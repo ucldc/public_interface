@@ -3,6 +3,11 @@
 
 'use strict';
 
+// component created if selector in DOM, selector is in the following templates (2017-04-04)
+// selector: #js-exhibit-title
+// templates: calCultures.html, essayView.html, exhibitView.html, lessonPlanView.html, and themeView.html
+// all exhibit-related pages except for the three browse pages (Random Explore, Browse All, and Title Search)
+
 var ExhibitPageView = Backbone.View.extend({
   el: $('#js-pageContent'),
   events: {
@@ -104,10 +109,35 @@ var ExhibitPageView = Backbone.View.extend({
     $('.js-exhibit__overview').dotdotdot();
   },
 
+  pjax_beforeReplace: function(e) {
+    // for navigation away from the exhibit item lightbox via
+    // 'go to item page', 'contributing institution' and 'collection' links
+    if (e.target !== $('#js-exhibit-item__container')[0] && $('#js-exhibit-item').is(':visible')) {
+      $('.modal-backdrop').remove();
+      $('body').removeClass('modal-open');
+    }
+  },
+
+  pjax_beforeSend: function(e, xhr) {
+    xhr.setRequestHeader('X-Exhibit-Item', 'true');
+  },
+
+  pjax_end: function() {
+    if(!($('#js-exhibit-item').is(':visible')) && $('#js-exhibit-item__container').children().length > 0) {
+      $('#js-exhibit-item').modal();
+    } else if ($('#js-exhibit-item__container').children().length <= 0) {
+      $('#js-exhibit-item').modal('hide');
+    }
+  },
+
   initialize: function() {
     if ($('#js-exhibit-item__container').children().length > 0) {
       $('#js-exhibit-item').modal();
     }
+
+    $(document).on('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
+    $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
+    $(document).on('pjax:end', '#js-exhibit-item__container', this.pjax_end);
   },
 
   reset: function() {
@@ -116,6 +146,9 @@ var ExhibitPageView = Backbone.View.extend({
   },
 
   destroy: function() {
+    $(document).off('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
+    $(document).off('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
+    $(document).off('pjax:end', '#js-exhibit-item__container', this.pjax_end);
     this.undelegateEvents();
   }
 });

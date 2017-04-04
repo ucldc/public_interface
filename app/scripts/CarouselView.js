@@ -20,25 +20,13 @@ var CarouselView = Backbone.View.extend({
     'click .js-rc-page'              : 'paginateRelatedCollections',
     'click .js-relatedCollection'    : 'goToCollectionPage'
   },
+
   goToSearchResults: function(e) {
-    // Middle click, cmd click, and ctrl click should open
-    // links in a new tab as normal.
+    // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
-    this.model.unset('itemId', {silent: true});
-    this.model.unset('itemNumber', {silent: true});
-
-    if (this.model.get('referral') !== undefined) {
-      if (this.model.get('referral') === 'institution') {
-        this.model.unset('repository_data', {silent: true});
-      } else if (this.model.get('referral') === 'campus') {
-        this.model.unset('campus_slug', {silent: true});
-      } else if (this.model.get('referral') === 'collection') {
-        this.model.unset('collection_data', {silent: true});
-      }
-      this.model.unset('referral', {silent: true});
-      this.model.unset('referralName', {silent: true});
-    }
+    // Unset carousel specific information
+    this.model.unsetCarouselInfo();
 
     e.preventDefault();
     $.pjax({
@@ -56,7 +44,9 @@ var CarouselView = Backbone.View.extend({
     var data_params;
 
     //PREVIOUS BUTTON PRESSED
-    if ((currentSlide > nextSlide && (nextSlide !== 0 || currentSlide === slidesToScroll)) || (currentSlide === 0 && nextSlide > slick.slideCount - slidesToScroll && nextSlide < slick.slideCount)) {
+    if (
+      (currentSlide > nextSlide && (nextSlide !== 0 || currentSlide === slidesToScroll)) || 
+      (currentSlide === 0 && nextSlide > slick.slideCount - slidesToScroll && nextSlide < slick.slideCount)) {
       if (numLoaded < numFound && $('[data-item_number=0]').length === 0) {
         if (parseInt(this.carouselStart) - parseInt(this.carouselRows) > 0) {
           this.carouselStart = parseInt(this.carouselStart) - parseInt(this.carouselRows);

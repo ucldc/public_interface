@@ -61,9 +61,9 @@
     {% for filter_type in filters %}
       {% for filter in filters|get_item:filter_type %}
         {% if filter_type == 'collection_url' or filter_type == 'repository_url' %}
-          <input type="hidden" name="{{ filter_type }}" value="{{ filter.id }}">
+          <input type="hidden" class="js-filter" name="{{ filter_type }}" value="{{ filter.id }}">
         {% else %}
-          <input type="hidden" name="{{ filter_type }}" value="{{ filter|slugify }}">
+          <input type="hidden" class="js-filter" name="{{ filter_type }}" value="{{ filter|slugify }}">
         {% endif %}
       {% endfor %}
     {% endfor %}

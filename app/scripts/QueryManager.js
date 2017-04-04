@@ -15,16 +15,18 @@ var QueryManager = Backbone.Model.extend({
     start: 0
   },
   
-  getQueryFromDOM: function() {
-    if ($('#js-facet').length > 0) {
+  getQueryFromDOM: function(formName) {
+    var formSelector = '[form=' + formName + ']';
+
+    if ($(formSelector).length > 0) {
       var queryObj = {
-        q: $('[form=js-facet][name=q]').val(),
-        view_format: $('[form=js-facet][name=view_format]').val(),
-        sort: $('[form=js-facet][name=sort]').val(),
-        rows: $('[form=js-facet][name=rows]').val(),
-        start: parseInt($('[form=js-facet][name=start]').val()),
+        q: $(formSelector + '[name=q]').val(),
+        view_format: $(formSelector + '[name=view_format]').val(),
+        sort: $(formSelector + '[name=sort]').val(),
+        rows: $(formSelector + '[name=rows]').val(),
+        start: parseInt($(formSelector + '[name=start]').val()),
       };
-      var filters = $('[form=js-facet].js-facet').serializeArray();
+      var filters = $(formSelector + '.js-facet').serializeArray();
       if (filters.length > 0) {
         for (var i=0; i<filters.length; i++) {
           var filter = filters[i];
@@ -36,8 +38,8 @@ var QueryManager = Backbone.Model.extend({
           }
         }
       }
-      var refineArray = $('[form=js-facet][name=rq]').serializeArray();
-      if (refineArray > 0) {
+      var refineArray = $(formSelector + '[name=rq]').serializeArray();
+      if (refineArray.length > 0) {
         queryObj.rq = [];
         for (var j=0; j<refineArray.length; j++) {
           if (refineArray[j].value !== '') {
@@ -45,10 +47,48 @@ var QueryManager = Backbone.Model.extend({
           }
         }
       }
+
+      // this causes any previously defined facet values
+      // to be wiped out. (see l-120 of this file)
+      queryObj = _.defaults(queryObj, {type_ss: '', facet_decade: '', repository_data: '', collection_data: '', rq: ''});
       return queryObj;
     } else {
       console.log('[ERROR]: QueryManager attempting to retrieve query parameters from facet form when no facet form is in DOM.');
       return {};
+    }
+  },
+
+  getCarouselInfoFromDOM: function() {
+    if ($('[form=js-carouselForm]').length > 0) {
+      var carouselInfoObj = {
+        itemNumber: $('[form=js-carouselForm][name=itemNumber]').val() || '',
+        itemId: $('[form=js-carouselForm][name=itemId]').val() || '',
+        referral: $('[form=js-carouselForm][name=referral]').val() || '',
+        referralName: $('[form=js-carouselForm][name=referralName]').val() || '',
+        campus_slug: $('[form=js-carouselForm][name=campus_slug]').val() || ''
+      };
+
+      return carouselInfoObj;
+    } else {
+      console.log('[ERROR]: QueryManager attempting to retrieve carousel parameters from carousel form when no such form is in DOM.');
+      return {};
+    }
+  },
+
+  unsetCarouselInfo: function() {
+    this.unset('itemId', {silent: true});
+    this.unset('itemNumber', {silent: true});
+
+    if (this.get('referral') !== undefined) {
+      if (this.get('referral') === 'institution') {
+        this.unset('repository_data', {silent: true});
+      } else if (this.get('referral') === 'campus') {
+        this.unset('campus_slug', {silent: true});
+      } else if (this.get('referral') === 'collection') {
+        this.unset('collection_data', {silent: true});
+      }
+      this.unset('referral', {silent: true});
+      this.unset('referralName', {silent: true});
     }
   },
 
@@ -65,6 +105,7 @@ var QueryManager = Backbone.Model.extend({
         facet_decade: JSON.parse(sessionStorage.getItem('facet_decade')),
         repository_data: JSON.parse(sessionStorage.getItem('repository_data')),
         collection_data: JSON.parse(sessionStorage.getItem('collection_data')),
+
         campus_slug: sessionStorage.getItem('campus_slug'),
         itemNumber: sessionStorage.getItem('itemNumber'),
         itemId: sessionStorage.getItem('itemId'),
@@ -77,7 +118,7 @@ var QueryManager = Backbone.Model.extend({
       this.set(attributes);
     } 
     else if ($('#js-facet').length > 0) {
-      attributes = this.getQueryFromDOM();
+      attributes = this.getQueryFromDOM('js-facet');
       this.set(attributes);
     }
   },

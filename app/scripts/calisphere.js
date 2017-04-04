@@ -207,39 +207,23 @@ $(document).ready(function() {
         qm.clear({silent: true});
       }
 
+      //user pressed the browser's back/forward buttons
       if (popstate === 'back' || popstate === 'forward') {
+        //reset all the forms on the page!
         _.each($('form'), function(form) {
           form.reset();
-          if ($(form).attr('id') === 'js-facet' || $(form).attr('id') === 'js-carouselForm') {
-            var formAfter = _.map($(form).serializeArray(), function(value) { return [value.name, value.value]; });
-            // if formAfter contains, for example: [type_ss, 'image'], [type_ss, 'text']
-            // turn it into: [type_ss, ['image', 'text']]
-            for (var i=0; i<formAfter.length; i++) {
-              for (var j=i+1; j<formAfter.length; j++) {
-                if (formAfter[i][0] === formAfter[j][0]) {
-                  formAfter[i][1] = [formAfter[i][1], formAfter[j][1]];
-                  formAfter[i][1] = _.flatten(formAfter[i][1]);
-                  formAfter.splice(j, 1);
-                  j = j-1;
-                }
-              }
-            }
-            formAfter = _.object(formAfter);
-
-            //these are all supposed to be stored in session storage and the query manager as arrays
-            _.each(['rq', 'type_ss', 'facet_decade', 'repository_data', 'collection_data'], (function(formAfter) {
-              return function(elem) {
-                if (_.has(formAfter, elem) && !Array.isArray(formAfter[elem])) {
-                  formAfter[elem] = [formAfter[elem]];
-                }
-              };
-            }(formAfter)));
-
-            formAfter = _.defaults(formAfter, {type_ss: '', facet_decade: '', repository_data: '', collection_data: ''});
-
-            qm.set(formAfter, {silent: true});
-          }
         });
+
+        //reset the query manager to state defined by the DOM
+        var queryObj;
+        if ($('#js-facet').length > 0) {
+          qm.unsetCarouselInfo();
+          queryObj = qm.getQueryFromDOM('js-facet');
+          qm.set(queryObj, {silent: true});
+        } else if ($('#js-carouselForm').length > 0) {
+          queryObj = qm.getQueryFromDOM('js-carouselForm');
+          qm.set(queryObj, {silet: true});
+        }
       }
 
       popstate = null;

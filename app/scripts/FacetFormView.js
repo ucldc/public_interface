@@ -26,21 +26,26 @@ var FacetFormView = Backbone.View.extend({
     'click .js-relatedCollection'             : 'goToCollectionPage'
   },
 
+  // events: {'submit #js-facet': 'setRefineQuery'}
+  // the refine button is also the submit button for this form (accessibility requires the form have a submit button)
   setRefineQuery: function(e) {
     this.model.set({start: 0, rq: $.map($('input[name=rq]'), function(el) { return $(el).val(); })});
     e.preventDefault();
   },
+  // events: {'click .js-refine-filter-pill': 'removeRefineQuery'}
   removeRefineQuery: function(e) {
     var txtFilter = $(e.currentTarget).data('slug');
     $('input[form="js-facet"][name="rq"][value="' + txtFilter + '"]').val('');
     this.model.set({start: 0, rq: _.without(this.model.get('rq'), txtFilter)});
   },
+  // events: {'change .js-facet': 'setFacet'}
   setFacet: function(e) {
     var filterType = $(e.currentTarget).attr('name');
     var attributes = {start: 0};
     attributes[filterType] = $.map($('input[name=' + filterType + ']:checked'), function(el) { return $(el).val(); });
     this.model.set(attributes);
   },
+  // events: {'click .js-filter-pill': 'removeFacet'}
   removeFacet: function(e) {
     var filter_slug = $(e.currentTarget).data('slug');
     if (typeof filter_slug !== 'string') {
@@ -54,17 +59,22 @@ var FacetFormView = Backbone.View.extend({
 
     this.model.set(attributes);
   },
+  // events: {'click #thumbnails,#list': 'toggleViewFormat'}
   toggleViewFormat: function(e) {
     var viewFormat = $(e.currentTarget).attr('id');
     $('#view_format').prop('value', viewFormat);
     this.model.set({view_format: viewFormat});
   },
+  // events: {'change #pag-dropdown__sort': 'setSort'}
   setSort: function(e) {
     this.model.set({start: 0, sort: $(e.currentTarget).val() });
   },
+  // events: {'change #pag-dropdown__view': 'setRows'}
   setRows: function(e) {
     this.model.set({start: 0, rows: $(e.currentTarget).val() });
   },
+  // events: {'click .js-prev,.js-next,a[data-start]':  'setStart',
+  //          'change #pag-dropdown__select--unstyled': 'setStart'}
   setStart: function(e) {
     var start;
     if (e.type === 'click') {
@@ -76,6 +86,7 @@ var FacetFormView = Backbone.View.extend({
     this.model.set({ start: start });
   },
 
+  // events: {'click .js-item-link': 'goToItemPage'}
   goToItemPage: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -118,7 +129,11 @@ var FacetFormView = Backbone.View.extend({
     }
   },
 
+  // events: {'click .js-a-check__link-deselect-all': 'deselectAll',
+  //          'click .js-a-check__button-deselect-all': 'deselectAll'}
   deselectAll: function(e) { this.selectDeselectAll(e, false); },
+  // events: {'click .js-a-check__link-select-all': 'selectAll',
+  //          'click .js-a-check__button-select-all': 'selectAll'}
   selectAll: function(e) { this.selectDeselectAll(e, true); },
   selectDeselectAll: function(e, checked) {
     var filterElements = $(e.currentTarget).parents('.check').find('.js-facet');
@@ -126,6 +141,8 @@ var FacetFormView = Backbone.View.extend({
     filterElements.trigger('change');
     e.preventDefault();
   },
+
+
   toggleSelectDeselectAll: function() {
     var facetTypes = $('.check');
     for(var i=0; i<facetTypes.length; i++) {

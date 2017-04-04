@@ -59,7 +59,7 @@ var setupComponents = function() {
 
   if($('#js-exhibit-title').length) {
     globalSearchForm.exhibitPage = globalSearchForm.exhibitPage || new ExhibitPageView();
-    globalSearchForm.exhibitPage.reset();
+    // globalSearchForm.exhibitPage.reset();
   } else if (globalSearchForm.exhibitPage) {
     globalSearchForm.exhibitPage.destroy();
     delete globalSearchForm.exhibitPage;

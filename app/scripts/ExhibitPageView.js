@@ -19,6 +19,8 @@ var ExhibitPageView = Backbone.View.extend({
     'mouseenter .primarysource__link'   : 'dotDotDot',
     'mouseleave .primarysource__link'   : 'killDotDotDot',
   },
+
+  // events: {'click .js-exhibit-item': 'exhibitItemView'}
   exhibitItemView: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -31,7 +33,7 @@ var ExhibitPageView = Backbone.View.extend({
       container: '#js-exhibit-item__container'
     });
   },
-
+  // events: {'hidden.bs.modal #js-exhibit-item': 'exhibitView'}
   exhibitView: function() {
     if ($('#js-exhibit-item__container').children().length > 0) {
       $.pjax({
@@ -42,7 +44,7 @@ var ExhibitPageView = Backbone.View.extend({
       });
     }
   },
-
+  // events: {'click .js-blockquote': 'showExhibitOverview'}
   showExhibitOverview: function() {
     var isTruncated = $('.js-exhibit__overview').triggerHandler('isTruncated');
     if (isTruncated) {
@@ -51,7 +53,7 @@ var ExhibitPageView = Backbone.View.extend({
       $('#js-exhibit__overview').text('Read less.');
     }
   },
-
+  // events: {'click #js-exhibit__overview': 'toggleExhibitOverview'}
   toggleExhibitOverview: function() {
     var isTruncated = $('.js-exhibit__overview').triggerHandler('isTruncated');
 
@@ -65,7 +67,7 @@ var ExhibitPageView = Backbone.View.extend({
       $('#js-exhibit__overview').text('Read full exhibition overview.');
     }
   },
-
+  // events: {'click .js-show-all-exhibit-items': 'togglePrimarySourceSet'}
   togglePrimarySourceSet: function() {
     $('.js-exhibit-items-overflow').slideToggle();
     if ($($('.js-show-all-exhibit-items')[0]).text() === 'View all') {
@@ -74,11 +76,11 @@ var ExhibitPageView = Backbone.View.extend({
       $('.js-show-all-exhibit-items').text('View all');
     }
   },
-
+  // events: {'mouseenter .primarysource__link': 'dotDotDot'}
   dotDotDot: function(e) {
     $(e.currentTarget).find('.exhibit__caption').dotdotdot();
   },
-
+  // events: {'mouseleave .primarysource__link': 'killDotDotDot'}
   killDotDotDot: function(e) {
     $(e.currentTarget).find('.exhibit__caption').trigger('destroy');
   },
@@ -105,29 +107,38 @@ var ExhibitPageView = Backbone.View.extend({
     });
   },
 
-  clientTruncate: function() {
-    $('.js-exhibit__overview').dotdotdot();
-  },
-
+  // if an exhibit item is displayed *and* the event target /isn't/ the item container
+  // we're leaving the exhibit space and need to remove the modal backdrop before we go
+  // ('go to item page', 'contributing institution' and 'collection' links)
   pjax_beforeReplace: function(e) {
-    // for navigation away from the exhibit item lightbox via
-    // 'go to item page', 'contributing institution' and 'collection' links
     if (e.target !== $('#js-exhibit-item__container')[0] && $('#js-exhibit-item').is(':visible')) {
       $('.modal-backdrop').remove();
       $('body').removeClass('modal-open');
     }
   },
 
+  // this specifies to use the pjax-exhibit-item.html template in the response
   pjax_beforeSend: function(e, xhr) {
     xhr.setRequestHeader('X-Exhibit-Item', 'true');
   },
 
+  // this pjax_end is only called when the event is triggered for div#js-exhibit-item__container
+  // which is fine, because this code only has to do with an exhibit item display (show/hide modal)
   pjax_end: function() {
     if(!($('#js-exhibit-item').is(':visible')) && $('#js-exhibit-item__container').children().length > 0) {
       $('#js-exhibit-item').modal();
     } else if ($('#js-exhibit-item__container').children().length <= 0) {
       $('#js-exhibit-item').modal('hide');
     }
+  },
+
+  // this pjax_end_pageContent is called when the event is triggered for div#js-pageContent
+  // so this includes theme pages, lesson plans, exhibit pages, etc. not just item display
+  pjax_end_pageContent: function(that) {
+    return function() {
+      that.initCarousel();
+      $('.js-exhibit__overview').dotdotdot();
+    };
   },
 
   initialize: function() {
@@ -138,17 +149,17 @@ var ExhibitPageView = Backbone.View.extend({
     $(document).on('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
     $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
     $(document).on('pjax:end', '#js-exhibit-item__container', this.pjax_end);
-  },
+    $(document).on('pjax:end', '#js-pageContent', this.pjax_end_pageContent(this));
 
-  reset: function() {
     this.initCarousel();
-    this.clientTruncate();
+    $('.js-exhibit__overview').dotdotdot();
   },
 
   destroy: function() {
     $(document).off('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
     $(document).off('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
     $(document).off('pjax:end', '#js-exhibit-item__container', this.pjax_end);
+    $(document).off('pjax:end', '#js-pageContent', this.pjax_end_pageContent);
     this.undelegateEvents();
   }
 });

@@ -2,6 +2,10 @@
 /*exported FacetFormView */
 'use strict';
 
+// component created if selector in DOM, selector is in the following templates (2017-04-04)
+// selector: #js-facet
+// templates: collectionView.html, institutionView.html, institutionViewItems.html, searchResults.html, faceting.html, paginate.html
+
 var FacetFormView = Backbone.View.extend({
   el: $('#js-pageContent'),
   events: {
@@ -141,8 +145,6 @@ var FacetFormView = Backbone.View.extend({
     filterElements.trigger('change');
     e.preventDefault();
   },
-
-
   toggleSelectDeselectAll: function() {
     var facetTypes = $('.check');
     for(var i=0; i<facetTypes.length; i++) {
@@ -172,12 +174,13 @@ var FacetFormView = Backbone.View.extend({
       placement: 'top'
     });
   },
+  // events: {'click .js-clear-filters': 'clearFilters'}
   clearFilters: function() {
     var filterElements = $('.js-facet');
     filterElements.prop('checked', false);
     filterElements.trigger('change');
   },
-
+  // events: {'click .js-a-check__header': 'toggleFacetDropdown'}
   toggleFacetDropdown: function(e) {
     //close all expanded checkbox groups
     var allSelected = $('.check__popdown--selected');
@@ -191,6 +194,7 @@ var FacetFormView = Backbone.View.extend({
     $(e.currentTarget).next('.js-a-check__popdown').toggleClass('check__popdown check__popdown--selected');
     $(e.currentTarget).children('.js-a-check__header-arrow-icon').toggleClass('fa-angle-down fa-angle-up');
   },
+  // events: {'click .js-a-check__update': 'updateFacets'}
   updateFacets: function(e) {
     e.preventDefault();
     this.facetSearch();
@@ -204,6 +208,7 @@ var FacetFormView = Backbone.View.extend({
     });
   },
 
+  // events: {'click .js-rc-page': 'paginateRelatedCollections'}
   paginateRelatedCollections: function(e) {
     if($('#js-institution').length > 0) {
       if($('#js-institution').data('campus')) {
@@ -235,7 +240,7 @@ var FacetFormView = Backbone.View.extend({
       }
     });
   },
-
+  // events: {'click .js-relatedCollection': 'goToCollectionPage'}
   goToCollectionPage: function() {
     this.model.clear({silent: true});
   },

@@ -202,9 +202,7 @@ $(document).ready(function() {
     setupComponents();
 
     $(document).on('pjax:beforeSend', '#js-itemContainer', function(e, xhr, options) {
-      if (options.container === '#js-itemContainer') {
-        xhr.setRequestHeader('X-From-Item-Page', 'true');
-      }
+      xhr.setRequestHeader('X-From-Item-Page', 'true');
     });
 
     $(document).on('pjax:beforeReplace', '#js-pageContent', globalSearchForm.pjax_beforeReplace);

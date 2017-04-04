@@ -122,34 +122,36 @@ var ExhibitPageView = Backbone.View.extend({
     xhr.setRequestHeader('X-Exhibit-Item', 'true');
   },
 
-  // this pjax_end is only called when the event is triggered for div#js-exhibit-item__container
-  // which is fine, because this code only has to do with an exhibit item display (show/hide modal)
-  pjax_end: function() {
-    if(!($('#js-exhibit-item').is(':visible')) && $('#js-exhibit-item__container').children().length > 0) {
-      $('#js-exhibit-item').modal();
-    } else if ($('#js-exhibit-item__container').children().length <= 0) {
-      $('#js-exhibit-item').modal('hide');
-    }
-  },
-
   // this pjax_end_pageContent is called when the event is triggered for div#js-pageContent
   // so this includes theme pages, lesson plans, exhibit pages, etc. not just item display
-  pjax_end_pageContent: function(that) {
-    return function() {
-      that.initCarousel();
-      $('.js-exhibit__overview').dotdotdot();
+  pjax_end: function(that) {
+    return function(xhr) {
+      // if the part getting replaced is js-exhibit-item__container, do modal stuff
+      if (xhr.target.id === 'js-exhibit-item__container') {
+        if ($('#js-exhibit-item__container').children().length && !$('#js-exhibit-item').is(':visible')) {
+          $('#js-exhibit-item').modal();
+        } else if (!$('#js-exhibit-item__container').children().length) {
+          $('#js-exhibit-item').modal('hide');
+        }
+      }
+
+      // if the part getting replaced is the page content (theme pages, lesson plans, exhibit pages, etc.)
+      // init carousels and truncate exhibit overview
+      if (xhr.target.id === 'js-pageContent') {
+        that.initCarousel();
+        $('.js-exhibit__overview').dotdotdot();
+      }
     };
   },
 
   initialize: function() {
-    if ($('#js-exhibit-item__container').children().length > 0) {
+    if ($('#js-exhibit-item__container').children().length) {
       $('#js-exhibit-item').modal();
     }
 
     $(document).on('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
     $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
-    $(document).on('pjax:end', '#js-exhibit-item__container', this.pjax_end);
-    $(document).on('pjax:end', '#js-pageContent', this.pjax_end_pageContent(this));
+    $(document).on('pjax:end', '#js-pageContent', this.pjax_end(this));
 
     this.initCarousel();
     $('.js-exhibit__overview').dotdotdot();
@@ -158,8 +160,7 @@ var ExhibitPageView = Backbone.View.extend({
   destroy: function() {
     $(document).off('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
     $(document).off('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
-    $(document).off('pjax:end', '#js-exhibit-item__container', this.pjax_end);
-    $(document).off('pjax:end', '#js-pageContent', this.pjax_end_pageContent);
+    $(document).off('pjax:end', '#js-pageContent', this.pjax_end(this));
     this.undelegateEvents();
   }
 });

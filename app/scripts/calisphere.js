@@ -201,7 +201,7 @@ $(document).ready(function() {
     globalSearchForm = new GlobalSearchFormView({model: qm});
     setupComponents();
 
-    $(document).on('pjax:beforeSend', '#js-itemContainer', function(e, xhr, options) {
+    $(document).on('pjax:beforeSend', '#js-itemContainer', function(e, xhr) {
       xhr.setRequestHeader('X-From-Item-Page', 'true');
     });
 
@@ -254,10 +254,8 @@ $(document).ready(function() {
       }
     });
 
-    $(document).on('pjax:beforeSend', '#js-exhibit-item__container', function(e, xhr, options) {
-      if (options.container === '#js-exhibit-item__container') {
-        xhr.setRequestHeader('X-Exhibit-Item', 'true');
-      }
+    $(document).on('pjax:beforeSend', '#js-exhibit-item__container', function(e, xhr) {
+      xhr.setRequestHeader('X-Exhibit-Item', 'true');
     });
 
     $(document).on('pjax:end', '#js-pageContent', function() {

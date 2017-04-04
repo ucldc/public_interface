@@ -189,5 +189,9 @@ var CarouselView = Backbone.View.extend({
     this.model.set({itemId: $('#js-itemContainer').data('itemid')}, {silent: true});
     this.initCarousel();
     this.paginateRelatedCollections();
+  },
+
+  destroy: function() {
+    this.undelegateEvents();
   }
 });

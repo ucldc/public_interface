@@ -1,4 +1,4 @@
-/*global _, QueryManager, GlobalSearchForm */
+/*global _, QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, CarouselView, ComplexCarouselView */
 
 /* globals Modernizr: false */
 'use strict';
@@ -26,8 +26,75 @@ $(document).on('pjax:timeout', function() { return false; });
 
 var qm, globalSearchForm, popstate = null;
 
-var setupObjects = function() {
-  globalSearchForm.setupComponents();
+var setupComponents = function() {
+  /*********** CALISPHERE COMPONENTS *****************/
+  if ($('#js-facet').length) {
+    globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm});
+    globalSearchForm.facetForm.reset();
+  } else if (globalSearchForm.facetForm) {
+    globalSearchForm.facetForm.destroy();
+    delete globalSearchForm.facetForm;
+  }
+
+  if ($('#js-carouselContainer').length) {
+    globalSearchForm.carousel = globalSearchForm.carousel || new CarouselView({model: qm});
+  } else if (globalSearchForm.carousel) {
+    globalSearchForm.carousel.destroy();
+    delete globalSearchForm.carousel;
+  }
+
+  if($('#js-contactOwner').length) {
+    globalSearchForm.contactOwnerForm = globalSearchForm.contactOwnerForm || new ContactOwnerFormView();
+  } else if (globalSearchForm.contactOwnerForm) {
+    delete globalSearchForm.contactOwnerForm;
+  }
+
+  if($('.carousel-complex').length) {
+    globalSearchForm.complexCarousel = globalSearchForm.complexCarousel || new ComplexCarouselView({model: qm});
+    globalSearchForm.complexCarousel.reset();
+  } else if (globalSearchForm.complexCarousel) {
+    globalSearchForm.complexCarousel.destroy();
+    delete globalSearchForm.complexCarousel;
+  }
+
+  if($('#js-exhibit-title').length) {
+    globalSearchForm.exhibitPage = globalSearchForm.exhibitPage || new ExhibitPageView();
+    globalSearchForm.exhibitPage.reset();
+  } else if (globalSearchForm.exhibitPage) {
+    globalSearchForm.exhibitPage.destroy();
+    delete globalSearchForm.exhibitPage;
+  }
+
+  /************ VENDOR INITIALIZATION ****************/
+  if (globalSearchForm.viewer) {
+    globalSearchForm.viewer.destroy();
+    delete globalSearchForm.viewer;
+
+    if ($('.openseadragon-container').length) { $('.openseadragon-container').remove(); }
+    if ($('#obj__osd').length) {
+      $('#obj__osd').empty();
+
+      globalSearchForm.viewer = new OpenSeadragon({
+        id: 'obj__osd',
+        tileSources: [tileSources],
+        zoomInButton: 'obj__osd-button-zoom-in',
+        zoomOutButton: 'obj__osd-button-zoom-out',
+        homeButton: 'obj__osd-button-home',
+        fullPageButton: 'obj__osd-button-fullscreen'
+      });
+    }
+  }
+
+  if($('#js-exhibit-wrapper').length) {
+    globalSearchForm.grid = $('#js-exhibit-wrapper').isotope({
+      layoutMode: 'masonry',
+      itemSelector: '.js-grid-item',
+      percentPosition: true,
+      masonry: {
+        columnWidth: '.js-grid-sizer'
+      }
+    });
+  }
 
   $('.obj__heading').dotdotdot({
     ellipsis: '…',
@@ -55,8 +122,7 @@ var setupObjects = function() {
   });
 
   //if we've gotten to a page with a list of collection mosaics, init infinite scroll
-  //TODO: change reference to localhost!
-  if($('#js-mosaicContainer').length > 0) {
+  if($('#js-mosaicContainer').length) {
     $('#js-mosaicContainer').infinitescroll({
       navSelector: '#js-collectionPagination',
       nextSelector: '#js-collectionPagination a.js-next',
@@ -119,7 +185,7 @@ $(document).ready(function() {
           setTimeout(resizeend, delta);
       } else {
           timeout = false;
-          if (globalSearchForm !== undefined) {
+          if (globalSearchForm) {
             globalSearchForm.changeWidth($(window).width());
           }
       }
@@ -131,12 +197,9 @@ $(document).ready(function() {
     $(document).pjax('a[data-pjax=js-pageContent]', '#js-pageContent');
 
     //on page load, create a query manager and global search form
-    //setupObjects inits dotdotdot (text truncation) and infinite scroll
-    //if the appropriate containers are available
-    //then bind pjax event handlers
     qm = new QueryManager();
-    globalSearchForm = new GlobalSearchForm({model: qm});
-    setupObjects();
+    globalSearchForm = new GlobalSearchFormView({model: qm});
+    setupComponents();
 
     $(document).on('pjax:beforeSend', '#js-itemContainer', function(e, xhr, options) {
       if (options.container === '#js-itemContainer') {
@@ -228,7 +291,7 @@ $(document).ready(function() {
 
       popstate = null;
 
-      setupObjects();
+      setupComponents();
     });
 
     $(document).on('pjax:popstate', '#js-pageContent', function(e) {

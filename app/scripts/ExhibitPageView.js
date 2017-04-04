@@ -109,4 +109,13 @@ var ExhibitPageView = Backbone.View.extend({
       $('#js-exhibit-item').modal();
     }
   },
+
+  reset: function() {
+    this.initCarousel();
+    this.clientTruncate();
+  },
+
+  destroy: function() {
+    this.undelegateEvents();
+  }
 });

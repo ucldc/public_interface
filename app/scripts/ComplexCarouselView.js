@@ -116,5 +116,15 @@ var ComplexCarouselView = Backbone.View.extend({
         that.changeWidth();
       };
     }(this)));
+  },
+
+  reset: function() {
+    if ($('.carousel-complex').is(':hidden')) {
+      this.initialize();
+    }
+  },
+
+  destroy: function() {
+    this.undelegateEvents();
   }
 });

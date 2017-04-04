@@ -1,4 +1,4 @@
-/*global Backbone, _, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, CarouselView, ComplexCarouselView */
+/*global Backbone, _ */
 /*exported GlobalSearchFormView */
 
 'use strict';
@@ -33,6 +33,8 @@ var GlobalSearchFormView = Backbone.View.extend({
     $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
   },
 
+  // events: {'click #js-global-header-logo': 'clearQueryManager'}
+  // Clear the query manager's current query state
   clearQueryManager: function() {
     if (!_.isEmpty(this.model.attributes) || !_.isEmpty(sessionStorage)) {
       this.model.clear({silent: true});
@@ -79,93 +81,9 @@ var GlobalSearchFormView = Backbone.View.extend({
     }(this.model)));
   },
 
-  setupComponents: function() {
-    if ($('#js-facet').length > 0) {
-      if (this.facetForm === undefined) { this.facetForm = new FacetFormView({model: this.model}); }
-      this.facetForm.toggleSelectDeselectAll();
-      this.facetForm.toggleTooltips();
-    }
-    else if (this.facetForm !== undefined) {
-      this.facetForm.stopListening();
-      this.facetForm.undelegateEvents();
-      delete this.facetForm;
-    }
-
-    if($('#js-carouselContainer').length > 0) {
-      if (this.carousel === undefined) { this.carousel = new CarouselView({model: this.model}); }
-    }
-    else if (this.carousel !== undefined) {
-      this.carousel.undelegateEvents();
-      delete this.carousel;
-    }
-
-    if($('#js-contactOwner').length > 0) {
-      if (this.contactOwnerForm === undefined) { this.contactOwnerForm = new ContactOwnerFormView(); }
-    }
-    else if (this.contactOwnerForm !== undefined) { delete this.contactOwnerForm; }
-
-    if($('.carousel-complex').length > 0) {
-      if (this.complexCarousel === undefined) {
-        this.complexCarousel = new ComplexCarouselView({model: this.model});
-        $('.js-obj__osd-infobanner').show();
-      }
-      else {
-        $('.js-obj__osd-infobanner').hide();
-        this.complexCarousel.initialize();
-      }
-      //TODO: this should only have to happen once!
-      $('.js-obj__osd-infobanner-link').click(function(){
-        $('.js-obj__osd-infobanner').slideUp('fast');
-      });
-    }
-    else if (this.complexCarousel !== undefined) {
-      this.complexCarousel.undelegateEvents();
-      delete this.complexCarousel;
-    }
-
-    if($('#obj__osd').length > 0) {
-      if (this.viewer !== undefined) {
-        this.viewer.destroy();
-        delete this.viewer;
-        $('#obj__osd').empty();
-      }
-      if ($('.openseadragon-container').length > 0) { $('.openseadragon-container').remove(); }
-      this.viewer = new OpenSeadragon({
-        id: 'obj__osd',
-        tileSources: [tileSources],
-        zoomInButton: 'obj__osd-button-zoom-in',
-        zoomOutButton: 'obj__osd-button-zoom-out',
-        homeButton: 'obj__osd-button-home',
-        fullPageButton: 'obj__osd-button-fullscreen'
-      });
-    }
-    else if (this.viewer !== undefined) {
-      this.viewer.destroy();
-      delete this.viewer;
-    }
-
-    if($('#js-exhibit-title').length > 0) {
-      if (this.exhibitPage === undefined) { this.exhibitPage = new ExhibitPageView(); }
-      this.exhibitPage.initCarousel();
-      this.exhibitPage.clientTruncate();
-    }
-    else if (this.exhibitPage !== undefined) {
-      this.exhibitPage.undelegateEvents();
-      delete this.exhibitPage;
-    }
-
-    if($('#js-exhibit-wrapper').length > 0) {
-      this.grid = $('#js-exhibit-wrapper').isotope({
-        layoutMode: 'masonry',
-        itemSelector: '.js-grid-item',
-        percentPosition: true,
-        masonry: {
-          columnWidth: '.js-grid-sizer'
-        }
-      });
-    }
-
-  },
+  // setupComponents: function() {
+  //
+  // },
 
   changeWidth: function(window_width) {
     if (this.facetForm !== undefined) { this.facetForm.changeWidth(window_width); }

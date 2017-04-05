@@ -30,7 +30,6 @@ var setupComponents = function() {
   /*********** CALISPHERE COMPONENTS *****************/
   if ($('#js-facet').length) {
     globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm});
-    globalSearchForm.facetForm.reset();
   } else if (globalSearchForm.facetForm) {
     globalSearchForm.facetForm.destroy();
     delete globalSearchForm.facetForm;

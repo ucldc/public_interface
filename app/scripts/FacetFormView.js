@@ -279,17 +279,26 @@ var FacetFormView = Backbone.View.extend({
     }
   },
 
+  pjax_end: function(that) {
+    return function() {
+      that.toggleSelectDeselectAll();
+      that.toggleTooltips();
+    };
+  },
+
   initialize: function() {
     this.listenTo(this.model, 'change', this.render);
     this.changeWidth($(window).width());
-  },
-
-  reset: function() {
+    
     this.toggleSelectDeselectAll();
     this.toggleTooltips();
+
+    $(document).on('pjax:end', '#js-pageContent', this.pjax_end(this));
   },
 
   destroy: function() {
+    $(document).off('pjax:end', '#js-pageContent', this.pjax_end(this));
+
     this.stopListening();
     this.undelegateEvents();
   }

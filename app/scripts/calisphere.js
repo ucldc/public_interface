@@ -51,7 +51,6 @@ var setupComponents = function() {
 
   if($('.carousel-complex').length) {
     globalSearchForm.complexCarousel = globalSearchForm.complexCarousel || new ComplexCarouselView({model: qm});
-    globalSearchForm.complexCarousel.reset();
   } else if (globalSearchForm.complexCarousel) {
     globalSearchForm.complexCarousel.destroy();
     delete globalSearchForm.complexCarousel;

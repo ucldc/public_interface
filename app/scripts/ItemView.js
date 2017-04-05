@@ -189,24 +189,26 @@ var ItemView = Backbone.View.extend({
     xhr.setRequestHeader('X-From-Item-Page', 'true');
   },
 
-  pjax_end: function() {
-    var lastItem = $('.carousel__item--selected');
-    if (lastItem.children('a').data('item_id') !== this.model.get('itemId')) {
-      lastItem.find('.carousel__image--selected').toggleClass('carousel__image');
-      lastItem.find('.carousel__image--selected').toggleClass('carousel__image--selected');
-      lastItem.toggleClass('carousel__item');
-      lastItem.toggleClass('carousel__item--selected');
+  pjax_end: function(that) {
+    return function() {
+      var lastItem = $('.carousel__item--selected');
+      if (lastItem.children('a').data('item_id') !== that.model.get('itemId')) {
+        lastItem.find('.carousel__image--selected').toggleClass('carousel__image');
+        lastItem.find('.carousel__image--selected').toggleClass('carousel__image--selected');
+        lastItem.toggleClass('carousel__item');
+        lastItem.toggleClass('carousel__item--selected');
 
-      var linkItem = $('.js-item-link[data-item_id="' + this.model.get('itemId') + '"]');
-      linkItem.find('.carousel__image').toggleClass('carousel__image--selected');
-      linkItem.find('.carousel__image').toggleClass('carousel__image');
-      linkItem.parent().toggleClass('carousel__item--selected');
-      linkItem.parent().toggleClass('carousel__item');
-    }
+        var linkItem = $('.js-item-link[data-item_id="' + that.model.get('itemId') + '"]');
+        linkItem.find('.carousel__image').toggleClass('carousel__image--selected');
+        linkItem.find('.carousel__image').toggleClass('carousel__image');
+        linkItem.parent().toggleClass('carousel__item--selected');
+        linkItem.parent().toggleClass('carousel__item');
+      }
 
-    if($('#obj__mejs').length) {
-      $('.mejs-player').mediaelementplayer();
-    }
+      if($('#obj__mejs').length) {
+        $('.mejs-player').mediaelementplayer();
+      }
+    };
   },
 
   initialize: function() {
@@ -215,12 +217,12 @@ var ItemView = Backbone.View.extend({
     this.paginateRelatedCollections();
 
     $(document).on('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);    
-    $(document).on('pjax:end', '#js-itemContainer', this.pjax_end);
+    $(document).on('pjax:end', '#js-itemContainer', this.pjax_end(this));
   },
 
   destroy: function() {
     $(document).off('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);
-    $(document).off('pjax:end', '#js-itemContainer', this.pjax_end);
+    $(document).off('pjax:end', '#js-itemContainer', this.pjax_end(this));
     this.undelegateEvents();
   }
 });

@@ -3,6 +3,10 @@
 
 'use strict';
 
+// component created if selector in DOM, selector is in the following templates (2017-04-04)
+// selector: .carousel-complex
+// templates: complex-object.html
+
 var ComplexCarouselView = Backbone.View.extend({
   el: $('#js-pageContent'),
   carouselConfig: {
@@ -19,6 +23,7 @@ var ComplexCarouselView = Backbone.View.extend({
     'click .js-component-link'  : 'getComponent',
     'afterChange .carousel-complex__item-container': 'afterChange'
   },
+  // events: {'click .js-set-link': 'getSet'}
   getSet: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -33,6 +38,7 @@ var ComplexCarouselView = Backbone.View.extend({
       scrollTo: 440
     });
   },
+  // events: {'click .js-component-link': 'getComponent'}
   getComponent: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -50,7 +56,7 @@ var ComplexCarouselView = Backbone.View.extend({
       scrollTo: 440
     });
   },
-
+  // events: {'afterChange .carousel-complex__item-container': 'afterChange'}
   afterChange: function(e, slick) {
     this.changeWidth(e, slick);
     this.checkEdges(e, slick);
@@ -109,6 +115,14 @@ var ComplexCarouselView = Backbone.View.extend({
     }
   },
 
+  pjax_end: function(that) {
+    return function() {
+      if ($('.carousel-complex').is(':hidden')) {
+        that.initialize();
+      }
+    };
+  },
+
   initialize: function() {
     this.initCarousel();
     imagesLoaded('.carousel-complex__item-container img', (function(that) {
@@ -116,15 +130,12 @@ var ComplexCarouselView = Backbone.View.extend({
         that.changeWidth();
       };
     }(this)));
-  },
 
-  reset: function() {
-    if ($('.carousel-complex').is(':hidden')) {
-      this.initialize();
-    }
+    $(document).on('pjax:end', '#js-pageContent', this.pjax_end(this));
   },
 
   destroy: function() {
+    $(document).off('pjax:end', '#js-pageContent', this.pjax_end(this));
     this.undelegateEvents();
   }
 });

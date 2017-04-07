@@ -149,9 +149,10 @@ var ExhibitPageView = Backbone.View.extend({
       $('#js-exhibit-item').modal();
     }
 
+    this.bound_pjax_end = this.pjax_end(this);
     $(document).on('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
     $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
-    $(document).on('pjax:end', '#js-pageContent', this.pjax_end(this));
+    $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
 
     this.initCarousel();
     $('.js-exhibit__overview').dotdotdot();
@@ -160,7 +161,7 @@ var ExhibitPageView = Backbone.View.extend({
   destroy: function() {
     $(document).off('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
     $(document).off('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
-    $(document).off('pjax:end', '#js-pageContent', this.pjax_end(this));
+    $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
     this.undelegateEvents();
   }
 });

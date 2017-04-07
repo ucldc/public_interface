@@ -43,6 +43,7 @@ var GlobalSearchFormView = Backbone.View.extend({
 
   initialize: function() {
     this.listenTo(this.model, 'change:q', this.render);
+    $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
   },
 
   // for use in pjax
@@ -80,10 +81,6 @@ var GlobalSearchFormView = Backbone.View.extend({
       };
     }(this.model)));
   },
-
-  // setupComponents: function() {
-  //
-  // },
 
   changeWidth: function(window_width) {
     if (this.facetForm !== undefined) { this.facetForm.changeWidth(window_width); }

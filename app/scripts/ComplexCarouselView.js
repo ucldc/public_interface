@@ -131,11 +131,12 @@ var ComplexCarouselView = Backbone.View.extend({
       };
     }(this)));
 
-    $(document).on('pjax:end', '#js-pageContent', this.pjax_end(this));
+    this.bound_pjax_end = this.pjax_end(this);
+    $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
   },
 
   destroy: function() {
-    $(document).off('pjax:end', '#js-pageContent', this.pjax_end(this));
+    $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
     this.undelegateEvents();
   }
 });

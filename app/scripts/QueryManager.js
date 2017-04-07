@@ -19,14 +19,19 @@ var QueryManager = Backbone.Model.extend({
     var formSelector = '[form=' + formName + ']';
 
     if ($(formSelector).length > 0) {
-      var queryObj = {
+      // $.extend({}) automatically removes undefined values
+      var queryObj = $.extend({}, {
         q: $(formSelector + '[name=q]').val(),
         view_format: $(formSelector + '[name=view_format]').val(),
         sort: $(formSelector + '[name=sort]').val(),
         rows: $(formSelector + '[name=rows]').val(),
-        start: parseInt($(formSelector + '[name=start]').val()),
-      };
-      var filters = $(formSelector + '.js-facet').serializeArray();
+        start: $(formSelector + '[name=start]').val(),
+      });
+      if (queryObj.start) { queryObj.start = parseInt(queryObj.start); }
+
+      // :visible differentiates between actual filters and implied filters,
+      // such as collection_data on a collection page (stored in an <input hidden class=js-facet> elem)
+      var filters = $(formSelector + '.js-facet:visible').serializeArray();
       if (filters.length > 0) {
         for (var i=0; i<filters.length; i++) {
           var filter = filters[i];
@@ -53,29 +58,38 @@ var QueryManager = Backbone.Model.extend({
       queryObj = _.defaults(queryObj, {type_ss: '', facet_decade: '', repository_data: '', collection_data: '', rq: ''});
       return queryObj;
     } else {
-      console.log('[ERROR]: QueryManager attempting to retrieve query parameters from facet form when no facet form is in DOM.');
+      console.log('[ERROR]: QueryManager attempting to retrieve query parameters from ' + formName + ' form when no form is in DOM.');
       return {};
     }
   },
 
-  getCarouselInfoFromDOM: function() {
+  getItemInfoFromDOM: function() {
     if ($('[form=js-carouselForm]').length > 0) {
       var carouselInfoObj = {
         itemNumber: $('[form=js-carouselForm][name=itemNumber]').val() || '',
         itemId: $('[form=js-carouselForm][name=itemId]').val() || '',
         referral: $('[form=js-carouselForm][name=referral]').val() || '',
         referralName: $('[form=js-carouselForm][name=referralName]').val() || '',
-        campus_slug: $('[form=js-carouselForm][name=campus_slug]').val() || ''
       };
+
+      if (carouselInfoObj.referral === 'collection') {
+        carouselInfoObj.collection_data = parseInt($('[form=js-carouselForm][name=collection_url]').val());
+      }
+      if (carouselInfoObj.referral === 'institution') {
+        carouselInfoObj.repository_data = parseInt($('[form=js-carouselForm][name=repository_url]').val());
+      }
+      if (carouselInfoObj.referral === 'campus') {
+        carouselInfoObj.campus_slug = $('[form=js-carouselForm][name=campus_slug]').val();
+      }
 
       return carouselInfoObj;
     } else {
-      console.log('[ERROR]: QueryManager attempting to retrieve carousel parameters from carousel form when no such form is in DOM.');
+      console.log('[ERROR]: QueryManager attempting to retrieve item information from js-carouselForm when no such form is in DOM.');
       return {};
     }
   },
 
-  unsetCarouselInfo: function() {
+  unsetItemInfo: function() {
     this.unset('itemId', {silent: true});
     this.unset('itemNumber', {silent: true});
 
@@ -112,15 +126,19 @@ var QueryManager = Backbone.Model.extend({
         referral: sessionStorage.getItem('referral'),
         referralName: sessionStorage.getItem('referralName')
       };
-      attributes = _.omit(attributes, function(value) {
-        return _.isNull(value);
-      });
-      this.set(attributes);
     } 
-    else if ($('#js-facet').length > 0) {
+    else if ($('[form=js-facet]').length) {
       attributes = this.getQueryFromDOM('js-facet');
-      this.set(attributes);
     }
+    else if ($('[form=js-carouselForm]').length) {
+      attributes = this.getQueryFromDOM('js-carouselForm');
+      attributes = _.extend(attributes, this.getItemInfoFromDOM());
+    }
+
+    attributes = _.omit(attributes, function(value) {
+      return _.isNull(value);
+    });
+    this.set(attributes);
   },
   
   setSessionStorage: function(value, key) {

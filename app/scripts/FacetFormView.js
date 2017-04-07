@@ -281,8 +281,28 @@ var FacetFormView = Backbone.View.extend({
 
   pjax_end: function(that) {
     return function() {
-      that.toggleSelectDeselectAll();
-      that.toggleTooltips();
+      //this is still called on pjax_end when navigating away from facet form to something else
+      if ($('#js-facet').length) {
+        if (that.popstate === 'back' || that.popstate === 'forward') {
+          _.each($('form'), function(form) {
+            form.reset();
+          });
+
+          var queryObj;
+          queryObj = that.model.getQueryFromDOM('js-facet');
+          that.model.set(queryObj, {silent: true});
+          that.popstate = null;
+        }
+
+        that.toggleSelectDeselectAll();
+        that.toggleTooltips();
+      }
+    };
+  },
+
+  pjax_popstate: function(that) {
+    return function(e) {
+      that.popstate = e.direction;
     };
   },
 
@@ -293,11 +313,16 @@ var FacetFormView = Backbone.View.extend({
     this.toggleSelectDeselectAll();
     this.toggleTooltips();
 
-    $(document).on('pjax:end', '#js-pageContent', this.pjax_end(this));
+    //bind handlers and save for later removal
+    this.bound_pjax_end = this.pjax_end(this);
+    this.bound_pjax_popstate = this.pjax_popstate(this);
+    $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
+    $(document).on('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
   },
 
   destroy: function() {
-    $(document).off('pjax:end', '#js-pageContent', this.pjax_end(this));
+    $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
+    $(document).off('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
 
     this.stopListening();
     this.undelegateEvents();

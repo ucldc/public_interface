@@ -1,4 +1,4 @@
-/*global _, QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, ItemView, ComplexCarouselView */
+/*global QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, ItemView, ComplexCarouselView */
 
 /* globals Modernizr: false */
 'use strict';
@@ -24,7 +24,7 @@ if(typeof console === 'undefined') {
 
 $(document).on('pjax:timeout', function() { return false; });
 
-var qm, globalSearchForm, popstate = null;
+var qm, globalSearchForm;
 
 var setupComponents = function() {
   /*********** CALISPHERE COMPONENTS *****************/
@@ -198,8 +198,6 @@ $(document).ready(function() {
     globalSearchForm = new GlobalSearchFormView({model: qm});
     setupComponents();
 
-    $(document).on('pjax:beforeReplace', '#js-pageContent', globalSearchForm.pjax_beforeReplace);
-
     $(document).on('pjax:success', function(e, data, x, xhr, z) {
       var start_marker = z.context.find('meta[property=og\\:type]');
       var variable_markup = start_marker.nextUntil($('meta[name=twitter\\:creator]'));
@@ -213,37 +211,12 @@ $(document).ready(function() {
     $(document).on('pjax:end', '#js-pageContent', function() {
       globalSearchForm.pjax_end();
 
-      //if we've gotten to a page without search context, clear the query manager
-      if($('#js-facet').length <= 0 && $('#js-objectViewport').length <= 0) {
+      // if we've gotten to a page without search context, clear the query manager
+      if(!$('#js-facet').length && !$('#js-objectViewport').length) {
         qm.clear({silent: true});
       }
 
-      //user pressed the browser's back/forward buttons
-      if (popstate === 'back' || popstate === 'forward') {
-        //reset all the forms on the page!
-        _.each($('form'), function(form) {
-          form.reset();
-        });
-
-        //reset the query manager to state defined by the DOM
-        var queryObj;
-        if ($('#js-facet').length > 0) {
-          qm.unsetCarouselInfo();
-          queryObj = qm.getQueryFromDOM('js-facet');
-          qm.set(queryObj, {silent: true});
-        } else if ($('#js-carouselForm').length > 0) {
-          queryObj = qm.getQueryFromDOM('js-carouselForm');
-          qm.set(queryObj, {silet: true});
-        }
-      }
-
-      popstate = null;
-
       setupComponents();
-    });
-
-    $(document).on('pjax:popstate', '#js-pageContent', function(e) {
-      popstate = e.direction;
     });
 
     /* globals NProgress: false */

@@ -26,7 +26,7 @@ var ItemView = Backbone.View.extend({
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
     // Unset carousel specific information
-    this.model.unsetCarouselInfo();
+    this.model.unsetItemInfo();
 
     e.preventDefault();
     $.pjax({
@@ -191,6 +191,15 @@ var ItemView = Backbone.View.extend({
 
   pjax_end: function(that) {
     return function() {
+      if (that.popstate === 'back' || that.popstate === 'forward') {
+        var queryObj;
+        if ($('#js-carouselForm').length) {
+          queryObj = that.model.getItemInfoFromDOM();
+          that.model.set(queryObj, {silet: true});
+        }
+        that.popstate = null;
+      }
+
       var lastItem = $('.carousel__item--selected');
       if (lastItem.children('a').data('item_id') !== that.model.get('itemId')) {
         lastItem.find('.carousel__image--selected').toggleClass('carousel__image');
@@ -211,18 +220,30 @@ var ItemView = Backbone.View.extend({
     };
   },
 
+  pjax_popstate: function(that) {
+    return function(e) {
+      that.popstate = e.direction;
+    };
+  },
+
   initialize: function() {
     this.model.set({itemId: $('#js-itemContainer').data('itemid')}, {silent: true});
     this.initCarousel();
     this.paginateRelatedCollections();
 
+    this.bound_pjax_end = this.pjax_end(this);
+    this.bound_pjax_popstate = this.pjax_popstate(this);
     $(document).on('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);    
-    $(document).on('pjax:end', '#js-itemContainer', this.pjax_end(this));
+    $(document).on('pjax:end', '#js-itemContainer', this.bound_pjax_end);
+    $(document).on('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
   },
 
   destroy: function() {
     $(document).off('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);
-    $(document).off('pjax:end', '#js-itemContainer', this.pjax_end(this));
+    $(document).off('pjax:end', '#js-itemContainer', this.bound_pjax_end);
+    $(document).off('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
     this.undelegateEvents();
+
+    this.model.unsetItemInfo();
   }
 });

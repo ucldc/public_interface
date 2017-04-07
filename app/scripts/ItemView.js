@@ -227,7 +227,13 @@ var ItemView = Backbone.View.extend({
   },
 
   initialize: function() {
-    this.model.set({itemId: $('#js-itemContainer').data('itemid')}, {silent: true});
+    if ($('#js-carouselForm').length) {
+      var queryObj = this.model.getQueryFromDOM('js-carouselForm');
+      queryObj = $.extend(queryObj, this.model.getItemInfoFromDOM());
+      this.model.set(queryObj, {silent: true});
+    } else {
+      this.model.set({itemId: $('#js-itemContainer').data('itemid')}, {silent: true});
+    }
     this.initCarousel();
     this.paginateRelatedCollections();
 

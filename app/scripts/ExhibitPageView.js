@@ -139,7 +139,13 @@ var ExhibitPageView = Backbone.View.extend({
       // init carousels and truncate exhibit overview
       if (xhr.target.id === 'js-pageContent') {
         that.initCarousel();
-        $('.js-exhibit__overview').dotdotdot();
+        $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
+          if (isTruncated) {
+            $('#js-exhibit__overview').text('Read full exhibition overview.');
+          } else {
+            $('.js-exhibit__overview').css('height', 'auto');
+          }
+        }});
       }
     };
   },
@@ -155,7 +161,13 @@ var ExhibitPageView = Backbone.View.extend({
     $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
 
     this.initCarousel();
-    $('.js-exhibit__overview').dotdotdot();
+    $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
+      if (isTruncated) {
+        $('#js-exhibit__overview').text('Read full exhibition overview.');
+      } else {
+        $('.js-exhibit__overview').css('height', 'auto');
+      }
+    }});
   },
 
   destroy: function() {

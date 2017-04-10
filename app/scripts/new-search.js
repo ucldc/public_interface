@@ -101,7 +101,15 @@ var exhibitPage = Backbone.View.extend({
   },
 
   clientTruncate: function() {
-    $('.js-exhibit__overview').dotdotdot();
+    $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
+      if (isTruncated) {
+        $('#js-exhibit__overview').text('Read full exhibition overview.');
+      } else {
+        $('.js-exhibit__overview').css('height', 'auto');
+      }
+    }});
+    
+    // $('.js-exhibit__overview').dotdotdot();
   },
 
   initialize: function() {

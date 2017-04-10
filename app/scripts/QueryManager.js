@@ -71,11 +71,15 @@ var QueryManager = Backbone.Model.extend({
   getItemInfoFromDOM: function() {
     if ($('[form=js-carouselForm]').length > 0) {
       var carouselInfoObj = {
-        itemNumber: $('[form=js-carouselForm][name=itemNumber]').val() || '',
-        itemId: $('[form=js-carouselForm][name=itemId]').val() || '',
+        itemId: $('#js-objectViewport').data('item_id') || $('[form=js-carouselForm][name=itemId]').val() || '',
         referral: $('[form=js-carouselForm][name=referral]').val() || '',
         referralName: $('[form=js-carouselForm][name=referralName]').val() || '',
       };
+
+      carouselInfoObj.itemNumber =
+        $('.js-item-link[data-item_id="' + carouselInfoObj.itemId + '"]').data('item_number') ||
+        $('[form=js-carouselForm][name=itemNumber]').val() ||
+        '';
 
       if (carouselInfoObj.referral === 'collection') {
         carouselInfoObj.collection_data = parseInt($('[form=js-carouselForm][name=collection_url]').val());

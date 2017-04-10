@@ -31,7 +31,11 @@ var QueryManager = Backbone.Model.extend({
 
       // :visible differentiates between actual filters and implied filters,
       // such as collection_data on a collection page (stored in an <input hidden class=js-facet> elem)
-      var filters = $(formSelector + '.js-facet:visible').serializeArray();
+      if (formSelector === 'js-facet') {
+        var filters = $(formSelector + '.js-facet:visible').serializeArray();
+      } else {
+        var filters = $(formSelector + '.js-facet').serializeArray();
+      }
       if (filters.length > 0) {
         for (var i=0; i<filters.length; i++) {
           var filter = filters[i];

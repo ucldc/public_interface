@@ -44,10 +44,10 @@
       {% endif %}
     </a>
   {% elif item.harvest_type == 'hosted' %}
-    {% if 'structMap' in item and 'select' in item and item.selected == True %}
-      Set Information.
+    {% if 'structMap' in item and 'selected' in item and item.selected == True %}
+      Summary Information.
     {% elif 'structMap' in item %}
-      Page Information. <a href="{% url 'calisphere:itemView' item.id %}" data-pjax="js-pageContent">Go to set information.</a>
+      Item information. <a href="{% url 'calisphere:itemView' item.id %}" data-pjax="js-pageContent">Go to summary information.</a>
     {% else %}
       Item Information.
     {% endif %}

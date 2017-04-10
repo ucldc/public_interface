@@ -13,7 +13,12 @@ $carousel-item-size: 80px;
 
 }
 
-// ***** Fixed Parent-level Thumbnail ***** //
+.carousel-complex__navigation-text {
+  border: none;
+  padding-bottom: 10px;
+}
+
+// ***** Fixed Parent-level Item ***** //
 
 .carousel-complex__fixed-item {
   float: left;
@@ -28,31 +33,40 @@ $carousel-item-size: 80px;
 
 .carousel-complex__fixed-link {
   display: block;
+}
+
+
+// ***** Fixed Parent-level Thumbnail Image ***** //
+.carousel-complex__fixed-thumb {
+  border: 1px solid $design-dark-gray-color;
+}
+
+
+.carousel-complex__fixed-thumb--selected {
+  border: 5px solid $design-primary-color;
+}
+
+// ***** Fixed Parent-level Icon ***** //
+.carousel-complex__fixed-tile-icon-container {
+  display: block;
   position: relative;
   background-color: #fff;
   border: 1px solid $design-primary-color;
 
-  &:before {
+  &:before { // sets container height equal to width
     display: block;
-    padding-bottom: 100%;
     content: "";
+    padding-top: 100%;
   }
-
 }
 
-.carousel-complex__fixed-link--selected {
-  @extend .carousel-complex__fixed-link;
+.carousel-complex__fixed-tile-icon-container--selected {
+  @extend .carousel-complex__fixed-tile-icon-container;
   border: 5px solid $design-primary-color;
 }
 
-.carousel-complex__fixed-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  font-size: 1.3em;
-  line-height: 1;
+.carousel-complex__fixed-tile-icon {
+  @include thumbnail__tile-icon(40px, 40px, 40px, 40px); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)
 }
 
 // ***** Complex Carousel Thumbnails ***** //
@@ -92,6 +106,24 @@ $carousel-item-size: 80px;
   display: block;
 }
 
+.carousel-complex__link .tooltip {
+  width: 100%;
+}
+
+.carousel-complex__link .tooltip.top { // center tooltip and hide from pointer
+  margin: 55% 0 0 0;
+  padding: 0 $layout-component-margin;
+  pointer-events: none;
+}
+
+.carousel-complex__link .tooltip-arrow {
+  display: none;
+}
+
+.carousel-complex__link .tooltip-inner {
+  text-align: left;
+}
+
 .carousel-complex__thumbnail-container {
   @extend .thumbnail__container;
   border: 1px solid $design-dark-gray-color;
@@ -105,7 +137,7 @@ $carousel-item-size: 80px;
 .carousel-complex__tile {
   @extend .carousel-complex__item;
   width: $carousel-item-size;
-  height: $carousel-item-size;
+  //height: $carousel-item-size; // specifying height as equal to item height causes captions not to be visible
 }
 
 .carousel-complex__tile--selected {
@@ -125,4 +157,13 @@ $carousel-item-size: 80px;
 
 .carousel-complex img { // Slick carousel reset
   height: $carousel-item-size;
+}
+
+.carousel-complex__thumbnail-caption {
+  width: $carousel-item-size;
+  height: 2em; // reveal only 2 lines of text
+  margin-top: 0.5em;
+  color: #000;
+  overflow: hidden;
+  line-height: 1;
 }

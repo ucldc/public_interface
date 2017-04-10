@@ -7,7 +7,7 @@
     "underscore": "~1.7.0",
     "jquery-pjax": "latest",
     "slick.js": "=1.5.5",
-    "fontawesome": "~4.2.0",
+    "fontawesome": "~4.7.0",
     "picturefill": "~2.2.0",
     "mediaelement": "~2.16.4",
     "openseadragon": "~2.0.0",

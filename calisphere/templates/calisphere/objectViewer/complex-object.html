@@ -2,6 +2,10 @@
 
 {% if item.contentFile.format|lower == 'image' %}
   {% include 'calisphere/objectViewer/hosted-simple-image.html' %}
+{% elif item.contentFile.format|lower == 'audio' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
+{% elif item.contentFile.format|lower == 'video' %}
+  {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
 {% else %}
   {% include 'calisphere/objectViewer/object-tiles-and-overlays.html' %}
 {% endif %}
@@ -12,7 +16,11 @@
     <a href="{% url 'calisphere:itemView' item.id %}" class="{% if item.selected %}carousel-complex__fixed-link--selected
       {% else %}carousel-complex__fixed-link{% endif %} js-set-link">
       <div class="carousel-complex__fixed-content">
-      cover page
+         {% if 'reference_image_md5' in item %}
+            <img alt="Top of set" src="{{ thumbnailUrl }}/crop/100x100/{{ item.reference_image_md5 }}" />
+         {% else %}
+            <div class="carousel-complex__tile-icon fa-home"></div> 
+         {% endif %}
       </div>
     </a>
   </div>

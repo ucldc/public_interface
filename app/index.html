@@ -12,7 +12,6 @@
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/slick.js/slick/slick.css" />
     <link rel="stylesheet" href="bower_components/slick.js/slick/slick-theme.css" />
-    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" href="bower_components/mediaelement/build/mediaelementplayer.css" />
     <link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
     <!-- endbower -->
@@ -23,21 +22,28 @@
     <!-- build:js scripts/vendor/modernizr.js -->
     <script src="scripts/vendor/modernizr-dev.js"></script>
     <!-- endbuild -->
-    <!-- build:js scripts/new-search.js -->
-    <script src="scripts/new-search.js"></script>
-    <!-- endbuild -->
-    <!-- build:js scripts/calisphere.js -->
+
+
+
+    <!-- build:js(app) scripts/calisphere.js -->
+    <script src="scripts/QueryManager.js"></script>
+    <script src="scripts/ExhibitPageView.js"></script>
+    <script src="scripts/FacetFormView.js"></script>
+    <script src="scripts/ItemView.js"></script>
+    <script src="scripts/ComplexCarouselView.js"></script>
+    <script src="scripts/GlobalSearchFormView.js"></script>
+    <script src="scripts/ContactOwnerFormView.js"></script>
     <script src="scripts/calisphere.js"></script>
     <!-- endbuild -->
-    <!-- build:js scripts/query-manager.js -->
-    <script src="scripts/query-manager.js"></script>
-    <!-- endbuild -->
+
+
+
     <!-- build:js scripts/calisphere-home.js -->
     <script src="scripts/calisphere-home.js"></script>
     <!-- endbuild -->
-    <!-- build:js scripts/contact-form.js -->
-    <script src="scripts/contact-form.js"></script>
-    <!-- endbuild -->
+
+
+
   </head>
   <body>
     <!--[if lt IE 10]>
@@ -189,6 +195,8 @@
     <script src="bower_components/unipointer/unipointer.js"></script>
     <script src="bower_components/tap-listener/tap-listener.js"></script>
     <script src="bower_components/unidragger/unidragger.js"></script>
+    <script src="bower_components/chai/chai.js"></script>
+    <script src="bower_components/mocha/mocha.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     <script src="bower_components/isotope/js/isotope.js"></script>

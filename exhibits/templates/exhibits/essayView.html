@@ -35,18 +35,18 @@
             {% include "exhibits/render_as.html" with render_as=essay.go_further_render_as text=essay.go_further truncate=False container_class="" %}
           </div>
         {% endif %}
-        {% if essay.historicalessayexhibit_set.all|length > 0 %}
+        {% if essay.published_exhibits.all|length > 0 %}
           <div class="essay__note">
             <h3>Related exhibitions</h3>
-            {% for hee in essay.historicalessayexhibit_set.all %}
+            {% for hee in essay.published_exhibits.all %}
               <a href="{{ hee.exhibit.get_absolute_url }}" data-pjax="js-pageContent">{{ hee.exhibit }}</a><br/>
             {% endfor %}
           </div>
         {% endif %}
-        {% if essay.historicalessaytheme_set.all|length > 0 %}
+        {% if essay.published_themes.all|length > 0 %}
           <div class="essay__note">
             <h3>Related themes</h3>
-            {% for het in essay.historicalessaytheme_set.all %}
+            {% for het in essay.published_themes.all %}
               <a href="{{ het.theme.get_absolute_url }}" data-pjax="js-pageContent">{{ het.theme }}</a><br/>
             {% endfor %}
           </div>

@@ -47,8 +47,8 @@
         <div class="lessonplan__info-box">
           <b>Grade Level Recommendation:</b><br>
           {{ lessonPlan.grade_level }}<br><br>
-          <b>Relates to:</b>
-          {% for lpt in lessonPlan.lessonplantheme_set.all %}{% if forloop.counter != 1 %}, {% endif %}<a href="{{ lpt.theme.get_absolute_url }}" data-pjax="js-pageContent">{{ lpt.theme }}</a>{% endfor %}
+          {% if lessonPlan.published_themes.all|length > 0 %}<b>Relates to:</b>{% endif %}
+          {% for lpt in lessonPlan.published_themes.all %}{% if forloop.counter != 1 %}, {% endif %}<a href="{{ lpt.theme.get_absolute_url }}" data-pjax="js-pageContent">{{ lpt.theme }}</a>{% endfor %}
         </div>
       </div>
     </div>
@@ -68,12 +68,12 @@
   </div>
   {% endif %}
   
-  {% if lessonPlan.lessonplanexhibit_set.all|length > 0 %}
+  {% if lessonPlan.published_exhibits.all|length > 0 %}
   <div class="exhibit__related-materials">
-    <h3>Explore exhibitions related to "{{ lessonPlan.title }}" ({{ lessonPlan.lessonplanexhibit_set.all|length }}):</h3>
+    <h3>Explore exhibitions related to "{{ lessonPlan.title }}" ({{ lessonPlan.published_exhibits.all|length }}):</h3>
     <div class="exhibit__items" style="padding: 25px 25px 0 25px; margin-top: 0;">
       <div class="row js-related-carousel exhibit__related-carousel">
-        {% for lpe in lessonPlan.lessonplanexhibit_set.all %}
+        {% for lpe in lessonPlan.published_exhibits.all %}
           <div class="col-xs-2 col-md-3">
             <a href="{{ lpe.exhibit.get_absolute_url }}" data-pjax="js-pageContent">
               <div class="exhibit__lockup--med">

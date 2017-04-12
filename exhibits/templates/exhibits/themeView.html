@@ -47,10 +47,10 @@
   </div>
   
   <div>
-  {% if theme.historicalessaytheme_set.all|length > 0 %}
-    <h3>Read related essays ({{ theme.historicalessaytheme_set.all|length }}):</h3>
+  {% if theme.published_essays.all|length > 0 %}
+    <h3>Read related essays ({{ theme.published_essays.all|length }}):</h3>
     <div class="row js-related-carousel exhibit__related-carousel">
-      {% for het in theme.historicalessaytheme_set.all %}
+      {% for het in theme.published_essays.all %}
         <div class="col-xs-2 col-md-3">
           <a href="{{ het.historicalEssay.get_absolute_url }}" data-pjax="js-pageContent">
             <div class="exhibit__essay-lockup">
@@ -65,10 +65,10 @@
     </div>
   {% endif %}
 
-  {% if theme.lessonplantheme_set.all|length > 0 %}
-    <h3>Just for teachers: lesson plans ({{ theme.lessonplantheme_set.all|length }}):</h3>
+  {% if theme.published_lessons.all|length > 0 %}
+    <h3>Just for teachers: lesson plans ({{ theme.published_lessons.all|length }}):</h3>
     <div class="row js-related-carousel exhibit__related-carousel">
-      {% for lpt in theme.lessonplantheme_set.all %}
+      {% for lpt in theme.published_lessons.all %}
         <div class="col-xs-2 col-md-3">
           <a href="{{ lpt.lessonPlan.get_absolute_url }}" data-pjax="js-pageContent">
             <div class="exhibit__lesson-lockup">

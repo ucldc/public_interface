@@ -46,6 +46,7 @@
   </div>
   
   <div>
+    {% if historical_essays|length > 0 %}
     <h3 id="historicalEssays">Read related essays ({{ historical_essays|length }}):</h3>
     <div class="row js-related-carousel exhibit__related-carousel">
       {% for he in historical_essays %}
@@ -61,7 +62,9 @@
         </div>
       {% endfor %}
     </div>
+    {% endif %}
 
+    {% if lesson_plans|length > 0 %}
     <h3>Just for teachers: lesson plans ({{ lesson_plans|length }}):</h3>
     <div class="row js-related-carousel exhibit__related-carousel">
       {% for lp in lesson_plans %}
@@ -77,6 +80,7 @@
         </div>
       {% endfor %}
     </div>
+    {% endif %}
   </div>
 
   <div class="row">

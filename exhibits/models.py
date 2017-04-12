@@ -57,6 +57,12 @@ class Exhibit(models.Model):
     def __str__(self):
         return self.title
 
+    def published_essays(self):
+        return self.historicalessayexhibit_set.filter(historicalEssay__publish=True)
+
+    def published_lessons(self):
+        return self.lessonplanexhibit_set.filter(lessonPlan__publish=True)
+
     def get_absolute_url(self):
         return reverse('exhibits:exhibitView', kwargs={'exhibit_id': self.id, 'exhibit_slug': self.slug})
 
@@ -143,6 +149,12 @@ class HistoricalEssay(models.Model):
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
         
+    def published_exhibits(self):
+        return self.historicalessayexhibit_set.filter(exhibit__publish=True)
+
+    def published_themes(self):
+        return self.historicalessaytheme_set.filter(theme__publish=True)
+
     def get_absolute_url(self):
         return reverse('exhibits:essayView', kwargs={'essay_id': self.id, 'essay_slug': self.slug})
 
@@ -216,6 +228,12 @@ class LessonPlan(models.Model):
     def __str__(self):
         return self.title
     
+    def published_themes(self):
+        return self.lessonplantheme_set.filter(theme__publish=True)
+
+    def published_exhibits(self):
+        return self.lessonplanexhibit_set.filter(exhibit__publish=True)
+
     def get_absolute_url(self):
         return reverse('for-teachers:lessonPlanView', kwargs={'lesson_id': self.id, 'lesson_slug': self.slug})
 
@@ -288,6 +306,15 @@ class Theme(models.Model):
         (JARDA, 'JARDA')
     )
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, blank=True)
+
+    def published_essays(self):
+        return self.historicalessaytheme_set.filter(historicalEssay__publish=True)
+
+    def published_lessons(self):
+        return self.lessonplantheme_set.filter(lessonPlan__publish=True)
+
+    def published_exhibits(self):
+        return self.exhibittheme_set.filter(exhibit__publish=True)
 
     def get_absolute_url(self):
         return reverse('exhibits:themeView', kwargs={'theme_id': self.id, 'theme_slug': self.slug})

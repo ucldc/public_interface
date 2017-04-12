@@ -1,21 +1,21 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from exhibits.models import *
 from itertools import chain
 import random
 
 def calCultures(request):
-    california_cultures = Theme.objects.filter(title__icontains='California Cultures').order_by('title')
+    california_cultures = Theme.objects.filter(title__icontains='California Cultures', publish=True).order_by('title')
 
-    unique_historical_essays = HistoricalEssay.objects.filter(historicalessaytheme__theme__in=california_cultures).values_list('title', 'id').distinct()
+    unique_historical_essays = HistoricalEssay.objects.filter(historicalessaytheme__theme__in=california_cultures, publish=True).values_list('title', 'id').distinct()
     historical_essays = []
     for (title, key) in unique_historical_essays:
         historical_essays.append(HistoricalEssay.objects.get(pk=key))
 
-    unique_lesson_plans = LessonPlan.objects.filter(lessonplantheme__theme__in=california_cultures).values_list('title', 'id').distinct()
+    unique_lesson_plans = LessonPlan.objects.filter(lessonplantheme__theme__in=california_cultures, publish=True).values_list('title', 'id').distinct()
     lesson_plans = []
     for (title, key) in unique_lesson_plans:
         lesson_plans.append(LessonPlan.objects.get(pk=key))
@@ -27,8 +27,8 @@ def calCultures(request):
     })
 
 def exhibitRandom(request):
-    exhibits = Exhibit.objects.all()
-    themes = Theme.objects.all()
+    exhibits = Exhibit.objects.filter(publish=True)
+    themes = Theme.objects.filter(publish=True)
     exhibit_theme_list = list(chain(exhibits, themes))
     random.shuffle(exhibit_theme_list)
 
@@ -77,25 +77,30 @@ def exhibitRandom(request):
 
 def exhibitSearch(request):
     if request.method == 'GET' and len(request.GET.getlist('title')) > 0:
-        exhibits = Exhibit.objects.filter(title__icontains=request.GET['title']).order_by('title')
+        exhibits = Exhibit.objects.filter(title__icontains=request.GET['title'], publish=True).order_by('title')
         return render(request, 'exhibits/exhibitSearch.html', {'searchTerm': request.GET['title'], 'exhibits': exhibits})
     else: 
-        exhibits = Exhibit.objects.all().order_by('title')
+        exhibits = Exhibit.objects.all().filter(publish=True).order_by('title')
         return render(request, 'exhibits/exhibitSearch.html', {'searchTerm': '', 'exhibits': exhibits})
 
 def exhibitDirectory(request, category='search'):
     if category in list(category for (category, display) in Theme.CATEGORY_CHOICES):
-        themes = Theme.objects.filter(category=category).order_by('sort_title')
+        themes = Theme.objects.filter(category=category, publish=True).order_by('sort_title')
         collated = []
         for theme in themes:
-            exhibits = Exhibit.objects.filter(exhibittheme__theme=theme)
+            exhibits = Exhibit.objects.filter(exhibittheme__theme=theme, publish=True)
             collated.append((theme, exhibits))
         return render(request, 'exhibits/exhibitDirectory.html', {'themes': collated, 'categories': Theme.CATEGORY_CHOICES, 'selected': category})
         
     if category == 'all': 
-        exhibits = Exhibit.objects.all().order_by('title')
+        exhibits = Exhibit.objects.all().filter(publish=True).order_by('title')
     if category == 'uncategorized':
-        exhibits = Exhibit.objects.filter(exhibittheme__isnull=True)
+
+        # if exhibit's theme is null OR if exhibit's theme is unpublished, but the exhibit is published
+        exhibitsWithNoTheme = Exhibit.objects.filter(exhibittheme__isnull=True, publish=True)
+        exhibitsWithUnpublishedTheme = Exhibit.objects.filter(exhibittheme__theme__publish=False, publish=True)
+        exhibits = exhibitsWithNoTheme | exhibitsWithUnpublishedTheme
+
     return render(request, 'exhibits/exhibitDirectory.html', {'themes': [{'', exhibits}], 'categories': Theme.CATEGORY_CHOICES, 'selected': category})
 
 def themeDirectory(request):
@@ -105,8 +110,8 @@ def themeDirectory(request):
     return render(request, 'exhibits/themeDirectory.html', {'jarda': jarda, 'california_cultures': california_cultures, 'california_history': california_history})
 
 def lessonPlanDirectory(request):
-    lessonPlans = LessonPlan.objects.all()
-    historicalEssays = HistoricalEssay.objects.all()
+    lessonPlans = LessonPlan.objects.filter(publish=True)
+    historicalEssays = HistoricalEssay.objects.filter(publish=True)
     return render(request, 'exhibits/for-teachers.html', {'lessonPlans': lessonPlans, 'historicalEssays': historicalEssays})
 
 def itemView(request, exhibit_id, item_id):
@@ -124,7 +129,7 @@ def itemView(request, exhibit_id, item_id):
     if fromExhibitPage:
         return render(request, 'exhibits/itemView.html', {'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
     else:
-        exhibit = Exhibit.objects.get(pk=exhibit_id)
+        exhibit = get_object_or_404(Exhibit, pk=exhibit_id, publish=True)
         exhibitItems = exhibit.exhibititem_set.all().order_by('order')
         exhibitListing = []
         for theme in exhibit.exhibittheme_set.all():
@@ -147,7 +152,7 @@ def lessonPlanItemView(request, lesson_id, item_id):
     if fromLessonPage:
         return render(request, 'exhibits/lessonItemView.html', {'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
     else:
-        lesson = LessonPlan.objects.get(pk=lesson_id)
+        lesson = get_object_or_404(LessonPlan, pk=lesson_id, publish=True)
         exhibitItems = lesson.exhibititem_set.all().order_by('lesson_plan_order')
         return render(request, 'exhibits/lessonItemView.html',
         {'lessonPlan': lesson, 'q': '', 'exhibitItems': exhibitItems, 'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
@@ -160,11 +165,16 @@ def exhibitView(request, exhibit_id, exhibit_slug):
     exhibit = get_object_or_404(Exhibit, pk=exhibit_id)
     if exhibit_slug != exhibit.slug:
         return redirect(exhibit)
+    if not exhibit.publish:
+        raise Http404("Exhibit is unpublished");
 
     exhibitItems = exhibit.exhibititem_set.all().order_by('order')
     exhibitListing = []
-    for theme in exhibit.exhibittheme_set.all():
-        exhibitListing.append((theme.theme, theme.theme.exhibittheme_set.exclude(exhibit=exhibit).order_by('order')))
+    for theme in exhibit.exhibittheme_set.filter(theme__publish=True).all():
+        exhibits = theme.theme.exhibittheme_set.exclude(exhibit=exhibit).filter(exhibit__publish=True).order_by('order')
+        if exhibits.count() > 0:
+            exhibitListing.append((theme.theme, exhibits))
+
     return render(request, 'exhibits/exhibitView.html',
     {'exhibit': exhibit, 'q': '', 'exhibitItems': exhibitItems, 'relatedExhibitsByTheme': exhibitListing})
 
@@ -172,6 +182,8 @@ def essayView(request, essay_id, essay_slug):
     essay = get_object_or_404(HistoricalEssay, pk=essay_id)
     if essay_slug != essay.slug:
         return redirect(essay)
+    if not essay.publish:
+        raise Http404("Essay is unpublished");
 
     return render(request, 'exhibits/essayView.html', {'essay': essay, 'q': ''})
 
@@ -179,8 +191,10 @@ def themeView(request, theme_id, theme_slug):
     theme = get_object_or_404(Theme, pk=theme_id)
     if theme_slug != theme.slug:
         return redirect(theme)
+    if not theme.publish:
+        raise Http404("Theme is unpublished");
 
-    exhibitListing = theme.exhibittheme_set.all().order_by('order')
+    exhibitListing = theme.exhibittheme_set.filter(exhibit__publish=True).order_by('order')
     return render(request, 'exhibits/themeView.html', {'theme': theme, 'relatedExhibits': exhibitListing})
 
 def lessonPlanView(request, lesson_id, lesson_slug):
@@ -191,11 +205,13 @@ def lessonPlanView(request, lesson_id, lesson_slug):
     lesson = get_object_or_404(LessonPlan, pk=lesson_id)
     if lesson_slug != lesson.slug:
         return redirect(lesson)
+    if not lesson.publish:
+        raise Http404("Lesson plan is unpublished");
 
     exhibitItems = lesson.exhibititem_set.all().order_by('lesson_plan_order')
     
     relatedThemes = []
-    for theme in lesson.lessonplantheme_set.all():
+    for theme in lesson.lessonplantheme_set.filter(theme__publish=True):
         relatedThemes.append((theme.theme, theme.theme.lessonplantheme_set.exclude(lessonPlan=lesson)))
     
     return render(request, 'exhibits/lessonPlanView.html', {'lessonPlan': lesson, 'q': '', 'exhibitItems': exhibitItems, 'relatedThemes': relatedThemes})

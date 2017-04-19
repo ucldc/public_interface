@@ -77,14 +77,6 @@
       </div>
     {% elif repository_id and uc_institution %}
       <div class="col-md-3">
-        <a class="institution-intro__featured-image-link" href="{% if collections.0.display_items.0.reference_image_md5 %}{{ collections.0.display_items.0.reference_image_md5 }}{% else %}#{% endif %}">
-          <img class="institution-intro__featured-image" itemprop="image" src="{{ thumbnailUrl }}crop/260x260/{{ collections.0.display_items.0.reference_image_md5 }}" alt="{{ institution.name }}">
-          <div class="institution-intro__featured-image-caption">
-            View featured image
-          </div>
-        </a>
-      </div>
-      <div class="col-md-3">
         <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }} <br> {{ uc_institution.0.name }}</h2>
         <ul class="institution-intro__list">
           {% if contact_information.city %}
@@ -156,14 +148,6 @@
         {% endif %}
       </div>
     {% else %}
-      <div class="col-md-3">
-        <a class="institution-intro__featured-image-link" href="{% if collections.0.display_items.0.reference_image_md5 %}{{ collections.0.display_items.0.reference_image_md5 }}{% else %}#{% endif %}">
-          <img class="institution-intro__featured-image" itemprop="image" src="{{ thumbnailUrl }}crop/260x260/{{ collections.0.display_items.0.reference_image_md5 }}" alt="{{ institution.name }}">
-          <div class="institution-intro__featured-image-caption">
-            View featured image
-          </div>
-        </a>
-      </div>
       <div class="col-md-3">
         <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }}</h2>
         <ul class="institution-intro__list">

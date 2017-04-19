@@ -63,23 +63,24 @@ var setupComponents = function() {
   }
 
   /************ VENDOR INITIALIZATION ****************/
-  if (globalSearchForm.viewer) {
+  if($('#obj__osd').length) {
+    if(globalSearchForm.viewer) {
+      globalSearchForm.viewer.destroy();
+      delete globalSearchForm.viewer;
+      $('#obj__osd').empty();
+    }
+    if ($('.openseadragon-container').length) { $('.openseadragon-container').remove(); }
+    globalSearchForm.viewer = new OpenSeadragon({
+      id: 'obj__osd',
+      tileSources: [tileSources],
+      zoomInButton: 'obj__osd-button-zoom-in',
+      zoomOutButton: 'obj__osd-button-zoom-out',
+      homeButton: 'obj__osd-button-home',
+      fullPageButton: 'obj__osd-button-fullscreen'
+    });
+  } else if (globalSearchForm.viewer) {
     globalSearchForm.viewer.destroy();
     delete globalSearchForm.viewer;
-
-    if ($('.openseadragon-container').length) { $('.openseadragon-container').remove(); }
-    if ($('#obj__osd').length) {
-      $('#obj__osd').empty();
-
-      globalSearchForm.viewer = new OpenSeadragon({
-        id: 'obj__osd',
-        tileSources: [tileSources],
-        zoomInButton: 'obj__osd-button-zoom-in',
-        zoomOutButton: 'obj__osd-button-zoom-out',
-        homeButton: 'obj__osd-button-home',
-        fullPageButton: 'obj__osd-button-fullscreen'
-      });
-    }
   }
 
   if($('#js-exhibit-wrapper').length) {

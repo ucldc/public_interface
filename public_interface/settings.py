@@ -68,7 +68,7 @@ UCLDC_DEVEL = bool(os.environ.get('UCLDC_DEVEL'))
 
 # When EXHIBIT_PREVIEW = False, show only exhibits, themes, lesson plans, and essays marked 'published'
 # When EXHIBIT_PREVIEW = True, show ALL exhibits, themes, lesson plans, and essays
-EXHIBIT_PREVIEW = os.environ.get('UCLDC_EXHIBIT_PREVIEW') in ['True', 'true', '1']
+EXHIBIT_PREVIEW = bool(os.environ.get('UCLDC_EXHIBIT_PREVIEW'))
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 

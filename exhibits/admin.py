@@ -111,7 +111,7 @@ class HistoricalEssayAdmin(admin.ModelAdmin):
         ('About this Essay',        {'fields': [('byline', 'byline_render_as')], 'classes': ['collapse']}),
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
-    list_display = ('publish', 'title', 'hero', 'hero_first', 'slug', 'get_absolute_url')
+    list_display = ('title', 'hero', 'hero_first', 'slug', 'get_absolute_url', 'publish')
     prepopulated_fields = {'slug': ['title']}
     inlines = [HistoricalEssayItemInline]
 
@@ -125,7 +125,7 @@ class ExhibitAdmin(admin.ModelAdmin):
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
     inlines = [ExhibitItemInline, NotesItemInline, ThemeExhibitInline, HistoricalEssayExhibitInline, LessonPlanExhibitInline, BrowseTermGroupInline]
-    list_display = ('publish', 'title', 'hero', 'hero_first', 'slug', 'get_absolute_url')
+    list_display = ('title', 'hero', 'hero_first', 'slug', 'get_absolute_url', 'publish')
     prepopulated_fields = {'slug': ['title']}
 
 
@@ -138,7 +138,7 @@ class LessonPlanAdmin(admin.ModelAdmin):
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
     prepopulated_fields = {'slug': ['title']}
-    list_display = ('publish', 'title', 'slug', 'get_absolute_url')
+    list_display = ('title', 'slug', 'get_absolute_url', 'publish')
     inlines = [LessonPlanItemInline]
 
 class BrowseTermGroupAdmin(admin.ModelAdmin):
@@ -154,7 +154,7 @@ class ThemeAdmin(admin.ModelAdmin):
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
     inlines = [ExhibitThemeInline, HistoricalEssayThemeInline, LessonPlanThemeInline, BrowseTermGroupInline]
-    list_display = ('publish', 'title', 'hero', 'hero_first', 'slug', 'get_absolute_url')
+    list_display = ('title', 'hero', 'hero_first', 'slug', 'get_absolute_url', 'publish')
     prepopulated_fields = {'slug': ['title']}
 
 

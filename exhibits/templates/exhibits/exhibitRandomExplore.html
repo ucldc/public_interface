@@ -37,7 +37,7 @@
                   <div class="theme__lockup--horizontal-color" style="background-color: {{ entry.color }}"></div>
                   <div class="theme__lockup--horizontal-title">
                     {{ entry.title }}
-                    <div class="theme__lockup--horizontal-exhibit-count">{{ entry.published_exhibits|length }} exhibition{{ entry.published_exhibits|pluralize }}</div>
+                    <div class="theme__lockup--horizontal-exhibit-count">{{ entry.published_exhibits.all|length }} exhibition{{ entry.published_exhibits.all|pluralize }}</div>
                   </div>
                 </div>
               </div>

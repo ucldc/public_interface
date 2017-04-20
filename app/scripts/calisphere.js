@@ -72,6 +72,7 @@ var setupComponents = function() {
     if ($('.openseadragon-container').length) { $('.openseadragon-container').remove(); }
     globalSearchForm.viewer = new OpenSeadragon({
       id: 'obj__osd',
+      toolbar: 'obj__osd-toolbar',
       tileSources: [tileSources],
       zoomInButton: 'obj__osd-button-zoom-in',
       zoomOutButton: 'obj__osd-button-zoom-out',

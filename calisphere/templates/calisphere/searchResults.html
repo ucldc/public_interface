@@ -26,7 +26,7 @@
           {% for filter_type in filters %}
             {% for filter in filters|get_item:filter_type %}
               {% if filter_type == 'collection_url' or filter_type == 'repository_url' %}
-                <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{% if filter_type == 'collection_url' %}c-{% else %}r-{% endif %}{{ filter.id }}">{% if 'campus' in filter %}{{ filter.campus }}, {% endif %}{{ filter.name }}<i class="fa fa-close button__close-icon"></i>
+                <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{% if filter_type == 'collection_url' %}c-{% else %}r-{% endif %}{{ filter.id }}">{% if 'campus' in filter and filter.campus|length > 0 %}{{ filter.campus }}, {% endif %}{{ filter.name }}<i class="fa fa-close button__close-icon"></i>
                 </button>
               {% else %}
                 <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{{ filter|slugify }}">{{ filter }}<i class="fa fa-close button__close-icon"></i>

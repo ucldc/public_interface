@@ -64,7 +64,7 @@ def SOLR(**params):
     for key, value in params.items():
         key = key.replace('_', '.')
         query.update({key: value})
-    res = requests.get(solr_url, headers=solr_auth, params=query, verify=False)
+    res = requests.post(solr_url, headers=solr_auth, data=query, verify=False)
     res.raise_for_status()
     results = json.loads(res.content)
     facet_counts = results.get('facet_counts', {})

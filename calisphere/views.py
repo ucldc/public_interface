@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.apps import apps
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -161,11 +162,15 @@ def getCollectionMosaic(collection_url):
         'display_items': items
     }
 
-def getRepositoryData(repository_data=None, repository_id=None):
-    """ supply either `repository_data` from solr or the `repository_id` """
+def getRepositoryData(repository_data=None, repository_id=None, repository_url=None):
+    """ supply either `repository_data` from solr or the `repository_id` or `repository_url`
+        all the reset will be looked up and filled in
+    """
     app = apps.get_app_config('calisphere')
     repository = {}
     repository_details = {}
+    if not(repository_data) and not(repository_id) and repository_url:
+        repository_id = re.match(r'https://registry\.cdlib\.org/api/v1/repository/(?P<repository_id>\d*)/?', repository_url).group('repository_id')
     if repository_data:
         parts = repository_data.split('::')
         repository['url'] = parts[0] if len(parts) >= 1 else ''
@@ -938,12 +943,12 @@ def collectionView(request, collection_id):
     })
 
 def campusDirectory(request):
-    repositories_solr_query = SOLR_select(q='*:*', rows=0, start=0, facet='true', facet_mincount=1, facet_field=['repository_data'], facet_limit='-1')
-    solr_repositories = repositories_solr_query.facet_counts['facet_fields']['repository_data']
+    repositories_solr_query = SOLR_select(q='*:*', rows=0, start=0, facet='true', facet_mincount=1, facet_field=['repository_url'], facet_limit='-1')
+    solr_repositories = repositories_solr_query.facet_counts['facet_fields']['repository_url']
 
     repositories = []
-    for repository_data in solr_repositories:
-        repository = getRepositoryData(repository_data=repository_data)
+    for repository_url in solr_repositories:
+        repository = getRepositoryData(repository_url=repository_url)
         if repository['campus']:
             repositories.append({
                 'name': repository['name'],
@@ -966,12 +971,11 @@ def campusDirectory(request):
     )
 
 def statewideDirectory(request):
-    repositories_solr_query = SOLR_select(q='*:*', rows=0, start=0, facet='true', facet_mincount=1, facet_field=['repository_data'], facet_limit='-1')
-    solr_repositories = repositories_solr_query.facet_counts['facet_fields']['repository_data']
-
+    repositories_solr_query = SOLR_select(q='*:*', rows=0, start=0, facet='true', facet_mincount=1, facet_field=['repository_url'], facet_limit='-1')
+    solr_repositories = repositories_solr_query.facet_counts['facet_fields']['repository_url']
     repositories = []
-    for repository_data in solr_repositories:
-        repository = getRepositoryData(repository_data=repository_data)
+    for repository_url in solr_repositories:
+        repository = getRepositoryData(repository_url=repository_url)
         if repository['campus'] == '':
             repositories.append({
                 'name': repository['name'],

@@ -77,7 +77,7 @@
   </div>
   {% endif %}
 
-  {% if relatedExhibitsByTheme|length > 0 or exhibit.historicalessayexhibit_set.all|length > 0 or exhibit.lessonplanexhibit_set.all|length > 0 %}
+  {% if relatedExhibitsByTheme|length > 0 or exhibit.published_essays.all|length > 0 or exhibit.published_lessons.all|length > 0 %}
   <div class="exhibit__related-materials">
   {% endif %}
   {% if relatedExhibitsByTheme|length > 0 %}
@@ -105,10 +105,10 @@
     {% endfor %}
   {% endif %}
     
-  {% if exhibit.historicalessayexhibit_set.all|length > 0 %}
-    <h3>Read related essays ({{ exhibit.historicalessayexhibit_set.all|length }}):</h3>
+  {% if exhibit.published_essays.all|length > 0 %}
+    <h3>Read related essays ({{ exhibit.published_essays.all|length }}):</h3>
     <div class="row js-related-carousel exhibit__related-carousel">
-      {% for hee in exhibit.historicalessayexhibit_set.all %}
+      {% for hee in exhibit.published_essays.all %}
         <div class="col-xs-2 col-md-3">
           <a href="{{ hee.historicalEssay.get_absolute_url }}" data-pjax="js-pageContent">
             <div class="exhibit__essay-lockup">
@@ -123,10 +123,10 @@
     </div>
   {% endif %}
 
-  {% if exhibit.lessonplanexhibit_set.all|length > 0 %}
-    <h3>Just for teachers: lesson plans ({{ exhibit.lessonplanexhibit_set.all|length }}):</h3>
+  {% if exhibit.published_lessons.all|length > 0 %}
+    <h3>Just for teachers: lesson plans ({{ exhibit.published_lessons.all|length }}):</h3>
     <div class="row js-related-carousel exhibit__related-carousel">
-      {% for lpe in exhibit.lessonplanexhibit_set.all %}
+      {% for lpe in exhibit.published_lessons.all %}
         <div class="col-xs-2 col-md-3">
           <a href="{{ lpe.lessonPlan.get_absolute_url }}" data-pjax="js-pageContent">
             <div class="exhibit__lesson-lockup">
@@ -141,7 +141,7 @@
     </div>
   {% endif %}
   
-  {% if relatedExhibitsByTheme|length > 0 or exhibit.historicalessayexhibit_set.all|length > 0 or exhibit.lessonplanexhibit_set.all|length > 0 %}
+  {% if relatedExhibitsByTheme|length > 0 or exhibit.published_essays.all|length > 0 or exhibit.published_lessons.all|length > 0 %}
   </div>
   {% endif %}
 

@@ -90,11 +90,12 @@ $(document).ready(function() {
     });
 
     $('.button__contact-owner').on('click', function() {
-      ga('send', 'event', 'buttons', 'contact', event.target.href, {
+      var url = $(this).attr('href');
+      ga('send', 'event', 'buttons', 'contact', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
         // click captured and tracked, send the user along
         'hitCallback': function () {
-          document.location = event.target.href;
+          document.location = url;
         }
       });
       return false;

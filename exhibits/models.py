@@ -31,6 +31,13 @@ RENDERING_OPTIONS = (
 #     def __str__(self):
 #         return self.item_id
 
+class PublishedExhibitManager(models.Manager):
+    def get_queryset(self):
+        if settings.EXHIBIT_PREVIEW:
+            return super(PublishedExhibitManager, self).get_queryset()
+        else:
+            return super(PublishedExhibitManager, self).get_queryset().filter(publish=True)
+
 @python_2_unicode_compatible
 class Exhibit(models.Model):
     title = models.CharField(max_length=512)
@@ -54,8 +61,28 @@ class Exhibit(models.Model):
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
     
+    objects = PublishedExhibitManager()
+
     def __str__(self):
         return self.title
+
+    def published_themes(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.exhibittheme_set
+        else:
+            return self.exhibittheme_set.filter(theme__publish=True)
+
+    def published_essays(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.historicalessayexhibit_set
+        else:
+            return self.historicalessayexhibit_set.filter(historicalEssay__publish=True)
+
+    def published_lessons(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.lessonplanexhibit_set
+        else:
+            return self.lessonplanexhibit_set.filter(lessonPlan__publish=True)
 
     def get_absolute_url(self):
         return reverse('exhibits:exhibitView', kwargs={'exhibit_id': self.id, 'exhibit_slug': self.slug})
@@ -118,6 +145,14 @@ class Exhibit(models.Model):
                     super(Exhibit, self).save(update_fields=[s3field])
                     self._meta.get_field(s3field).upload_to = upload_to
 
+
+class PublishedHistoricalEssayManager(models.Manager):
+    def get_queryset(self):
+        if settings.EXHIBIT_PREVIEW:
+            return super(PublishedHistoricalEssayManager, self).get_queryset()
+        else:
+            return super(PublishedHistoricalEssayManager, self).get_queryset().filter(publish=True)
+
 @python_2_unicode_compatible
 class HistoricalEssay(models.Model):
     title = models.CharField(max_length=200)
@@ -142,7 +177,21 @@ class HistoricalEssay(models.Model):
     color = models.CharField(max_length=20, blank=True, help_text="Please provide color in <code>#xxx</code>, <code>#xxxxxx</code>, <code>rgb(xxx,xxx,xxx)</code>, or <code>rgba(xxx,xxx,xxx,x.x)</code> formats.")
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
+
+    objects = PublishedHistoricalEssayManager()
         
+    def published_exhibits(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.historicalessayexhibit_set
+        else:
+            return self.historicalessayexhibit_set.filter(exhibit__publish=True)
+
+    def published_themes(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.historicalessaytheme_set
+        else:
+            return self.historicalessaytheme_set.filter(theme__publish=True)
+
     def get_absolute_url(self):
         return reverse('exhibits:essayView', kwargs={'essay_id': self.id, 'essay_slug': self.slug})
 
@@ -192,6 +241,14 @@ class HistoricalEssay(models.Model):
     def __str__(self):
         return self.title
 
+
+class PublishedLessonPlanManager(models.Manager):
+    def get_queryset(self):
+        if settings.EXHIBIT_PREVIEW:
+            return super(PublishedLessonPlanManager, self).get_queryset()
+        else:
+            return super(PublishedLessonPlanManager, self).get_queryset().filter(publish=True)
+
 @python_2_unicode_compatible
 class LessonPlan(models.Model):
     title = models.CharField(max_length=200)
@@ -212,10 +269,24 @@ class LessonPlan(models.Model):
     publish = models.BooleanField(verbose_name='Ready for publication?', default=False)
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
-    
+
+    objects = PublishedLessonPlanManager()
+
     def __str__(self):
         return self.title
     
+    def published_themes(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.lessonplantheme_set
+        else:
+            return self.lessonplantheme_set.filter(theme__publish=True)
+
+    def published_exhibits(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.lessonplanexhibit_set
+        else:
+            return self.lessonplanexhibit_set.filter(exhibit__publish=True)
+
     def get_absolute_url(self):
         return reverse('for-teachers:lessonPlanView', kwargs={'lesson_id': self.id, 'lesson_slug': self.slug})
 
@@ -258,6 +329,14 @@ class LessonPlan(models.Model):
                     super(LessonPlan, self).save(update_fields=[s3field])
                     self._meta.get_field(s3field).upload_to = upload_to
 
+
+class PublishedThemeManager(models.Manager):
+    def get_queryset(self):
+        if settings.EXHIBIT_PREVIEW:
+            return super(PublishedThemeManager, self).get_queryset()
+        else:
+            return super(PublishedThemeManager, self).get_queryset().filter(publish=True)
+
 @python_2_unicode_compatible
 class Theme(models.Model): 
     title = models.CharField(max_length=200)
@@ -278,7 +357,9 @@ class Theme(models.Model):
     publish = models.BooleanField(verbose_name='Ready for publication?', default=False)
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
-    
+
+    objects = PublishedThemeManager()
+
     CALHISTORY = 'cal-history'
     CALCULTURES = 'cal-cultures'
     JARDA = 'jarda'
@@ -288,6 +369,24 @@ class Theme(models.Model):
         (JARDA, 'JARDA')
     )
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, blank=True)
+
+    def published_essays(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.historicalessaytheme_set
+        else:
+            return self.historicalessaytheme_set.filter(historicalEssay__publish=True)
+
+    def published_lessons(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.lessonplantheme_set
+        else:
+            return self.lessonplantheme_set.filter(lessonPlan__publish=True)
+
+    def published_exhibits(self):
+        if settings.EXHIBIT_PREVIEW:
+            return self.exhibittheme_set
+        else:
+            return self.exhibittheme_set.filter(exhibit__publish=True)
 
     def get_absolute_url(self):
         return reverse('exhibits:themeView', kwargs={'theme_id': self.id, 'theme_slug': self.slug})

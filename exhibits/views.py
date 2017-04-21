@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from exhibits.models import *
 from itertools import chain
+from django.conf import settings
 import random
 
 def calCultures(request):
@@ -95,7 +96,17 @@ def exhibitDirectory(request, category='search'):
     if category == 'all': 
         exhibits = Exhibit.objects.all().order_by('title')
     if category == 'uncategorized':
-        exhibits = Exhibit.objects.filter(exhibittheme__isnull=True)
+
+        # if previewing exhibits, only show in uncategorized those exhibits which are not hooked up to a theme
+        if settings.EXHIBIT_PREVIEW:
+            exhibits = Exhibit.objects.filter(exhibittheme__isnull=True)
+        # if showing exhibits on production, show both exhibits which are not hooked up to a theme
+        # AND exhibits which are hooked up to a theme, but the theme is unpublished.
+        else:
+            exhibitsWithNoTheme = Exhibit.objects.filter(exhibittheme__isnull=True)
+            exhibitsWithUnpublishedTheme = Exhibit.objects.filter(exhibittheme__theme__publish=False)
+            exhibits = exhibitsWithNoTheme | exhibitsWithUnpublishedTheme
+
     return render(request, 'exhibits/exhibitDirectory.html', {'themes': [{'', exhibits}], 'categories': Theme.CATEGORY_CHOICES, 'selected': category})
 
 def themeDirectory(request):
@@ -124,11 +135,13 @@ def itemView(request, exhibit_id, item_id):
     if fromExhibitPage:
         return render(request, 'exhibits/itemView.html', {'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
     else:
-        exhibit = Exhibit.objects.get(pk=exhibit_id)
+        exhibit = get_object_or_404(Exhibit, pk=exhibit_id)
         exhibitItems = exhibit.exhibititem_set.all().order_by('order')
         exhibitListing = []
-        for theme in exhibit.exhibittheme_set.all():
-            exhibitListing.append((theme.theme, theme.theme.exhibittheme_set.exclude(exhibit=exhibit).order_by('order')))
+        for theme in exhibit.published_themes().all():
+            exhibits = theme.theme.published_exhibits().exclude(exhibit=exhibit).order_by('order')
+            if exhibits.count() > 0:
+                exhibitListing.append((theme.theme, exhibits))
         return render(request, 'exhibits/itemView.html',
         {'exhibit': exhibit, 'q': '', 'exhibitItems': exhibitItems, 'relatedExhibitsByTheme': exhibitListing, 'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
 
@@ -147,7 +160,7 @@ def lessonPlanItemView(request, lesson_id, item_id):
     if fromLessonPage:
         return render(request, 'exhibits/lessonItemView.html', {'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
     else:
-        lesson = LessonPlan.objects.get(pk=lesson_id)
+        lesson = get_object_or_404(LessonPlan, pk=lesson_id)
         exhibitItems = lesson.exhibititem_set.all().order_by('lesson_plan_order')
         return render(request, 'exhibits/lessonItemView.html',
         {'lessonPlan': lesson, 'q': '', 'exhibitItems': exhibitItems, 'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
@@ -163,8 +176,11 @@ def exhibitView(request, exhibit_id, exhibit_slug):
 
     exhibitItems = exhibit.exhibititem_set.all().order_by('order')
     exhibitListing = []
-    for theme in exhibit.exhibittheme_set.all():
-        exhibitListing.append((theme.theme, theme.theme.exhibittheme_set.exclude(exhibit=exhibit).order_by('order')))
+    for theme in exhibit.published_themes().all():
+        exhibits = theme.theme.published_exhibits().exclude(exhibit=exhibit).order_by('order')
+        if exhibits.count() > 0:
+            exhibitListing.append((theme.theme, exhibits))
+
     return render(request, 'exhibits/exhibitView.html',
     {'exhibit': exhibit, 'q': '', 'exhibitItems': exhibitItems, 'relatedExhibitsByTheme': exhibitListing})
 
@@ -180,7 +196,7 @@ def themeView(request, theme_id, theme_slug):
     if theme_slug != theme.slug:
         return redirect(theme)
 
-    exhibitListing = theme.exhibittheme_set.all().order_by('order')
+    exhibitListing = theme.published_exhibits().all().order_by('order')
     return render(request, 'exhibits/themeView.html', {'theme': theme, 'relatedExhibits': exhibitListing})
 
 def lessonPlanView(request, lesson_id, lesson_slug):
@@ -195,7 +211,7 @@ def lessonPlanView(request, lesson_id, lesson_slug):
     exhibitItems = lesson.exhibititem_set.all().order_by('lesson_plan_order')
     
     relatedThemes = []
-    for theme in lesson.lessonplantheme_set.all():
-        relatedThemes.append((theme.theme, theme.theme.lessonplantheme_set.exclude(lessonPlan=lesson)))
+    for theme in lesson.published_themes().all():
+        relatedThemes.append((theme.theme, theme.theme.published_lessons().exclude(lessonPlan=lesson)))
     
     return render(request, 'exhibits/lessonPlanView.html', {'lessonPlan': lesson, 'q': '', 'exhibitItems': exhibitItems, 'relatedThemes': relatedThemes})

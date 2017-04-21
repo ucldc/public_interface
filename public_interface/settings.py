@@ -66,6 +66,10 @@ DEBUG = bool(os.environ.get('UCLDC_DEBUG'))  # <-- this is django's debug
 UCLDC_DEVEL = bool(os.environ.get('UCLDC_DEVEL'))
 #<-- this has to do with css via devMode
 
+# When EXHIBIT_PREVIEW = False, show only exhibits, themes, lesson plans, and essays marked 'published'
+# When EXHIBIT_PREVIEW = True, show ALL exhibits, themes, lesson plans, and essays
+EXHIBIT_PREVIEW = bool(os.environ.get('UCLDC_EXHIBIT_PREVIEW'))
+
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 SITE_ID = 1

@@ -1,4 +1,4 @@
-/*global _, QueryManager, GlobalSearchForm */
+/*global QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, ItemView, ComplexCarouselView */
 
 /* globals Modernizr: false */
 'use strict';
@@ -24,10 +24,76 @@ if(typeof console === 'undefined') {
 
 $(document).on('pjax:timeout', function() { return false; });
 
-var qm, globalSearchForm, popstate = null;
+var qm, globalSearchForm;
 
-var setupObjects = function() {
-  globalSearchForm.setupComponents();
+var setupComponents = function() {
+  /*********** CALISPHERE COMPONENTS *****************/
+  if ($('#js-facet').length) {
+    globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm});
+  } else if (globalSearchForm.facetForm) {
+    globalSearchForm.facetForm.destroy();
+    delete globalSearchForm.facetForm;
+  }
+
+  if ($('#js-carouselContainer').length) {
+    globalSearchForm.carousel = globalSearchForm.carousel || new ItemView({model: qm});
+  } else if (globalSearchForm.carousel) {
+    globalSearchForm.carousel.destroy();
+    delete globalSearchForm.carousel;
+  }
+
+  if($('#js-contactOwner').length) {
+    globalSearchForm.contactOwnerForm = globalSearchForm.contactOwnerForm || new ContactOwnerFormView();
+  } else if (globalSearchForm.contactOwnerForm) {
+    delete globalSearchForm.contactOwnerForm;
+  }
+
+  if($('.carousel-complex').length) {
+    globalSearchForm.complexCarousel = globalSearchForm.complexCarousel || new ComplexCarouselView({model: qm});
+  } else if (globalSearchForm.complexCarousel) {
+    globalSearchForm.complexCarousel.destroy();
+    delete globalSearchForm.complexCarousel;
+  }
+
+  if($('#js-exhibit-title').length) {
+    globalSearchForm.exhibitPage = globalSearchForm.exhibitPage || new ExhibitPageView();
+  } else if (globalSearchForm.exhibitPage) {
+    globalSearchForm.exhibitPage.destroy();
+    delete globalSearchForm.exhibitPage;
+  }
+
+  /************ VENDOR INITIALIZATION ****************/
+  if($('#obj__osd').length) {
+    if(globalSearchForm.viewer) {
+      globalSearchForm.viewer.destroy();
+      delete globalSearchForm.viewer;
+      $('#obj__osd').empty();
+    }
+    if ($('.openseadragon-container').length) { $('.openseadragon-container').remove(); }
+    globalSearchForm.viewer = new OpenSeadragon({
+      id: 'obj__osd',
+      toolbar: 'obj__osd-toolbar',
+      tileSources: [tileSources],
+      zoomInButton: 'obj__osd-button-zoom-in',
+      zoomOutButton: 'obj__osd-button-zoom-out',
+      homeButton: 'obj__osd-button-home',
+      fullPageButton: 'obj__osd-button-fullscreen'
+    });
+  } else if (globalSearchForm.viewer) {
+    globalSearchForm.viewer.destroy();
+    delete globalSearchForm.viewer;
+  }
+
+  if($('#js-exhibit-wrapper').length) {
+    globalSearchForm.grid = $('#js-exhibit-wrapper').isotope({
+      layoutMode: 'masonry',
+      itemSelector: '.js-grid-item',
+      percentPosition: true,
+      masonry: {
+        columnWidth: '.js-grid-sizer'
+      }
+    });
+  }
 
   $('.obj__heading').dotdotdot({
     ellipsis: '…',
@@ -55,8 +121,7 @@ var setupObjects = function() {
   });
 
   //if we've gotten to a page with a list of collection mosaics, init infinite scroll
-  //TODO: change reference to localhost!
-  if($('#js-mosaicContainer').length > 0) {
+  if($('#js-mosaicContainer').length) {
     $('#js-mosaicContainer').infinitescroll({
       navSelector: '#js-collectionPagination',
       nextSelector: '#js-collectionPagination a.js-next',
@@ -120,7 +185,7 @@ $(document).ready(function() {
           setTimeout(resizeend, delta);
       } else {
           timeout = false;
-          if (globalSearchForm !== undefined) {
+          if (globalSearchForm) {
             globalSearchForm.changeWidth($(window).width());
           }
       }
@@ -132,20 +197,9 @@ $(document).ready(function() {
     $(document).pjax('a[data-pjax=js-pageContent]', '#js-pageContent');
 
     //on page load, create a query manager and global search form
-    //setupObjects inits dotdotdot (text truncation) and infinite scroll
-    //if the appropriate containers are available
-    //then bind pjax event handlers
     qm = new QueryManager();
-    globalSearchForm = new GlobalSearchForm({model: qm});
-    setupObjects();
-
-    $(document).on('pjax:beforeSend', '#js-itemContainer', function(e, xhr, options) {
-      if (options.container === '#js-itemContainer') {
-        xhr.setRequestHeader('X-From-Item-Page', 'true');
-      }
-    });
-
-    $(document).on('pjax:beforeReplace', '#js-pageContent', globalSearchForm.pjax_beforeReplace);
+    globalSearchForm = new GlobalSearchFormView({model: qm});
+    setupComponents();
 
     $(document).on('pjax:success', function(e, data, x, xhr, z) {
       var start_marker = z.context.find('meta[property=og\\:type]');
@@ -157,99 +211,15 @@ $(document).ready(function() {
       });
     });
 
-    $(document).on('pjax:end', function() {
-      if($('#obj__mejs').length > 0) {
-        $('.mejs-player').mediaelementplayer();
-      }
-    });
-
-    $(document).on('pjax:end', '#js-itemContainer', function() {
-      var lastItem = $('.carousel__item--selected');
-      if (lastItem.children('a').data('item_id') !== qm.get('itemId')) {
-        lastItem.find('.carousel__image--selected').toggleClass('carousel__image');
-        lastItem.find('.carousel__image--selected').toggleClass('carousel__image--selected');
-        lastItem.toggleClass('carousel__item');
-        lastItem.toggleClass('carousel__item--selected');
-
-        var linkItem = $('.js-item-link[data-item_id="' + qm.get('itemId') + '"]');
-        linkItem.find('.carousel__image').toggleClass('carousel__image--selected');
-        linkItem.find('.carousel__image').toggleClass('carousel__image');
-        linkItem.parent().toggleClass('carousel__item--selected');
-        linkItem.parent().toggleClass('carousel__item');
-      }
-    });
-
-    $(document).on('pjax:end', '#js-exhibit-item__container', function() {
-      if(!($('#js-exhibit-item').is(':visible')) && $('#js-exhibit-item__container').children().length > 0) {
-        $('#js-exhibit-item').modal();
-      } else if ($('#js-exhibit-item__container').children().length <= 0) {
-        $('#js-exhibit-item').modal('hide');
-      }
-    });
-
-    $(document).on('pjax:beforeReplace', '#js-pageContent', function(e) {
-      if (e.target !== $('#js-exhibit-item__container')[0] && $('#js-exhibit-item').is(':visible')) {
-        $('.modal-backdrop').remove();
-        $('body').removeClass('modal-open');
-      }
-    });
-
-    $(document).on('pjax:beforeSend', '#js-exhibit-item__container', function(e, xhr, options) {
-      if (options.container === '#js-exhibit-item__container') {
-        xhr.setRequestHeader('X-Exhibit-Item', 'true');
-      }
-    });
-
     $(document).on('pjax:end', '#js-pageContent', function() {
       globalSearchForm.pjax_end();
 
-      //if we've gotten to a page without search context, clear the query manager
-      if($('#js-facet').length <= 0 && $('#js-objectViewport').length <= 0) {
+      // if we've gotten to a page without search context, clear the query manager
+      if(!$('#js-facet').length && !$('#js-objectViewport').length) {
         qm.clear({silent: true});
       }
 
-      if (popstate === 'back' || popstate === 'forward') {
-        _.each($('form'), function(form) {
-          form.reset();
-          if ($(form).attr('id') === 'js-facet' || $(form).attr('id') === 'js-carouselForm') {
-            var formAfter = _.map($(form).serializeArray(), function(value) { return [value.name, value.value]; });
-            // if formAfter contains, for example: [type_ss, 'image'], [type_ss, 'text']
-            // turn it into: [type_ss, ['image', 'text']]
-            for (var i=0; i<formAfter.length; i++) {
-              for (var j=i+1; j<formAfter.length; j++) {
-                if (formAfter[i][0] === formAfter[j][0]) {
-                  formAfter[i][1] = [formAfter[i][1], formAfter[j][1]];
-                  formAfter[i][1] = _.flatten(formAfter[i][1]);
-                  formAfter.splice(j, 1);
-                  j = j-1;
-                }
-              }
-            }
-            formAfter = _.object(formAfter);
-
-            //these are all supposed to be stored in session storage and the query manager as arrays
-            _.each(['rq', 'type_ss', 'facet_decade', 'repository_data', 'collection_data'], (function(formAfter) {
-              return function(elem) {
-                if (_.has(formAfter, elem) && !Array.isArray(formAfter[elem])) {
-                  formAfter[elem] = [formAfter[elem]];
-                }
-              };
-            }(formAfter)));
-
-            formAfter = _.defaults(formAfter, {type_ss: '', facet_decade: '', repository_data: '', collection_data: ''});
-
-            qm.set(formAfter, {silent: true});
-          }
-        });
-      }
-
-      popstate = null;
-
-      setupObjects();
-    });
-
-    $(document).on('pjax:popstate', '#js-pageContent', function(e) {
-      popstate = e.direction;
+      setupComponents();
     });
 
     /* globals NProgress: false */

@@ -52,28 +52,28 @@
   </div>
   
   <form id="js-carouselForm">
-    <input type="hidden" name="q" value="{{ q }}">
+    <input type="hidden" name="q" value="{{ q }}" form="js-carouselForm">
     {% if rq %}
-      <input type="hidden" name="rq" value="{{ rq }}">
+      <input type="hidden" name="rq" value="{{ rq }}" form="js-carouselForm">
     {% endif %}
-    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="sort" value="{{ sort }}" form="js-carouselForm">
 
     {% for filter_type in filters %}
       {% for filter in filters|get_item:filter_type %}
         {% if filter_type == 'collection_url' or filter_type == 'repository_url' %}
-          <input type="hidden" name="{{ filter_type }}" value="{{ filter.id }}">
+          <input type="hidden" class="js-filter" name="{{ filter_type }}" value="{{ filter.id }}" form="js-carouselForm">
         {% else %}
-          <input type="hidden" name="{{ filter_type }}" value="{{ filter|slugify }}">
+          <input type="hidden" class="js-filter" name="{{ filter_type }}" value="{{ filter|slugify }}" form="js-carouselForm">
         {% endif %}
       {% endfor %}
     {% endfor %}
     
-    <input type="hidden" name="referral" value="{{ referral }}">
-    <input type="hidden" name="referralName" value="{{ referralName }}">
-    <input type="hidden" name="itemId" value="{{ item_id }}">
-    <input type="hidden" name="itemNumber" value="{{ start }}">
+    <input type="hidden" name="referral" value="{{ referral }}" form="js-carouselForm">
+    <input type="hidden" name="referralName" value="{{ referralName }}" form="js-carouselForm">
+    <input type="hidden" name="itemId" value="{{ item_id }}" form="js-carouselForm">
+    <input type="hidden" name="itemNumber" value="{{ start }}" form="js-carouselForm">
     {% if campus_slug %}
-      <input type="hidden" name="campus_slug" value="{{ campus_slug }}">
+      <input type="hidden" name="campus_slug" value="{{ campus_slug }}" form="js-carouselForm">
     {% endif %}
   </form>
 

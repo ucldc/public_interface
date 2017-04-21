@@ -1,9 +1,9 @@
 /*global Backbone, _ */
-/*exported ContactOwnerForm */
+/*exported ContactOwnerFormView */
 
 'use strict';
 
-var ContactOwnerForm = Backbone.View.extend({
+var ContactOwnerFormView = Backbone.View.extend({
   el: $('#js-contactOwner'),
   events: {
     'change #contactOwner-requestReason'    : 'updateSubject',

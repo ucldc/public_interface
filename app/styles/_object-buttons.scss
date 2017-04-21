@@ -173,6 +173,10 @@ html.no-flexbox .obj-buttons__contact-text {
 
 // ***** Open SeaDragon Control Buttons ***** //
 
+#obj__osd-toolbar {
+  z-index: 1;
+}
+
 .obj__osd-button-group {
   position: absolute;
   top: 0;

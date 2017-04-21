@@ -405,6 +405,8 @@ def itemView(request, item_id=''):
             structmap_url = string.replace(item['structmap_url'], 's3://static', 'https://s3.amazonaws.com/static');
             structmap_data = json_loads_url(structmap_url)
 
+            item['format'] = structmap_data.get('format', '')
+
             if 'structMap' in structmap_data:
                 # complex object
                 if 'order' in request.GET and 'structMap' in structmap_data:

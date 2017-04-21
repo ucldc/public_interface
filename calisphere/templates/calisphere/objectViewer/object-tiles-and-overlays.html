@@ -1,7 +1,7 @@
 <div class="obj-container__simple-{% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}image{% else %}tile{% endif %}">
 
   <a class="obj__link"
-    {% if item.harvest_type == "hosted" and item.type_ss.0|lower == "text" %}
+    {% if item.harvest_type == "hosted" and item.contentFile.format|lower == 'file' %}
       href="javascript: void(0)" data-toggle="modal" data-target="#downloadModal"
     {% elif item.harvest_type == "harvested" %}
       href="{{ item.url_item }}"
@@ -14,14 +14,17 @@
         {% elif item.contentFile.format|lower == 'file' %}
           <img class="obj__simple-image" src="{{ ucldcNuxeoThumbs }}{{ item.contentFile.id }}" alt="{{ item.title.0 }}">
         {% endif %}
-        {% if item.type_ss.0|lower == "moving image" %}
-        <div class="obj__overlay-icon fa-play-circle-o"></div>
-        {% elif item.type_ss.0|lower == "sound"%}
-        <div class="obj__overlay-icon fa-volume-up"></div>
-        {# elif item.type_ss.0|lower == "text"#}
-        <!-- <div class="obj__overlay-icon fa-file-text-o"></div> -->
-        {% elif item.type_ss.0|lower == "dataset" %}
-        <div class="obj__overlay-icon fa-bar-chart"></div>
+
+        {% if item.harvest_type == "harvested" %}
+          {% if item.type_ss.0|lower == "moving image" %}
+          <div class="obj__overlay-icon fa-play-circle-o"></div>
+          {% elif item.type_ss.0|lower == "sound"%}
+          <div class="obj__overlay-icon fa-volume-up"></div>
+          {# elif item.type_ss.0|lower == "text"#}
+          <!-- <div class="obj__overlay-icon fa-file-text-o"></div> -->
+          {% elif item.type_ss.0|lower == "dataset" %}
+          <div class="obj__overlay-icon fa-bar-chart"></div>
+          {% endif %}
         {% endif %}
       </div>
     {% else %}
@@ -39,7 +42,7 @@
     {% endif %}
     <div class="obj__caption">
       {% if item.harvest_type == "hosted" %}
-        {% if item.type_ss.0|lower == "text" %}
+        {% if item.contentFile.format|lower == 'file' %}
           Click here to view text. May contain additional pages. 
         {% endif %}
       {% elif item.harvest_type == "harvested" %}

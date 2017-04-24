@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>main.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="ComplexCarouselView.html">
+                  ComplexCarouselView.js
+                </a>
+              
+                
+                <a class="source" href="ContactOwnerFormView.html">
+                  ContactOwnerFormView.js
+                </a>
+              
+                
+                <a class="source" href="Controller.html">
+                  Controller.js
+                </a>
+              
+                
+                <a class="source" href="ExhibitPageView.html">
+                  ExhibitPageView.js
+                </a>
+              
+                
+                <a class="source" href="FacetFormView.html">
+                  FacetFormView.js
+                </a>
+              
+                
+                <a class="source" href="GlobalSearchFormView.html">
+                  GlobalSearchFormView.js
+                </a>
+              
+                
+                <a class="source" href="ItemView.html">
+                  ItemView.js
+                </a>
+              
+                
+                <a class="source" href="QueryManager.html">
+                  QueryManager.js
+                </a>
+              
+                
+                <a class="source" href="calisphere-home.html">
+                  calisphere-home.js
+                </a>
+              
+                
+                <a class="source" href="calisphere.html">
+                  calisphere.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>main.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">'use strict'</span>; <span class="hljs-comment">// for jshint</span>
+
+<span class="hljs-comment">/**
+ *  @file       main.js
+ *
+ *  @author     Joel
+ *
+ *  This is javascript for the static `/app` mockup specs
+ * `grunt serve` site -- does not run on django site
+ *
+ * comments "// amy integrated" means version in `search.js`
+ *
+ **/</span>
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Remove ‘no-jquery’ class from <html> element if jquery loads properly:
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'html'</span>).removeClass(<span class="hljs-string">'no-jquery'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h5 id="global-header-">Global Header ##### //</h5>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Toggle menu:
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-global-header__bars-icon'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.js-global-header__search'</span>).toggleClass(<span class="hljs-string">'global-header__search global-header__search--selected'</span>);
+    $(<span class="hljs-string">'.js-global-header__mobile-links'</span>).toggleClass(<span class="hljs-string">'.global-header__mobile-links global-header__mobile-links--selected'</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Toggle search box:
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-global-header__search-icon'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.js-global-header__search'</span>).toggleClass(<span class="hljs-string">'global-header__search global-header__search--selected'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>reverse toggle on homepage (not currently used):</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-string">'.js-global-header__search--homepage'</span>).toggleClass(<span class="hljs-string">'global-header__search--homepage global-header__search'</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h5 id="search-filters-">Search Filters ##### //</h5>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Show more filters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-filter__more-link'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.js-filter__more'</span>).addClass(<span class="hljs-string">'filter__more--show'</span>).removeClass(<span class="hljs-string">'filter__more'</span>);
+    $(<span class="hljs-string">'.js-filter__more-link'</span>).addClass(<span class="hljs-string">'filter__more-link--hide'</span>).removeClass(<span class="hljs-string">'filter__more-link'</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Show less filters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-filter__less-link'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.js-filter__more'</span>).addClass(<span class="hljs-string">'filter__more'</span>).removeClass(<span class="hljs-string">'filter__more--show'</span>);
+    $(<span class="hljs-string">'.js-filter__more-link'</span>).addClass(<span class="hljs-string">'filter__more-link'</span>).removeClass(<span class="hljs-string">'filter__more-link--hide'</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <h5 id="checkbox-groups-">Checkbox Groups ##### //</h5>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Disable Update Results button upon document.ready
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Expand checkbox group and switch arrow icon when clicking on header (small and medium screens):
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-a-check__header'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-keyword">this</span>).next(<span class="hljs-string">'.js-a-check__popdown'</span>).toggleClass(<span class="hljs-string">'check__popdown check__popdown--selected'</span>);
+    $(<span class="hljs-keyword">this</span>).children(<span class="hljs-string">'.js-a-check__header-arrow-icon'</span>).toggleClass(<span class="hljs-string">'fa-angle-down fa-angle-up'</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Select all or deselect all checkboxes (small and medium screens):
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-a-check__button-select-all'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.check__input'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
+    $(<span class="hljs-string">'.js-a-check__button-deselect-all'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  });
+  $(<span class="hljs-string">'.js-a-check__button-deselect-all'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.check__input'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Select all or deselect all checkboxes (large screens):
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-a-check__link-select-all'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.check__input'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
+    $(<span class="hljs-string">'.js-a-check__link-deselect-all'</span>).toggleClass(<span class="hljs-string">'check__link-deselect-all--not-selected check__link-deselect-all--selected'</span>);
+    $(<span class="hljs-string">'.js-a-check__link-select-all'</span>).toggleClass(<span class="hljs-string">'check__link-select-all--selected check__link-select-all--not-selected'</span>);
+    $(<span class="hljs-string">'.js-a-check__button-deselect-all'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  });
+  $(<span class="hljs-string">'.js-a-check__link-deselect-all'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.check__input'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-string">'.js-a-check__link-deselect-all'</span>).toggleClass(<span class="hljs-string">'check__link-deselect-all--selected check__link-deselect-all--not-selected'</span>);
+  	$(<span class="hljs-string">'.js-a-check__link-select-all'</span>).toggleClass(<span class="hljs-string">'check__link-select-all--not-selected check__link-select-all--selected'</span>);
+  	$(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>If a checkbox is already checked, enable Deselect All button:
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'.check__input'</span>).is(<span class="hljs-string">':checked'</span>)) {
+  	$(<span class="hljs-string">'.js-a-check__button-deselect-all'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>If a new checkbox is checked, enable Deselect All button and enable Update Results button:
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.check__input'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'.check__input'</span>).is(<span class="hljs-string">':checked'</span>)) {
+  		$(<span class="hljs-string">'.js-a-check__button-deselect-all'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  	}
+  $(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Collapse checkbox group, disable Update Results button, and change header styles if any checkboxes are already checked:
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-a-check__update'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);
+  	$(<span class="hljs-string">'.js-a-check__popdown'</span>).toggleClass(<span class="hljs-string">'check__popdown check__popdown--selected'</span>);
+    $(<span class="hljs-string">'.js-a-check__header-arrow-icon'</span>).toggleClass(<span class="hljs-string">'fa-angle-up fa-angle-down'</span>);
+    <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'.check__input'</span>).is(<span class="hljs-string">':checked'</span>)) {
+  		$(<span class="hljs-string">'.js-a-check__header'</span>).addClass(<span class="hljs-string">'check__header--selected'</span>).removeClass(<span class="hljs-string">'check__header'</span>);
+  		$(<span class="hljs-string">'.js-a-check__header-text'</span>).addClass(<span class="hljs-string">'check__header-text--selected'</span>).removeClass(<span class="hljs-string">'check__header-text'</span>);
+    } <span class="hljs-keyword">else</span> {
+      $(<span class="hljs-string">'.js-a-check__header'</span>).removeClass(<span class="hljs-string">'check__header--selected'</span>).addClass(<span class="hljs-string">'check__header'</span>);
+      $(<span class="hljs-string">'.js-a-check__header-text'</span>).removeClass(<span class="hljs-string">'check__header-text--selected'</span>).addClass(<span class="hljs-string">'check__header-text'</span>);
+  	}
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">'.js-obj__osd-infobanner-link'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    $(<span class="hljs-string">'.js-obj__osd-infobanner'</span>).slideUp(<span class="hljs-string">'fast'</span>);
+  });
+
+}); <span class="hljs-comment">// End of $(document).ready(function()</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h5 id="tooltip-">Tooltip ##### //</h5>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>$(<span class="hljs-string">'[data-toggle="tooltip"]'</span>).tooltip({
+  <span class="hljs-attr">placement</span>: <span class="hljs-string">'top'</span>
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Detect background-blend-mode css property in browser and, if not available, write class to html element
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span>(!(<span class="hljs-string">'backgroundBlendMode'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span>.body.style)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>No support for background-blend-mode</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> html = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'html'</span>)[<span class="hljs-number">0</span>];
+  html.className = html.className + <span class="hljs-string">' no-background-blend-mode'</span>;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h5 id="slick-carousel-">Slick Carousel ##### //</h5>
+<p>amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>$(<span class="hljs-string">'.carousel'</span>).show();
+$(<span class="hljs-string">'.carousel'</span>).slick({
+  <span class="hljs-attr">infinite</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">speed</span>: <span class="hljs-number">300</span>,
+  <span class="hljs-attr">slidesToShow</span>: <span class="hljs-number">10</span>,
+  <span class="hljs-attr">slidesToScroll</span>: <span class="hljs-number">6</span>,
+  <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">lazyLoad</span>: <span class="hljs-string">'ondemand'</span>,
+  <span class="hljs-attr">responsive</span>: [
+    {
+      <span class="hljs-attr">breakpoint</span>: <span class="hljs-number">1200</span>,
+      <span class="hljs-attr">settings</span>: {
+        <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>slidesToShow: 8,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        slidesToScroll: <span class="hljs-number">8</span>,
+        <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>
+      }
+    },
+    {
+      <span class="hljs-attr">breakpoint</span>: <span class="hljs-number">900</span>,
+      <span class="hljs-attr">settings</span>: {
+        <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>slidesToShow: 6,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        slidesToScroll: <span class="hljs-number">6</span>,
+        <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>
+      }
+    },
+    {
+      <span class="hljs-attr">breakpoint</span>: <span class="hljs-number">650</span>,
+      <span class="hljs-attr">settings</span>: {
+        <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>slidesToShow: 4,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        slidesToScroll: <span class="hljs-number">4</span>,
+        <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>
+      }
+    }
+  ]
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p><strong>*</strong> Complex Carousel <strong>*</strong> //
+amy integrated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>$(<span class="hljs-string">'.carousel-complex'</span>).show();
+$(<span class="hljs-string">'.carousel-complex__item-container'</span>).slick({
+  <span class="hljs-attr">infinite</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">speed</span>: <span class="hljs-number">300</span>,
+  <span class="hljs-attr">slidesToShow</span>: <span class="hljs-number">6</span>,
+  <span class="hljs-attr">slidesToScroll</span>: <span class="hljs-number">6</span>,
+  <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">lazyLoad</span>: <span class="hljs-string">'ondemand'</span>,
+  <span class="hljs-attr">responsive</span>: [
+    {
+      <span class="hljs-attr">breakpoint</span>: <span class="hljs-number">1200</span>,
+      <span class="hljs-attr">settings</span>: {
+        <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>slidesToShow: 8,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        slidesToScroll: <span class="hljs-number">8</span>,
+        <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>
+      }
+    },
+    {
+      <span class="hljs-attr">breakpoint</span>: <span class="hljs-number">900</span>,
+      <span class="hljs-attr">settings</span>: {
+        <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>slidesToShow: 6,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        slidesToScroll: <span class="hljs-number">6</span>,
+        <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>
+      }
+    },
+    {
+      <span class="hljs-attr">breakpoint</span>: <span class="hljs-number">650</span>,
+      <span class="hljs-attr">settings</span>: {
+        <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>slidesToShow: 4,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        slidesToScroll: <span class="hljs-number">4</span>,
+        <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>
+      }
+    }
+  ]
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p><strong>*</strong> jQuery.dotdotdot <strong>*</strong> //</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  $(<span class="hljs-string">'.obj__heading'</span>).dotdotdot({
+    <span class="hljs-attr">ellipsis</span>: <span class="hljs-string">'…'</span>,
+    <span class="hljs-attr">watch</span>: <span class="hljs-string">'window'</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">50</span>,
+    <span class="hljs-attr">lastCharacter</span>: { <span class="hljs-comment">// remove these characters from the end of the truncated text:</span>
+      remove: [ <span class="hljs-string">' '</span>, <span class="hljs-string">','</span>, <span class="hljs-string">';'</span>, <span class="hljs-string">'.'</span>, <span class="hljs-string">'!'</span>, <span class="hljs-string">'?'</span>, <span class="hljs-string">'['</span>, <span class="hljs-string">']'</span> ]
+    }
+  });
+  $(<span class="hljs-string">'.thumbnail__caption'</span>).dotdotdot({
+    <span class="hljs-attr">ellipsis</span>: <span class="hljs-string">'…'</span>,
+    <span class="hljs-attr">watch</span>: <span class="hljs-string">'window'</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">30</span>,
+    <span class="hljs-attr">lastCharacter</span>: {
+      <span class="hljs-attr">remove</span>: [ <span class="hljs-string">' '</span>, <span class="hljs-string">','</span>, <span class="hljs-string">';'</span>, <span class="hljs-string">'.'</span>, <span class="hljs-string">'!'</span>, <span class="hljs-string">'?'</span>, <span class="hljs-string">'['</span>, <span class="hljs-string">']'</span> ]
+    }
+  });
+  $(<span class="hljs-string">'.carousel__thumbnail-caption'</span>).dotdotdot({
+    <span class="hljs-attr">ellipsis</span>: <span class="hljs-string">'…'</span>,
+    <span class="hljs-attr">watch</span>: <span class="hljs-string">'window'</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">30</span>,
+    <span class="hljs-attr">lastCharacter</span>: {
+      <span class="hljs-attr">remove</span>: [ <span class="hljs-string">' '</span>, <span class="hljs-string">','</span>, <span class="hljs-string">';'</span>, <span class="hljs-string">'.'</span>, <span class="hljs-string">'!'</span>, <span class="hljs-string">'?'</span>, <span class="hljs-string">'['</span>, <span class="hljs-string">']'</span> ]
+    }
+  });
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Alternative JavaScript method (instead of CSS method) for disabling popover via breakpoint:
+if (Modernizr.mq(‘only screen and (max-width: 800px)’)) {
+ $(‘.popover__link’).popover(‘destroy’);
+}</p>
+
+            </div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

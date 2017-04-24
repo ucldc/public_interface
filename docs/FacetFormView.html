@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>FacetFormView.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="ComplexCarouselView.html">
+                  ComplexCarouselView.js
+                </a>
+              
+                
+                <a class="source" href="ContactOwnerFormView.html">
+                  ContactOwnerFormView.js
+                </a>
+              
+                
+                <a class="source" href="Controller.html">
+                  Controller.js
+                </a>
+              
+                
+                <a class="source" href="ExhibitPageView.html">
+                  ExhibitPageView.js
+                </a>
+              
+                
+                <a class="source" href="FacetFormView.html">
+                  FacetFormView.js
+                </a>
+              
+                
+                <a class="source" href="GlobalSearchFormView.html">
+                  GlobalSearchFormView.js
+                </a>
+              
+                
+                <a class="source" href="ItemView.html">
+                  ItemView.js
+                </a>
+              
+                
+                <a class="source" href="QueryManager.html">
+                  QueryManager.js
+                </a>
+              
+                
+                <a class="source" href="calisphere-home.html">
+                  calisphere-home.js
+                </a>
+              
+                
+                <a class="source" href="calisphere.html">
+                  calisphere.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>FacetFormView.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*global Backbone, _ */</span>
+<span class="hljs-comment">/*exported FacetFormView */</span>
+<span class="hljs-meta">'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>component created if selector in DOM, selector is in the following templates (2017-04-04)
+selector: #js-facet
+templates: collectionView.html, institutionView.html, institutionViewItems.html, searchResults.html, faceting.html, paginate.html</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">var</span> FacetFormView = Backbone.View.extend({
+  <span class="hljs-attr">el</span>: $(<span class="hljs-string">'#js-pageContent'</span>),
+  <span class="hljs-attr">events</span>: {
+    <span class="hljs-string">'submit #js-facet'</span>                        : <span class="hljs-string">'setRefineQuery'</span>,
+    <span class="hljs-string">'click .js-refine-filter-pill'</span>            : <span class="hljs-string">'removeRefineQuery'</span>,
+    <span class="hljs-string">'change .js-facet'</span>                        : <span class="hljs-string">'setFacet'</span>,
+    <span class="hljs-string">'click .js-filter-pill'</span>                   : <span class="hljs-string">'removeFacet'</span>,
+    <span class="hljs-string">'click #thumbnails,#list'</span>                 : <span class="hljs-string">'toggleViewFormat'</span>,
+    <span class="hljs-string">'change #pag-dropdown__sort'</span>              : <span class="hljs-string">'setSort'</span>,
+    <span class="hljs-string">'change #pag-dropdown__view'</span>              : <span class="hljs-string">'setRows'</span>,
+    <span class="hljs-string">'click .js-prev,.js-next,a[data-start]'</span>   : <span class="hljs-string">'setStart'</span>,
+    <span class="hljs-string">'change .pag-dropdown__select--unstyled'</span>  : <span class="hljs-string">'setStart'</span>,
+    <span class="hljs-string">'click .js-item-link'</span>                     : <span class="hljs-string">'goToItemPage'</span>,
+    <span class="hljs-string">'click .js-a-check__link-deselect-all'</span>    : <span class="hljs-string">'deselectAll'</span>,
+    <span class="hljs-string">'click .js-a-check__button-deselect-all'</span>  : <span class="hljs-string">'deselectAll'</span>,
+    <span class="hljs-string">'click .js-a-check__link-select-all'</span>      : <span class="hljs-string">'selectAll'</span>,
+    <span class="hljs-string">'click .js-a-check__button-select-all'</span>    : <span class="hljs-string">'selectAll'</span>,
+    <span class="hljs-string">'click .js-clear-filters'</span>                 : <span class="hljs-string">'clearFilters'</span>,
+    <span class="hljs-string">'click .js-a-check__header'</span>               : <span class="hljs-string">'toggleFacetDropdown'</span>,
+    <span class="hljs-string">'click .js-a-check__update'</span>               : <span class="hljs-string">'updateFacets'</span>,
+    <span class="hljs-string">'click .js-rc-page'</span>                       : <span class="hljs-string">'paginateRelatedCollections'</span>,
+    <span class="hljs-string">'click .js-relatedCollection'</span>             : <span class="hljs-string">'goToCollectionPage'</span>
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>events: {‘submit #js-facet’: ‘setRefineQuery’}
+the refine button is also the submit button for this form (accessibility requires the form have a submit button)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  setRefineQuery: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">start</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">rq</span>: $.map($(<span class="hljs-string">'input[name=rq]'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">el</span>) </span>{ <span class="hljs-keyword">return</span> $(el).val(); })});
+    e.preventDefault();
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>events: {‘click .js-refine-filter-pill’: ‘removeRefineQuery’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  removeRefineQuery: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">var</span> txtFilter = $(e.currentTarget).data(<span class="hljs-string">'slug'</span>);
+    $(<span class="hljs-string">'input[form="js-facet"][name="rq"][value="'</span> + txtFilter + <span class="hljs-string">'"]'</span>).val(<span class="hljs-string">''</span>);
+    <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">start</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">rq</span>: _.without(<span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'rq'</span>), txtFilter)});
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>events: {‘change .js-facet’: ‘setFacet’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  setFacet: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">var</span> filterType = $(e.currentTarget).attr(<span class="hljs-string">'name'</span>);
+    <span class="hljs-keyword">var</span> attributes = {<span class="hljs-attr">start</span>: <span class="hljs-number">0</span>};
+    attributes[filterType] = $.map($(<span class="hljs-string">'input[name='</span> + filterType + <span class="hljs-string">']:checked'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">el</span>) </span>{ <span class="hljs-keyword">return</span> $(el).val(); });
+    <span class="hljs-keyword">this</span>.model.set(attributes);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>events: {‘click .js-filter-pill’: ‘removeFacet’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  removeFacet: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">var</span> filter_slug = $(e.currentTarget).data(<span class="hljs-string">'slug'</span>);
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> filter_slug !== <span class="hljs-string">'string'</span>) {
+      filter_slug = <span class="hljs-built_in">String</span>(filter_slug);
+    }
+    $(<span class="hljs-string">'#'</span> + filter_slug).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">false</span>);
+    <span class="hljs-keyword">var</span> filterType = $(<span class="hljs-string">'#'</span> + filter_slug).attr(<span class="hljs-string">'name'</span>);
+    <span class="hljs-keyword">var</span> filter = $(<span class="hljs-string">'#'</span> + filter_slug).attr(<span class="hljs-string">'value'</span>);
+    <span class="hljs-keyword">var</span> attributes = {<span class="hljs-attr">start</span>: <span class="hljs-number">0</span>};
+    attributes[filterType] = _.without(<span class="hljs-keyword">this</span>.model.get(filterType), filter);
+
+    <span class="hljs-keyword">this</span>.model.set(attributes);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>events: {‘click #thumbnails,#list’: ‘toggleViewFormat’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  toggleViewFormat: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">var</span> viewFormat = $(e.currentTarget).attr(<span class="hljs-string">'id'</span>);
+    $(<span class="hljs-string">'#view_format'</span>).prop(<span class="hljs-string">'value'</span>, viewFormat);
+    <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">view_format</span>: viewFormat});
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>events: {‘change #pag-dropdown__sort’: ‘setSort’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  setSort: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">start</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">sort</span>: $(e.currentTarget).val() });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>events: {‘change #pag-dropdown__view’: ‘setRows’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  setRows: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">start</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">rows</span>: $(e.currentTarget).val() });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>events: {‘click .js-prev,.js-next,a[data-start]’:  ‘setStart’,
+         ‘change #pag-dropdown__select–unstyled’: ‘setStart’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  setStart: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">var</span> start;
+    <span class="hljs-keyword">if</span> (e.type === <span class="hljs-string">'click'</span>) {
+      start = $(e.currentTarget).data(<span class="hljs-string">'start'</span>);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e.type === <span class="hljs-string">'change'</span>) {
+      start = $(e.currentTarget).children(<span class="hljs-string">'option:selected'</span>).attr(<span class="hljs-string">'value'</span>);
+    }
+    $(<span class="hljs-string">'#start'</span>).val(start);
+    <span class="hljs-keyword">this</span>.model.set({ <span class="hljs-attr">start</span>: start });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>events: {‘click .js-item-link’: ‘goToItemPage’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  goToItemPage: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Middle click, cmd click, and ctrl click should open
+links in a new tab as normal.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> ( e.which &gt; <span class="hljs-number">1</span> || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { <span class="hljs-keyword">return</span>; }
+
+    <span class="hljs-keyword">if</span> ($(e.currentTarget).data(<span class="hljs-string">'item_number'</span>) !== <span class="hljs-literal">undefined</span>) {
+      <span class="hljs-keyword">this</span>.model.set({
+        <span class="hljs-attr">itemNumber</span>: $(e.currentTarget).data(<span class="hljs-string">'item_number'</span>),
+        <span class="hljs-attr">itemId</span>: $(e.currentTarget).data(<span class="hljs-string">'item_id'</span>)
+      }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>add implicit context for campus, institution, and collection pages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#js-institution'</span>).length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'campus'</span>)) {
+          <span class="hljs-keyword">this</span>.model.set({
+            <span class="hljs-attr">campus_slug</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'campus'</span>),
+            <span class="hljs-attr">referral</span>: <span class="hljs-string">'campus'</span>,
+            <span class="hljs-attr">referralName</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'referralname'</span>)
+          }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">this</span>.model.set({
+            <span class="hljs-attr">repository_data</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'institution'</span>),
+            <span class="hljs-attr">referral</span>: <span class="hljs-string">'institution'</span>,
+            <span class="hljs-attr">referralName</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'referralname'</span>)
+          }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+        }
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#js-collection'</span>).length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">this</span>.model.set({
+          <span class="hljs-attr">collection_data</span>: $(<span class="hljs-string">'#js-collection'</span>).data(<span class="hljs-string">'collection'</span>),
+          <span class="hljs-attr">referral</span>: <span class="hljs-string">'collection'</span>,
+          <span class="hljs-attr">referralName</span>: $(<span class="hljs-string">'#js-collection'</span>).data(<span class="hljs-string">'referralname'</span>)
+        }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+      }
+
+      e.preventDefault();
+      $.pjax({
+        <span class="hljs-attr">url</span>: $(e.currentTarget).attr(<span class="hljs-string">'href'</span>),
+        <span class="hljs-attr">container</span>: <span class="hljs-string">'#js-pageContent'</span>
+      });
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>events: {‘click .js-a-check<strong>link-deselect-all’: ‘deselectAll’,
+         ‘click .js-a-check</strong>button-deselect-all’: ‘deselectAll’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  deselectAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">this</span>.selectDeselectAll(e, <span class="hljs-literal">false</span>); },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>events: {‘click .js-a-check<strong>link-select-all’: ‘selectAll’,
+         ‘click .js-a-check</strong>button-select-all’: ‘selectAll’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  selectAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{ <span class="hljs-keyword">this</span>.selectDeselectAll(e, <span class="hljs-literal">true</span>); },
+  <span class="hljs-attr">selectDeselectAll</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, checked</span>) </span>{
+    <span class="hljs-keyword">var</span> filterElements = $(e.currentTarget).parents(<span class="hljs-string">'.check'</span>).find(<span class="hljs-string">'.js-facet'</span>);
+    filterElements.prop(<span class="hljs-string">'checked'</span>, checked);
+    filterElements.trigger(<span class="hljs-string">'change'</span>);
+    e.preventDefault();
+  },
+  <span class="hljs-attr">toggleSelectDeselectAll</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> facetTypes = $(<span class="hljs-string">'.check'</span>);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;facetTypes.length; i++) {
+      <span class="hljs-keyword">var</span> allSelected = !($($(facetTypes[i]).find(<span class="hljs-string">'.js-facet'</span>)).is(<span class="hljs-string">':not(:checked)'</span>));
+      <span class="hljs-keyword">if</span> (allSelected === <span class="hljs-literal">true</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>for large screens</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $(facetTypes[i]).find(<span class="hljs-string">'.js-a-check__link-deselect-all'</span>).toggleClass(<span class="hljs-string">'check__link-deselect-all--not-selected check__link-deselect-all--selected'</span>);
+        $(facetTypes[i]).find(<span class="hljs-string">'.js-a-check__link-select-all'</span>).toggleClass(<span class="hljs-string">'check__link-select-all--selected check__link-select-all--not-selected'</span>);
+        $(facetTypes[i]).find(<span class="hljs-string">'.js-a-check__button-select-all'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);
+        $(facetTypes[i]).find(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+      }
+      <span class="hljs-keyword">var</span> oneSelected = $(facetTypes[i]).find(<span class="hljs-string">'.js-facet'</span>).is(<span class="hljs-string">':checked'</span>);
+      <span class="hljs-keyword">if</span> (oneSelected === <span class="hljs-literal">true</span>) {
+        $(facetTypes[i]).find(<span class="hljs-string">'.js-a-check__button-deselect-all'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+      }
+    }
+  },
+  <span class="hljs-attr">toggleTooltips</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>get rid of any visible tooltips</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> visibleTooltips = $(<span class="hljs-string">'[data-toggle="tooltip"][aria-describedby]'</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;visibleTooltips.length; i++) {
+      <span class="hljs-keyword">var</span> tooltipId = $(visibleTooltips[i]).attr(<span class="hljs-string">'aria-describedby'</span>);
+      $(<span class="hljs-string">'#'</span> + tooltipId).remove();
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>set tooltips</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-string">'[data-toggle="tooltip"]'</span>).tooltip({
+      <span class="hljs-attr">placement</span>: <span class="hljs-string">'top'</span>
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>events: {‘click .js-clear-filters’: ‘clearFilters’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  clearFilters: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> filterElements = $(<span class="hljs-string">'.js-facet'</span>);
+    filterElements.prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">false</span>);
+    filterElements.trigger(<span class="hljs-string">'change'</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>events: {‘click .js-a-check__header’: ‘toggleFacetDropdown’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  toggleFacetDropdown: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>close all expanded checkbox groups</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> allSelected = $(<span class="hljs-string">'.check__popdown--selected'</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;allSelected.length; i++) {
+      <span class="hljs-keyword">if</span> ($(allSelected[i]).parent().find(<span class="hljs-string">'input'</span>).attr(<span class="hljs-string">'name'</span>) !== $(e.currentTarget).parent().find(<span class="hljs-string">'input'</span>).attr(<span class="hljs-string">'name'</span>)) {
+        $(allSelected[i]).toggleClass(<span class="hljs-string">'check__popdown check__popdown--selected'</span>);
+        $(allSelected[i]).prev(<span class="hljs-string">'.js-a-check__header'</span>).children(<span class="hljs-string">'.js-a-check__header-arrow-icon'</span>).toggleClass(<span class="hljs-string">'fa-angle-down fa-angle-up'</span>);
+      }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>open this checkbox group</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(e.currentTarget).next(<span class="hljs-string">'.js-a-check__popdown'</span>).toggleClass(<span class="hljs-string">'check__popdown check__popdown--selected'</span>);
+    $(e.currentTarget).children(<span class="hljs-string">'.js-a-check__header-arrow-icon'</span>).toggleClass(<span class="hljs-string">'fa-angle-down fa-angle-up'</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>events: {‘click .js-a-check__update’: ‘updateFacets’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  updateFacets: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    e.preventDefault();
+    <span class="hljs-keyword">this</span>.facetSearch();
+  },
+  <span class="hljs-attr">facetSearch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $.pjax({
+      <span class="hljs-attr">url</span>: $(<span class="hljs-string">'#js-facet'</span>).attr(<span class="hljs-string">'action'</span>),
+      <span class="hljs-attr">container</span>: <span class="hljs-string">'#js-pageContent'</span>,
+      <span class="hljs-attr">data</span>: <span class="hljs-keyword">this</span>.model.toJSON(),
+      <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>events: {‘click .js-rc-page’: ‘paginateRelatedCollections’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  paginateRelatedCollections: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#js-institution'</span>).length &gt; <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'campus'</span>)) {
+        <span class="hljs-keyword">this</span>.model.set({
+          <span class="hljs-attr">campus_slug</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'campus'</span>),
+          <span class="hljs-attr">referral</span>: <span class="hljs-string">'campus'</span>,
+          <span class="hljs-attr">referralName</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'referralname'</span>)
+        }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.model.set({
+          <span class="hljs-attr">repository_data</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'institution'</span>),
+          <span class="hljs-attr">referral</span>: <span class="hljs-string">'institution'</span>,
+          <span class="hljs-attr">referralName</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'referralname'</span>)
+        }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+      }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#js-collection'</span>).length &gt; <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">this</span>.model.set({
+        <span class="hljs-attr">collection_data</span>: $(<span class="hljs-string">'#js-collection'</span>).data(<span class="hljs-string">'collection'</span>),
+        <span class="hljs-attr">referral</span>: <span class="hljs-string">'collection'</span>,
+        <span class="hljs-attr">referralName</span>: $(<span class="hljs-string">'#js-collection'</span>).data(<span class="hljs-string">'referralname'</span>)
+      }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+    }
+
+    <span class="hljs-keyword">var</span> data_params = <span class="hljs-keyword">this</span>.model.toJSON();
+    data_params.rc_page = $(e.currentTarget).data(<span class="hljs-string">'rc_page'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>TODO: function(data, status, jqXHR)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $.ajax({<span class="hljs-attr">data</span>: data_params, <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">url</span>: <span class="hljs-string">'/relatedCollections/'</span>, <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+        $(<span class="hljs-string">'#js-relatedCollections'</span>).html(data);
+      }
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>events: {‘click .js-relatedCollection’: ‘goToCollectionPage’}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  goToCollectionPage: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.model.clear({<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+  },
+
+  <span class="hljs-attr">changeWidth</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">window_width</span>) </span>{
+    <span class="hljs-keyword">if</span> (window_width &gt; <span class="hljs-number">900</span>) { <span class="hljs-keyword">this</span>.desktop = <span class="hljs-literal">true</span>; }
+    <span class="hljs-keyword">else</span> { <span class="hljs-keyword">this</span>.desktop = <span class="hljs-literal">false</span>; }
+  },
+
+  <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span>(!_.isEmpty(<span class="hljs-keyword">this</span>.model.changed) &amp;&amp; !_.has(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-string">'q'</span>)) {
+      <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.desktop) {
+        <span class="hljs-keyword">this</span>.facetSearch();
+      }
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(_.has(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-string">'type_ss'</span>) ||
+      _.has(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-string">'facet_decade'</span>) ||
+      _.has(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-string">'repository_data'</span>) ||
+      _.has(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-string">'collection_data'</span>)) {
+        <span class="hljs-keyword">var</span> attrUndefined = <span class="hljs-literal">false</span>;
+        _.each(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+          <span class="hljs-keyword">if</span> (value === <span class="hljs-literal">undefined</span>) {
+            attrUndefined = <span class="hljs-literal">true</span>;
+          }
+        });
+        <span class="hljs-keyword">if</span> (attrUndefined) {
+          <span class="hljs-keyword">this</span>.facetSearch();
+        }
+        _.each(<span class="hljs-keyword">this</span>.model.changed, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value, key</span>) </span>{
+          <span class="hljs-keyword">if</span> (key === <span class="hljs-string">'type_ss'</span> || key === <span class="hljs-string">'facet_decade'</span> || key === <span class="hljs-string">'repository_data'</span> || key === <span class="hljs-string">'collection_data'</span>) {
+            $(<span class="hljs-string">'.facet-'</span> + key).parents(<span class="hljs-string">'.check'</span>).find(<span class="hljs-string">'.js-a-check__update'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">false</span>);
+          }
+        });
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.facetSearch();
+      }
+    }
+  },
+
+  <span class="hljs-attr">pjax_end</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">that</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>this is still called on pjax_end when navigating away from facet form to something else</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#js-facet'</span>).length) {
+        <span class="hljs-keyword">if</span> (that.popstate === <span class="hljs-string">'back'</span> || that.popstate === <span class="hljs-string">'forward'</span>) {
+          _.each($(<span class="hljs-string">'form'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">form</span>) </span>{
+            form.reset();
+          });
+
+          <span class="hljs-keyword">var</span> queryObj;
+          queryObj = that.model.getQueryFromDOM(<span class="hljs-string">'js-facet'</span>);
+          that.model.set(queryObj, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+          that.popstate = <span class="hljs-literal">null</span>;
+        }
+
+        that.toggleSelectDeselectAll();
+        that.toggleTooltips();
+      }
+    };
+  },
+
+  <span class="hljs-attr">pjax_popstate</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">that</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+      that.popstate = e.direction;
+    };
+  },
+
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.listenTo(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.render);
+    <span class="hljs-keyword">this</span>.changeWidth($(<span class="hljs-built_in">window</span>).width());
+    
+    <span class="hljs-keyword">this</span>.toggleSelectDeselectAll();
+    <span class="hljs-keyword">this</span>.toggleTooltips();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>bind handlers and save for later removal</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.bound_pjax_end = <span class="hljs-keyword">this</span>.pjax_end(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>.bound_pjax_popstate = <span class="hljs-keyword">this</span>.pjax_popstate(<span class="hljs-keyword">this</span>);
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:end'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-keyword">this</span>.bound_pjax_end);
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:popstate'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-keyword">this</span>.bound_pjax_popstate);
+  },
+
+  <span class="hljs-attr">destroy</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-built_in">document</span>).off(<span class="hljs-string">'pjax:end'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-keyword">this</span>.bound_pjax_end);
+    $(<span class="hljs-built_in">document</span>).off(<span class="hljs-string">'pjax:popstate'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-keyword">this</span>.bound_pjax_popstate);
+
+    <span class="hljs-keyword">this</span>.stopListening();
+    <span class="hljs-keyword">this</span>.undelegateEvents();
+  }
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -10,7 +10,8 @@ var FacetFormView = Backbone.View.extend({
   
   // User Event Handlers
   // ------------------------------
-  // These are event handlers for user input on the faceting form
+  // These are event handlers for user interaction with the faceting form, 
+  // the search results, and the related collections 
   events: {
     'submit #js-facet'                        : 'setRefineQuery',
     'click .js-refine-filter-pill'            : 'removeRefineQuery',

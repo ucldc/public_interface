@@ -102,11 +102,7 @@
 <span class="hljs-comment">/*global _ */</span>
 <span class="hljs-comment">/*exported QueryManager */</span>
 <span class="hljs-meta">
-'use strict'</span>;
-
-<span class="hljs-keyword">var</span> QueryManager = Backbone.Model.extend({
-  
-  <span class="hljs-attr">defaultValues</span>: {</pre></div></div>
+'use strict'</span>;</pre></div></div>
             
         </li>
         
@@ -117,11 +113,39 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>q: ‘’,</p>
+              <p>The Query parameters are stored in three places: the DOM, Session Storage, 
+and the JavaScript. Typically the DOM is most correct - having returned from 
+the server. The JavaScript keeps track of things while waiting for a server
+response. Session storage really only matters if pjax breaks. When the full
+page comes back, the JavaScript can pick right back up with the current context
+via session storage. </p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    rq: <span class="hljs-string">''</span>,
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>The Query Manager manages two distinct types of query data which are related
+but distinct. There is the general query information: <code>q</code>, <code>rq</code>, <code>view_format</code>,
+<code>sort</code>, <code>relevance</code>, <code>rows</code>, <code>start</code>, <code>type_of_work</code>, <code>decade</code>, <code>collection_data</code>,
+<code>repository_data</code> and there is also the item-specific query information: <code>itemId</code>, 
+<code>itemNumber</code> (where the item falls in the results set - used to calculate the 
+‘start’ offset for the carousel), <code>referral</code>, and <code>referralName</code> </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">var</span> QueryManager = Backbone.Model.extend({
+  
+  <span class="hljs-attr">defaultValues</span>: {
+    <span class="hljs-comment">/* q: '', */</span>
+    rq: <span class="hljs-string">''</span>,
     <span class="hljs-attr">view_format</span>: <span class="hljs-string">'thumbnails'</span>,
     <span class="hljs-attr">sort</span>: <span class="hljs-string">'relevance'</span>, 
     <span class="hljs-attr">rows</span>: <span class="hljs-string">'24'</span>,
@@ -136,11 +160,11 @@
         </li>
         
         
-        <li id="section-3">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>$.extend({}) automatically removes undefined values</p>
 
@@ -158,11 +182,11 @@
         </li>
         
         
-        <li id="section-4">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>:visible differentiates between actual filters and implied filters,
 such as collection_data on a collection page (stored in an <input hidden class=js-facet> elem)</p>
@@ -182,11 +206,11 @@ such as collection_data on a collection page (stored in an <input hidden class=j
         </li>
         
         
-        <li id="section-5">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>if attributes has key of this filter type</p>
 
@@ -212,11 +236,11 @@ such as collection_data on a collection page (stored in an <input hidden class=j
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>this causes any previously defined facet values
 to be wiped out. (see l-120 of this file)</p>
@@ -344,11 +368,11 @@ to be wiped out. (see l-120 of this file)</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>if we’re setting an attribute to default, remove it from the list</p>
 

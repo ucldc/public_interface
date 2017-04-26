@@ -4,10 +4,24 @@
 
 'use strict';
 
+// The Query parameters are stored in three places: the DOM, Session Storage, 
+// and the JavaScript. Typically the DOM is most correct - having returned from 
+// the server. The JavaScript keeps track of things while waiting for a server
+// response. Session storage really only matters if pjax breaks. When the full
+// page comes back, the JavaScript can pick right back up with the current context
+// via session storage. 
+
+// The Query Manager manages two distinct types of query data which are related
+// but distinct. There is the general query information: `q`, `rq`, `view_format`,
+// `sort`, `relevance`, `rows`, `start`, `type_of_work`, `decade`, `collection_data`,
+// `repository_data` and there is also the item-specific query information: `itemId`, 
+// `itemNumber` (where the item falls in the results set - used to calculate the 
+// 'start' offset for the carousel), `referral`, and `referralName` 
+
 var QueryManager = Backbone.Model.extend({
   
   defaultValues: {
-    // q: '',
+    /* q: '', */
     rq: '',
     view_format: 'thumbnails',
     sort: 'relevance', 

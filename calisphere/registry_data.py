@@ -5,8 +5,6 @@ import urlparse
 
 
 class RegistryManager(object):
-
-
     def init_registry_data(self, path):
         base = settings.UCLDC_REGISTRY_URL
         page_one = json_loads_url(urlparse.urljoin(base, path))
@@ -19,13 +17,11 @@ class RegistryManager(object):
 
         return out
 
-
     def __init__(self):
         repository_path = '/api/v1/repository/?format=json'
         # collection_path = '/api/v1/collection/?format=json'
         self.repository_data = self.init_registry_data(repository_path)
         # self.collection_data = self.init_registry_data(collection_path)
-
 
 
 """

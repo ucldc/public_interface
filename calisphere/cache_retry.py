@@ -72,14 +72,14 @@ def SOLR(**params):
     for key, value in facet_counts.get('facet_fields', {}).iteritems():
         # Make facet fields match edsu with grouper recipe
         facet_counts['facet_fields'][key] = dict(
-            itertools.izip_longest(
-                *[iter(value)] * 2, fillvalue=""))
+            itertools.izip_longest(*[iter(value)] * 2, fillvalue=""))
 
-    return SolrResults(results['response']['docs'],
-                       results['responseHeader'],
-                       results['response']['numFound'],
-                       facet_counts,
-                       results.get('nextCursorMark'), )
+    return SolrResults(
+        results['response']['docs'],
+        results['responseHeader'],
+        results['response']['numFound'],
+        facet_counts,
+        results.get('nextCursorMark'), )
 
 
 # create a hash for a cache key
@@ -142,7 +142,8 @@ def SOLR_raw(**kwargs):
         for key, value in kwargs.items():
             key = key.replace('_', '.')
             query.update({key: value})
-        res = requests.get(solr_url, headers=solr_auth, params=query, verify=False)
+        res = requests.get(
+            solr_url, headers=solr_auth, params=query, verify=False)
         res.raise_for_status()
         sr = res.content
         cache.set(key, sr, settings.DJANGO_CACHE_TIMEOUT)  # seconds

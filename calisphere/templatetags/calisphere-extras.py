@@ -3,9 +3,10 @@ import ast
 
 register = Library()
 
+
 @register.filter
-def get_range( value ):
-  """
+def get_range(value):
+    """
     Filter - returns a list containing range made from given value
     Usage (in template):
 
@@ -24,11 +25,13 @@ def get_range( value ):
 
     https://djangosnippets.org/snippets/1357/
   """
-  return range( value )
+    return range(value)
+
 
 @register.filter
-def string_lookup( s, key ):
+def string_lookup(s, key):
     return ast.literal_eval(s)[key]
+
 
 @register.filter
 def dictionary_length(dictionary):
@@ -37,25 +40,31 @@ def dictionary_length(dictionary):
         length = length + len(dictionary[key])
     return length
 
+
 @register.filter
 def get_item(dictionary, key):
-  return dictionary.get(key, '')
+    return dictionary.get(key, '')
+
 
 @register.filter
-def multiply( a, b ):
+def multiply(a, b):
     return str(int(a) * int(b))
 
+
 @register.filter
-def subtract( a, b ):
+def subtract(a, b):
     return int(a) - int(b)
 
-@register.filter
-def divide( a, b ):
-    return int(int(a) / int(b))
 
 @register.filter
-def current_page( start, rows ):
+def divide(a, b):
+    return int(int(a) / int(b))
+
+
+@register.filter
+def current_page(start, rows):
     return int(int(start) / int(rows)) + 1
+
 
 @register.filter
 def is_string(val):

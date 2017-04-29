@@ -6,7 +6,6 @@ simplejson==3.10.0
 six==1.10.0
 requests==2.13.0
 whitenoise==3.3.0
-wsgiref==0.1.2
 markdown==2.6.8
 # django-positions==0.5.4
 https://github.com/amywieliczka/django-positions/archive/multi-collection-delete-issue.zip#egg=django-positions

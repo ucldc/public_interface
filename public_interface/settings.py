@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import requests
 """
 Django settings for public_interface project.
 
@@ -8,8 +9,6 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-
-import django.conf.global_settings as DEFAULT_SETTINGS  # http://stackoverflow.com/a/15446953/1763984
 
 from django.utils.crypto import get_random_string # http://stackoverflow.com/a/16630719/1763984
 
@@ -70,7 +69,23 @@ UCLDC_DEVEL = bool(os.environ.get('UCLDC_DEVEL'))
 # When EXHIBIT_PREVIEW = True, show ALL exhibits, themes, lesson plans, and essays
 EXHIBIT_PREVIEW = bool(os.environ.get('UCLDC_EXHIBIT_PREVIEW'))
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+# https://dryan.com/articles/elb-django-allowed-hosts/
+ALLOWED_HOSTS = [
+    'calisphere.org',
+    '.cdlib.org',
+    '.compute-1.amazonaws.com',
+    '.elasticbeanstalk.com',
+    '127.0.0.1',
+]
+
+EC2_PRIVATE_IP  =   None
+try:
+    EC2_PRIVATE_IP  =   requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', timeout = 0.01).text
+except requests.exceptions.RequestException:
+    pass
+
+if EC2_PRIVATE_IP:
+    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
 
 SITE_ID = 1
 
@@ -90,6 +105,9 @@ INSTALLED_APPS = (
     'easy_pjax',
     'calisphere',
     'static_sitemaps',
+    'health_check',
+    'health_check.cache',
+    'health_check.storage',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -267,7 +285,7 @@ SITE_ID = 1
 
 STATICSITEMAPS_ROOT_SITEMAP = 'public_interface.urls.sitemaps'
 
-STATICSITEMAPS_ROOT_DIR = os.path.join(BASE_DIR, "sitemaps") 
+STATICSITEMAPS_ROOT_DIR = os.path.join(BASE_DIR, "sitemaps")
 
 STATICSITEMAPS_URL = UCLDC_FRONT
 

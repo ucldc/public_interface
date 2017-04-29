@@ -1,3 +1,4 @@
+from __future__ import unicode_literals, print_function
 from collections import OrderedDict
 from django import forms
 from django.conf import settings
@@ -10,22 +11,22 @@ import urlparse
 class CalisphereContactForm(ContactForm):
     name = forms.CharField(
         max_length=100,
-        label=u'Name:',
+        label='Name:',
         widget=forms.TextInput(attrs={'placeholder': 'Your full name'}),
     )
     email = forms.EmailField(
         max_length=200,
-        label=u'Email:',
+        label='Email:',
         widget=forms.TextInput(attrs={'placeholder': 'Your email'}),
     )
     email2 = forms.EmailField(
         max_length=200,
-        label=u'Verify Email:',
+        label='Verify Email:',
         widget=forms.TextInput(attrs={'placeholder': 'Verify your email'}),
     )
     body = forms.CharField(
         widget=forms.Textarea,
-        label=u'Message',
+        label='Message',
     )
     referer = forms.CharField(widget=forms.HiddenInput())
 
@@ -61,7 +62,7 @@ class CalisphereContactFormView(ContactFormView):
         # pass the referer on to the "sent" email confirmation page
         return urlparse.urljoin(
             settings.UCLDC_FRONT ,
-            u'{0}?referer={1}'.format(
+            '{0}?referer={1}'.format(
                 reverse('contact_form_sent'),
                 self.request.POST.get('referer')
             )

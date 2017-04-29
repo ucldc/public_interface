@@ -1,3 +1,4 @@
+from __future__ import unicode_literals, print_function
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.http import HttpResponse
@@ -8,7 +9,7 @@ from django.conf.urls.static import static
 from calisphere.contact_form_view import CalisphereContactFormView
 from exhibits.views import calCultures
 
-from calisphere.sitemaps import *
+from calisphere.sitemaps import CollectionSitemap, InstitutionSitemap, ItemSitemap, StaticSitemap
 
 admin.autodiscover()
 

@@ -1,5 +1,6 @@
 """ logic for cache / retry for solr and JSON from registry
 """
+from __future__ import unicode_literals, print_function
 from django.core.cache import cache
 from django.conf import settings
 
@@ -57,7 +58,7 @@ SolrResults = namedtuple('SolrResults',
 
 def SOLR(**params):
     # replacement for edsu's solrpy based stuff
-    solr_url = u'{}/query/'.format(settings.SOLR_URL)
+    solr_url = '{}/query/'.format(settings.SOLR_URL)
     solr_auth = {'X-Authentication-Token': settings.SOLR_API_KEY}
     # Clean up optional parameters to match SOLR spec
     query = {}
@@ -134,7 +135,7 @@ def SOLR_raw(**kwargs):
     sr = cache.get(key)
     if not sr:
         # do the solr look up
-        solr_url = u'{}/query/'.format(settings.SOLR_URL)
+        solr_url = '{}/query/'.format(settings.SOLR_URL)
         solr_auth = {'X-Authentication-Token': settings.SOLR_API_KEY}
         # Clean up optional parameters to match SOLR spec
         query = {}

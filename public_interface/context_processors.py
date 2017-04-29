@@ -1,3 +1,4 @@
+from __future__ import unicode_literals, print_function
 import urlparse
 
 def settings(request):
@@ -7,7 +8,7 @@ def settings(request):
     from django.conf import settings
     permalink = urlparse.urljoin(settings.UCLDC_FRONT, request.path)
     if request.META['QUERY_STRING']:
-        permalink = u'?'.join([
+        permalink = '?'.join([
             permalink,
             request.META['QUERY_STRING']
         ])

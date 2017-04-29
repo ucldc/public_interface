@@ -8,7 +8,7 @@ from django.conf import settings
 
 from calisphere.collection_data import CollectionManager
 
-from cache_retry import SOLR_select_nocache
+from .cache_retry import SOLR_select_nocache
 
 app = apps.get_app_config('calisphere')
 

@@ -1,13 +1,7 @@
+from __future__ import unicode_literals, print_function
 from django.conf import settings
-import urllib2
-import json
-from collections import namedtuple
-import string
-import random
-from cache_retry import json_loads_url
-import time
+from .cache_retry import json_loads_url
 import urlparse
-from pprint import pprint as pp
 
 
 class RegistryManager(object):

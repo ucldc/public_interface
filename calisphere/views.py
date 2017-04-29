@@ -1,12 +1,12 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 from django.apps import apps
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse, HttpResponse
 from calisphere.collection_data import CollectionManager
-from constants import *
-from cache_retry import SOLR_select, SOLR_raw, json_loads_url
+from .constants import CAMPUS_LIST, FACET_FILTER_TYPES, FEATURED_UNITS
+from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 
@@ -75,7 +75,7 @@ def process_sort_collection_data(string):
     else:
         part1, remainder = string.split(':', 1)
         part2, part3 = remainder.rsplit(':https:')
-        return [part1, part2, u'https:{}'.format(part3)]
+        return [part1, part2, 'https:{}'.format(part3)]
 
 def getMoreCollectionData(collection_data):
     collection = getCollectionData(
@@ -97,7 +97,7 @@ def getCollectionData(collection_data=None, collection_id=None):
         collection['name'] = parts[1] if len(parts) >= 2 else ''
         collection_api_url = re.match(r'^https://registry\.cdlib\.org/api/v1/collection/(?P<url>\d*)/?', collection['url'])
         if collection_api_url is None:
-            print 'no collection api url:'
+            print('no collection api url:')
             collection['id'] = ''
         else:
             collection['id'] = collection_api_url.group('url')
@@ -182,7 +182,7 @@ def getRepositoryData(repository_data=None, repository_id=None, repository_url=N
             repository['url']
         )
         if repository_api_url is None:
-            print 'no repository api url'
+            print('no repository api url')
             repository['id'] = ''
         else:
             repository['id'] = repository_api_url.group('url')
@@ -201,7 +201,7 @@ def getRepositoryData(repository_data=None, repository_id=None, repository_url=N
     # details needed for stats
     repository['ga_code'] = repository_details.get('google_analytics_tracking_code', None)
     parent = repository_details['campus']
-    pslug = u''
+    pslug = ''
     if len(parent):
         pslug = '{0}-'.format(parent[0].get('slug', None))
     repository['slug'] = pslug + repository_details.get('slug', None)
@@ -349,7 +349,7 @@ def getHostedContentFile(structmap):
             structmap['id']
         )
         if structmap_url.startswith('//'):
-            structmap_url = u''.join(['http:', structmap_url])
+            structmap_url = ''.join(['http:', structmap_url])
         size = json_loads_url(structmap_url)['sizes'][-1]
         if size['height'] > size['width']:
             access_size = {'width': ((size['width'] * 1024) / size['height']), 'height': 1024}
@@ -494,7 +494,7 @@ def itemView(request, item_id=''):
     if item_solr_search.results[0].get('reference_image_md5', False):
         meta_image = urlparse.urljoin(
             settings.UCLDC_FRONT,
-            u'/crop/999x999/{0}'.format(item_solr_search.results[0]['reference_image_md5']),
+            '/crop/999x999/{0}'.format(item_solr_search.results[0]['reference_image_md5']),
         )
 
     fromItemPage = request.META.get("HTTP_X_FROM_ITEM_PAGE")
@@ -541,7 +541,7 @@ def search(request):
         )
 
         # TODO: create a no results found page
-        if len(solr_search.results) == 0: print 'no results found'
+        if len(solr_search.results) == 0: print('no results found')
 
         # get facet counts
         facets = facetQuery(facet_fields, queryParams, solr_search)
@@ -722,7 +722,7 @@ def relatedCollections(request, queryParams={}):
             if queryParams['campus_slug'] == campus['slug']:
                 campus_id = campus['id']
         if campus_id == '':
-            print "Campus registry ID not found"
+            print('Campus registry ID not found')
 
         fq.append('campus_url: "https://registry.cdlib.org/api/v1/campus/' + campus_id + '/"')
 
@@ -1121,7 +1121,7 @@ def institutionView(request, institution_id, subnav=False, institution_type='rep
 
             # title for UC institutions needs to show parent campus
             if uc_institution:
-                context['title'] = u'{0} / {1}'.format(
+                context['title'] = '{0} / {1}'.format(
                     uc_institution[0]['name'],
                     institution_details['name']
                 )
@@ -1192,7 +1192,7 @@ def institutionView(request, institution_id, subnav=False, institution_type='rep
         for i, related_collection in enumerate(related_collections):
             collection_parts = process_sort_collection_data(related_collection)
             collection_data = getCollectionData(
-                collection_data=u'{0}::{1}'.format(
+                collection_data='{0}::{1}'.format(
                     collection_parts[2],
                     collection_parts[1],
                 )
@@ -1227,7 +1227,7 @@ def institutionView(request, institution_id, subnav=False, institution_type='rep
             # title for UC institutions needs to show parent campus
             # refactor, as this is copy/pasted in this commit
             if uc_institution:
-                context['title'] = u'{0} / {1}'.format(
+                context['title'] = '{0} / {1}'.format(
                     uc_institution[0]['name'],
                     institution_details['name']
                 )
@@ -1255,7 +1255,7 @@ def campusView(request, campus_slug, subnav=False):
             if 'featuredImage' in campus:
                 featured_image = campus['featuredImage']
     if campus_id == '':
-        print "Campus registry ID not found"
+        print('Campus registry ID not found')
 
     if subnav == 'institutions':
         campus_url = 'https://registry.cdlib.org/api/v1/campus/' + campus_id + '/'
@@ -1312,7 +1312,7 @@ def posters(request):
     poster_data = sorted(poster_data.items())
 
     return render(request, 'calisphere/posters.html', {
-        'poster_data': poster_data 
+        'poster_data': poster_data
     })
 
 def sitemapSection(request, section):

@@ -3,9 +3,9 @@ import os
 import gzip
 import shutil
 from django.template import loader
-from django.conf import settings
 from django.contrib.sitemaps import Sitemap as RegularDjangoSitemap
 from static_sitemaps.generator import SitemapGenerator
+from static_sitemaps import conf
 
 
 class CalisphereSitemapGenerator(SitemapGenerator):

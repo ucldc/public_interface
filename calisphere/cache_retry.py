@@ -70,9 +70,9 @@ def SOLR(**params):
         query.update({key: value})
     res = requests.post(solr_url, headers=solr_auth, data=query, verify=False)
     res.raise_for_status()
-    results = json.loads(res.content)
+    results = json.loads(res.content.decode('utf-8'))
     facet_counts = results.get('facet_counts', {})
-    for key, value in list(facet_counts.get('facet_fields', {}).items()):
+    for key, value in facet_counts.get('facet_fields', {}).items():
         # Make facet fields match edsu with grouper recipe
         facet_counts['facet_fields'][key] = dict(
             itertools.zip_longest(*[iter(value)] * 2, fillvalue=""))
@@ -99,7 +99,7 @@ def json_loads_url(url_or_req):
     data = cache.get(key)
     if not data:
         try:
-            data = json.loads(urllib.request.urlopen(url_or_req).read())
+            data = json.loads(urllib.request.urlopen(url_or_req).read().decode('utf-8'))
         except urllib.error.HTTPError:
             data = {}
     return data

@@ -1,3 +1,8 @@
+from __future__ import division
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from past.utils import old_div
 from django.template import Library
 import ast
 
@@ -25,7 +30,7 @@ def get_range(value):
 
     https://djangosnippets.org/snippets/1357/
   """
-    return range(value)
+    return list(range(value))
 
 
 @register.filter
@@ -58,12 +63,12 @@ def subtract(a, b):
 
 @register.filter
 def divide(a, b):
-    return int(int(a) / int(b))
+    return int(old_div(int(a), int(b)))
 
 
 @register.filter
 def current_page(start, rows):
-    return int(int(start) / int(rows)) + 1
+    return int(old_div(int(start), int(rows))) + 1
 
 
 @register.filter

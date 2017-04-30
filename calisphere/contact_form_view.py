@@ -1,11 +1,13 @@
 from __future__ import unicode_literals, print_function
+from future import standard_library
+standard_library.install_aliases()
 from collections import OrderedDict
 from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from contact_form.views import ContactFormView
 from contact_form.forms import ContactForm
-import urlparse
+import urllib.parse
 
 
 class CalisphereContactForm(ContactForm):
@@ -39,7 +41,7 @@ class CalisphereContactForm(ContactForm):
             'body',
             'referer',
         ]
-        if (self.fields.has_key('keyOrder')):
+        if ('keyOrder' in self.fields):
             self.fields.keyOrder = fields_keyOrder
         else:
             self.fields = OrderedDict((k, self.fields[k])
@@ -54,5 +56,5 @@ class CalisphereContactFormView(ContactFormView):
     def get_success_url(self):
         # fix the host name to stay on the proxy http://stackoverflow.com/a/5686726/1763984
         # pass the referer on to the "sent" email confirmation page
-        return urlparse.urljoin(settings.UCLDC_FRONT, '{0}?referer={1}'.format(
+        return urllib.parse.urljoin(settings.UCLDC_FRONT, '{0}?referer={1}'.format(
             reverse('contact_form_sent'), self.request.POST.get('referer')))

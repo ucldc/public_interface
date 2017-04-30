@@ -1,4 +1,6 @@
 from __future__ import unicode_literals, print_function
+from builtins import next
+from builtins import range
 import os
 import gzip
 import shutil
@@ -19,7 +21,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
         ''' write sitemap.xml index file and the sitemap files it references '''
         parts = []
 
-        for section, site in self.sitemaps.items():
+        for section, site in list(self.sitemaps.items()):
             if issubclass(site, RegularDjangoSitemap):
                 parts.extend(self.write_data_regular(section, site))
             else:
@@ -60,11 +62,11 @@ class CalisphereSitemapGenerator(SitemapGenerator):
     def write_data_fast(self, section, site):
         ''' process data using generator and streaming xml '''
         # FIXME need to generalize this code if we ever want to use it for anything other than Calisphere items
-        items = site().items()  # generator yielding all items
+        items = list(site().items())  # generator yielding all items
 
         parts = []
 
-        for page in xrange(site().num_pages):
+        for page in range(site().num_pages):
             filename = conf.FILENAME_TEMPLATE % {
                 'section': section,
                 'page': page + 1
@@ -76,7 +78,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
                 f.write(
                     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
                 )
-                for n in xrange(site().limit):
+                for n in range(site().limit):
                     item = next(items)
                     f.write('<url>')
                     f.write(

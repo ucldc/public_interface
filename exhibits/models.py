@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from builtins import object
 import os.path
 
 from django.contrib.auth.models import User
@@ -11,9 +12,11 @@ from django.utils.encoding import python_2_unicode_compatible
 from calisphere.views import getCollectionData, getRepositoryData
 from django.conf import settings
 from exhibits.custom_fields import HeroField
+from past import autotranslate
+autotranslate(['md5s3stash'])
 from md5s3stash import md5s3stash
 
-# only if you need to support python 2: 
+# only if you need to support python 2:
 from django.utils.encoding import python_2_unicode_compatible
 
 RENDERING_OPTIONS = (
@@ -60,7 +63,7 @@ class Exhibit(models.Model):
 
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
-    
+
     objects = PublishedExhibitManager()
 
     def __str__(self):
@@ -114,9 +117,9 @@ class Exhibit(models.Model):
                 return settings.THUMBNAIL_URL + "crop/298x121/" + self.hero.name
             else:
                 return None
-    
+
     def social_media_card(self):
-        if self.item_id: 
+        if self.item_id:
             item_id_search_term = 'id:"{0}"'.format(self.item_id)
             item_solr_search = SOLR_select(q=item_id_search_term)
             if len(item_solr_search.results) > 0 and 'reference_image_md5' in item_solr_search.results[0]:
@@ -133,7 +136,7 @@ class Exhibit(models.Model):
         super(Exhibit, self).save(*args, **kwargs)
         for s3field in self.push_to_s3:
             name = getattr(self, s3field).name
-            if name: 
+            if name:
                 url = settings.MEDIA_ROOT + "/" + name
                 if os.path.isfile(url):
                     field_instance = getattr(self, s3field)
@@ -167,19 +170,19 @@ class HistoricalEssay(models.Model):
     blockquote = models.CharField(max_length=200, blank=True)
     essay = models.TextField(blank=True)
     render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H')
-    
+
     byline = models.TextField(blank=True)
     byline_render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H', verbose_name='Render byline as')
     go_further = models.TextField(blank=True)
     go_further_render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H', verbose_name='Render as')
-    
+
     publish = models.BooleanField(verbose_name='Ready for publication?', default=False)
     color = models.CharField(max_length=20, blank=True, help_text="Please provide color in <code>#xxx</code>, <code>#xxxxxx</code>, <code>rgb(xxx,xxx,xxx)</code>, or <code>rgba(xxx,xxx,xxx,x.x)</code> formats.")
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
 
     objects = PublishedHistoricalEssayManager()
-        
+
     def published_exhibits(self):
         if settings.EXHIBIT_PREVIEW:
             return self.historicalessayexhibit_set
@@ -226,7 +229,7 @@ class HistoricalEssay(models.Model):
                 return None
 
     def social_media_card(self):
-        if self.item_id: 
+        if self.item_id:
             item_id_search_term = 'id:"{0}"'.format(self.item_id)
             item_solr_search = SOLR_select(q=item_id_search_term)
             if len(item_solr_search.results) > 0 and 'reference_image_md5' in item_solr_search.results[0]:
@@ -265,7 +268,7 @@ class LessonPlan(models.Model):
     grade_level = models.CharField(max_length=200, blank=True)
     byline = models.TextField(blank=True)
     byline_render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H')
-    
+
     publish = models.BooleanField(verbose_name='Ready for publication?', default=False)
     meta_description = models.CharField(max_length=255, blank=True)
     meta_keywords = models.CharField(max_length=255, blank=True)
@@ -274,7 +277,7 @@ class LessonPlan(models.Model):
 
     def __str__(self):
         return self.title
-    
+
     def published_themes(self):
         if settings.EXHIBIT_PREVIEW:
             return self.lessonplantheme_set
@@ -338,7 +341,7 @@ class PublishedThemeManager(models.Manager):
             return super(PublishedThemeManager, self).get_queryset().filter(publish=True)
 
 @python_2_unicode_compatible
-class Theme(models.Model): 
+class Theme(models.Model):
     title = models.CharField(max_length=200)
     sort_title = models.CharField(blank=True, max_length=200, verbose_name='Sortable Title')
     slug = models.SlugField(max_length=255, unique=True)
@@ -347,7 +350,7 @@ class Theme(models.Model):
     byline_render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H')
     essay = models.TextField(blank=True, verbose_name='Theme overview')
     render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H')
-    
+
     hero = models.ImageField(blank=True, verbose_name='Hero Image', upload_to='uploads/')
     lockup_derivative = models.ImageField(blank=True, null=True, verbose_name='Lockup Image', upload_to='uploads/')
     alternate_lockup_derivative = models.ImageField(blank=True, null=True, verbose_name='Alternate Lockup Image', upload_to='uploads/')
@@ -424,7 +427,7 @@ class Theme(models.Model):
                     self._meta.get_field(s3field).upload_to = upload_to
 
     def social_media_card(self):
-        if self.item_id: 
+        if self.item_id:
             item_id_search_term = 'id:"{0}"'.format(self.item_id)
             item_solr_search = SOLR_select(q=item_id_search_term)
             if len(item_solr_search.results) > 0 and 'reference_image_md5' in item_solr_search.results[0]:
@@ -488,7 +491,7 @@ class ExhibitItem(models.Model):
     def imgUrl(self):
         if self.custom_crop:
             return settings.THUMBNAIL_URL + "crop/210x210/" + self.custom_crop.name
-        else: 
+        else:
             item_id_search_term = 'id:"{0}"'.format(self.item_id)
             item_solr_search = SOLR_select(q=item_id_search_term)
             if len(item_solr_search.results) > 0 and 'reference_image_md5' in item_solr_search.results[0]:
@@ -524,7 +527,7 @@ class NotesItem(models.Model):
     def __str__(self):
         return self.title
 
-    class Meta:
+    class Meta(object):
         ordering = ['order']
 
 @python_2_unicode_compatible
@@ -540,7 +543,7 @@ class BrowseTermGroup(models.Model):
     def __str__(self):
         return self.group_title
 
-    class Meta:
+    class Meta(object):
         ordering = ['order']
 
 @python_2_unicode_compatible
@@ -553,7 +556,7 @@ class BrowseTerm(models.Model):
     def __str__(self):
         return self.link_text
 
-    class Meta:
+    class Meta(object):
         ordering = ['order']
 
 
@@ -595,7 +598,7 @@ class LessonPlanTheme(models.Model):
     lessonPlan = models.ForeignKey(LessonPlan, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     order = PositionField(collection='theme')
-    
+
     class Meta(object):
         unique_together = ('lessonPlan', 'theme')
         verbose_name = 'Lesson Plan'
@@ -605,7 +608,7 @@ class HistoricalEssayTheme(models.Model):
     historicalEssay = models.ForeignKey(HistoricalEssay, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
     order = PositionField(collection='theme')
-    
+
     class Meta(object):
         unique_together = ('historicalEssay', 'theme')
         verbose_name = 'Historical Essay'

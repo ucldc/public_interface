@@ -1,11 +1,14 @@
 """ logic for cache / retry for solr and JSON from registry
 """
 from __future__ import unicode_literals, print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from django.core.cache import cache
 from django.conf import settings
 
 from collections import namedtuple
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from retrying import retry
 import requests
 import pickle
@@ -62,17 +65,17 @@ def SOLR(**params):
     solr_auth = {'X-Authentication-Token': settings.SOLR_API_KEY}
     # Clean up optional parameters to match SOLR spec
     query = {}
-    for key, value in params.items():
+    for key, value in list(params.items()):
         key = key.replace('_', '.')
         query.update({key: value})
     res = requests.post(solr_url, headers=solr_auth, data=query, verify=False)
     res.raise_for_status()
     results = json.loads(res.content)
     facet_counts = results.get('facet_counts', {})
-    for key, value in facet_counts.get('facet_fields', {}).iteritems():
+    for key, value in list(facet_counts.get('facet_fields', {}).items()):
         # Make facet fields match edsu with grouper recipe
         facet_counts['facet_fields'][key] = dict(
-            itertools.izip_longest(*[iter(value)] * 2, fillvalue=""))
+            itertools.zip_longest(*[iter(value)] * 2, fillvalue=""))
 
     return SolrResults(
         results['response']['docs'],
@@ -96,8 +99,8 @@ def json_loads_url(url_or_req):
     data = cache.get(key)
     if not data:
         try:
-            data = json.loads(urllib2.urlopen(url_or_req).read())
-        except urllib2.HTTPError:
+            data = json.loads(urllib.request.urlopen(url_or_req).read())
+        except urllib.error.HTTPError:
             data = {}
     return data
 
@@ -139,7 +142,7 @@ def SOLR_raw(**kwargs):
         solr_auth = {'X-Authentication-Token': settings.SOLR_API_KEY}
         # Clean up optional parameters to match SOLR spec
         query = {}
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             key = key.replace('_', '.')
             query.update({key: value})
         res = requests.get(

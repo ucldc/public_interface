@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
-import urllib2
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
+from builtins import object
+import urllib.request, urllib.error, urllib.parse
 import json
 from collections import namedtuple
 import string
 import random
-from cache_retry import json_loads_url
+from .cache_retry import json_loads_url
 from django.core.cache import cache
 from django.conf import settings
 import time
@@ -33,7 +38,7 @@ class CollectionManager(object):
             url = (
                 '{0}/query?facet.field=collection_data&facet=on&rows=0&facet.limit=-1&facet.mincount=1'
                 .format(solr_url))
-            req = urllib2.Request(url, None,
+            req = urllib.request.Request(url, None,
                                   {'X-Authentication-Token': solr_key})
             save = {}
             save['data'] = self.data = json_loads_url(req)['facet_counts'][

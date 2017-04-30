@@ -1,4 +1,10 @@
 from __future__ import unicode_literals, print_function
+from __future__ import division
+from future import standard_library
+from functools import reduce
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 from django.apps import apps
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -17,7 +23,7 @@ import re
 import copy
 import simplejson as json
 import string
-import urlparse
+import urllib.parse
 
 
 # concat query with 'AND'
@@ -239,13 +245,13 @@ def getRepositoryData(repository_data=None,
 
 def process_facets(facets, filters, facet_type=None):
     display_facets = dict((facet, count)
-                          for facet, count in facets.iteritems() if count != 0)
+                          for facet, count in list(facets.items()) if count != 0)
     if facet_type and facet_type == 'facet_decade':
         display_facets = sorted(
-            display_facets.iteritems(), key=operator.itemgetter(0))
+            iter(list(display_facets.items())), key=operator.itemgetter(0))
     else:
         display_facets = sorted(
-            display_facets.iteritems(),
+            iter(list(display_facets.items())),
             key=operator.itemgetter(1),
             reverse=True)
 
@@ -291,7 +297,7 @@ def facetQuery(facet_fields, queryParams, solr_search, extra_filter=None):
             # other_filters is all the filters except the ones of the current filter type
             other_filters = {
                 key: value
-                for key, value in queryParams['filters'].items()
+                for key, value in list(queryParams['filters'].items())
                 if key != filter_type
             }
             other_filters[filter_type] = []
@@ -391,7 +397,7 @@ def getHostedContentFile(structmap):
         size = json_loads_url(structmap_url)['sizes'][-1]
         if size['height'] > size['width']:
             access_size = {
-                'width': ((size['width'] * 1024) / size['height']),
+                'width': (old_div((size['width'] * 1024), size['height'])),
                 'height': 1024
             }
             access_url = json_loads_url(
@@ -399,7 +405,7 @@ def getHostedContentFile(structmap):
         else:
             access_size = {
                 'width': 1024,
-                'height': ((size['height'] * 1024) / size['width'])
+                'height': (old_div((size['height'] * 1024), size['width']))
             }
             access_url = json_loads_url(
                 structmap_url)['@id'] + "/full/1024,/0/default.jpg"
@@ -471,14 +477,13 @@ def itemView(request, item_id=''):
                     if 'format' in component:
                         item['contentFile'] = getHostedContentFile(component)
                     # remove emptry strings from list
-                    for k, v in component.iteritems():
+                    for k, v in list(component.items()):
                         if isinstance(v, list):
-                            if isinstance(v[0], unicode):
-                                component[k] = filter(
-                                    lambda name: name.strip(), v)
+                            if isinstance(v[0], str):
+                                component[k] = [name for name in v if name.strip()]
                     # remove empty lists and empty strings from dict
                     item['selectedComponent'] = dict(
-                        (k, v) for k, v in component.iteritems() if v)
+                        (k, v) for k, v in list(component.items()) if v)
                 else:
                     item['selected'] = True
                     # if parent content file, get it
@@ -558,7 +563,7 @@ def itemView(request, item_id=''):
 
     meta_image = False
     if item_solr_search.results[0].get('reference_image_md5', False):
-        meta_image = urlparse.urljoin(
+        meta_image = urllib.parse.urljoin(
             settings.UCLDC_FRONT,
             '/crop/999x999/{0}'.format(
                 item_solr_search.results[0]['reference_image_md5']), )
@@ -674,7 +679,7 @@ def search(request):
             'pages':
             int(
                 math.ceil(
-                    float(solr_search.numFound) / int(queryParams['rows']))),
+                    old_div(float(solr_search.numFound), int(queryParams['rows'])))),
             'view_format':
             queryParams['view_format'],
             'related_collections':
@@ -939,7 +944,7 @@ def collectionsDirectory(request):
     context = {
         'collections': collections,
         'random': True,
-        'pages': int(math.ceil(float(len(solr_collections.shuffled)) / 10))
+        'pages': int(math.ceil(old_div(float(len(solr_collections.shuffled)), 10)))
     }
 
     if page * 10 < len(solr_collections.shuffled):
@@ -956,7 +961,7 @@ def collectionsAZ(request, collection_letter):
     collections_list = solr_collections.split[collection_letter.lower()]
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
-    pages = int(math.ceil(float(len(collections_list)) / 10))
+    pages = int(math.ceil(old_div(float(len(collections_list)), 10)))
 
     collections = []
     for collection_link in collections_list[(page - 1) * 10:page * 10]:
@@ -1114,7 +1119,7 @@ def collectionView(request, collection_id):
         'numFound':
         solr_search.numFound,
         'pages':
-        int(math.ceil(float(solr_search.numFound) / int(queryParams['rows']))),
+        int(math.ceil(old_div(float(solr_search.numFound), int(queryParams['rows'])))),
         'view_format':
         queryParams.get('view_format'),
         'collection':
@@ -1336,7 +1341,7 @@ def institutionView(request,
             'pages':
             int(
                 math.ceil(
-                    float(solr_search.numFound) / int(queryParams['rows']))),
+                    old_div(float(solr_search.numFound), int(queryParams['rows'])))),
             'view_format':
             queryParams['view_format'],
             'institution':
@@ -1417,9 +1422,9 @@ def institutionView(request,
 
         pages = int(
             math.ceil(
-                float(
+                old_div(float(
                     len(collections_solr_search.facet_counts['facet_fields'][
-                        'sort_collection_data'])) / 10))
+                        'sort_collection_data'])), 10)))
         # doing the search again;
         # could we slice this from the results above?
         collections_solr_search = SOLR_select(

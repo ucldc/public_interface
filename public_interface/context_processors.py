@@ -1,5 +1,7 @@
 from __future__ import unicode_literals, print_function
-import urlparse
+from future import standard_library
+standard_library.install_aliases()
+import urllib.parse
 
 
 def settings(request):
@@ -7,7 +9,7 @@ def settings(request):
     Put selected settings variables into the default template context
     """
     from django.conf import settings
-    permalink = urlparse.urljoin(settings.UCLDC_FRONT, request.path)
+    permalink = urllib.parse.urljoin(settings.UCLDC_FRONT, request.path)
     if request.META['QUERY_STRING']:
         permalink = '?'.join([permalink, request.META['QUERY_STRING']])
     return {

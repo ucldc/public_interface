@@ -884,7 +884,7 @@ def relatedCollections(request, queryParams={}):
                 collection_items = collection_items + collection_solr_search_no_query.results
 
             if len(collection_items) > 0 and len(
-                    collection_solr_search.results[0]) > 0:
+                    collection_solr_search.results) > 0:
                 if 'collection_data' in collection_solr_search.results[0] and len(
                         collection_solr_search.results[0]
                     ['collection_data']) > 0:

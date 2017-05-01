@@ -757,7 +757,7 @@ def relatedCollections(request, queryParams={}):
                 #TODO: in some cases this will result in the same object appearing twice in the related collections preview
                 collection_items = collection_items + collection_solr_search_no_query.results
 
-            if len(collection_items) > 0 and len(collection_solr_search.results[0]) > 0:
+            if len(collection_items) > 0 and len(collection_solr_search.results) > 0:
                 if 'collection_data' in collection_solr_search.results[0] and len(collection_solr_search.results[0]['collection_data']) > 0:
                     collection = collection_solr_search.results[0]['collection_data'][0]
 
@@ -1312,7 +1312,7 @@ def posters(request):
     poster_data = sorted(poster_data.items())
 
     return render(request, 'calisphere/posters.html', {
-        'poster_data': poster_data 
+        'poster_data': poster_data
     })
 
 def sitemapSection(request, section):

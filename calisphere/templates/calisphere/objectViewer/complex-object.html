@@ -6,6 +6,8 @@
   {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
 {% elif item.contentFile.format|lower == 'video' %}
   {% include 'calisphere/objectViewer/hosted-simple-video.html' %}
+{% elif item.contentFile.format|lower == 'file' %}
+  {% include 'calisphere/objectViewer/hosted-simple-file.html' %}
 {% else %}
   {% include 'calisphere/objectViewer/object-tiles-and-overlays.html' %}
 {% endif %}

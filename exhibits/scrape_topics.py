@@ -1,3 +1,5 @@
+from builtins import input
+from builtins import str
 from bs4 import BeautifulSoup
 from exhibits.models import Exhibit, NotesItem, ExhibitItem
 from django.utils.text import slugify
@@ -10,7 +12,7 @@ def getEssay(soup, topic):
     essay_text = ''
 
     while user_input != 'stop':
-        user_input = raw_input(topic_content)
+        user_input = eval(input(topic_content))
         if user_input == 's':
             topic_content = topic_content.find_next('h2')
         elif user_input == 'n':
@@ -24,10 +26,10 @@ def getEssay(soup, topic):
                 topic.content.name = 'h6'
             elif topic_content.name == 'h6':
                 topic_content.name = 'b'
-            essay_text = essay_text + unicode(topic_content)
+            essay_text = essay_text + str(topic_content)
             topic_content = topic_content.find_next()
         else: 
-            user_input = raw_input('whoops, try again')
+            user_input = eval(input('whoops, try again'))
 
     e = Exhibit(title=soup.h1.string, slug=slugify(soup.h1.string), essay=essay_text, scraped_from=topic)
     e.save()
@@ -40,7 +42,7 @@ def getSidebar(soup, e):
        sidebar_content = ""
        for c in s.contents:
          if c.name != 'h1':
-           sidebar_content = sidebar_content + unicode(c.string)
+           sidebar_content = sidebar_content + str(c.string)
        note = NotesItem(title=s.h1.text, essay=sidebar_content, exhibit_id=e.id)
        note.save()
 

@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 import re
 import time
 
@@ -8,7 +11,7 @@ from django.conf import settings
 
 from calisphere.collection_data import CollectionManager
 
-from cache_retry import SOLR_select_nocache
+from .cache_retry import SOLR_select_nocache
 
 app = apps.get_app_config('calisphere')
 
@@ -18,54 +21,47 @@ class HttpsSitemap(Sitemap):
 
 
 class StaticSitemap(HttpsSitemap):
-
-
     def items(self):
         return [
-          'calisphere:collectionsDirectory',
-          'calisphere:about',
-          'calisphere:help',
-          'calisphere:termsOfUse',
-          'calisphere:privacyStatement',
-          'calisphere:outreach',
-          'calisphere:contribute',
+            'calisphere:collectionsDirectory',
+            'calisphere:about',
+            'calisphere:help',
+            'calisphere:termsOfUse',
+            'calisphere:privacyStatement',
+            'calisphere:outreach',
+            'calisphere:contribute',
         ]
-
 
     def location(self, item):
         return reverse(item)
 
 
 class InstitutionSitemap(HttpsSitemap):
-
     def items(self):
-        return app.registry.repository_data.keys()
+        return list(app.registry.repository_data.keys())
 
     def location(self, item):
         return reverse(
             'calisphere:repositoryView',
-            kwargs={'repository_id': item, 'subnav': 'items'}
-        )
+            kwargs={'repository_id': item,
+                    'subnav': 'items'})
 
 
 class CollectionSitemap(HttpsSitemap):
-
-
     def items(self):
-        return CollectionManager(settings.SOLR_URL, settings.SOLR_API_KEY).parsed
-
+        return CollectionManager(settings.SOLR_URL,
+                                 settings.SOLR_API_KEY).parsed
 
     def location(self, item):
-        col_id = re.match(r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',
-                          item.url)
+        col_id = re.match(
+            r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',
+            item.url)
         return reverse(
             'calisphere:collectionView',
-            kwargs={'collection_id': col_id.group('collection_id')}
-        )
+            kwargs={'collection_id': col_id.group('collection_id')})
 
 
 class ItemSitemap(object):
-
     '''
         class for generating Calisphere item sitemaps in conjunction with
         calisphere.sitemap_generator, which is a subclass of django-static-sitemaps
@@ -75,11 +71,12 @@ class ItemSitemap(object):
 
         Use a generator of solr results rather than a list, which is too memory intensive.
     '''
+
     def __init__(self):
 
         self.limit = 15000  # 50,000 is google limit on urls per sitemap file
         self.solr_total = SOLR_select_nocache(q='').numFound
-        self.num_pages = self.solr_total/self.limit
+        self.num_pages = old_div(self.solr_total, self.limit)
 
     def items(self):
         ''' returns a generator containing data for all items in solr '''
@@ -91,18 +88,12 @@ class ItemSitemap(object):
             'sort': 'score desc,id desc',
         }
 
-
         data_iter = self.get_iter(base_query)
 
         return data_iter
 
-
     def location(self, item):
-        return reverse(
-            'calisphere:itemView',
-            kwargs={'item_id': item}
-        )
-
+        return reverse('calisphere:itemView', kwargs={'item_id': item})
 
     def get_iter(self, params):
         nextCursorMark = '*'
@@ -112,7 +103,11 @@ class ItemSitemap(object):
             if len(solr_page.results) == 0:
                 break
             for item in solr_page.results:
-                yield {'id': item.get('id'), 'reference_image_md5': item.get('reference_image_md5'), 'timestamp': item.get('timestamp')}
+                yield {
+                    'id': item.get('id'),
+                    'reference_image_md5': item.get('reference_image_md5'),
+                    'timestamp': item.get('timestamp')
+                }
 
             nextCursorMark = solr_page.nextCursorMark
 

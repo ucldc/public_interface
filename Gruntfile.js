@@ -334,7 +334,14 @@ module.exports = function (grunt) {
             'images/{,*/}*.webp',
             '{,*/}*.html',
             'styles/{,*/}*.*',
-            'fonts/{,*/}*.*'
+            'fonts/{,*/}*.*',
+            'scripts/ComplexCarouselView.js',
+            'scripts/ContactOwnerFormView.js',
+            'scripts/ExhibitPageView.js',
+            'scripts/FacetFormView.js',
+            'scripts/GlobalSearchFormView.js',
+            'scripts/ItemView.js',
+            'scripts/QueryManager.js'
           ]
         }, {
           src: 'node_modules/apache-server-configs/dist/.htaccess',

@@ -32,6 +32,7 @@ class CollectionManager(object):
             self.no_collections = saved[
                 'no_collections']  # number of collections per letter for a-z
             self.shuffled = saved['shuffled']  # For the collections explore
+            self.total_objects = saved['total_objects']
         else:
             # look it up from solr
             url = (
@@ -49,7 +50,7 @@ class CollectionManager(object):
             save['split'] = self.split
             save['no_collections'] = self.no_collections
             save['shuffled'] = self.shuffled
-            save['total_objects'] = self.total_objects= solr_data['response']['numFound']
+            save['total_objects'] = self.total_objects = solr_data['response']['numFound']
             cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT)
 
     def parse(self):

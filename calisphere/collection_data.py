@@ -32,7 +32,7 @@ class CollectionManager(object):
             self.no_collections = saved[
                 'no_collections']  # number of collections per letter for a-z
             self.shuffled = saved['shuffled']  # For the collections explore
-            self.total_objects = saved['total_objects']
+            self.total_objects = saved.get('total_objects', 850000)
         else:
             # look it up from solr
             url = (

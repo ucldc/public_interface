@@ -56,7 +56,7 @@ EMAIL_BACKEND = getenv('EMAIL_BACKEND',
 EMAIL_HOST = getenv('EMAIL_HOST', '')
 EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_HOST_USER = getenv('EMAIL_HOST_USER', '')
-EMAIL_PORT = getenv('EMAIL_PORT', '')
+EMAIL_PORT = int(getenv('EMAIL_PORT', ''))
 EMAIL_USE_TLS = bool(getenv('EMAIL_USE_TLS', ''))
 CSRF_COOKIE_SECURE = bool(getenv('CSRF_COOKIE_SECURE', ''))
 

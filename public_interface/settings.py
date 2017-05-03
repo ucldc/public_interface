@@ -12,50 +12,61 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 from django.utils.crypto import get_random_string  # http://stackoverflow.com/a/16630719/1763984
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 
+
+def getenv(variable, default):
+    ''' getenv wrapper that decodes the same as python 3 in python 2
+    '''
+    try:  # decode for python2
+        return os.getenv(variable, default).decode(sys.getfilesystemencoding())
+    except AttributeError:
+        return os.getenv(variable, default)
+
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-THUMBNAIL_URL = os.getenv('UCLDC_THUMBNAIL_URL',
+THUMBNAIL_URL = getenv('UCLDC_THUMBNAIL_URL',
                           'http://localhost:8888/')  # `python thumbnail.py`
-S3_STASH = os.getenv('UCLDC_S3_STASH', '')
+S3_STASH = getenv('UCLDC_S3_STASH', '')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
+SECRET_KEY = getenv(
     'DJANGO_SECRET_KEY',
     get_random_string(50,
                       'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'))
 
-SOLR_URL = os.getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
-SOLR_API_KEY = os.getenv('UCLDC_SOLR_API_KEY', '')
-UCLDC_IMAGES = os.getenv('UCLDC_IMAGES', '')
-UCLDC_MEDIA = os.getenv('UCLDC_MEDIA', '')
-UCLDC_IIIF = os.getenv('UCLDC_IIIF', '')
-UCLDC_NUXEO_THUMBS = os.getenv('UCLDC_NUXEO_THUMBS', '')
-UCLDC_REGISTRY_URL = os.getenv('UCLDC_REGISTRY_URL',
+SOLR_URL = getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
+SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
+UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')
+UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
+UCLDC_IIIF = getenv('UCLDC_IIIF', '')
+UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
+UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
                                'https://registry.cdlib.org/')
 
-UCLDC_FRONT = os.getenv('UCLDC_FRONT', '')
-UCLDC_REDIS_URL = os.getenv('UCLDC_REDIS_URL', False)
+UCLDC_FRONT = getenv('UCLDC_FRONT', '')
+UCLDC_REDIS_URL = getenv('UCLDC_REDIS_URL', False)
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND',
+EMAIL_BACKEND = getenv('EMAIL_BACKEND',
                           'django.core.mail.backends.console.EmailBackend')
 
-EMAIL_HOST = os.getenv('EMAIL_HOST', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_PORT = os.getenv('EMAIL_PORT', '')
-EMAIL_USE_TLS = bool(os.getenv('EMAIL_USE_TLS', ''))
-CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE', ''))
+EMAIL_HOST = getenv('EMAIL_HOST', '')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER', '')
+EMAIL_PORT = getenv('EMAIL_PORT', '')
+EMAIL_USE_TLS = bool(getenv('EMAIL_USE_TLS', ''))
+CSRF_COOKIE_SECURE = bool(getenv('CSRF_COOKIE_SECURE', ''))
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')
+DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')
 
 ADMINS = (('', DEFAULT_FROM_EMAIL), )
 MANAGERS = ADMINS
 
-GA_SITE_CODE = os.getenv('UCLDC_GA_SITE_CODE', False)
-UCLDC_WALKME = os.getenv('UCLDC_WALKME', False)
+GA_SITE_CODE = getenv('UCLDC_GA_SITE_CODE', False)
+UCLDC_WALKME = getenv('UCLDC_WALKME', False)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('UCLDC_DEBUG'))  # <-- this is django's debug
@@ -175,7 +186,7 @@ else:
 # Cache / Redis
 #
 
-DJANGO_CACHE_TIMEOUT = os.getenv('DJANGO_CACHE_TIMEOUT', 60 * 15)  # seconds
+DJANGO_CACHE_TIMEOUT = getenv('DJANGO_CACHE_TIMEOUT', 60 * 15)  # seconds
 
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = DJANGO_CACHE_TIMEOUT
@@ -241,7 +252,7 @@ MEDIA_URL = '/media/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = os.getenv('UCLDC_STATIC_URL',
+STATIC_URL = getenv('UCLDC_STATIC_URL',
                        'http://localhost:9000/')  # `grunt serve`
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
@@ -261,7 +272,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'level': getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
         },
     },
 }

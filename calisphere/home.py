@@ -20,7 +20,6 @@ class HomeView(TemplateView):
         this_data = os.path.join(this_dir, 'home-data.json')
         self.home_data = json.loads(open(this_data).read())
 
-
     @method_decorator(gzip_page)
     def get(self, request):
         """ view for home page """
@@ -30,7 +29,10 @@ class HomeView(TemplateView):
 
         # return one lock_up; and arrays for the featured stuff
         return render(request, self.template_name, {
-            'lock_up': self.home_data['home'][0],
-            'uc_partners': self.home_data['uc_partners'],
-            'statewide_partners': self.home_data['statewide_partners'],
+            'lock_up':
+            self.home_data['home'][0],
+            'uc_partners':
+            self.home_data['uc_partners'],
+            'statewide_partners':
+            self.home_data['statewide_partners'],
         })

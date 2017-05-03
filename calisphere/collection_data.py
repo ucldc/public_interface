@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 
-import urllib2
-import json
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
+from builtins import object
+import urllib.request, urllib.error, urllib.parse
 from collections import namedtuple
 import string
 import random
-from cache_retry import json_loads_url
+from .cache_retry import json_loads_url
 from django.core.cache import cache
 from django.conf import settings
 import time
 
 CollectionLink = namedtuple('CollectionLink', 'url, label')
 
+
 class CollectionManager(object):
     """ manage collection information that is parsed from solr facets """
-
 
     def __init__(self, solr_url, solr_key):
         cache_key = 'collection-manager'  # won't vary except on djano restart
@@ -25,36 +29,35 @@ class CollectionManager(object):
             self.parsed = saved['parsed']  # parsed into `CollectionLink`
             self.names = saved['names']  # dict of URL-> collection label
             self.split = saved['split']  # set up for a-z
-            self.no_collections = saved['no_collections']  # number of collections per letter for a-z
+            self.no_collections = saved[
+                'no_collections']  # number of collections per letter for a-z
             self.shuffled = saved['shuffled']  # For the collections explore
         else:
             # look it up from solr
             url = (
                 '{0}/query?facet.field=collection_data&facet=on&rows=0&facet.limit=-1&facet.mincount=1'
-                .format(
-                    solr_url
-                )
-            )
-            req = urllib2.Request(url, None, { 'X-Authentication-Token': solr_key  })
+                .format(solr_url))
+            req = urllib.request.Request(url, None,
+                                  {'X-Authentication-Token': solr_key})
             save = {}
-            save['data'] = self.data = json_loads_url(req)['facet_counts']['facet_fields']['collection_data'][::2]
+            save['data'] = self.data = json_loads_url(req)['facet_counts'][
+                'facet_fields']['collection_data'][::2]
             self.parse()
             save['parsed'] = self.parsed
             save['names'] = self.names
             save['split'] = self.split
             save['no_collections'] = self.no_collections
             save['shuffled'] = self.shuffled
-            cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT )
-
+            cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT)
 
     def parse(self):
         def sort_key(collection_link):
-            return collection_link.label.translate({ord(c): None for c in string.punctuation}).upper()
+            return collection_link.label.translate(
+                {ord(c): None
+                 for c in string.punctuation}).upper()
 
         self.parsed = sorted(
-            [CollectionLink(*x.rsplit('::')) for x in self.data],
-            key=sort_key
-        )
+            [CollectionLink(*x.rsplit('::')) for x in self.data], key=sort_key)
 
         split_collections = {'num': [], 'a': []}
         names = {}
@@ -80,7 +83,7 @@ class CollectionManager(object):
         self.no_collections = []
         for c in list(string.ascii_lowercase):
             if len(self.split[c]) == 0:
-                self.no_collections.append(c);
+                self.no_collections.append(c)
 
         random.seed(time.strftime("%d/%m/%Y"))
 

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from builtins import range
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist

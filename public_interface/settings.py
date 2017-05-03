@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 import requests
 """
 Django settings for public_interface project.
@@ -10,54 +10,66 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-from django.utils.crypto import get_random_string # http://stackoverflow.com/a/16630719/1763984
+from django.utils.crypto import get_random_string  # http://stackoverflow.com/a/16630719/1763984
+
+import os
+import sys
+
+
+def getenv(variable, default):
+    ''' getenv wrapper that decodes the same as python 3 in python 2
+    '''
+    try:  # decode for python2
+        return os.getenv(variable, default).decode(sys.getfilesystemencoding())
+    except AttributeError:
+        return os.getenv(variable, default)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-THUMBNAIL_URL = os.getenv('UCLDC_THUMBNAIL_URL', 'http://localhost:8888/')  # `python thumbnail.py`
-S3_STASH = os.getenv('UCLDC_S3_STASH', '')
+THUMBNAIL_URL = getenv('UCLDC_THUMBNAIL_URL',
+                          'http://localhost:8888/')  # `python thumbnail.py`
+S3_STASH = getenv('UCLDC_S3_STASH', '')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY',
-                       get_random_string(50,
-                                         'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-                       )
-             )
+SECRET_KEY = getenv(
+    'DJANGO_SECRET_KEY',
+    get_random_string(50,
+                      'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'))
 
+SOLR_URL = getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
+SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
+UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')
+UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
+UCLDC_IIIF = getenv('UCLDC_IIIF', '')
+UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
+UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
+                               'https://registry.cdlib.org/')
 
-SOLR_URL = os.getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
-SOLR_API_KEY = os.getenv('UCLDC_SOLR_API_KEY', '')
-UCLDC_IMAGES = os.getenv('UCLDC_IMAGES', '')
-UCLDC_MEDIA = os.getenv('UCLDC_MEDIA', '')
-UCLDC_IIIF = os.getenv('UCLDC_IIIF', '')
-UCLDC_NUXEO_THUMBS = os.getenv('UCLDC_NUXEO_THUMBS', '')
-UCLDC_REGISTRY_URL = os.getenv('UCLDC_REGISTRY_URL', 'https://registry.cdlib.org/')
+UCLDC_FRONT = getenv('UCLDC_FRONT', '')
+UCLDC_REDIS_URL = getenv('UCLDC_REDIS_URL', False)
 
-UCLDC_FRONT = os.getenv('UCLDC_FRONT','')
-UCLDC_REDIS_URL = os.getenv('UCLDC_REDIS_URL', False)
-
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND',
+EMAIL_BACKEND = getenv('EMAIL_BACKEND',
                           'django.core.mail.backends.console.EmailBackend')
 
-EMAIL_HOST = os.getenv('EMAIL_HOST', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_PORT = os.getenv('EMAIL_PORT', '')
-EMAIL_USE_TLS = bool(os.getenv('EMAIL_USE_TLS', ''))
-CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE', ''))
+EMAIL_HOST = getenv('EMAIL_HOST', '')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER', '')
+try:
+    EMAIL_PORT = int(getenv('EMAIL_PORT', ''))
+except ValueError:
+    pass
+EMAIL_USE_TLS = bool(getenv('EMAIL_USE_TLS', ''))
+CSRF_COOKIE_SECURE = bool(getenv('CSRF_COOKIE_SECURE', ''))
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')
+DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')
 
-
-
-ADMINS = (('', DEFAULT_FROM_EMAIL),)
+ADMINS = (('', DEFAULT_FROM_EMAIL), )
 MANAGERS = ADMINS
 
-GA_SITE_CODE = os.getenv('UCLDC_GA_SITE_CODE', False)
-UCLDC_WALKME = os.getenv('UCLDC_WALKME', False)
+GA_SITE_CODE = getenv('UCLDC_GA_SITE_CODE', False)
+UCLDC_WALKME = getenv('UCLDC_WALKME', False)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('UCLDC_DEBUG'))  # <-- this is django's debug
@@ -78,9 +90,11 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-EC2_PRIVATE_IP  =   None
+EC2_PRIVATE_IP = None
 try:
-    EC2_PRIVATE_IP  =   requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', timeout = 0.01).text
+    EC2_PRIVATE_IP = requests.get(
+        'http://169.254.169.254/latest/meta-data/local-ipv4',
+        timeout=0.01).text
 except requests.exceptions.RequestException:
     pass
 
@@ -91,24 +105,13 @@ SITE_ID = 1
 
 # Application definition
 
-INSTALLED_APPS = (
-    'exhibits.apps.ExhibitsConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'django.contrib.humanize',
-    'django.contrib.sitemaps',
-    'easy_pjax',
-    'calisphere',
-    'static_sitemaps',
-    'health_check',
-    'health_check.cache',
-    'health_check.storage',
-)
+INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
+                  'django.contrib.auth', 'django.contrib.contenttypes',
+                  'django.contrib.sessions', 'django.contrib.messages',
+                  'django.contrib.staticfiles', 'django.contrib.sites',
+                  'django.contrib.humanize', 'django.contrib.sitemaps',
+                  'easy_pjax', 'calisphere', 'static_sitemaps', 'health_check',
+                  'health_check.cache', 'health_check.storage', )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?
@@ -120,8 +123,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', )
 
 ROOT_URLCONF = 'public_interface.urls'
 
@@ -129,31 +131,28 @@ WSGI_APPLICATION = 'public_interface.wsgi.application'
 
 APPEND_SLASH = True
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "builtins": [
-                "easy_pjax.templatetags.pjax_tags"
-            ],
-            "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                'public_interface.context_processors.settings',
-            ],
-            "debug": UCLDC_DEVEL,
-            'loaders': [
-                ('django.template.loaders.cached.Loader', [
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader', ]
-                ),
-            ],
-        }
+TEMPLATES = [{
+    "BACKEND": "django.template.backends.django.DjangoTemplates",
+    "DIRS": [],
+    "APP_DIRS": True,
+    "OPTIONS": {
+        "builtins": ["easy_pjax.templatetags.pjax_tags"],
+        "context_processors": [
+            "django.template.context_processors.request",
+            "django.contrib.auth.context_processors.auth",
+            "django.contrib.messages.context_processors.messages",
+            'public_interface.context_processors.settings',
+        ],
+        "debug":
+        UCLDC_DEVEL,
+        'loaders': [
+            ('django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]),
+        ],
     }
-]
+}]
 
 if UCLDC_DEVEL or DEBUG or 1 == 1:
     # turn off template cache if we are debugging
@@ -161,13 +160,13 @@ if UCLDC_DEVEL or DEBUG or 1 == 1:
     TEMPLATES[0]['OPTIONS'].pop('loaders', None)
     TEMPLATES[0]['OPTIONS']['debug'] = True
 
-
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = { }
+DATABASES = {}
 
-if os.environ.get('RDS_DB_NAME') and not os.environ.get('UCLDC_EXHIBITIONS_DATA'):
+if os.environ.get(
+        'RDS_DB_NAME') and not os.environ.get('UCLDC_EXHIBITIONS_DATA'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -190,7 +189,7 @@ else:
 # Cache / Redis
 #
 
-DJANGO_CACHE_TIMEOUT = os.getenv('DJANGO_CACHE_TIMEOUT', 60*15) # seconds
+DJANGO_CACHE_TIMEOUT = getenv('DJANGO_CACHE_TIMEOUT', 60 * 15)  # seconds
 
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = DJANGO_CACHE_TIMEOUT
@@ -215,19 +214,22 @@ if UCLDC_REDIS_URL:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -253,15 +255,14 @@ MEDIA_URL = '/media/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = os.getenv('UCLDC_STATIC_URL', 'http://localhost:9000/')  # `grunt serve`
+STATIC_URL = getenv('UCLDC_STATIC_URL',
+                       'http://localhost:9000/')  # `grunt serve`
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "dist"),
-)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "dist"), )
 
 LOGGING = {
     'version': 1,
@@ -274,7 +275,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'level': getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
         },
     },
 }

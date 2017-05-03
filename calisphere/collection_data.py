@@ -6,7 +6,6 @@ standard_library.install_aliases()
 from builtins import chr
 from builtins import object
 import urllib.request, urllib.error, urllib.parse
-import json
 from collections import namedtuple
 import string
 import random

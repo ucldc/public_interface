@@ -16,9 +16,6 @@ from past import autotranslate
 autotranslate(['md5s3stash'])
 from md5s3stash import md5s3stash
 
-# only if you need to support python 2:
-from django.utils.encoding import python_2_unicode_compatible
-
 RENDERING_OPTIONS = (
     ('H', 'HTML'),
     ('T', 'Plain Text'),

@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse, HttpResponse
 from calisphere.collection_data import CollectionManager
-from .constants import CAMPUS_LIST, FACET_FILTER_TYPES, FEATURED_UNITS
+from .constants import CAMPUS_LIST, DEFAULT_FACET_FILTER_TYPES, FACET_FILTER_TYPES, FEATURED_UNITS
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
@@ -1382,7 +1382,7 @@ def institutionView(request,
             else:
                 context['title'] = institution_details['name']
 
-            if uc_institution == False:
+            if uc_institution is False:
                 for unit in FEATURED_UNITS:
                     if unit['id'] == institution_id:
                         context['featuredImage'] = unit['featuredImage']
@@ -1489,12 +1489,12 @@ def institutionView(request,
             else:
                 context['title'] = institution_details['name']
 
-            if uc_institution == False:
+            if uc_institution is False:
                 for unit in FEATURED_UNITS:
                     if unit['id'] == institution_id:
                         context['featuredImage'] = unit['featuredImage']
 
-            if not 'featuredImage' in context:
+            if 'featuredImage' not in context:
                 context['featuredImage'] = None
 
         return render(request, 'calisphere/institutionViewCollections.html',

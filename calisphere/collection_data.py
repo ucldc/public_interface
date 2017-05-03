@@ -40,7 +40,8 @@ class CollectionManager(object):
             req = urllib.request.Request(url, None,
                                   {'X-Authentication-Token': solr_key})
             save = {}
-            save['data'] = self.data = json_loads_url(req)['facet_counts'][
+            solr_data = json_loads_url(req)
+            save['data'] = self.data = solr_data['facet_counts'][
                 'facet_fields']['collection_data'][::2]
             self.parse()
             save['parsed'] = self.parsed
@@ -48,6 +49,7 @@ class CollectionManager(object):
             save['split'] = self.split
             save['no_collections'] = self.no_collections
             save['shuffled'] = self.shuffled
+            save['total_objects'] = self.total_objects= solr_data['response']['numFound']
             cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT)
 
     def parse(self):

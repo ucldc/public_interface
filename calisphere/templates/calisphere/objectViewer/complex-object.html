@@ -16,7 +16,7 @@
   <!--TODO: if  item.selected is True apply 'selected' styles -->
   <div class="carousel-complex__navigation-text">
     {% if item.selected %}
-      Set contains {{ item.componentCount }} items. <a class="js-component-link" data-item_id="0" href="{% url 'calisphere:itemView' item.id %}">Jump to first item </a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Jump to last item</a>
+      Set contains {{ item.componentCount }} {% if item.componentCount == 1 %}item{% else %}items{% endif %}. <a class="js-component-link" data-item_id="0" href="{% url 'calisphere:itemView' item.id %}">Jump to first item </a> | <a class="js-component-link" data-item_id="{{ item.componentCount|add:'-1' }}" href="{% url 'calisphere:itemView' item.id %}">Jump to last item</a>
     {% elif item.selectedComponentIndex|add:"1" == item.componentCount %}
       Viewing item {{ item.selectedComponentIndex|add:"1" }} of {{ item.componentCount }}. <a class="js-set-link" href="{% url 'calisphere:itemView' item.id %}">Back to summary.</a>
     {% else %}

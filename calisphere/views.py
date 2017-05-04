@@ -383,9 +383,6 @@ def processQueryRequest(request):
     }
 
 
-def home(request):
-    return render(request, 'calisphere/home.html', {'q': ''})
-
 
 def getHostedContentFile(structmap):
     contentFile = ''

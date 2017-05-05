@@ -31,6 +31,8 @@
   {% include 'calisphere/objectViewer/hosted-simple-video.html' %}
 {% elif item.harvest_type == 'hosted' and item.contentFile.format == 'audio' %}
   {% include 'calisphere/objectViewer/hosted-simple-audio.html' %}
+{% elif item.harvest_type == 'hosted' and item.contentFile.format == 'file' %}
+  {% include 'calisphere/objectViewer/hosted-simple-file.html' %}
 {% else %}
   {% include 'calisphere/objectViewer/object-tiles-and-overlays.html' %}
 {% endif %}

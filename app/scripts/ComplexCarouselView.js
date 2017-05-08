@@ -3,9 +3,8 @@
 
 'use strict';
 
-// component created if selector in DOM, selector is in the following templates (2017-04-04)
-// selector: .carousel-complex
-// templates: complex-object.html
+// Component created if **.carousel-complex** in DOM    
+// templates that include `.carousel-complex`: `complex-object.html`
 
 var ComplexCarouselView = Backbone.View.extend({
   el: $('#js-pageContent'),
@@ -18,12 +17,18 @@ var ComplexCarouselView = Backbone.View.extend({
     lazyLoad: 'ondemand'
   },
 
+  // User Event Handlers
+  // ---------------------
+  
   events: {
     'click .js-set-link'        : 'getSet',
     'click .js-component-link'  : 'getComponent',
     'afterChange .carousel-complex__item-container': 'afterChange'
   },
-  // events: {'click .js-set-link': 'getSet'}
+  // `click` triggered on `.js-set-link`    
+  // this is the link fixed at the start of the complex object
+  // carousel which gets metadata information for the full 
+  // complex object
   getSet: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -38,7 +43,9 @@ var ComplexCarouselView = Backbone.View.extend({
       scrollTo: 440
     });
   },
-  // events: {'click .js-component-link': 'getComponent'}
+  
+  // `click` triggered on `.js-component-link`    
+  // retrieve a particular component by adding order parameter to pjax call
   getComponent: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -56,28 +63,39 @@ var ComplexCarouselView = Backbone.View.extend({
       scrollTo: 440
     });
   },
-  // events: {'afterChange .carousel-complex__item-container': 'afterChange'}
+  
+  // `afterChange` triggered on `.carousel-complex__item-container`
+  // slick event called after slides scroll
   afterChange: function(e, slick) {
     this.changeWidth(e, slick);
     this.checkEdges(e, slick);
   },
 
+  // HELPER FUNCTIONS
+  // ------------------
+  
   checkEdges: function(e, slick) {
+    // retrieve slick carousel
     if (slick === undefined) {
       slick = $('.carousel-complex__item-container').slick('getSlick');
     }
-
+    
+    // not sure what this does
     if (slick.slickCurrentSlide() !== 0 && slick.slickCurrentSlide() < slick.getOption('slidesToScroll')) {
       slick.setOption('slidesToScroll', slick.slickCurrentSlide(), true);
     }
 
-    //There seems to be some sort of off-by-one issue with slidesToScroll
+    // There seems to be some sort of off-by-one issue with slidesToScroll
+    // this seems to ensure you can get *all the way* to the end of a set of component objects
     if (slick.slickCurrentSlide() + slick.getOption('slidesToScroll') + 1 === slick.slideCount) {
       slick.setOption('slidesToShow', 1, false);
       slick.setOption('slidesToScroll', 1, true);
     }
   },
 
+  // As slides load, change the slidesToShow and slidesToScroll options
+  // dynamically. Each slide is a variable width, only constrained by height
+  // so this changes every time. 
   changeWidth: function(e, slick) {
     if (slick === undefined) {
       slick = $('.carousel-complex__item-container').slick('getSlick');
@@ -88,6 +106,7 @@ var ComplexCarouselView = Backbone.View.extend({
     var displayedCarouselPx = currentSlide.outerWidth() + parseInt(currentSlide.css('margin-right'));
     var numPartialThumbs = 1, numFullThumbs = 0;
 
+    // count number of thumbnails and partial thumbnails visible in carousel
     while (displayedCarouselPx < visibleCarouselWidth && currentSlide.length > 0) {
       numFullThumbs++;
       currentSlide = currentSlide.next();
@@ -107,6 +126,7 @@ var ComplexCarouselView = Backbone.View.extend({
     slick.slickSetOption('slidesToScroll', numFullThumbs, true);
   },
 
+  // initialize the carousel
   initCarousel: function() {
     $('.carousel-complex').show();
     $('.carousel-complex__item-container').slick(this.carouselConfig);
@@ -117,6 +137,10 @@ var ComplexCarouselView = Backbone.View.extend({
     }
   },
 
+  // PJAX Event Handlers
+  // ----------------------
+
+  // on `pjax:end`, initialize the carousel if it hasn't already been initialized
   pjax_end: function(that) {
     return function() {
       if ($('.carousel-complex').is(':hidden')) {
@@ -125,14 +149,19 @@ var ComplexCarouselView = Backbone.View.extend({
     };
   },
 
+  // called by `setupComponents()` on `$(document).ready()` and `pjax:end`
   initialize: function() {
     this.initCarousel();
+    // once the images have loaded, change slidesToShow and slidesToScroll to 
+    // reflect the actual number of slides visible in the carousel
     imagesLoaded('.carousel-complex__item-container img', (function(that) {
       return function() {
         that.changeWidth();
       };
     }(this)));
 
+    // bind pjax event handlers and save as this.bound_pjax_end so as to remove
+    // later with `destroy()`
     this.bound_pjax_end = this.pjax_end(this);
     $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
   },

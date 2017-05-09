@@ -9,8 +9,10 @@ To build the docs run:
 node_modules/docco/bin/docco app/scripts/*.js
 ```
 
-Documentation Overview
+JavaScript Overview
 ------------------------------
+
+Generally, templating and data marshalling happens server side in Django templates and views, respectively. The templates are served to the client as either a page, an AJAX response, or a PJAX response. The JavaScript then resolves its state with the server's response - hence the `QueryManager`'s `getQueryFromDOM` and `getItemInfoFromDOM` functions. 
 
 Scripts are loaded in the following order (from `/calisphere/templates/calisphere/scripts.html` for devMode and `/app/index.html` for production)
 
@@ -86,10 +88,17 @@ Finally, all PJAX event handlers must be attached (`.on`) by a persistent name i
 - Render (optional)
 If a component defines a `render` method, this is the method called on the view when the query state changes. 
 
-- Destroy (required)
+- Destroy (required in most cases, optional if none of the following exist)
 All PJAX event handlers must be detached (`.off`) by a persistent name in `destroy`. 
 If a component has been instructed to `listenTo` changes in the component's model in `initialize` then the component must `stopListening` in `destroy`.
 `this.undelegateEvents()` must be called to detach user-interaction events specified in the `events` dictionary of a component. 
 
-Creating a New Component
+Creating a New Component - other files you need to touch besides the component file. 
 -------------------------------
+
+1. Create file in `/app/scripts/`
+2. Specify `/*exported <ClassName> */` at the top of the component's file. 
+2. Add file to scripts list in `/calisphere/templates/calisphere/scripts.html` for devMode and `/app/index.html` for production
+3. Specify class name in `/* global */` list in `Controller.js`
+3. In `setupComponents` function in `Controller.js`, add an `if($(<selector>).length) {} else if (globalSearchForm.<componentName>) {}` block. 
+4. In `changeWidth` method of `GlobalSearchFormView`, add a call to the component's `changeWidth` method (if it exists).

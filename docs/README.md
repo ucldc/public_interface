@@ -49,9 +49,9 @@ Scripts are loaded in the following order (from `/calisphere/templates/calispher
   <!-- endbuild -->
 ```
 
-[`calisphere.js`](amywieliczka.github.io/calisphere.html ) is the last loaded file and kicks everything else off - start here to follow what happens when a page is loaded. `calisphere.js` creates `qm`, the globally namespaced [`QueryManager`](amywieliczka.github.io/QueryManager.html), as well as the globally namespaced [`globalSearchForm`](amywieliczka.github.io/GlobalSearchFormView.html), and then uses the `setupComponents` function in [`Controller.js`](amywieliczka.github.io/Controller.html) to determine which components to create/destroy based on which selectors are available in the DOM. 
+[`calisphere.js`](http://amywieliczka.github.io/calisphere.html ) is the last loaded file and kicks everything else off - start here to follow what happens when a page is loaded. `calisphere.js` creates `qm`, the globally namespaced [`QueryManager`](http://amywieliczka.github.io/QueryManager.html), as well as the globally namespaced [`globalSearchForm`](http://amywieliczka.github.io/GlobalSearchFormView.html), and then uses the `setupComponents` function in [`Controller.js`](http://amywieliczka.github.io/Controller.html) to determine which components to create/destroy based on which selectors are available in the DOM. 
 
-The homepage is the one place where `calisphere.js` is **not** used. For the homepage, the only JavaScript loaded is in [`calisphere-home.js`](amywieliczka.github.io/calisphere-home.html). 
+The homepage is the one place where `calisphere.js` is **not** used. For the homepage, the only JavaScript loaded is in [`calisphere-home.js`](http://amywieliczka.github.io/calisphere-home.html). 
 
 A bit about namespacing
 ----------------------------
@@ -59,11 +59,11 @@ A bit about namespacing
 All components are created as subcomponents of the `globalSearchForm`. This means, at any given point in time, you can type `globalSearchForm` into the console and components should exist as properties of the `globalSearchForm` (see list below). Likewise, `qm` is available in the global namespace. Typing `qm.attributes` into the JavaScript console will print the current query state, and should always match `sessionStorage`. 
 
 Calisphere Components:
-* if `#js-facet` selector in DOM, create a [`FacetFormView`](amywieliczka.github.io/FacetFormView.html) attached to `globalSearchForm` at `globalSearchForm.facetForm`
-* if `#js-carouselContainer` selector in DOM, create a [`ItemView`](amywieliczka.github.io/ItemView.html) attached to `globalSearchForm` at `globalSearchForm.carousel`
-* if `#js-contactOwner` selector in DOM, create a [`ContactOwnerFormView`](amywieliczka.github.io/ContactOwnerFormView.html) attached to `globalSearchForm` at `globalSearchForm.contactOwnerForm`
-* if `.carousel-complex` selector in DOM, create a [`ComplexCarouselView`](amywieliczka.github.io/ComplexCarouselView.html) attached to `globalSearchForm` at `globalSearchForm.complexCarousel`
-* if `#js-exhibit-title` selector in DOM, create a [`ExhibitPageView`](amywieliczka.github.io/ExhibitPageView.html) attached to `globalSearchForm` at `globalSearchForm.exhibitPage`
+* if `#js-facet` selector in DOM, create a [`FacetFormView`](http://amywieliczka.github.io/FacetFormView.html) attached to `globalSearchForm` at `globalSearchForm.facetForm`
+* if `#js-carouselContainer` selector in DOM, create a [`ItemView`](http://amywieliczka.github.io/ItemView.html) attached to `globalSearchForm` at `globalSearchForm.carousel`
+* if `#js-contactOwner` selector in DOM, create a [`ContactOwnerFormView`](http://amywieliczka.github.io/ContactOwnerFormView.html) attached to `globalSearchForm` at `globalSearchForm.contactOwnerForm`
+* if `.carousel-complex` selector in DOM, create a [`ComplexCarouselView`](http://amywieliczka.github.io/ComplexCarouselView.html) attached to `globalSearchForm` at `globalSearchForm.complexCarousel`
+* if `#js-exhibit-title` selector in DOM, create a [`ExhibitPageView`](http://amywieliczka.github.io/ExhibitPageView.html) attached to `globalSearchForm` at `globalSearchForm.exhibitPage`
 
 Calisphere Components
 ----------------------------

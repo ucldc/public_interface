@@ -51,67 +51,8 @@ Scripts are loaded in the following order (from `/calisphere/templates/calispher
   <!-- endbuild -->
 ```
 
-[`calisphere.js`](http://amywieliczka.github.io/public_interface/calisphere.html ) is the last loaded file and kicks everything else off - start here to follow what happens when a page is loaded. `calisphere.js` creates `qm`, the globally namespaced [`QueryManager`](http://amywieliczka.github.io/public_interface/QueryManager.html), as well as the globally namespaced [`globalSearchForm`](http://amywieliczka.github.io/public_interface/GlobalSearchFormView.html), and then uses the `setupComponents` function in [`Controller.js`](http://amywieliczka.github.io/public_interface/Controller.html) to determine which components to create/destroy based on which selectors are available in the DOM. 
+`calisphere.js` is the last loaded file and kicks everything else off - start here to follow what happens when a page is loaded. `calisphere.js` creates `qm`, the globally namespaced `QueryManager`, as well as the globally namespaced `globalSearchForm`, and then uses the `setupComponents` function in `Controller.js` to determine which components to create/destroy based on which selectors are available in the DOM. 
 
-The homepage is the one place where `calisphere.js` is **not** used. For the homepage, the only JavaScript loaded is in [`calisphere-home.js`](http://amywieliczka.github.io/public_interface/calisphere-home.html). 
+The homepage is the one place where `calisphere.js` is **not** used. For the homepage, the only JavaScript loaded is in `calisphere-home.js`
 
-A bit about namespacing
-----------------------------
-
-All components are created as subcomponents of the `globalSearchForm`. This means, at any given point in time, you can type `globalSearchForm` into the console and components should exist as properties of the `globalSearchForm` (see list below). Likewise, `qm` is available in the global namespace. Typing `qm.attributes` into the JavaScript console will print the current query state, and should always match `sessionStorage`. 
-
-Calisphere Components:
-* if `#js-facet` selector in DOM, create a [`FacetFormView`](http://amywieliczka.github.io/public_interface/FacetFormView.html) attached to `globalSearchForm` at `globalSearchForm.facetForm`
-* if `#js-carouselContainer` selector in DOM, create a [`ItemView`](http://amywieliczka.github.io/public_interface/ItemView.html) attached to `globalSearchForm` at `globalSearchForm.carousel`
-* if `#js-contactOwner` selector in DOM, create a [`ContactOwnerFormView`](http://amywieliczka.github.io/public_interface/ContactOwnerFormView.html) attached to `globalSearchForm` at `globalSearchForm.contactOwnerForm`
-* if `.carousel-complex` selector in DOM, create a [`ComplexCarouselView`](http://amywieliczka.github.io/public_interface/ComplexCarouselView.html) attached to `globalSearchForm` at `globalSearchForm.complexCarousel`
-* if `#js-exhibit-title` selector in DOM, create a [`ExhibitPageView`](http://amywieliczka.github.io/public_interface/ExhibitPageView.html) attached to `globalSearchForm` at `globalSearchForm.exhibitPage`
-
-Calisphere Components
-----------------------------
-
-Calisphere components extend the [Backbone.js View class](http://backbonejs.org/#View) while the `QueryManager` extends the [Backbone.js Model class](http://backbonejs.org/#Model). Check out http://backbonejs.org/#Model-View-separation for an introduction to how Backbone Models and Views are related. 
-
-Calisphere components tend to have a few distinct flavors of methods:
-* User-Interaction Event Handlers (specified in the `events` dictionary and attached by default on component creation)
-* PJAX Event Handlers (always defined in the form `pjax_<pjax event name>` and bound in a component's `initialize` function)
-* Window resize event handler (always called `changeWidth`. The `GlobalSearchFormView.changeWidth(<window width>)` calls each component's changeWidth function. `globalSearchForm.changeWidth` is called in `calisphere.js`.)
-* Lifecycle methods: `initialize`, `render`, and `destroy`. 
-
-**Component Lifecycle**
-
-- Initialize (required)
-If a component's `render` method is defined, `initialize` will always instruct the component to `listenTo` a `change` on the component's `model` (in our case, always `qm`) and call the component's `render` method.
-If a component's `changeWidth` method is defined, `initialize` will always call the `changeWidth` function to ensure the component is drawn up correctly on initialization. 
-Finally, all PJAX event handlers must be attached (`.on`) by a persistent name in `initialize`. 
-
-- Render (optional)
-If a component defines a `render` method, this is the method called on the view when the query state changes. 
-
-- Destroy (required in most cases, optional if none of the following exist)
-All PJAX event handlers must be detached (`.off`) by a persistent name in `destroy`. 
-If a component has been instructed to `listenTo` changes in the component's model in `initialize` then the component must `stopListening` in `destroy`.
-`this.undelegateEvents()` must be called to detach user-interaction events specified in the `events` dictionary of a component. 
-
-Creating a New Component - other files you need to modify 
--------------------------------
-
-1. Create file in `/app/scripts/`
-2. Specify `/*exported <ClassName> */` at the top of the component's file. 
-2. Add file to scripts list in `/calisphere/templates/calisphere/scripts.html` for devMode and `/app/index.html` for production
-3. Specify class name in `/* global */` list in `Controller.js`
-3. In `setupComponents` function in `Controller.js`, add an `if($(<selector>).length) {} else if (globalSearchForm.<componentName>) {}` block. 
-4. In `changeWidth` method of `GlobalSearchFormView`, add a call to the component's `changeWidth` method (if it exists).
-
-General Notes About Debugging JS
------------------------------
-
-Using Chrome's Developer Tools, you can set breakpoints in the JavaScript by navigating to the Sources tab, then in the list on the left, selecting `localhost:9000/scripts/<filename>`, and clicking the line number next to the line where you want to set a breakpoint. 
-
-Once you've hit a breakpoint, you can watch variable values by adding them to the Watch panel on the right, or actually type JavaScript to be run immediately by switching to the Console tab - you'll have access to whatever variables are currently in scope and can actually manipulate them during the breakpoint. 
-
-Returning to the Sources tab, you can step through the JavaScript using the controls at the top of the right-hand panel. 
-
-JQuery (`$`) is available globally, along with `qm`, `globalSearchForm`, and `sessionStorage`. 
-
-Debugging on production or on calisphere-test is significantly more challenging, since the JavaScript is minified there. If you must, though, Chrome's Dev Tools can attempt to pretty-print minified JS. Once you've selected `calisphere.js` in the Sources panel, Chrome should ask 'Pretty-print this minified file?' Click the `{}` in the bottom left hand corner of the source panel to pretty-print.
+For more information on the JavaScript, clone this repo locally, and open the `index.html` file in this directory. 

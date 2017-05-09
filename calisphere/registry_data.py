@@ -1,37 +1,30 @@
+from __future__ import unicode_literals, print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from django.conf import settings
-import urllib2
-import json
-from collections import namedtuple
-import string
-import random
-from cache_retry import json_loads_url
-import time
-import urlparse
-from pprint import pprint as pp
+from .cache_retry import json_loads_url
+import urllib.parse
 
 
 class RegistryManager(object):
-
-
     def init_registry_data(self, path):
         base = settings.UCLDC_REGISTRY_URL
-        page_one = json_loads_url(urlparse.urljoin(base, path))
+        page_one = json_loads_url(urllib.parse.urljoin(base, path))
         out = dict((x['id'], x) for x in page_one['objects'])
         next_path = page_one['meta']['next']
         while next_path:
-            next_page = json_loads_url(urlparse.urljoin(base, next_path))
+            next_page = json_loads_url(urllib.parse.urljoin(base, next_path))
             out.update(dict((x['id'], x) for x in next_page['objects']))
             next_path = next_page['meta']['next']
 
         return out
-
 
     def __init__(self):
         repository_path = '/api/v1/repository/?format=json'
         # collection_path = '/api/v1/collection/?format=json'
         self.repository_data = self.init_registry_data(repository_path)
         # self.collection_data = self.init_registry_data(collection_path)
-
 
 
 """

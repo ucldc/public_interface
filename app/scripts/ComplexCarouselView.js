@@ -12,8 +12,8 @@ var ComplexCarouselView = Backbone.View.extend({
     infinite: false,
     speed: 300,
     variableWidth: true,
-    slidesToShow: 8,
-    slidesToScroll: 8,
+    slidesToShow: 15,
+    slidesToScroll: 15,
     lazyLoad: 'ondemand'
   },
 

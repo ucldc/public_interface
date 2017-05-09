@@ -6,11 +6,13 @@ simplejson==3.10.0
 six==1.10.0
 requests==2.13.0
 whitenoise==3.3.0
-wsgiref==0.1.2
-django-positions==0.5.4
 markdown==2.6.8
+# django-positions==0.5.4
+https://github.com/amywieliczka/django-positions/archive/multi-collection-delete-issue.zip#egg=django-positions
 https://github.com/ucldc/md5s3stash/archive/master.zip#egg=md5s3stash
 django-redis==4.7.0
 redis==2.10.5
 hiredis==0.2.0
 django-static-sitemaps==4.2.1
+django-health-check==2.3.0
+future==0.16.0

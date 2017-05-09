@@ -1,12 +1,14 @@
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django import forms
+from django.db import models
 
 # Register your models here.
 
-from models import *
+from .models import *
 
 class ExhibitItemInline(admin.TabularInline):
     model = ExhibitItem

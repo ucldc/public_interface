@@ -93,7 +93,7 @@ All PJAX event handlers must be detached (`.off`) by a persistent name in `destr
 If a component has been instructed to `listenTo` changes in the component's model in `initialize` then the component must `stopListening` in `destroy`.
 `this.undelegateEvents()` must be called to detach user-interaction events specified in the `events` dictionary of a component. 
 
-Creating a New Component - other files you need to touch besides the component file. 
+Creating a New Component - other files you need to modify 
 -------------------------------
 
 1. Create file in `/app/scripts/`
@@ -102,3 +102,16 @@ Creating a New Component - other files you need to touch besides the component f
 3. Specify class name in `/* global */` list in `Controller.js`
 3. In `setupComponents` function in `Controller.js`, add an `if($(<selector>).length) {} else if (globalSearchForm.<componentName>) {}` block. 
 4. In `changeWidth` method of `GlobalSearchFormView`, add a call to the component's `changeWidth` method (if it exists).
+
+General Notes About Debugging JS
+-----------------------------
+
+Using Chrome's Developer Tools, you can set breakpoints in the JavaScript by navigating to the Sources tab, then in the list on the left, selecting `localhost:9000/scripts/<filename>`, and clicking the line number next to the line where you want to set a breakpoint. 
+
+Once you've hit a breakpoint, you can watch variable values by adding them to the Watch panel on the right, or actually type JavaScript to be run immediately by switching to the Console tab - you'll have access to whatever variables are currently in scope and can actually manipulate them during the breakpoint. 
+
+Returning to the Sources tab, you can step through the JavaScript using the controls at the top of the right-hand panel. 
+
+JQuery (`$`) is available globally, along with `qm`, `globalSearchForm`, and `sessionStorage`. 
+
+Debugging on production or on calisphere-test is significantly more challenging, since the JavaScript is minified there. If you must, though, Chrome's Dev Tools can attempt to pretty-print minified JS. Once you've selected `calisphere.js` in the Sources panel, Chrome should ask 'Pretty-print this minified file?' Click the `{}` in the bottom left hand corner of the source panel to pretty-print.

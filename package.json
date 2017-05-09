@@ -2,6 +2,7 @@
   "name": "public-interface",
   "devDependencies": {
     "apache-server-configs": "^2.7.1",
+    "docco": "^0.7.0",
     "grunt": "^0.4.5",
     "grunt-autoprefixer": "^1.0.0",
     "grunt-cli": "^0.1.13",

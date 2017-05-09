@@ -12,7 +12,7 @@
 // via session storage. 
 
 // The Query Manager manages two distinct types of query data which are related
-// but distinct. There is the general query information: `q`, `rq`, `view_format`,
+// but distinct. There is the general query information: `q`, `rq` (refine query), `view_format`,
 // `sort`, `relevance`, `rows`, `start`, `type_of_work`, `decade`, `collection_data`,
 // `repository_data` and there is also the item-specific query information: `itemId`, 
 // `itemNumber` (where the item falls in the results set - used to calculate the 

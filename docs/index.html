@@ -1,0 +1,178 @@
+<html>
+<head>
+  <title>JavaScript Documentation for Calisphere</title>
+  <link rel="stylesheet" media="all" href="docco.css" />
+  <link rel="stylesheet" media="all" href="github-styles.css" />
+  <style>
+    a {color: #0000EE;}
+  </style>
+</head>
+
+  
+  <ul id="jump_to">
+    <li>
+      <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+      <a class="small" href="javascript:void(0);">+</a>
+      <div id="jump_wrapper">
+      <div id="jump_page_wrapper">
+        <div id="jump_page">
+          
+            
+            <a class="source" href="ComplexCarouselView.html">
+              ComplexCarouselView.js
+            </a>
+          
+            
+            <a class="source" href="ContactOwnerFormView.html">
+              ContactOwnerFormView.js
+            </a>
+          
+            
+            <a class="source" href="Controller.html">
+              Controller.js
+            </a>
+          
+            
+            <a class="source" href="ExhibitPageView.html">
+              ExhibitPageView.js
+            </a>
+          
+            
+            <a class="source" href="FacetFormView.html">
+              FacetFormView.js
+            </a>
+          
+            
+            <a class="source" href="GlobalSearchFormView.html">
+              GlobalSearchFormView.js
+            </a>
+          
+            
+            <a class="source" href="ItemView.html">
+              ItemView.js
+            </a>
+          
+            
+            <a class="source" href="QueryManager.html">
+              QueryManager.js
+            </a>
+          
+            
+            <a class="source" href="calisphere-home.html">
+              calisphere-home.js
+            </a>
+          
+            
+            <a class="source" href="calisphere.html">
+              calisphere.js
+            </a>
+          
+            
+            <a class="source" href="main.html">
+              main.js
+            </a>
+          
+        </div>
+      </div>
+    </li>
+  </ul>
+  
+  <div id="readme" class="readme blob instapaper_body">
+    <article class="markdown-body entry-content" itemprop="text"><h2><a id="user-content-docco-documentation" class="anchor" href="#docco-documentation" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Docco Documentation</h2>
+<p>Docco is listed in <code>devDependences</code> in <code>package.json</code> and should install as part of <code>npm install</code>. Docco converts comments into inline documentation in static HTML pages located in the <code>/docs</code> folder of this repo. Documentation has been checked in to the repo to provide easy timestamping for the last build of the docs.</p>
+<p>To build the docs run:</p>
+<pre><code>node_modules/docco/bin/docco app/scripts/*.js
+</code></pre>
+<h2><a id="user-content-javascript-overview" class="anchor" href="#javascript-overview" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>JavaScript Overview</h2>
+<p>Generally, templating and data marshalling happens server side in Django templates and views, respectively. The templates are served to the client as either a page, an AJAX response, or a PJAX response. The JavaScript then resolves its state with the server's response - hence the <code>QueryManager</code>'s <code>getQueryFromDOM</code> and <code>getItemInfoFromDOM</code> functions.</p>
+<p>Scripts are loaded in the following order (from <code>/calisphere/templates/calisphere/scripts.html</code> for devMode and <code>/app/index.html</code> for production)</p>
+<p><code>/calisphere/templates/calisphere/scripts.html</code></p>
+<pre><code>  &lt;script src="{% static "scripts/Controller.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/QueryManager.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/ExhibitPageView.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/FacetFormView.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/ItemView.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/ComplexCarouselView.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/GlobalSearchFormView.js" %}"&gt;&lt;/script&gt;
+  &lt;script src="{% static "scripts/ContactOwnerFormView.js" %}"&gt;&lt;/script&gt;
+  ...
+  &lt;script src="{% static "scripts/calisphere.js" %}"&gt;&lt;/script&gt;
+</code></pre>
+<p><code>/app/index.html</code></p>
+<pre><code>  &lt;!-- build:js(app) scripts/calisphere.js --&gt;
+  &lt;script src="scripts/Controller.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/QueryManager.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/ExhibitPageView.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/FacetFormView.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/ItemView.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/ComplexCarouselView.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/GlobalSearchFormView.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/ContactOwnerFormView.js"&gt;&lt;/script&gt;
+  &lt;script src="scripts/calisphere.js"&gt;&lt;/script&gt;
+  &lt;!-- endbuild --&gt;
+
+
+
+  &lt;!-- build:js scripts/calisphere-home.js --&gt;
+  &lt;script src="scripts/calisphere-home.js"&gt;&lt;/script&gt;
+  &lt;!-- endbuild --&gt;
+</code></pre>
+<p><a href="./calisphere.html"><code>calisphere.js</code></a> is the last loaded file and kicks everything else off - start here to follow what happens when a page is loaded. <code>calisphere.js</code> creates <code>qm</code>, the globally namespaced <a href="./QueryManager.html"><code>QueryManager</code></a>, as well as the globally namespaced <a href="./GlobalSearchFormView.html"><code>globalSearchForm</code></a>, and then uses the <code>setupComponents</code> function in <a href="./Controller.html"><code>Controller.js</code></a> to determine which components to create/destroy based on which selectors are available in the DOM.</p>
+<p>The homepage is the one place where <code>calisphere.js</code> is <strong>not</strong> used. For the homepage, the only JavaScript loaded is in <a href="./calisphere-home.html"><code>calisphere-home.js</code></a>.</p>
+<h2><a id="user-content-a-bit-about-namespacing" class="anchor" href="#a-bit-about-namespacing" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>A bit about namespacing</h2>
+<p>All components are created as subcomponents of the <code>globalSearchForm</code>. This means, at any given point in time, you can type <code>globalSearchForm</code> into the console and components should exist as properties of the <code>globalSearchForm</code> (see list below). Likewise, <code>qm</code> is available in the global namespace. Typing <code>qm.attributes</code> into the JavaScript console will print the current query state, and should always match <code>sessionStorage</code>.</p>
+<p>Calisphere Components:</p>
+<ul>
+<li>if <code>#js-facet</code> selector in DOM, create a <a href="./FacetFormView.html"><code>FacetFormView</code></a> attached to <code>globalSearchForm</code> at <code>globalSearchForm.facetForm</code></li>
+<li>if <code>#js-carouselContainer</code> selector in DOM, create a <a href="./ItemView.html"><code>ItemView</code></a> attached to <code>globalSearchForm</code> at <code>globalSearchForm.carousel</code></li>
+<li>if <code>#js-contactOwner</code> selector in DOM, create a <a href="./ContactOwnerFormView.html"><code>ContactOwnerFormView</code></a> attached to <code>globalSearchForm</code> at <code>globalSearchForm.contactOwnerForm</code></li>
+<li>if <code>.carousel-complex</code> selector in DOM, create a <a href="./ComplexCarouselView.html"><code>ComplexCarouselView</code></a> attached to <code>globalSearchForm</code> at <code>globalSearchForm.complexCarousel</code></li>
+<li>if <code>#js-exhibit-title</code> selector in DOM, create a <a href="./ExhibitPageView.html"><code>ExhibitPageView</code></a> attached to <code>globalSearchForm</code> at <code>globalSearchForm.exhibitPage</code></li>
+</ul>
+<h2><a id="user-content-calisphere-components" class="anchor" href="#calisphere-components" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Calisphere Components</h2>
+<p>Calisphere components extend the <a href="http://backbonejs.org/#View">Backbone.js View class</a> while the <code>QueryManager</code> extends the <a href="http://backbonejs.org/#Model">Backbone.js Model class</a>. Check out <a href="http://backbonejs.org/#Model-View-separation">http://backbonejs.org/#Model-View-separation</a> for an introduction to how Backbone Models and Views are related.</p>
+<p>Calisphere components tend to have a few distinct flavors of methods:</p>
+<ul>
+<li>User-Interaction Event Handlers (specified in the <code>events</code> dictionary and attached by default on component creation)</li>
+<li>PJAX Event Handlers (always defined in the form <code>pjax_&lt;pjax event name&gt;</code> and bound in a component's <code>initialize</code> function)</li>
+<li>Window resize event handler (always called <code>changeWidth</code>. The <code>GlobalSearchFormView.changeWidth(&lt;window width&gt;)</code> calls each component's changeWidth function. <code>globalSearchForm.changeWidth</code> is called in <code>calisphere.js</code>.)</li>
+<li>Lifecycle methods: <code>initialize</code>, <code>render</code>, and <code>destroy</code>.</li>
+</ul>
+<p><strong>Component Lifecycle</strong></p>
+<ul>
+<li>
+<p>Initialize (required)
+If a component's <code>render</code> method is defined, <code>initialize</code> will always instruct the component to <code>listenTo</code> a <code>change</code> on the component's <code>model</code> (in our case, always <code>qm</code>) and call the component's <code>render</code> method.
+If a component's <code>changeWidth</code> method is defined, <code>initialize</code> will always call the <code>changeWidth</code> function to ensure the component is drawn up correctly on initialization.
+Finally, all PJAX event handlers must be attached (<code>.on</code>) by a persistent name in <code>initialize</code>.</p>
+</li>
+<li>
+<p>Render (optional)
+If a component defines a <code>render</code> method, this is the method called on the view when the query state changes.</p>
+</li>
+<li>
+<p>Destroy (required in most cases, optional if none of the following exist)
+All PJAX event handlers must be detached (<code>.off</code>) by a persistent name in <code>destroy</code>.
+If a component has been instructed to <code>listenTo</code> changes in the component's model in <code>initialize</code> then the component must <code>stopListening</code> in <code>destroy</code>.
+<code>this.undelegateEvents()</code> must be called to detach user-interaction events specified in the <code>events</code> dictionary of a component.</p>
+</li>
+</ul>
+<h2><a id="user-content-creating-a-new-component---other-files-you-need-to-modify" class="anchor" href="#creating-a-new-component---other-files-you-need-to-modify" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Creating a New Component - other files you need to modify</h2>
+<ol>
+<li>Create file in <code>/app/scripts/</code></li>
+<li>Specify <code>/*exported &lt;ClassName&gt; */</code> at the top of the component's file.</li>
+<li>Add file to scripts list in <code>/calisphere/templates/calisphere/scripts.html</code> for devMode and <code>/app/index.html</code> for production</li>
+<li>Specify class name in <code>/* global */</code> list in <code>Controller.js</code></li>
+<li>In <code>setupComponents</code> function in <code>Controller.js</code>, add an <code>if($(&lt;selector&gt;).length) {} else if (globalSearchForm.&lt;componentName&gt;) {}</code> block.</li>
+<li>In <code>changeWidth</code> method of <code>GlobalSearchFormView</code>, add a call to the component's <code>changeWidth</code> method (if it exists).</li>
+</ol>
+<h2><a id="user-content-general-notes-about-debugging-js" class="anchor" href="#general-notes-about-debugging-js" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>General Notes About Debugging JS</h2>
+<p>Using Chrome's Developer Tools, you can set breakpoints in the JavaScript by navigating to the Sources tab, then in the list on the left, selecting <code>localhost:9000/scripts/&lt;filename&gt;</code>, and clicking the line number next to the line where you want to set a breakpoint.</p>
+<p>Once you've hit a breakpoint, you can watch variable values by adding them to the Watch panel on the right, or actually type JavaScript to be run immediately by switching to the Console tab - you'll have access to whatever variables are currently in scope and can actually manipulate them during the breakpoint.</p>
+<p>Returning to the Sources tab, you can step through the JavaScript using the controls at the top of the right-hand panel.</p>
+<p>JQuery (<code>$</code>) is available globally, along with <code>qm</code>, <code>globalSearchForm</code>, and <code>sessionStorage</code>.</p>
+<p>Debugging on production or on calisphere-test is significantly more challenging, since the JavaScript is minified there. If you must, though, Chrome's Dev Tools can attempt to pretty-print minified JS. Once you've selected <code>calisphere.js</code> in the Sources panel, Chrome should ask 'Pretty-print this minified file?' Click the <code>{}</code> in the bottom left hand corner of the source panel to pretty-print.</p>
+</article>
+  </div>
+</body>
+</html>

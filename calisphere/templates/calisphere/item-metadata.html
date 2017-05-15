@@ -91,11 +91,7 @@
 
     {% if 'format' in item %}
 			<dt class="meta-block__type">Format</dt>
-			{% if item.harvest_type == 'hosted' %}
-				<dd class="meta-block__defin">{{ item.format }}</dd>
-                        {% else %}
-				<dd class="meta-block__defin">{% for format in item.format %}{{ format }} <br> {% endfor %}</dd>
-                        {% endif %}
+			<dd class="meta-block__defin">{% for format in item.format %}{{ format }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'genre' in item %}

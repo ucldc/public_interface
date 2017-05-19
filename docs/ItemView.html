@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>ItemView.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="ComplexCarouselView.html">
+                  ComplexCarouselView.js
+                </a>
+              
+                
+                <a class="source" href="ContactOwnerFormView.html">
+                  ContactOwnerFormView.js
+                </a>
+              
+                
+                <a class="source" href="Controller.html">
+                  Controller.js
+                </a>
+              
+                
+                <a class="source" href="ExhibitPageView.html">
+                  ExhibitPageView.js
+                </a>
+              
+                
+                <a class="source" href="FacetFormView.html">
+                  FacetFormView.js
+                </a>
+              
+                
+                <a class="source" href="GlobalSearchFormView.html">
+                  GlobalSearchFormView.js
+                </a>
+              
+                
+                <a class="source" href="ItemView.html">
+                  ItemView.js
+                </a>
+              
+                
+                <a class="source" href="QueryManager.html">
+                  QueryManager.js
+                </a>
+              
+                
+                <a class="source" href="calisphere-home.html">
+                  calisphere-home.js
+                </a>
+              
+                
+                <a class="source" href="calisphere.html">
+                  calisphere.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>ItemView.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*global Backbone */</span>
+<span class="hljs-comment">/*exported ItemView */</span>
+<span class="hljs-meta">
+'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Component created if <strong>#js-carouselContainer</strong> in DOM
+templates that include <code>#js-carouselContainer</code>: <code>itemView.html</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">var</span> ItemView = Backbone.View.extend({
+  <span class="hljs-attr">el</span>: $(<span class="hljs-string">'#js-pageContent'</span>),</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Carousel Configuration options we’ll use later</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  carouselRows: <span class="hljs-number">16</span>,
+  <span class="hljs-attr">carouselConfig</span>: {
+    <span class="hljs-attr">infinite</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">speed</span>: <span class="hljs-number">300</span>,
+    <span class="hljs-attr">variableWidth</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">lazyLoad</span>: <span class="hljs-string">'ondemand'</span>
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="user-event-handlers">User Event Handlers</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>These are event handlers for user interaction with the carousel, 
+surrounding links, and the related collections</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  
+  events: {
+    <span class="hljs-string">'click #js-linkBack'</span>             : <span class="hljs-string">'goToSearchResults'</span>,
+    <span class="hljs-string">'beforeChange .carousel'</span>         : <span class="hljs-string">'loadSlides'</span>,
+    <span class="hljs-string">'click .js-item-link'</span>            : <span class="hljs-string">'goToItemPage'</span>,
+    <span class="hljs-string">'click .js-rc-page'</span>              : <span class="hljs-string">'paginateRelatedCollections'</span>,
+    <span class="hljs-string">'click .js-relatedCollection'</span>    : <span class="hljs-string">'goToCollectionPage'</span>
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p><code>click</code> triggered on <code>#js-linkBack</code><br>This is the ‘return to search results’, ‘return to <Collection>‘, or 
+‘return to <Institution>‘ link that appears above the carousel on the right</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  goToSearchResults: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Middle click, cmd click, and ctrl click should open links in a new tab as normal.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> ( e.which &gt; <span class="hljs-number">1</span> || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { <span class="hljs-keyword">return</span>; }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Unset carousel/item specific information</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.model.unsetItemInfo();
+
+    e.preventDefault();
+    $.pjax({
+      <span class="hljs-attr">url</span>: $(e.currentTarget).children(<span class="hljs-string">'a'</span>).attr(<span class="hljs-string">'href'</span>).split(<span class="hljs-string">'?'</span>)[<span class="hljs-number">0</span>],
+      <span class="hljs-attr">container</span>: <span class="hljs-string">'#js-pageContent'</span>,
+      <span class="hljs-attr">data</span>: <span class="hljs-keyword">this</span>.model.toJSON(),
+      <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><code>beforeChange</code> triggered on <code>.carousel</code><br>lazy-loading slides on pagination of the carousel</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  loadSlides: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, slick, currentSlide, nextSlide</span>) </span>{
+    <span class="hljs-keyword">var</span> numFound = $(<span class="hljs-string">'#js-carousel'</span>).data(<span class="hljs-string">'numfound'</span>);
+    <span class="hljs-keyword">var</span> numLoaded = $(<span class="hljs-string">'.carousel'</span>).slick(<span class="hljs-string">'getSlick'</span>).slideCount;
+    <span class="hljs-keyword">var</span> slidesToScroll = slick.options.slidesToScroll;
+    <span class="hljs-keyword">var</span> data_params;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>PREVIOUS BUTTON PRESSED<br>retrieve previous slides in search results</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (
+      (currentSlide &gt; nextSlide &amp;&amp; (nextSlide !== <span class="hljs-number">0</span> || currentSlide === slidesToScroll)) || 
+      (currentSlide === <span class="hljs-number">0</span> &amp;&amp; nextSlide &gt; slick.slideCount - slidesToScroll &amp;&amp; nextSlide &lt; slick.slideCount)) {
+      <span class="hljs-keyword">if</span> (numLoaded &lt; numFound &amp;&amp; $(<span class="hljs-string">'[data-item_number=0]'</span>).length === <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.carouselStart) - <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.carouselRows) &gt; <span class="hljs-number">0</span>) {
+          <span class="hljs-keyword">this</span>.carouselStart = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.carouselStart) - <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.carouselRows);
+          data_params = <span class="hljs-keyword">this</span>.toJSON();
+        } <span class="hljs-keyword">else</span> {
+          data_params = <span class="hljs-keyword">this</span>.toJSON();
+          data_params.rows = <span class="hljs-keyword">this</span>.carouselStart;
+          <span class="hljs-keyword">this</span>.carouselStart = data_params.start = <span class="hljs-number">0</span>;
+        }
+        <span class="hljs-keyword">delete</span> data_params.itemNumber;
+
+        $.ajax({<span class="hljs-attr">data</span>: data_params, <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">url</span>: <span class="hljs-string">'/carousel/'</span>, <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+            $(<span class="hljs-string">'.carousel'</span>).slick(<span class="hljs-string">'slickAdd'</span>, data, <span class="hljs-literal">true</span>);
+        }});
+      }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>NEXT BUTTON PRESSED<br>retrieve next slides in search results</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">if</span> (numLoaded &lt; numFound &amp;&amp; $(<span class="hljs-string">'[data-item_number='</span> + <span class="hljs-built_in">String</span>(numFound<span class="hljs-number">-1</span>) + <span class="hljs-string">']'</span>).length === <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">this</span>.carouselEnd = <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.carouselEnd) + <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.carouselRows);
+        data_params = <span class="hljs-keyword">this</span>.toJSON();
+        data_params.start = <span class="hljs-keyword">this</span>.carouselEnd;
+        <span class="hljs-keyword">delete</span> data_params.itemNumber;
+
+        $.ajax({<span class="hljs-attr">data</span>: data_params, <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">url</span>: <span class="hljs-string">'/carousel/'</span>, <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+            $(<span class="hljs-string">'.carousel'</span>).slick(<span class="hljs-string">'slickAdd'</span>, data);
+        }});
+      }
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p><code>click</code> triggered on <code>.js-item-link</code><br>when the user clicks an item in the carousel, navigate to that item
+and update the query manager</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  goToItemPage: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Middle click, cmd click, and ctrl click should open
+links in a new tab as normal.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> ( e.which &gt; <span class="hljs-number">1</span> || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { <span class="hljs-keyword">return</span>; }
+
+    <span class="hljs-keyword">if</span> ($(e.currentTarget).data(<span class="hljs-string">'item_number'</span>) !== <span class="hljs-literal">undefined</span>) {
+      <span class="hljs-keyword">this</span>.model.set({
+        <span class="hljs-attr">itemNumber</span>: $(e.currentTarget).data(<span class="hljs-string">'item_number'</span>),
+        <span class="hljs-attr">itemId</span>: $(e.currentTarget).data(<span class="hljs-string">'item_id'</span>)
+      }, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>add implicit context for campus, institution, and collection pages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#js-institution'</span>).length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'campus'</span>)) {
+          <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">campus_slug</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'campus'</span>)}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">repository_data</span>: $(<span class="hljs-string">'#js-institution'</span>).data(<span class="hljs-string">'institution'</span>)}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+        }
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#js-collection'</span>).length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">collection_data</span>: $(<span class="hljs-string">'#js-collection'</span>).data(<span class="hljs-string">'collection'</span>)}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+      }
+
+      e.preventDefault();
+      $.pjax({
+        <span class="hljs-attr">url</span>: $(e.currentTarget).attr(<span class="hljs-string">'href'</span>),
+        <span class="hljs-attr">container</span>: <span class="hljs-string">'#js-itemContainer'</span>
+      });
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p><code>click</code> triggered on <code>.js-rc-page</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  paginateRelatedCollections: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">var</span> data_params = <span class="hljs-keyword">this</span>.model.toJSON();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>don’t need carousel specific item data for the related collections</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">delete</span> data_params.itemId;
+    <span class="hljs-keyword">delete</span> data_params.itemNumber;
+    <span class="hljs-keyword">delete</span> data_params.referral;
+    <span class="hljs-keyword">delete</span> data_params.referralName;
+    <span class="hljs-keyword">if</span> (e !== <span class="hljs-literal">undefined</span>) {
+      data_params.rc_page = $(e.currentTarget).data(<span class="hljs-string">'rc_page'</span>);
+    } <span class="hljs-keyword">else</span> {
+      data_params.rc_page = <span class="hljs-number">0</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>regular ajax request - we don’t need pushState on the url here</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $.ajax({<span class="hljs-attr">data</span>: data_params, <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">url</span>: <span class="hljs-string">'/relatedCollections/'</span>, <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+        $(<span class="hljs-string">'#js-relatedCollections'</span>).html(data);
+      }
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p><code>click</code> triggered on <code>.js-relatedCollection</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  goToCollectionPage: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.model.clear({<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h2 id="helper-methods">HELPER METHODS</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>method adds <code>start</code> and <code>rows</code> to pjax and ajax queries.
+this is specific to which item is selected in the carousel. </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  toJSON: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> context = <span class="hljs-keyword">this</span>.model.toJSON();
+    context.start = <span class="hljs-keyword">this</span>.carouselStart;
+    context.rows = <span class="hljs-keyword">this</span>.carouselRows;
+    <span class="hljs-keyword">return</span> context;
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>When the width changes, we have to change the carousel’s slidesToShow
+and slidesToScroll options (can’t scroll by 8 in mobile mode)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  changeWidth: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> visibleCarouselWidth = $(<span class="hljs-string">'#js-carousel .slick-list'</span>).prop(<span class="hljs-string">'offsetWidth'</span>);
+    <span class="hljs-keyword">var</span> currentSlide = $(<span class="hljs-string">'.js-carousel_item[data-slick-index='</span> + $(<span class="hljs-string">'.carousel'</span>).slick(<span class="hljs-string">'slickCurrentSlide'</span>) + <span class="hljs-string">']'</span>);
+    <span class="hljs-keyword">var</span> displayedCarouselPx = currentSlide.outerWidth() + <span class="hljs-built_in">parseInt</span>(currentSlide.css(<span class="hljs-string">'margin-right'</span>));
+    <span class="hljs-keyword">var</span> numPartialThumbs = <span class="hljs-number">1</span>, numFullThumbs = <span class="hljs-number">0</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>count full thumbnails visible, and partial thumbnails visible</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">while</span> (displayedCarouselPx &lt; visibleCarouselWidth &amp;&amp; currentSlide.length &gt; <span class="hljs-number">0</span>) {
+      numFullThumbs++;
+      currentSlide = currentSlide.next();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>if more than just the next slide’s left margin is displayed, then numPartialThumbs++</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (visibleCarouselWidth - displayedCarouselPx &gt; <span class="hljs-built_in">parseInt</span>(currentSlide.css(<span class="hljs-string">'margin-left'</span>))) {
+        numPartialThumbs++;
+      }
+      displayedCarouselPx = displayedCarouselPx + currentSlide.outerWidth(<span class="hljs-literal">true</span>);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>if everything but the last slide’s right margin is displayed, then numFullThumbs++</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (displayedCarouselPx - visibleCarouselWidth &lt; <span class="hljs-built_in">parseInt</span>(currentSlide.css(<span class="hljs-string">'margin-right'</span>))) {
+      numFullThumbs++;
+    }
+
+    $(<span class="hljs-string">'.carousel'</span>).slick(<span class="hljs-string">'slickSetOption'</span>, <span class="hljs-string">'slidesToShow'</span>, numPartialThumbs, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-string">'.carousel'</span>).slick(<span class="hljs-string">'slickSetOption'</span>, <span class="hljs-string">'slidesToScroll'</span>, numFullThumbs, <span class="hljs-literal">true</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>get the first set of slides for the carousel</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  initCarousel: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'itemNumber'</span>) !== <span class="hljs-literal">undefined</span>) {
+      <span class="hljs-keyword">this</span>.carouselStart = <span class="hljs-keyword">this</span>.carouselEnd = <span class="hljs-keyword">this</span>.model.get(<span class="hljs-string">'itemNumber'</span>);
+    }
+
+    <span class="hljs-keyword">var</span> data_params = <span class="hljs-keyword">this</span>.toJSON();
+    <span class="hljs-keyword">delete</span> data_params.itemNumber;
+    data_params.init = <span class="hljs-literal">true</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>simple AJAX call to get the first set of carousel items
+success callback puts the data into the carousel div, 
+initiates slick, and calls changeWidth to set slidesToScroll
+and slidesToShow options based on current window width</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $.ajax({
+      <span class="hljs-attr">url</span>: <span class="hljs-string">'/carousel/'</span>,
+      <span class="hljs-attr">data</span>: data_params,
+      <span class="hljs-attr">traditional</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">success</span>: (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">that</span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+          $(<span class="hljs-string">'#js-carouselContainer'</span>).html(data);
+          $(<span class="hljs-string">'.carousel'</span>).show();
+          $(<span class="hljs-string">'.carousel'</span>).slick(that.carouselConfig);
+          that.changeWidth();
+        };
+      }(<span class="hljs-keyword">this</span>))
+    });
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h2 id="pjax-event-handlers">PJAX EVENT HANDLERS</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>called on <code>pjax:beforeSend</code>
+Navigating between item pages is one of the rare cases where instead of 
+replacing the contents of  #js-pageContent with the results of a pjax call, 
+we replace the contents of #js-itemContainer. When a user clicks from an
+item page to another item page, this event handler appends a special header
+to tell the server to use a different template 
+(<code>/calisphere/templates/calisphere/pjaxTemplates/pjax-item.html</code>) 
+for the response</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  pjax_beforeSend: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, xhr</span>) </span>{
+    xhr.setRequestHeader(<span class="hljs-string">'X-From-Item-Page'</span>, <span class="hljs-string">'true'</span>);
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>called on <code>pjax:end</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  pjax_end: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">that</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>reset the query manager’s item-specific info to the previous item. </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (that.popstate === <span class="hljs-string">'back'</span> || that.popstate === <span class="hljs-string">'forward'</span>) {
+        <span class="hljs-keyword">var</span> queryObj;
+        <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#js-carouselForm'</span>).length) {
+          queryObj = that.model.getItemInfoFromDOM();
+          that.model.set(queryObj, {<span class="hljs-attr">silet</span>: <span class="hljs-literal">true</span>});
+        }
+        that.popstate = <span class="hljs-literal">null</span>;
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>when navigating between items, the carousel is <em>not</em> a part of the #js-itemContainer
+document fragment returned, so here we manually change which item in the carousel
+gets the ‘selected’ CSS treatment</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> lastItem = $(<span class="hljs-string">'.carousel__item--selected'</span>);
+      <span class="hljs-keyword">if</span> (lastItem.children(<span class="hljs-string">'a'</span>).data(<span class="hljs-string">'item_id'</span>) !== that.model.get(<span class="hljs-string">'itemId'</span>)) {
+        lastItem.find(<span class="hljs-string">'.carousel__image--selected'</span>).toggleClass(<span class="hljs-string">'carousel__image'</span>);
+        lastItem.find(<span class="hljs-string">'.carousel__image--selected'</span>).toggleClass(<span class="hljs-string">'carousel__image--selected'</span>);
+        lastItem.toggleClass(<span class="hljs-string">'carousel__item'</span>);
+        lastItem.toggleClass(<span class="hljs-string">'carousel__item--selected'</span>);
+
+        <span class="hljs-keyword">var</span> linkItem = $(<span class="hljs-string">'.js-item-link[data-item_id="'</span> + that.model.get(<span class="hljs-string">'itemId'</span>) + <span class="hljs-string">'"]'</span>);
+        linkItem.find(<span class="hljs-string">'.carousel__image'</span>).toggleClass(<span class="hljs-string">'carousel__image--selected'</span>);
+        linkItem.find(<span class="hljs-string">'.carousel__image'</span>).toggleClass(<span class="hljs-string">'carousel__image'</span>);
+        linkItem.parent().toggleClass(<span class="hljs-string">'carousel__item--selected'</span>);
+        linkItem.parent().toggleClass(<span class="hljs-string">'carousel__item'</span>);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>add the media element player if necessary</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>($(<span class="hljs-string">'#obj__mejs'</span>).length) {
+        $(<span class="hljs-string">'.mejs-player'</span>).mediaelementplayer();
+      }
+    };
+  },
+
+  <span class="hljs-attr">pjax_popstate</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">that</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+      that.popstate = e.direction;
+    };
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>called via <code>setupComponents()</code> on document.ready() and pjax:end</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>gets the query from the DOM, if present</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#js-carouselForm'</span>).length) {
+      <span class="hljs-keyword">var</span> queryObj = <span class="hljs-keyword">this</span>.model.getQueryFromDOM(<span class="hljs-string">'js-carouselForm'</span>);
+      queryObj = $.extend(queryObj, <span class="hljs-keyword">this</span>.model.getItemInfoFromDOM());
+      <span class="hljs-keyword">this</span>.model.set(queryObj, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.model.set({<span class="hljs-attr">itemId</span>: $(<span class="hljs-string">'#js-itemContainer'</span>).data(<span class="hljs-string">'itemid'</span>)}, {<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>initializes the carousel and the related collections</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.initCarousel();
+    <span class="hljs-keyword">this</span>.paginateRelatedCollections();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>bind pjax handlers to <code>this</code><br>we need to save the bound handler to <code>this.bound_pjax_end</code> so we can later 
+remove these handlers by name in <code>destroy</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.bound_pjax_end = <span class="hljs-keyword">this</span>.pjax_end(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>.bound_pjax_popstate = <span class="hljs-keyword">this</span>.pjax_popstate(<span class="hljs-keyword">this</span>);
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:beforeSend'</span>, <span class="hljs-string">'#js-itemContainer'</span>, <span class="hljs-keyword">this</span>.pjax_beforeSend);    
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:end'</span>, <span class="hljs-string">'#js-itemContainer'</span>, <span class="hljs-keyword">this</span>.bound_pjax_end);
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:popstate'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-keyword">this</span>.bound_pjax_popstate);
+  },
+
+  <span class="hljs-attr">destroy</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>remove pjax event handlers</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-built_in">document</span>).off(<span class="hljs-string">'pjax:beforeSend'</span>, <span class="hljs-string">'#js-itemContainer'</span>, <span class="hljs-keyword">this</span>.pjax_beforeSend);
+    $(<span class="hljs-built_in">document</span>).off(<span class="hljs-string">'pjax:end'</span>, <span class="hljs-string">'#js-itemContainer'</span>, <span class="hljs-keyword">this</span>.bound_pjax_end);
+    $(<span class="hljs-built_in">document</span>).off(<span class="hljs-string">'pjax:popstate'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-keyword">this</span>.bound_pjax_popstate);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>undelegate all user event handlers specified in <code>this.events</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.undelegateEvents();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>remove item-specific information from the query manager</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.model.unsetItemInfo();
+  }
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

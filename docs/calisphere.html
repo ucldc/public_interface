@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>calisphere.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="ComplexCarouselView.html">
+                  ComplexCarouselView.js
+                </a>
+              
+                
+                <a class="source" href="ContactOwnerFormView.html">
+                  ContactOwnerFormView.js
+                </a>
+              
+                
+                <a class="source" href="Controller.html">
+                  Controller.js
+                </a>
+              
+                
+                <a class="source" href="ExhibitPageView.html">
+                  ExhibitPageView.js
+                </a>
+              
+                
+                <a class="source" href="FacetFormView.html">
+                  FacetFormView.js
+                </a>
+              
+                
+                <a class="source" href="GlobalSearchFormView.html">
+                  GlobalSearchFormView.js
+                </a>
+              
+                
+                <a class="source" href="ItemView.html">
+                  ItemView.js
+                </a>
+              
+                
+                <a class="source" href="QueryManager.html">
+                  QueryManager.js
+                </a>
+              
+                
+                <a class="source" href="calisphere-home.html">
+                  calisphere-home.js
+                </a>
+              
+                
+                <a class="source" href="calisphere.html">
+                  calisphere.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>calisphere.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* global QueryManager, GlobalSearchFormView, setupComponents */</span>
+
+<span class="hljs-comment">/* globals Modernizr: false */</span>
+<span class="hljs-meta">'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="cope-with-browser-variance">Cope with browser variance</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Called on document ready, adds banner notice
+to DOM for users without session storage</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sessionStorageWarning</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">if</span> (! Modernizr.sessionstorage) {
+    $(<span class="hljs-string">'body'</span>).prepend(
+      $(<span class="hljs-string">'&lt;div/&gt;'</span>, {<span class="hljs-string">'class'</span>: <span class="hljs-string">'container-fluid'</span>})
+      .append(
+        $(<span class="hljs-string">'&lt;div/&gt;'</span>, {
+          <span class="hljs-string">'class'</span>: <span class="hljs-string">'alert alert-warning alert-dismissible'</span>,
+          <span class="hljs-string">'role'</span>: <span class="hljs-string">'alert'</span>
+        }).text(<span class="hljs-string">'Some features on the Calisphere beta site do not yet work in private browsing mode. For an optimal experience, please disable private browsing while on this site.'</span>)
+        .append(<span class="hljs-string">'&lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;&lt;/button&gt;'</span>)
+      )
+    );
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>For IE</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">console</span> === <span class="hljs-string">'undefined'</span>) {
+  <span class="hljs-built_in">console</span> = { <span class="hljs-attr">log</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ } };
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>PJAX explained more a bit later, for now this is just a timeout</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>$(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:timeout'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; });
+
+<span class="hljs-keyword">var</span> qm, globalSearchForm;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h2 id="initial-setup-for-all-calisphere-pages">Initial Setup for all Calisphere pages</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <hr>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p><strong>Google Event Tracking</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>based on <a href="https://support.google.com/analytics/answer/1136920?hl=en">https://support.google.com/analytics/answer/1136920?hl=en</a>
+We capture the click handler on outbound links and the contact owner button</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> ga !== <span class="hljs-string">'undefined'</span>) {
+    $(<span class="hljs-string">'body'</span>).on(<span class="hljs-string">'click'</span>, <span class="hljs-string">'a[href^="http://"], a[href^="https://"]'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> url = $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'href'</span>);
+      ga(<span class="hljs-string">'send'</span>, <span class="hljs-string">'event'</span>, <span class="hljs-string">'outbound'</span>, <span class="hljs-string">'click'</span>, url, {
+        <span class="hljs-string">'transport'</span>: <span class="hljs-string">'beacon'</span>,  <span class="hljs-comment">// use navigator.sendBeacon</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>click captured and tracked, send the user along</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-string">'hitCallback'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          <span class="hljs-built_in">document</span>.location = url;
+        }
+      });
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    });
+
+    $(<span class="hljs-string">'.button__contact-owner'</span>).on(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> url = $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'href'</span>);
+      ga(<span class="hljs-string">'send'</span>, <span class="hljs-string">'event'</span>, <span class="hljs-string">'buttons'</span>, <span class="hljs-string">'contact'</span>, url, {
+        <span class="hljs-string">'transport'</span>: <span class="hljs-string">'beacon'</span>,  <span class="hljs-comment">// use navigator.sendBeacon</span>
+        <span class="hljs-string">'hitCallback'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          <span class="hljs-built_in">document</span>.location = url;
+        }
+      });
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <hr>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Add banner notice for users without session storage</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  sessionStorageWarning();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <hr>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p><strong>Window Resize Tracking</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>based on <a href="http://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-ac">http://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-ac</a>
+We redraw the page at the end of a resize event if the window
+has fallen below or above a particular breakpoint.
+This ensures we only redraw the page once, when the user
+has stopped resizing the window.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> rtime;
+  <span class="hljs-keyword">var</span> timeout = <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">var</span> delta = <span class="hljs-number">200</span>;
+  $(<span class="hljs-built_in">window</span>).resize(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      rtime = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+      <span class="hljs-keyword">if</span> (timeout === <span class="hljs-literal">false</span>) {
+          timeout = <span class="hljs-literal">true</span>;
+          setTimeout(resizeend, delta);
+      }
+  });
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resizeend</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>() - rtime &lt; delta) {
+          setTimeout(resizeend, delta);
+      } <span class="hljs-keyword">else</span> {
+          timeout = <span class="hljs-literal">false</span>;
+          <span class="hljs-keyword">if</span> (globalSearchForm) {
+            globalSearchForm.changeWidth($(<span class="hljs-built_in">window</span>).width());
+          }
+      }
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <hr>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p><strong>Initial Setup for all Calisphere pages except the homepage</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>The homepage doesn’t have pjax-y links, or JS components to initialize</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (!$(<span class="hljs-string">'.home'</span>).length) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p><strong>PJAX</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>We use pjax (pushState+ajax) to replace the inner HTML of given DOM 
+nodes (typically <code>#js-pageContent</code>), and update the address bar accordingly.
+<a href="https://github.com/defunkt/jquery-pjax">https://github.com/defunkt/jquery-pjax</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $.pjax.defaults.timeout = <span class="hljs-number">5000</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>make all links with attribute <code>data-pjax=js-PageContent</code> pjax-y</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-built_in">document</span>).pjax(<span class="hljs-string">'a[data-pjax=js-pageContent]'</span>, <span class="hljs-string">'#js-pageContent'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p><strong>Initial Component Setup</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Create query manager and global search form component</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    qm = <span class="hljs-keyword">new</span> QueryManager();
+    globalSearchForm = <span class="hljs-keyword">new</span> GlobalSearchFormView({<span class="hljs-attr">model</span>: qm});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p><code>setupComponents()</code> acts as a controller to create/destroy JS components
+based on which selectors are available/no longer available in the DOM.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    setupComponents(globalSearchForm, qm);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p><strong>Global PJAX Event Handlers</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p><a href="https://github.com/defunkt/jquery-pjax#events">https://github.com/defunkt/jquery-pjax#events</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p><strong>Pjax Success</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:success'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e, data, x, xhr, z</span>) </span>{
+      <span class="hljs-keyword">var</span> start_marker = z.context.find(<span class="hljs-string">'meta[property=og\\:type]'</span>);
+      <span class="hljs-keyword">var</span> variable_markup = start_marker.nextUntil($(<span class="hljs-string">'meta[name=twitter\\:creator]'</span>));
+      <span class="hljs-keyword">var</span> old_start = $(<span class="hljs-string">'head'</span>).find(<span class="hljs-string">'meta[property=og\\:type]'</span>);
+      old_start.nextUntil($(<span class="hljs-string">'meta[name=twitter\\:creator]'</span>)).remove();
+      $.each($(variable_markup).get().reverse(), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">i, v</span>) </span>{
+        $(v).insertAfter(old_start);
+      });
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p><strong>Pjax End</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:end'</span>, <span class="hljs-string">'#js-pageContent'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Closes global search and nav menus in mobile</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      globalSearchForm.pjax_end();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>if we’ve gotten to a page without search context, clear the query manager</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>(!$(<span class="hljs-string">'#js-facet'</span>).length &amp;&amp; !$(<span class="hljs-string">'#js-objectViewport'</span>).length) {
+        qm.clear({<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>});
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Create/destroy components based on which selectors are available in the DOM,
+which components exist already, and which selectors are no longer in the DOM</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      setupComponents(globalSearchForm, qm);
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p><strong>Loading notifications</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-comment">/* globals NProgress: false */</span>
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:send'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      NProgress.start();
+    });
+
+    $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'pjax:complete'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      NProgress.done();
+    });
+  }
+
+
+});
+
+
+$(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'ready pjax:end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>send google analytics on pjax pages </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-comment">/* globals ga: false */</span>
+  <span class="hljs-comment">/* jshint latedef: false */</span>
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> ga !== <span class="hljs-string">'undefined'</span>) {
+    <span class="hljs-keyword">var</span> inst_ga_code = $(<span class="hljs-string">'[data-ga-code]'</span>).data(<span class="hljs-string">'ga-code'</span>);
+    <span class="hljs-keyword">var</span> dim1 = $(<span class="hljs-string">'[data-ga-dim1]'</span>).data(<span class="hljs-string">'ga-dim1'</span>);
+    <span class="hljs-keyword">var</span> dim2 = $(<span class="hljs-string">'[data-ga-dim2]'</span>).data(<span class="hljs-string">'ga-dim2'</span>);
+    <span class="hljs-keyword">var</span> dim3 = Modernizr.sessionstorage.toString();
+
+    ga(<span class="hljs-string">'set'</span>, <span class="hljs-string">'location'</span>, <span class="hljs-built_in">window</span>.location.href);
+    <span class="hljs-keyword">if</span> (dim1) { ga(<span class="hljs-string">'set'</span>, <span class="hljs-string">'dimension1'</span>, dim1); }
+    <span class="hljs-keyword">if</span> (dim2) { ga(<span class="hljs-string">'set'</span>, <span class="hljs-string">'dimension2'</span>, dim2); }
+    <span class="hljs-keyword">if</span> (dim3) { ga(<span class="hljs-string">'set'</span>, <span class="hljs-string">'dimension3'</span>, dim3); }
+    ga(<span class="hljs-string">'send'</span>, <span class="hljs-string">'pageview'</span>);
+    <span class="hljs-keyword">if</span> (inst_ga_code) {
+      <span class="hljs-keyword">var</span> inst_tracker_name = inst_ga_code.replace(<span class="hljs-regexp">/-/g</span>,<span class="hljs-string">'x'</span>);
+      ga(<span class="hljs-string">'create'</span>, inst_ga_code, <span class="hljs-string">'auto'</span>, {<span class="hljs-string">'name'</span>: inst_tracker_name});
+      ga(inst_tracker_name + <span class="hljs-string">'.set'</span>, <span class="hljs-string">'anonymizeIp'</span>, <span class="hljs-literal">true</span>);
+      ga(inst_tracker_name + <span class="hljs-string">'.set'</span>, <span class="hljs-string">'location'</span>, <span class="hljs-built_in">window</span>.location.href);
+      <span class="hljs-keyword">if</span> (dim1) { ga(inst_tracker_name + <span class="hljs-string">'.set'</span>, <span class="hljs-string">'dimension1'</span>, dim1); }
+      <span class="hljs-keyword">if</span> (dim2) { ga(inst_tracker_name + <span class="hljs-string">'.set'</span>, <span class="hljs-string">'dimension2'</span>, dim2); }
+      ga( inst_tracker_name + <span class="hljs-string">'.send'</span>, <span class="hljs-string">'pageview'</span>);
+    }
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p><strong>Collection Title Search</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-comment">/* globals Bloodhound: false */</span>
+  <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#titlesearch__field'</span>).length) {
+    <span class="hljs-keyword">var</span> collections = <span class="hljs-keyword">new</span> Bloodhound({
+      <span class="hljs-attr">datumTokenizer</span>: Bloodhound.tokenizers.obj.whitespace(<span class="hljs-string">'title'</span>),
+      <span class="hljs-attr">queryTokenizer</span>: Bloodhound.tokenizers.whitespace,
+      <span class="hljs-attr">prefetch</span>: <span class="hljs-string">'/collections/titles.json'</span>
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>chain things to the titlesearch field</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-string">'#titlesearch__field'</span>).typeahead(<span class="hljs-literal">null</span>, {
+      <span class="hljs-attr">name</span>: <span class="hljs-string">'collections'</span>,
+      <span class="hljs-attr">display</span>: <span class="hljs-string">'title'</span>,
+      <span class="hljs-attr">limit</span>: <span class="hljs-number">10</span>,
+      <span class="hljs-attr">source</span>: collections
+    }).on(<span class="hljs-string">'keydown'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>disable enter
+<a href="http://stackoverflow.com/a/21318996/1763984">http://stackoverflow.com/a/21318996/1763984</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> x = event.which;
+      <span class="hljs-keyword">if</span> (x === <span class="hljs-number">13</span>) {
+       event.preventDefault();
+      }
+    }).bind(<span class="hljs-string">'typeahead:selected'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, datum</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>redirect to the select page</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-built_in">window</span>.location = datum.uri;
+    });
+  } <span class="hljs-comment">// end title search</span>
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <hr>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>No support for background-blend-mode</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span>(!(<span class="hljs-string">'backgroundBlendMode'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span>.body.style)) {
+  <span class="hljs-keyword">var</span> html = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'html'</span>)[<span class="hljs-number">0</span>];
+  html.className = html.className + <span class="hljs-string">' no-background-blend-mode'</span>;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

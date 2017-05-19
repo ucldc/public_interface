@@ -13,3 +13,4 @@ env.local
 npm-debug.log
 py27/
 sitemaps/
+docs/

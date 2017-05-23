@@ -12,7 +12,7 @@ var GlobalSearchFormView = Backbone.View.extend({
     'click #js-global-header-logo':             'clearQueryManager'
   },
 
-  // events: {'submit #js-searchForm,#js-footSearch': 'clearAndSubmit'}
+  // `events: 'submit' '#js-searchForm,#js-footSearch'`   
   // on submit, change the model, don't submit the form
   clearAndSubmit: function(e) {
     this.model.set({q: $(e.currentTarget).find('input[name=q]').val()}, {silent: true});
@@ -20,20 +20,20 @@ var GlobalSearchFormView = Backbone.View.extend({
     e.preventDefault();
   },
 
-  // events: {'click .js-global-header__bars-icon': 'toggleMobileMenu'}
+  // `events: 'click' '.js-global-header__bars-icon'`   
   // Toggle mobile menu with search box:
   toggleMobileMenu: function() {
     $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
     $('.js-global-header__mobile-links').toggleClass('.global-header__mobile-links global-header__mobile-links--selected');
   },
 
-  // events: {'click .js-global-header__search-icon': 'toggleMobileSearch'}
+  // `events: 'click' '.js-global-header__search-icon'`   
   // Toggle only search box:
   toggleMobileSearch: function() {
     $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
   },
 
-  // events: {'click #js-global-header-logo': 'clearQueryManager'}
+  // `events: 'click' '#js-global-header-logo'`   
   // Clear the query manager's current query state
   clearQueryManager: function() {
     if (!_.isEmpty(this.model.attributes) || !_.isEmpty(sessionStorage)) {

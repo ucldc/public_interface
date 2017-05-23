@@ -2,12 +2,16 @@
 /*exported FacetFormView */
 'use strict';
 
-// component created if selector in DOM, selector is in the following templates (2017-04-04)
-// selector: #js-facet
-// templates: collectionView.html, institutionView.html, institutionViewItems.html, searchResults.html, faceting.html, paginate.html
+// Component created if **#js-facet** in DOM    
+// templates that include `#js-facet`: `collectionView.html`, `institutionView.html`, `institutionViewItems.html`, `searchResults.html`, `faceting.html`, `paginate.html`
 
 var FacetFormView = Backbone.View.extend({
   el: $('#js-pageContent'),
+  
+  // User Event Handlers
+  // ------------------------------
+  // These are event handlers for user interaction with the faceting form, 
+  // the search results, and the related collections 
   events: {
     'submit #js-facet'                        : 'setRefineQuery',
     'click .js-refine-filter-pill'            : 'removeRefineQuery',
@@ -30,26 +34,32 @@ var FacetFormView = Backbone.View.extend({
     'click .js-relatedCollection'             : 'goToCollectionPage'
   },
 
-  // events: {'submit #js-facet': 'setRefineQuery'}
+  // **METHODS THAT CHANGE THE QUERY MANAGER**
+  
+  // These events trigger a change in the model. We don't actually need to submit
+  // the form here, because the `FacetFormView` is listening to the model, and
+  // whenever the model changes, the `render` method is called
+
+  // `submit` triggered on `#js-facet` (refine button)   
   // the refine button is also the submit button for this form (accessibility requires the form have a submit button)
   setRefineQuery: function(e) {
     this.model.set({start: 0, rq: $.map($('input[name=rq]'), function(el) { return $(el).val(); })});
     e.preventDefault();
   },
-  // events: {'click .js-refine-filter-pill': 'removeRefineQuery'}
+  // `click` triggered on `.js-refine-filter-pill` (keyword pills, chiclets)
   removeRefineQuery: function(e) {
     var txtFilter = $(e.currentTarget).data('slug');
     $('input[form="js-facet"][name="rq"][value="' + txtFilter + '"]').val('');
     this.model.set({start: 0, rq: _.without(this.model.get('rq'), txtFilter)});
   },
-  // events: {'change .js-facet': 'setFacet'}
+  // `change` triggered on `.js-facet` (facet checkboxes)
   setFacet: function(e) {
     var filterType = $(e.currentTarget).attr('name');
     var attributes = {start: 0};
     attributes[filterType] = $.map($('input[name=' + filterType + ']:checked'), function(el) { return $(el).val(); });
     this.model.set(attributes);
   },
-  // events: {'click .js-filter-pill': 'removeFacet'}
+  // `click` triggered on `.js-filter-pill` (filter pills, chiclets)
   removeFacet: function(e) {
     var filter_slug = $(e.currentTarget).data('slug');
     if (typeof filter_slug !== 'string') {
@@ -63,22 +73,22 @@ var FacetFormView = Backbone.View.extend({
 
     this.model.set(attributes);
   },
-  // events: {'click #thumbnails,#list': 'toggleViewFormat'}
+  // `click` triggered on `#thumbnails,#list` (view format)
   toggleViewFormat: function(e) {
     var viewFormat = $(e.currentTarget).attr('id');
     $('#view_format').prop('value', viewFormat);
     this.model.set({view_format: viewFormat});
   },
-  // events: {'change #pag-dropdown__sort': 'setSort'}
+  // `change` triggered on `#pag-dropdown__sort`
   setSort: function(e) {
     this.model.set({start: 0, sort: $(e.currentTarget).val() });
   },
-  // events: {'change #pag-dropdown__view': 'setRows'}
+  // `change` triggered on `#pag-dropdown__view` (pagination)
   setRows: function(e) {
     this.model.set({start: 0, rows: $(e.currentTarget).val() });
   },
-  // events: {'click .js-prev,.js-next,a[data-start]':  'setStart',
-  //          'change #pag-dropdown__select--unstyled': 'setStart'}
+  // `click` triggered on `.js-prev,.js-next,a[data-start]` and
+  // `change` triggered on `#pag-dropdown__select--unstyled`
   setStart: function(e) {
     var start;
     if (e.type === 'click') {
@@ -90,19 +100,28 @@ var FacetFormView = Backbone.View.extend({
     this.model.set({ start: start });
   },
 
-  // events: {'click .js-item-link': 'goToItemPage'}
+  // **ITEM QUERY MODEL CHANGES**
+
+  // `click` triggered on `.js-item-link`
   goToItemPage: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
+    // `itemNumber` refers to where the item falls in the current set of search results.
+    // This is used in the carousel, because the 6th item in the search results becomes
+    // the 1st item in the carousel, but when paginating the carousel, we search for the
+    // `itemNumber + <number of carousel thumbs displayed>` - all searches are offest 
+    // by the `itemNumber`
     if ($(e.currentTarget).data('item_number') !== undefined) {
       this.model.set({
         itemNumber: $(e.currentTarget).data('item_number'),
         itemId: $(e.currentTarget).data('item_id')
       }, {silent: true});
 
-      // add implicit context for campus, institution, and collection pages
+      // add context for campus, institution, and collection pages
+      // for the 'return to' link above the carousel, and for providing
+      // context for the carousel search
       if($('#js-institution').length > 0) {
         if($('#js-institution').data('campus')) {
           this.model.set({
@@ -133,18 +152,33 @@ var FacetFormView = Backbone.View.extend({
     }
   },
 
-  // events: {'click .js-a-check__link-deselect-all': 'deselectAll',
-  //          'click .js-a-check__button-deselect-all': 'deselectAll'}
+  // **BULK QUERY MODEL CHANGES**
+
+  // These functions select or deselect all facets of a given type 
+  // (type, decade, collection, institutions)
+
+  // `click` triggered on `.js-a-check__link-deselect-all` and    
+  // `click` triggered on `.js-a-check__button-deselect-all`
   deselectAll: function(e) { this.selectDeselectAll(e, false); },
-  // events: {'click .js-a-check__link-select-all': 'selectAll',
-  //          'click .js-a-check__button-select-all': 'selectAll'}
+  // `click` triggered on `.js-a-check__link-select-all` and    
+  // `click` triggered on `.js-a-check__button-select-all`
   selectAll: function(e) { this.selectDeselectAll(e, true); },
+  // helper for `deselectAll` and `selectAll`
   selectDeselectAll: function(e, checked) {
     var filterElements = $(e.currentTarget).parents('.check').find('.js-facet');
     filterElements.prop('checked', checked);
     filterElements.trigger('change');
     e.preventDefault();
   },
+
+  // **CHANGE DISPLAY**
+  
+  // These methods don't actually change the model, but change the UI and 
+  // sometimes manually trigger model changes by calling one of the above methods
+
+  // Helps with the bulk model updater UI. 'Select All' appears as long as
+  // fewer than the full set of facets is selected. 'Deselect All' appears
+  // *only when all* the facets of that type are selected. 
   toggleSelectDeselectAll: function() {
     var facetTypes = $('.check');
     for(var i=0; i<facetTypes.length; i++) {
@@ -162,6 +196,8 @@ var FacetFormView = Backbone.View.extend({
       }
     }
   },
+  
+  // Reset the tooltips
   toggleTooltips: function() {
     // get rid of any visible tooltips
     var visibleTooltips = $('[data-toggle="tooltip"][aria-describedby]');
@@ -174,13 +210,21 @@ var FacetFormView = Backbone.View.extend({
       placement: 'top'
     });
   },
-  // events: {'click .js-clear-filters': 'clearFilters'}
+
+  // `click` triggered on `.js-clear-filters`   
+  // programmatically clear all filters, and trigger `change` on `.js-facet` 
+  // (model change)
   clearFilters: function() {
     var filterElements = $('.js-facet');
     filterElements.prop('checked', false);
     filterElements.trigger('change');
   },
-  // events: {'click .js-a-check__header': 'toggleFacetDropdown'}
+  
+  // **MOBILE EVENT HANDLERS**
+  
+  // `click` triggered on `.js-a-check__header`   
+  // in tablet and mobile, this method opens a list of facets of a given type
+  // (no model update)
   toggleFacetDropdown: function(e) {
     //close all expanded checkbox groups
     var allSelected = $('.check__popdown--selected');
@@ -194,11 +238,16 @@ var FacetFormView = Backbone.View.extend({
     $(e.currentTarget).next('.js-a-check__popdown').toggleClass('check__popdown check__popdown--selected');
     $(e.currentTarget).children('.js-a-check__header-arrow-icon').toggleClass('fa-angle-down fa-angle-up');
   },
-  // events: {'click .js-a-check__update': 'updateFacets'}
+
+  // `click` triggered on `.js-a-check__update`   
+  // in tablet and mobile, the update button is essentially the same as 
+  // kicking off a search
   updateFacets: function(e) {
     e.preventDefault();
     this.facetSearch();
   },
+  
+  // **PJAX CALL TO PERFORM THE SEARCH** 
   facetSearch: function() {
     $.pjax({
       url: $('#js-facet').attr('action'),
@@ -208,8 +257,13 @@ var FacetFormView = Backbone.View.extend({
     });
   },
 
-  // events: {'click .js-rc-page': 'paginateRelatedCollections'}
+  // **RELATED COLLECTIONS**
+
+  // These methods deal with the related collections seen below search results
+
+  // `click` triggered on `.js-rc-page`
   paginateRelatedCollections: function(e) {
+    // implicitly set institution, campus, and collection data
     if($('#js-institution').length > 0) {
       if($('#js-institution').data('campus')) {
         this.model.set({
@@ -234,27 +288,43 @@ var FacetFormView = Backbone.View.extend({
 
     var data_params = this.model.toJSON();
     data_params.rc_page = $(e.currentTarget).data('rc_page');
-    //TODO: function(data, status, jqXHR)
+    // simple AJAX method called here - we don't update the URL
+    // as we paginate related collections
     $.ajax({data: data_params, traditional: true, url: '/relatedCollections/', success: function(data) {
         $('#js-relatedCollections').html(data);
       }
     });
   },
-  // events: {'click .js-relatedCollection': 'goToCollectionPage'}
+  // `click` triggered on `.js-relatedCollection`   
+  // when a user navigates away from a search results page to a collection page
+  // via related collections, they lose their search context.     
+  // this is where it goes.
   goToCollectionPage: function() {
     this.model.clear({silent: true});
   },
 
+  // WINDOW RESIZE TRACKING
+  // -----------------------
+
+  // change value of this.desktop to redraw this page when it changes widths
   changeWidth: function(window_width) {
     if (window_width > 900) { this.desktop = true; }
     else { this.desktop = false; }
   },
 
+  // RENDER METHOD
+  // ------------------------
+
+  // called whenever the model changes, and also on initialization
   render: function() {
+    // if the model has changed, but the primary query hasn't.
+    // ie: a search for dogs hasn't become a search for cats
     if(!_.isEmpty(this.model.changed) && !_.has(this.model.changed, 'q')) {
+      // if we're in desktop view, just perform the search
       if(this.desktop) {
         this.facetSearch();
       }
+      // if we're in mobile view, and a facet selection has changed
       else if(_.has(this.model.changed, 'type_ss') ||
       _.has(this.model.changed, 'facet_decade') ||
       _.has(this.model.changed, 'repository_data') ||
@@ -265,35 +335,56 @@ var FacetFormView = Backbone.View.extend({
             attrUndefined = true;
           }
         });
+        // if the user has un-checked a previously selected facet, perform search
         if (attrUndefined) {
           this.facetSearch();
         }
+        // modify the UI
         _.each(this.model.changed, function(value, key) {
           if (key === 'type_ss' || key === 'facet_decade' || key === 'repository_data' || key === 'collection_data') {
             $('.facet-' + key).parents('.check').find('.js-a-check__update').prop('disabled', false);
           }
         });
-      } else {
+      } 
+      // just perform the search
+      else {
         this.facetSearch();
       }
     }
   },
 
+  // PJAX EVENT HANDLERS
+  // -----------------------
+
+  // called on `pjax:end`, only when a `FacetFormView` already exists
+  // so the user has already visited a search results page
   pjax_end: function(that) {
     return function() {
-      //this is still called on pjax_end when navigating away from facet form to something else
+      // since this is still called on pjax:end when navigating away from 
+      // the facet form to something else, we need to check for our
+      // `#js-facet` selector
       if ($('#js-facet').length) {
         if (that.popstate === 'back' || that.popstate === 'forward') {
+          // when a user navigates 'back' to a form, the form is still set
+          // in the state the user left the form in, which doesn't reflect
+          // the results shown in search results, so we reset the form
+          // to reflect the state the DOM left the form in, last we got a 
+          // roundtrip from the server. 
           _.each($('form'), function(form) {
             form.reset();
           });
 
+          // get the query from the DOM, and silently set the model so as 
+          // to avoid calling `render` - (no need to redraw the page; the 
+          // page has already been drawn)
           var queryObj;
           queryObj = that.model.getQueryFromDOM('js-facet');
           that.model.set(queryObj, {silent: true});
           that.popstate = null;
         }
 
+        // we do need to redraw the tooltips and the select/deselect all 
+        // buttons to reflect the current query state, though
         that.toggleSelectDeselectAll();
         that.toggleTooltips();
       }
@@ -306,14 +397,21 @@ var FacetFormView = Backbone.View.extend({
     };
   },
 
+  // called via `setupComponents()` on `document.ready()` and `pjax:end`
   initialize: function() {
+    // sets `this.render` to listen to whenever `this.model` (qm) fires a `change` event
     this.listenTo(this.model, 'change', this.render);
+    // draw the page up correctly when initialized
     this.changeWidth($(window).width());
     
+    // draw the tooltips and select/deselect all buttons correctly - this
+    // happens both on initialization and on pjax:end
     this.toggleSelectDeselectAll();
     this.toggleTooltips();
 
-    //bind handlers and save for later removal
+    // bind pjax handlers to `this`   
+    // we need to save the bound handler to `this.bound_pjax_end` so we can 
+    // later remove these handlers by the same name in `destroy`
     this.bound_pjax_end = this.pjax_end(this);
     this.bound_pjax_popstate = this.pjax_popstate(this);
     $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
@@ -321,10 +419,13 @@ var FacetFormView = Backbone.View.extend({
   },
 
   destroy: function() {
+    // remove bound pjax event handlers
     $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
     $(document).off('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
 
+    // stop calling `this.render` whenever `this.model` (qm) fires a `change` event
     this.stopListening();
+    // undelegate all user event handlers specified in `this.events`
     this.undelegateEvents();
   }
 });

@@ -1,8 +1,13 @@
-/*global QueryManager, GlobalSearchFormView, ContactOwnerFormView, OpenSeadragon, tileSources, ExhibitPageView, FacetFormView, ItemView, ComplexCarouselView */
+/* global QueryManager, GlobalSearchFormView, setupComponents */
 
 /* globals Modernizr: false */
 'use strict';
 
+// Cope with browser variance
+// --------------------------
+
+// Called on document ready, adds banner notice
+// to DOM for users without session storage
 function sessionStorageWarning() {
   if (! Modernizr.sessionstorage) {
     $('body').prepend(
@@ -18,130 +23,28 @@ function sessionStorageWarning() {
   }
 }
 
+// For IE
 if(typeof console === 'undefined') {
   console = { log: function() { } };
 }
 
+// PJAX explained more a bit later, for now this is just a timeout
 $(document).on('pjax:timeout', function() { return false; });
 
 var qm, globalSearchForm;
 
-var setupComponents = function() {
-  /*********** CALISPHERE COMPONENTS *****************/
-  if ($('#js-facet').length) {
-    globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm});
-  } else if (globalSearchForm.facetForm) {
-    globalSearchForm.facetForm.destroy();
-    delete globalSearchForm.facetForm;
-  }
-
-  if ($('#js-carouselContainer').length) {
-    globalSearchForm.carousel = globalSearchForm.carousel || new ItemView({model: qm});
-  } else if (globalSearchForm.carousel) {
-    globalSearchForm.carousel.destroy();
-    delete globalSearchForm.carousel;
-  }
-
-  if($('#js-contactOwner').length) {
-    globalSearchForm.contactOwnerForm = globalSearchForm.contactOwnerForm || new ContactOwnerFormView();
-  } else if (globalSearchForm.contactOwnerForm) {
-    delete globalSearchForm.contactOwnerForm;
-  }
-
-  if($('.carousel-complex').length) {
-    globalSearchForm.complexCarousel = globalSearchForm.complexCarousel || new ComplexCarouselView({model: qm});
-  } else if (globalSearchForm.complexCarousel) {
-    globalSearchForm.complexCarousel.destroy();
-    delete globalSearchForm.complexCarousel;
-  }
-
-  if($('#js-exhibit-title').length) {
-    globalSearchForm.exhibitPage = globalSearchForm.exhibitPage || new ExhibitPageView();
-  } else if (globalSearchForm.exhibitPage) {
-    globalSearchForm.exhibitPage.destroy();
-    delete globalSearchForm.exhibitPage;
-  }
-
-  /************ VENDOR INITIALIZATION ****************/
-  if($('#obj__osd').length) {
-    if(globalSearchForm.viewer) {
-      globalSearchForm.viewer.destroy();
-      delete globalSearchForm.viewer;
-      $('#obj__osd').empty();
-    }
-    if ($('.openseadragon-container').length) { $('.openseadragon-container').remove(); }
-    globalSearchForm.viewer = new OpenSeadragon({
-      id: 'obj__osd',
-      toolbar: 'obj__osd-toolbar',
-      tileSources: [tileSources],
-      zoomInButton: 'obj__osd-button-zoom-in',
-      zoomOutButton: 'obj__osd-button-zoom-out',
-      homeButton: 'obj__osd-button-home',
-      fullPageButton: 'obj__osd-button-fullscreen'
-    });
-  } else if (globalSearchForm.viewer) {
-    globalSearchForm.viewer.destroy();
-    delete globalSearchForm.viewer;
-  }
-
-  if($('#js-exhibit-wrapper').length) {
-    globalSearchForm.grid = $('#js-exhibit-wrapper').isotope({
-      layoutMode: 'masonry',
-      itemSelector: '.js-grid-item',
-      percentPosition: true,
-      masonry: {
-        columnWidth: '.js-grid-sizer'
-      }
-    });
-  }
-
-  $('.obj__heading').dotdotdot({
-    ellipsis: '…',
-    watch: 'window',
-    height: 50,
-    lastCharacter: { // remove these characters from the end of the truncated text:
-      remove: [ ' ', ',', ';', '.', '!', '?', '[', ']' ]
-    }
-  });
-  $('.thumbnail__caption').dotdotdot({
-    ellipsis: '…',
-    watch: 'window',
-    height: 30,
-    lastCharacter: {
-      remove: [ ' ', ',', ';', '.', '!', '?', '[', ']' ]
-    }
-  });
-  $('.carousel__thumbnail-caption').dotdotdot({
-    ellipsis: '…',
-    watch: 'window',
-    height: 30,
-    lastCharacter: {
-      remove: [ ' ', ',', ';', '.', '!', '?', '[', ']' ]
-    }
-  });
-
-  //if we've gotten to a page with a list of collection mosaics, init infinite scroll
-  if($('#js-mosaicContainer').length) {
-    $('#js-mosaicContainer').infinitescroll({
-      navSelector: '#js-collectionPagination',
-      nextSelector: '#js-collectionPagination a.js-next',
-      itemSelector: '#js-mosaicContainer div.js-collectionMosaic',
-      debug: false,
-      loading: {
-        finishedMsg: 'All collections showing.',
-        img: '//calisphere.org/static_root/images/orange-spinner.gif',
-        msgText: '',
-        selector: '#js-loading'
-      }
-    });
-  }
-};
+// Initial Setup for all Calisphere pages
+// ----------------
 
 $(document).ready(function() {
+  // ***********************************
+
+  // **Google Event Tracking**
+
+  // based on https://support.google.com/analytics/answer/1136920?hl=en
+  // We capture the click handler on outbound links and the contact owner button
+
   if (typeof ga !== 'undefined') {
-    // google event tracking track outbound links
-    // based on https://support.google.com/analytics/answer/1136920?hl=en
-    // capture the click handler on outbound links
     $('body').on('click', 'a[href^="http://"], a[href^="https://"]', function() {
       var url = $(this).attr('href');
       ga('send', 'event', 'outbound', 'click', url, {
@@ -158,7 +61,6 @@ $(document).ready(function() {
       var url = $(this).attr('href');
       ga('send', 'event', 'buttons', 'contact', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
-        // click captured and tracked, send the user along
         'hitCallback': function () {
           document.location = url;
         }
@@ -166,9 +68,19 @@ $(document).ready(function() {
       return false;
     });
   }
-  sessionStorageWarning();
+  // ***********************************
 
-  // http://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-ac
+  // Add banner notice for users without session storage
+  sessionStorageWarning();
+  // ***********************************
+
+  // **Window Resize Tracking**
+
+  // based on http://stackoverflow.com/questions/5489946/jquery-how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-ac
+  // We redraw the page at the end of a resize event if the window
+  // has fallen below or above a particular breakpoint.
+  // This ensures we only redraw the page once, when the user
+  // has stopped resizing the window.
   var rtime;
   var timeout = false;
   var delta = 200;
@@ -192,15 +104,35 @@ $(document).ready(function() {
   }
   // ***********************************
 
+  // **Initial Setup for all Calisphere pages except the homepage**
+
+  // The homepage doesn't have pjax-y links, or JS components to initialize
   if (!$('.home').length) {
+
+    // **PJAX**
+
+    // We use pjax (pushState+ajax) to replace the inner HTML of given DOM 
+    // nodes (typically `#js-pageContent`), and update the address bar accordingly.
+    // https://github.com/defunkt/jquery-pjax
     $.pjax.defaults.timeout = 5000;
+    // make all links with attribute `data-pjax=js-PageContent` pjax-y
     $(document).pjax('a[data-pjax=js-pageContent]', '#js-pageContent');
 
-    //on page load, create a query manager and global search form
+    // **Initial Component Setup**
+
+    //Create query manager and global search form component
     qm = new QueryManager();
     globalSearchForm = new GlobalSearchFormView({model: qm});
-    setupComponents();
 
+    //`setupComponents()` acts as a controller to create/destroy JS components
+    //based on which selectors are available/no longer available in the DOM.
+    setupComponents(globalSearchForm, qm);
+
+    // **Global PJAX Event Handlers**
+
+    // https://github.com/defunkt/jquery-pjax#events
+    
+    //**Pjax Success**
     $(document).on('pjax:success', function(e, data, x, xhr, z) {
       var start_marker = z.context.find('meta[property=og\\:type]');
       var variable_markup = start_marker.nextUntil($('meta[name=twitter\\:creator]'));
@@ -211,7 +143,9 @@ $(document).ready(function() {
       });
     });
 
+    //**Pjax End**
     $(document).on('pjax:end', '#js-pageContent', function() {
+      // Closes global search and nav menus in mobile
       globalSearchForm.pjax_end();
 
       // if we've gotten to a page without search context, clear the query manager
@@ -219,9 +153,12 @@ $(document).ready(function() {
         qm.clear({silent: true});
       }
 
-      setupComponents();
+      //Create/destroy components based on which selectors are available in the DOM,
+      //which components exist already, and which selectors are no longer in the DOM
+      setupComponents(globalSearchForm, qm);
     });
 
+    //**Loading notifications**
     /* globals NProgress: false */
     $(document).on('pjax:send', function() {
       NProgress.start();
@@ -237,7 +174,7 @@ $(document).ready(function() {
 
 
 $(document).on('ready pjax:end', function() {
-  // send google analytics on pjax pages
+  // send google analytics on pjax pages 
   /* globals ga: false */
   /* jshint latedef: false */
   if (typeof ga !== 'undefined') {
@@ -262,7 +199,7 @@ $(document).on('ready pjax:end', function() {
     }
   }
 
-  // collection title search
+  // **Collection Title Search**
 
   /* globals Bloodhound: false */
   if ($('#titlesearch__field').length) {
@@ -290,9 +227,10 @@ $(document).on('ready pjax:end', function() {
     });
   } // end title search
 });
+//************************************
 
+// No support for background-blend-mode
 if(!('backgroundBlendMode' in document.body.style)) {
-    // No support for background-blend-mode
   var html = document.getElementsByTagName('html')[0];
   html.className = html.className + ' no-background-blend-mode';
 }

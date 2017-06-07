@@ -63,5 +63,5 @@
 
 .obj-container__video {
   @extend %obj-container__media-element;
-  @extend %mejs-custom__video-container; // This placeholder comes from _mediaelementplayer-custom-styles.scss
+//  @extend %mejs__custom__video-container; // This placeholder comes from _mediaelementplayer-custom-styles.scss
 }

@@ -1,11 +1,11 @@
 {% load staticfiles %}
 
   <div class="obj-container__audio">
-
-    <audio controls="controls" class="mejs-player" preload="none">
-      <source src="{{ item.contentFile.url }}" type="audio/mpeg">
-    </audio>
-
+    <div id="obj__mejs">
+      <audio controls="controls" class="media-player" preload="none">
+        <source src="{{ item.contentFile.url }}" type="audio/mpeg">
+      </audio>
+    </div>
     
     {% if item.harvest_type == 'hosted' and 'structMap' in item %}
       <div class="text__audio-component-title">{{ item.selectedComponent.label }}</div>

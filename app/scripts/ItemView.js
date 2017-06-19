@@ -221,6 +221,28 @@ var ItemView = Backbone.View.extend({
     });
   },
 
+  // add the media element player if necessary
+  initMediaPlayer: function() {
+    if($('#obj__mejs').length) {
+      if (this.mediaplayer) {
+        if (!this.mediaplayer.paused) {
+          this.mediaplayer.pause();
+        }
+        this.mediaplayer.remove();
+        delete this.mediaplayer;
+      }
+
+      $('.media-player').mediaelementplayer({
+        stretching: 'responsive',
+        success: (function(that) {
+          return function(mediaElement, originalNode, instance) {
+            that.mediaplayer = instance;
+          };
+        }(this))
+      });
+    }
+  },
+
   // PJAX EVENT HANDLERS
   // ---------------------
   
@@ -266,10 +288,7 @@ var ItemView = Backbone.View.extend({
         linkItem.parent().toggleClass('carousel__item');
       }
 
-      // add the media element player if necessary
-      if($('#obj__mejs').length) {
-        $('.mejs-player').mediaelementplayer();
-      }
+      that.initMediaPlayer();
     };
   },
 
@@ -292,6 +311,7 @@ var ItemView = Backbone.View.extend({
     // initializes the carousel and the related collections
     this.initCarousel();
     this.paginateRelatedCollections();
+    this.initMediaPlayer();
 
     // bind pjax handlers to `this`   
     // we need to save the bound handler to `this.bound_pjax_end` so we can later 

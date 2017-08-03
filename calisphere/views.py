@@ -1022,6 +1022,7 @@ def collectionView(request, collection_id):
     fq.append('collection_url: "' + collection['url'] + '"')
 
     # Add Custom Facet Filter Types
+    facet_types = list(FACET_FILTER_TYPES)
     extra_facet_types = []
     if collection_details['custom_facet']:
         for i in range(len(collection_details['custom_facet'])):
@@ -1034,21 +1035,21 @@ def collectionView(request, collection_id):
 
         # Add custom facet only if doesn't already exist.
         [
-            FACET_FILTER_TYPES.append(facet) for facet in extra_facet_types
-            if facet not in FACET_FILTER_TYPES
+            facet_types.append(facet) for facet in extra_facet_types
+            if facet not in facet_types
         ]
 
     else:
         # If collection_details['custom_facet'] is empty, remove extra facet types from FACET_FILTER_TYPES.
-        if len(FACET_FILTER_TYPES) > len(DEFAULT_FACET_FILTER_TYPES):
+        if len(facet_types) > len(DEFAULT_FACET_FILTER_TYPES):
             [
-                FACET_FILTER_TYPES.remove(facet)
-                for facet in FACET_FILTER_TYPES
+                facet_types.remove(facet)
+                for facet in facet_types
                 if facet not in DEFAULT_FACET_FILTER_TYPES
             ]
 
     facet_fields = list(facet_filter_type['facet']
-                        for facet_filter_type in FACET_FILTER_TYPES
+                        for facet_filter_type in facet_types
                         if facet_filter_type['facet'] != 'collection_data')
 
     # perform the search
@@ -1108,7 +1109,7 @@ def collectionView(request, collection_id):
         'facets':
         facets,
         'FACET_FILTER_TYPES':
-        list(facet_filter_type for facet_filter_type in FACET_FILTER_TYPES
+        list(facet_filter_type for facet_filter_type in facet_types
              if facet_filter_type['facet'] != 'collection_data' and
              facet_filter_type['facet'] != 'repository_data'),
         'numFound':

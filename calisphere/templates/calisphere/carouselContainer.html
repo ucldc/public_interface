@@ -60,8 +60,10 @@
 
     {% for filter_type in filters %}
       {% for filter in filters|get_item:filter_type %}
-        {% if filter_type == 'collection_url' or filter_type == 'repository_url' %}
-          <input type="hidden" class="js-filter" name="{{ filter_type }}" value="{{ filter.id }}" form="js-carouselForm">
+        {% if filter_type == 'collection_url' %}
+          <input type="hidden" class="js-filter" name="{{ collection_data }}" value="{{ filter.id }}" form="js-carouselForm">
+        {% elif filter_type == 'repository_url' %}
+          <input type="hidden" class="js-filter" name="{{ repository_data }}" value="{{ filter.id }}" form="js-carouselForm">
         {% else %}
           <input type="hidden" class="js-filter" name="{{ filter_type }}" value="{{ filter|slugify }}" form="js-carouselForm">
         {% endif %}

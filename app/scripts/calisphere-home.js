@@ -1,18 +1,10 @@
 /*global _*/
 'use strict';
 
-if ($('.home').length) {
-  sessionStorage.clear();
-}
-
 $(document).ready(function() {
   if ($('.home').length) {
     _.each($('form'), function(el) {
       el.reset();
-    });
-
-    $(document).on('submit', '#js-searchForm, #js-homeForm, #js-footerSearch', function() {
-      sessionStorage.setItem('q', $(this).find('input').val());
     });
 
     $(document).on('click', '.js-global-header__bars-icon', function() {

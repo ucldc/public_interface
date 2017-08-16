@@ -53,8 +53,8 @@
     <!-- End Filters -->
 
       <div class="col-md-3 layout-col__2">
-        <form id="js-facet" action="{{ form_action }}" method="get">
         {% block sidebar %}
+          <form id="js-facet" action="{{ form_action }}" method="get">
           {% block refineSearch %}
 
             <!-- Begin Search Within Field -->
@@ -75,8 +75,8 @@
           <!-- Begin Checkbox Groups -->
           {% include "calisphere/forms/faceting.html" %}
           <!-- End Checkbox Groups -->
+          </form>
         {% endblock %}
-        </form>
       </div>
 
       <div class="col-md-9 layout-col__3">

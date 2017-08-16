@@ -3,6 +3,7 @@
 {% load staticfiles %}
 
 {% block sidebar %}
+  <form id="js-facet" action="{{ form_action }}" method="get">
 
   <div class="row">
 
@@ -31,5 +32,6 @@
   
   {% include "calisphere/forms/faceting.html" %}
   
+  </form>
   
 {% endblock %}

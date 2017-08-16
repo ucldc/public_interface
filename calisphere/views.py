@@ -48,10 +48,10 @@ def concat_filters(filters, filter_type):
 
 
 # collect filters into an array
-def solrize_filters(filters):
+def solrize_filters(filters, filter_types=FACET_FILTER_TYPES):
     fq = []
     for filter_type in list(facet_filter_type['filter']
-                            for facet_filter_type in FACET_FILTER_TYPES):
+                            for facet_filter_type in filter_types):
         if len(filters[filter_type]) > 0:
             fq.extend(concat_filters(filters[filter_type], filter_type))
 
@@ -277,21 +277,25 @@ def process_facets(facets, filters, facet_type=None):
     return display_facets
 
 
-def filterType(facet_type):
-    for facet_filter_type in FACET_FILTER_TYPES:
+def filterType(facet_type, facet_types):
+    for facet_filter_type in facet_types:
         if (facet_filter_type['facet'] == facet_type):
             return facet_filter_type['filter']
     return None
 
 
-def facetQuery(facet_fields, queryParams, solr_search, extra_filter=None):
+def facetQuery(facet_types, queryParams, solr_search, extra_filter=None):
     facets = {}
+
+    facet_fields = list(facet_filter_type['facet']
+                        for facet_filter_type in facet_types)
+
     for facet_type in facet_fields:
         # if we've already selected some of the available facets of this given facet type as filters on the search
         # perform the search again as if we had not selected those filters (of this given type) on the search
         # used to obtain counts - since we AND filters of the same type, counts should go UP when more than one facet is selected
         # as a filter, not DOWN (or'ed filters of the same type)
-        filter_type = filterType(facet_type)
+        filter_type = filterType(facet_type, facet_types)
         if filter_type in queryParams['filters'] and len(
                 queryParams['filters'][filter_type]) > 0:
             # other_filters is all the filters except the ones of the current filter type
@@ -610,7 +614,7 @@ def search(request):
         if len(solr_search.results) == 0: print('no results found')
 
         # get facet counts
-        facets = facetQuery(facet_fields, queryParams, solr_search)
+        facets = facetQuery(FACET_FILTER_TYPES, queryParams, solr_search)
 
         for i, facet_item in enumerate(facets['collection_data']):
             collection = (getCollectionData(collection_data=facet_item[0]),
@@ -1018,11 +1022,16 @@ def collectionView(request, collection_id):
     # if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
     queryParams = processQueryRequest(request)
     collection = getCollectionData(collection_id=collection_id)
-    fq = solrize_filters(queryParams['filters'])
-    fq.append('collection_url: "' + collection['url'] + '"')
+    if collection_details['custom_facet']:
+        for i in range(len(collection_details['custom_facet'])):
+            custom_facet = collection_details['custom_facet'][i]
+            queryParams['filters'][custom_facet['facet_field']] = request.GET.getlist(custom_facet['facet_field'])
 
     # Add Custom Facet Filter Types
-    facet_types = list(FACET_FILTER_TYPES)
+    facet_types = filter(lambda facet_filter_type: 
+        facet_filter_type['facet'] != 'collection_data', 
+        FACET_FILTER_TYPES)
+
     extra_facet_types = []
     if collection_details['custom_facet']:
         for i in range(len(collection_details['custom_facet'])):
@@ -1048,6 +1057,9 @@ def collectionView(request, collection_id):
                 if facet not in DEFAULT_FACET_FILTER_TYPES
             ]
 
+    fq = solrize_filters(queryParams['filters'], facet_types)
+    fq.append('collection_url: "' + collection['url'] + '"')
+
     facet_fields = list(facet_filter_type['facet']
                         for facet_filter_type in facet_types
                         if facet_filter_type['facet'] != 'collection_data')
@@ -1064,7 +1076,7 @@ def collectionView(request, collection_id):
         facet_limit='-1',
         facet_field=facet_fields)
 
-    facets = facetQuery(facet_fields, queryParams, solr_search,
+    facets = facetQuery(facet_types, queryParams, solr_search,
                         'collection_url: "' + collection['url'] + '"')
 
     for i, facet_item in enumerate(facets['repository_data']):
@@ -1249,12 +1261,17 @@ def institutionView(request,
                 facet_filter_type['facet']
                 for facet_filter_type in FACET_FILTER_TYPES
                 if facet_filter_type['facet'] != 'repository_data')
+            facet_filter_types = list(
+                facet_filter_type
+                for facet_filter_type in FACET_FILTER_TYPES
+                if facet_filter_type['facet'] != 'repository_data')
 
         if institution_type == 'campus':
             queryParams['campus_slug'] = institution_details['slug']
             fq.append('campus_url: "' + institution_url + '"')
             facet_fields = list(facet_filter_type['facet']
                                 for facet_filter_type in FACET_FILTER_TYPES)
+            facet_filter_types = list(FACET_FILTER_TYPES)
 
         solr_search = SOLR_select(
             q=queryParams['query_terms'],
@@ -1268,13 +1285,13 @@ def institutionView(request,
             facet_field=facet_fields)
 
         if institution_type == 'repository':
-            facets = facetQuery(facet_fields, queryParams, solr_search,
+            facets = facetQuery(facet_filter_types, queryParams, solr_search,
                                 'repository_url: "' + institution_url + '"')
         elif institution_type == 'campus':
-            facets = facetQuery(facet_fields, queryParams, solr_search,
+            facets = facetQuery(facet_filter_types, queryParams, solr_search,
                                 'campus_url: "' + institution_url + '"')
         else:
-            facets = facetQuery(facet_fields, queryParams, solr_search)
+            facets = facetQuery(facet_filter_types, queryParams, solr_search)
 
         for i, facet_item in enumerate(facets['collection_data']):
             collection = (getCollectionData(collection_data=facet_item[0]),

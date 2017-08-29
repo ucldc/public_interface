@@ -11,7 +11,12 @@ def settings(request):
     from django.conf import settings
     permalink = urllib.parse.urljoin(settings.UCLDC_FRONT, request.path)
     if request.META['QUERY_STRING']:
-        permalink = '?'.join([permalink, request.META['QUERY_STRING']])
+        query_string = request.GET.copy()
+        if '_pjax' in query_string:
+            del query_string['_pjax']
+        if len(query_string) > 0:
+            permalink = '?'.join([permalink, query_string.urlencode()])
+
     return {
         'thumbnailUrl': settings.THUMBNAIL_URL,
         'devMode': settings.UCLDC_DEVEL,

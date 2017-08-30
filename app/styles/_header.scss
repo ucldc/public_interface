@@ -27,6 +27,7 @@ html.no-jquery .global-header__bars-icon {
   
   @include bp(sm-screen) {
     background-position: left top;
+    background-size: 233px 70px;
   }
 
   @include bp(md-screen) {
@@ -40,22 +41,32 @@ html.no-jquery .global-header__bars-icon {
 html.no-svg .global-header__logo {
   background-image: url(../images/logo-calisphere.png);
   background-repeat: no-repeat;
+  background-size: auto 46px;
+  
+  @include bp(sm-screen) {
+    background-size: auto 45px;
+  }
+  
+  @include bp(md-screen) {
+    background-size: auto 55px;
+  }
 }
 
 .global-header__logo-link {
   display: block;
   margin: 0 auto;
-  width: $header-logo-xs-width;
-  height: $header-logo-xs-height;
+  width: 200px;
+  height: 48px;
 
   @include bp(sm-screen) {
     margin: 0;
+    height: 50px;
   }
   
   @include bp(md-screen) {
     margin: 0;
     width: $header-logo-md-width;
-    height: $header-logo-md-height;
+    height: 60px;
   }
 
 }

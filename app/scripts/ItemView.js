@@ -27,7 +27,7 @@ var ItemView = Backbone.View.extend({
     'beforeChange .carousel'         : 'loadSlides',
     'click .js-item-link'            : 'goToItemPage',
     'click .js-rc-page'              : 'paginateRelatedCollections',
-    'click .js-relatedCollection'    : 'goToCollectionPage'
+    'click .js-relatedCollection'    : 'clearQuery'
   },
 
   // `click` triggered on `#js-linkBack`    
@@ -148,7 +148,7 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-relatedCollection`
-  goToCollectionPage: function() {
+  clearQuery: function() {
     this.model.clear({silent: true});
   },
 

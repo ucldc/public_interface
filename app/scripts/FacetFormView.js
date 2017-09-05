@@ -31,7 +31,7 @@ var FacetFormView = Backbone.View.extend({
     'click .js-a-check__header'               : 'toggleFacetDropdown',
     'click .js-a-check__update'               : 'updateFacets',
     'click .js-rc-page'                       : 'paginateRelatedCollections',
-    'click .js-relatedCollection'             : 'goToCollectionPage'
+    'click .js-relatedCollection'             : 'clearQuery'
   },
 
   // **METHODS THAT CHANGE THE QUERY MANAGER**
@@ -299,7 +299,7 @@ var FacetFormView = Backbone.View.extend({
   // when a user navigates away from a search results page to a collection page
   // via related collections, they lose their search context.     
   // this is where it goes.
-  goToCollectionPage: function() {
+  clearQuery: function() {
     this.model.clear({silent: true});
   },
 

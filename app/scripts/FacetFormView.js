@@ -49,6 +49,9 @@ var FacetFormView = Backbone.View.extend({
   // `click` triggered on `.js-refine-filter-pill` (keyword pills, chiclets)
   removeRefineQuery: function(e) {
     var txtFilter = $(e.currentTarget).data('slug');
+    if (_.isNumber(txtFilter)) {
+      txtFilter = txtFilter.toString();
+    }
     $('input[form="js-facet"][name="rq"][value="' + txtFilter + '"]').val('');
     this.model.set({start: 0, rq: _.without(this.model.get('rq'), txtFilter)});
   },

@@ -46,10 +46,10 @@ var QueryManager = Backbone.Model.extend({
       // :visible differentiates between actual filters and implied filters,
       // such as collection_data on a collection page (stored in an <input hidden class=js-facet> elem)
       var filters;
-      if (formSelector === 'js-facet') {
+      if (formName === 'js-facet') {
         filters = $(formSelector + '.js-facet:visible').serializeArray();
       } else {
-        filters = $(formSelector + '.js-facet').serializeArray();
+        filters = $(formSelector + '.js-filter').serializeArray();
       }
       if (filters.length > 0) {
         for (var i=0; i<filters.length; i++) {
@@ -131,26 +131,7 @@ var QueryManager = Backbone.Model.extend({
 
   initialize: function() {
     var attributes;
-    if (sessionStorage.length > 0) {
-      attributes = {
-        q: sessionStorage.getItem('q'),
-        rq: JSON.parse(sessionStorage.getItem('rq')),
-        view_format: sessionStorage.getItem('view_format'),
-        sort: sessionStorage.getItem('sort'),
-        start: sessionStorage.getItem('start'),
-        type_ss: JSON.parse(sessionStorage.getItem('type_ss')),
-        facet_decade: JSON.parse(sessionStorage.getItem('facet_decade')),
-        repository_data: JSON.parse(sessionStorage.getItem('repository_data')),
-        collection_data: JSON.parse(sessionStorage.getItem('collection_data')),
-
-        campus_slug: sessionStorage.getItem('campus_slug'),
-        itemNumber: sessionStorage.getItem('itemNumber'),
-        itemId: sessionStorage.getItem('itemId'),
-        referral: sessionStorage.getItem('referral'),
-        referralName: sessionStorage.getItem('referralName')
-      };
-    } 
-    else if ($('[form=js-facet]').length) {
+    if ($('[form=js-facet]').length) {
       attributes = this.getQueryFromDOM('js-facet');
     }
     else if ($('[form=js-carouselForm]').length) {
@@ -163,22 +144,7 @@ var QueryManager = Backbone.Model.extend({
     });
     this.set(attributes);
   },
-  
-  setSessionStorage: function(value, key) {
-    if (_.isArray(value)) {
-      sessionStorage.setItem(key, JSON.stringify(value));
-    } else {
-      sessionStorage.setItem(key, value);
-    }
-  },
-  
-  unsetSessionStorage: function(value, key) {
-    if (key === undefined) {
-      key = value;
-    }
-    sessionStorage.removeItem(key);
-  },
-    
+
   set: function(key, value, options) {
     if (key === null) { return this; }
     
@@ -198,7 +164,7 @@ var QueryManager = Backbone.Model.extend({
         if (value !== undefined) {
           if ((that.defaultValues[key] !== undefined && that.defaultValues[key] === value) || (value.length === 0 && key !== 'q')) {
             delete list[key];
-            that.unsetSessionStorage(key);
+            // that.unsetSessionStorage(key);
             if (_.isEmpty(list)) {
               that.unset(key);
             } else {
@@ -210,16 +176,5 @@ var QueryManager = Backbone.Model.extend({
     }(this)));
         
     Backbone.Model.prototype.set.apply(this, [attrs, options]);
-    
-    if (!options.unset) {
-      _.each(attrs, this.setSessionStorage);
-    } else {
-      _.each(attrs, this.unsetSessionStorage);
-    }
-  },
-    
-  clear: function() {
-    Backbone.Model.prototype.clear.apply(this, arguments);
-    sessionStorage.clear();
-  }, 
+  }
 });

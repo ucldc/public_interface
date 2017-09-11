@@ -3,6 +3,11 @@
 {% if value|is_string %}
 {{ value }}
 {% else %}
-{% for v in value %}{{ v }} <br> {% endfor %}
+{% for v in value %}
+  {% if v.text %}
+    {{ v.text }}
+  {% else %}
+    {{ v }}
+  {% endif %} <br> {% endfor %}
 {% endif %}
 </dd>

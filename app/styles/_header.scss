@@ -19,37 +19,15 @@ html.no-jquery .global-header__bars-icon {
 }
 
 .global-header__logo {
-  margin: 0 0 10px 0;
-  background-image: url(../images/logo-calisphere.svg);
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: $header-logo-xs-width $header-logo-xs-height;
-  
-  @include bp(sm-screen) {
-    background-position: left top;
-  }
-
-  @include bp(md-screen) {
-    margin: 0;
-    background-size: $header-logo-md-width $header-logo-md-height;
-    background-position: left top;
-  }
-
-}
-
-html.no-svg .global-header__logo {
-  background-image: url(../images/logo-calisphere.png);
-  background-repeat: no-repeat;
-}
-
-.global-header__logo-link {
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   width: $header-logo-xs-width;
   height: $header-logo-xs-height;
-
+  
   @include bp(sm-screen) {
     margin: 0;
+    width: $header-logo-sm-width;
+    height: $header-logo-sm-height;
   }
   
   @include bp(md-screen) {
@@ -57,7 +35,24 @@ html.no-svg .global-header__logo {
     width: $header-logo-md-width;
     height: $header-logo-md-height;
   }
+}
 
+//html.no-svg .global-header__logo {
+//  background-image: url(../images/logo-calisphere.png);
+//  background-repeat: no-repeat;
+//  background-size: auto 46px;
+//
+//  @include bp(sm-screen) {
+//    background-size: auto 45px;
+//  }
+//
+//  @include bp(md-screen) {
+//    background-size: auto 55px;
+//  }
+//}
+
+.global-header__logo-link {
+  display: block;
 }
 
 .global-header__search-icon {
@@ -205,7 +200,7 @@ html.no-flexbox .global-header__nav-list-item {
 
   @include bp(sm-screen) {
     display: block;
-    margin: 0 (-$layout-container-margin-sm) $layout-component-margin (-$layout-container-margin-sm);
+    margin: $layout-container-margin-sm (-$layout-container-margin-sm) $layout-component-margin (-$layout-container-margin-sm);
     padding: 0.7em 3% 0.5em 0;
     background: $design-secondary-color;
     text-align: right;

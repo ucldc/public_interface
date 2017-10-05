@@ -33,8 +33,9 @@
               <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
                 <i class="fa fa-bars"></i>
               </div>
-              <div class="col-xs-8 col-sm-12 global-header__logo">
-                <a class="global-header__logo-link" href="{% url 'calisphere:home' %}">
+              <div class="col-xs-8 col-sm-12">
+                <a class="global-header__logo-link" id="js-global-header-logo" href="{% url 'calisphere:home' %}">
+                  <img class="global-header__logo" src="{% static "images/logo-calisphere.svg" %}" alt="Calisphere Logo">
                 </a>
               </div>
               <div class="col-xs-2 col-sm-12 global-header__search-icon--homepage">
@@ -106,7 +107,7 @@
 	        <div class="home__top-images">
 
 		        <div class="home__{{ lock_up.img1.class }}">
-			        <h1 class="home__{{ lock_up.img1.class }}-heading">The deeper you look, the more you'll discover.</h1>
+			        <h1 class="home__{{ lock_up.img1.class }}-heading">The deeper you look, the more you discover.</h1>
               <form role="search" id="js-homeForm" action="{% url 'calisphere:search' %}" method="get">
 			        <div class="home__search">
 	              <label for="home__search-field" class="sr-only">Search the collections</label>

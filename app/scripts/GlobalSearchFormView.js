@@ -36,7 +36,7 @@ var GlobalSearchFormView = Backbone.View.extend({
   // `events: 'click' '#js-global-header-logo'`   
   // Clear the query manager's current query state
   clearQueryManager: function() {
-    if (!_.isEmpty(this.model.attributes) || !_.isEmpty(sessionStorage)) {
+    if (!_.isEmpty(this.model.attributes)) {
       this.model.clear({silent: true});
     }
   },

@@ -657,6 +657,10 @@ def relatedCollections(request, slug='', repository_id=''):
     # get list of related collections
     solrParams = solrEncode(params, FACET_FILTER_TYPES, [{'facet': 'collection_data'}])
     solrParams['rows'] = 0
+    if slug == '':
+        if 'campus_slug' in params:
+            slug = params.get('campus_slug')
+
     if slug != '':
         campus = filter(lambda c: c['slug'] == slug, CAMPUS_LIST)
         extra_filter = 'campus_url: "https://registry.cdlib.org/api/v1/campus/' + campus[0]['id'] + '/"'
@@ -1055,13 +1059,6 @@ def institutionView(request,
                 for unit in FEATURED_UNITS:
                     if unit['id'] == institution_id:
                         context['featuredImage'] = unit['featuredImage']
-
-            queryParams = processQueryRequest(request)
-            # add institution_data to query params for related collections
-            institution_data = institution_url + "::" + institution_details['name']
-            if len(institution_details['campus']) > 0:
-                institution_data = institution_data + "::" + institution_details['campus'][0]['name']
-            queryParams['filters']['repository_data'] = [institution_data]
 
         if len(params.getlist('collection_data')):
             context['num_related_collections'] = len(params.getlist('collection_data'))

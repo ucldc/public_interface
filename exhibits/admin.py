@@ -159,7 +159,11 @@ class ThemeAdmin(admin.ModelAdmin):
     list_display = ('title', 'hero', 'hero_first', 'slug', 'get_absolute_url', 'publish')
     prepopulated_fields = {'slug': ['title']}
 
+class ExhibitItemAdmin(admin.ModelAdmin):
+    list_display = ('item_id', 'exhibit', 'order', 'lesson_plan', 'lesson_plan_order', 'historical_essay', 'historical_essay_order')
 
+
+admin.site.register(ExhibitItem, ExhibitItemAdmin)
 admin.site.register(Exhibit, ExhibitAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(HistoricalEssay, HistoricalEssayAdmin)

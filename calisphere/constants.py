@@ -117,6 +117,16 @@ def repositoryFilterDisplay(filter_item):
     repository.pop('local_id', None)
     return repository
 
+SORT_OPTIONS = {
+    'relevance': 'score desc',
+    'a': 'sort_title asc',
+    'z': 'sort_title desc',
+    'oldest-start': 'sort_date_start asc',
+    'oldest-end': 'sort_date_end asc',
+    'newest-start': 'sort_date_start desc',
+    'newest-end': 'sort_date_end desc'
+}
+
 FACET_FILTER_TYPES = [{
     'facet': 'type_ss',
     'display_name': 'Type of Item',

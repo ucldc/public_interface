@@ -54,7 +54,9 @@
   <form id="js-carouselForm">
     <input type="hidden" name="q" value="{{ q }}" form="js-carouselForm">
     {% if rq %}
-      <input type="hidden" name="rq" value="{{ rq }}" form="js-carouselForm">
+      {% for query in rq %}
+        <input type="hidden" name="rq" value="{{ query }}" form="js-carouselForm">
+      {% endfor %}
     {% endif %}
     <input type="hidden" name="sort" value="{{ sort }}" form="js-carouselForm">
 

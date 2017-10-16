@@ -93,8 +93,11 @@ def getCollectionMosaic(collection_url):
     }
 
 def process_facets(facets, filters, facet_type=None):
+    #remove facets with count of zero
     display_facets = dict((facet, count)
                           for facet, count in list(facets.items()) if count != 0)
+
+    #sort facets by facet value, else by count
     if facet_type and facet_type == 'facet_decade':
         display_facets = sorted(
             iter(list(display_facets.items())), key=operator.itemgetter(0))
@@ -104,6 +107,7 @@ def process_facets(facets, filters, facet_type=None):
             key=operator.itemgetter(1),
             reverse=True)
 
+    #append selected filters even if they have a count of 0
     for f in filters:
         if not any(f in facet[0] for facet in display_facets):
             api_url = re.match(
@@ -551,11 +555,11 @@ def relatedCollections(request, slug=None, repository_id=None):
     if 'campus_slug' in params:
         slug = params.get('campus_slug')
 
-    if slug != '':
+    if slug:
         campus = filter(lambda c: c['slug'] == slug, CAMPUS_LIST)
         extra_filter = 'campus_url: "https://registry.cdlib.org/api/v1/campus/' + campus[0]['id'] + '/"'
         solrParams['fq'].append(extra_filter)
-    if repository_id != '':
+    if repository_id:
         extra_filter = 'repository_url: "https://registry.cdlib.org/api/v1/repository/' + repository_id + '/"'
         solrParams['fq'].append(extra_filter)
     related_collections = SOLR_select(**solrParams)

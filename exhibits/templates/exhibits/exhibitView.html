@@ -55,7 +55,7 @@
   <div class="row">
     <div class="col-md-7">
       <div class="exhibit__overview" id="overview">
-        {% include "exhibits/render_as.html" with render_as=exhibit.render_as text=exhibit.overview truncate=True container_class="js-exhibit__overview" %}
+        {% include "exhibits/render_as.html" with render_as=exhibit.render_as text=exhibit.overview truncate=True container_class="js-exhibit__overview" %}<span style="padding: 0 5px 0 2px;">|</span><a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}">Go to first item</a>
       </div>
     </div>
     <div class="col-md-5">

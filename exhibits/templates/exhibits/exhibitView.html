@@ -41,7 +41,7 @@
   <div class="exhibit__hero" style="background-image: url('{{ thumbnailUrl }}clip/1400x280/{{ exhibit.hero }}')">
     <div class="col-sm-6">
       {% if exhibit.blockquote %}
-        <blockquote class="exhibit__blockquote">{{ exhibit.blockquote }} <a href="#overview" class="js-blockquote">Read full overview.</a> <a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}" class="js-exhibit-item">Go to first item.</a></blockquote>
+        <blockquote class="exhibit__blockquote">{{ exhibit.blockquote }}<br/><a href="#overview" class="js-blockquote" style="padding-right: 10px;">Read full overview</a>|<a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}" class="js-exhibit-item" style="padding-left: 10px;">Go to first item</a></blockquote>
       {% endif %}
     </div>
   </div>

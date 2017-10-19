@@ -156,6 +156,7 @@ $(document).ready(function() {
       //Create/destroy components based on which selectors are available in the DOM,
       //which components exist already, and which selectors are no longer in the DOM
       setupComponents(globalSearchForm, qm);
+      globalSearchForm.popstate = null;
     });
 
     //**Loading notifications**
@@ -167,9 +168,11 @@ $(document).ready(function() {
     $(document).on('pjax:complete', function() {
       NProgress.done();
     });
+
+    $(document).on('pjax:popstate', function(e) {
+      globalSearchForm.popstate = e.direction;
+    });
   }
-
-
 });
 
 

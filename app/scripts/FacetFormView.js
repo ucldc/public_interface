@@ -401,16 +401,16 @@ var FacetFormView = Backbone.View.extend({
   },
 
   // called via `setupComponents()` on `document.ready()` and `pjax:end`
-  initialize: function() {
+  initialize: function(opts) {
     // sets `this.render` to listen to whenever `this.model` (qm) fires a `change` event
     this.listenTo(this.model, 'change', this.render);
     // draw the page up correctly when initialized
     this.changeWidth($(window).width());
-    
-    // draw the tooltips and select/deselect all buttons correctly - this
-    // happens both on initialization and on pjax:end
-    this.toggleSelectDeselectAll();
-    this.toggleTooltips();
+
+    // retrieve query from DOM,
+    // toggle tooltips and select/deselect all links
+    this.popstate = opts.popstate ? opts.popstate : null;
+    this.pjax_end(this)();
 
     // bind pjax handlers to `this`   
     // we need to save the bound handler to `this.bound_pjax_end` so we can 

@@ -50,7 +50,7 @@ var ExhibitPageView = Backbone.View.extend({
     if (isTruncated) {
       $('.js-exhibit__overview').trigger('destroy');
       $('.js-exhibit__overview').css('height', 'auto');
-      $('#js-exhibit__overview').text('Read less.');
+      $('#js-exhibit__overview').text('Read less');
     }
   },
   // events: {'click #js-exhibit__overview': 'toggleExhibitOverview'}
@@ -60,11 +60,11 @@ var ExhibitPageView = Backbone.View.extend({
     if (isTruncated) {
       $('.js-exhibit__overview').trigger('destroy');
       $('.js-exhibit__overview').css('height', 'auto');
-      $('#js-exhibit__overview').text('Read less.');
+      $('#js-exhibit__overview').text('Read less');
     }
     else {
       $('.js-exhibit__overview').css('height', '400px').dotdotdot();
-      $('#js-exhibit__overview').text('Read full exhibition overview.');
+      $('#js-exhibit__overview').text('Read full exhibition overview');
     }
   },
   // events: {'click .js-show-all-exhibit-items': 'togglePrimarySourceSet'}
@@ -141,7 +141,7 @@ var ExhibitPageView = Backbone.View.extend({
         that.initCarousel();
         $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
           if (isTruncated) {
-            $('#js-exhibit__overview').text('Read full exhibition overview.');
+            $('#js-exhibit__overview').text('Read full exhibition overview');
           } else {
             $('.js-exhibit__overview').css('height', 'auto');
           }
@@ -163,7 +163,7 @@ var ExhibitPageView = Backbone.View.extend({
     this.initCarousel();
     $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
       if (isTruncated) {
-        $('#js-exhibit__overview').text('Read full exhibition overview.');
+        $('#js-exhibit__overview').text('Read full exhibition overview');
       } else {
         $('.js-exhibit__overview').css('height', 'auto');
       }

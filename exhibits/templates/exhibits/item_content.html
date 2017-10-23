@@ -63,7 +63,7 @@
         {% endif %}
       </div>
       <div class="exhibit__modal-metadata">
-        <div class="exhibit-item__count">{{ item_count }} of {{ total_count }}</div>
+        <div class="exhibit-item__count">{{ item_count }} of {{ total_count }} in exhibition</div>
         <hr>
         <dl class="meta-block__list">
             <dt class="meta-block__type">Title</dt>
@@ -147,7 +147,7 @@
         {% include "exhibits/render_as.html" with render_as=exhibitItem.render_as text=exhibitItem.essay truncate=False container_class="" %}
       </div>
       <div class="exhibit__modal-metadata">
-        <div class="exhibit-item__count">{{ item_count }} of {{ total_count }}</div>
+        <div class="exhibit-item__count">{{ item_count }} of {{ total_count }} in exhibition</div>
         {% if exhibitItem.custom_metadata %}
           <hr>
           {% include "exhibits/render_as.html" with render_as=exhibitItem.metadata_render_as text=exhibitItem.custom_metadata truncate=False container_class="" %}

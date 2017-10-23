@@ -1,5 +1,5 @@
-Django==1.10.7
-django-contact-form==1.2   # no django 1.11 supprot yet https://github.com/ubernostrum/django-contact-form/issues/29
+Django==1.11
+django-contact-form==1.4
 django-easy-pjax==1.3.0
 retrying==1.3.3
 simplejson==3.10.0

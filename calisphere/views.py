@@ -468,16 +468,16 @@ def itemViewCarousel(request):
         # get any collection-specific facets
         collection_url = 'https://registry.cdlib.org/api/v1/collection/' + linkBackId + '/'
         collection_details = json_loads_url(collection_url + '?format=json')
-        if collection_details['custom_facet']:
-            for custom_facet in collection_details['custom_facet']:
-                facet_filter_types.append({
-                    'facet': custom_facet['facet_field'],
-                    'display_name': custom_facet['label'],
-                    'filter': custom_facet['facet_field'],
-                    'filter_transform': lambda (a) : a,
-                    'facet_transform': lambda (a) : a,
-                    'filter_display': lambda (a) : a
-                })
+        custom_facets = collection_details.get('custom_facet', [])
+        for custom_facet in custom_facets:
+            facet_filter_types.append({
+                'facet': custom_facet['facet_field'],
+                'display_name': custom_facet['label'],
+                'filter': custom_facet['facet_field'],
+                'filter_transform': lambda (a) : a,
+                'facet_transform': lambda (a) : a,
+                'filter_display': lambda (a) : a
+            })
     elif referral == 'campus':
         linkBackId = params.get('campus_slug', None)
         if linkBackId:

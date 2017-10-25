@@ -15,6 +15,7 @@ from .constants import CAMPUS_LIST, DEFAULT_FACET_FILTER_TYPES, FACET_FILTER_TYP
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
+from requests.exceptions import HTTPError
 
 import os
 import operator
@@ -509,7 +510,11 @@ def itemViewCarousel(request):
     else:
         solrParams.update({'facet': 'false',
             'fields': 'id, type_ss, reference_image_md5, title'})
-        carousel_solr_search = SOLR_select(**solrParams)
+        try:
+            carousel_solr_search = SOLR_select(**solrParams)
+        except HTTPError as e:
+            print(solrParams)
+            raise(e)
         search_results = carousel_solr_search.results
         numFound = carousel_solr_search.numFound
 

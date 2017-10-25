@@ -18,7 +18,7 @@ from calisphere.collection_data import CollectionManager
 #     ('collection_data', 'Collection'),
 # ]
 
-def repositoryIdToUrl(id): 
+def repositoryIdToUrl(id):
     repository_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
     return repository_template.format(id)
 
@@ -49,8 +49,10 @@ def getCollectionData(collection_data=None, collection_id=None):
         collection['id'] = collection_id
         collection_details = json_loads_url(
             "{0}?format=json".format(collection['url']))
-        collection['name'] = solr_collections.names.get(
-            collection['url']) or collection_details['name']
+
+        collection['name'] = solr_collections.names.get(collection['url']
+            ) or collection_details.get('name', '[no collection name]')
+
         collection['local_id'] = collection_details['local_id']
         collection['slug'] = collection_details['slug']
     return collection

@@ -982,7 +982,6 @@ def institutionView(request,
         }
 
         collections_solr_search = SOLR_select(**collectionsParams)
-        print(collections_solr_search.facet_counts['facet_fields'])
 
         pages = int(
             math.ceil(
@@ -995,7 +994,6 @@ def institutionView(request,
         collectionsParams['facet_limit'] = 10
         collectionsParams['facet_sort'] = 'index'
         collections_solr_search = SOLR_select(**collectionsParams)
-        print(collections_solr_search.facet_counts['facet_fields'])
 
         # solrpy gives us a dict == unsorted (!)
         # use the `facet_decade` mode of process_facets to do a lexical sort by value ....

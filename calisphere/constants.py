@@ -53,8 +53,8 @@ def getCollectionData(collection_data=None, collection_id=None):
         collection['name'] = solr_collections.names.get(collection['url']
             ) or collection_details.get('name', '[no collection name]')
 
-        collection['local_id'] = collection_details['local_id']
-        collection['slug'] = collection_details['slug']
+        collection['local_id'] = collection_details.get('local_id')
+        collection['slug'] = collection_details.get('slug')
     return collection
 
 def getRepositoryData(repository_data=None, repository_id=None, repository_url=None):

@@ -180,6 +180,7 @@ def searchDefaults(params):
     }
     return context
 
+
 def solrEncode(params, filter_types, facet_types = []):
     if len(facet_types) == 0:
         facet_types = filter_types
@@ -510,10 +511,13 @@ def itemViewCarousel(request):
     else:
         solrParams.update({'facet': 'false',
             'fields': 'id, type_ss, reference_image_md5, title'})
+        if solrParams.get('start') == 'NaN':
+            solrParams['start'] = 0
         try:
             carousel_solr_search = SOLR_select(**solrParams)
         except HTTPError as e:
-            print(solrParams)
+            # https://stackoverflow.com/a/19384641/1763984
+            print(request.get_full_path())
             raise(e)
         search_results = carousel_solr_search.results
         numFound = carousel_solr_search.numFound

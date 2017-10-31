@@ -928,6 +928,7 @@ def institutionView(request,
 
         if institution_type == 'campus':
             context.update({
+                'repository_id': None,
                 'title': institution_details['name'],
                 'campus_slug': institution_details['slug'],
                 'related_collections': relatedCollections(request, slug=institution_details['slug']),
@@ -1042,6 +1043,7 @@ def institutionView(request,
                 if institution_id == campus['id'] and 'featuredImage' in campus:
                     context['featuredImage'] = campus['featuredImage']
             context['repository_id'] = None
+            context['institution']['campus'] = None
 
         if institution_type == 'repository':
             context['repository_id'] = institution_id
@@ -1115,12 +1117,14 @@ def campusView(request, campus_slug, subnav=False):
             key=lambda related_institution: related_institution['name'])
 
         return render(request, 'calisphere/institutionViewInstitutions.html', {
+            # 'campus': campus_name,
             'title': campus_name,
             'featuredImage': featured_image,
             'campus_slug': campus_slug,
             'institutions': related_institutions,
             'institution': campus_details,
-            'contact_information': contact_information
+            'contact_information': contact_information,
+            'repository_id': None,
         })
 
     else:

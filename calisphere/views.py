@@ -186,9 +186,19 @@ def solrEncode(params, filter_types, facet_types = []):
         facet_types = filter_types
 
     # concatenate query terms from refine query and query box
-    query_terms = list(params.getlist('rq'))
-    query_terms.insert(0, params.get('q', ''))
-    query_terms = " AND ".join(query_terms)
+    query_terms = []
+    q = params.get('q')
+    if q:
+        query_terms.append(q)
+    for qt in params.getlist('rq'):
+        if qt:
+            query_terms.append(qt)
+
+    if len(query_terms) == 1:
+        query_terms_string = query_terms[0]
+    else:
+        query_terms_string = " AND ".join(query_terms)
+
 
     filters = []
     for filter_type in filter_types:
@@ -204,7 +214,7 @@ def solrEncode(params, filter_types, facet_types = []):
             filters.append(selected_filters)
 
     return {
-        'q': query_terms,
+        'q': query_terms_string,
         'rows': params.get('rows', '24'),
         'start': params.get('start', 0),
         'sort': SORT_OPTIONS[params.get('sort', 'relevance' if query_terms else 'a')],
@@ -928,6 +938,7 @@ def institutionView(request,
 
         if institution_type == 'campus':
             context.update({
+                'repository_id': None,
                 'title': institution_details['name'],
                 'campus_slug': institution_details['slug'],
                 'related_collections': relatedCollections(request, slug=institution_details['slug']),
@@ -1042,6 +1053,7 @@ def institutionView(request,
                 if institution_id == campus['id'] and 'featuredImage' in campus:
                     context['featuredImage'] = campus['featuredImage']
             context['repository_id'] = None
+            context['institution']['campus'] = None
 
         if institution_type == 'repository':
             context['repository_id'] = institution_id
@@ -1115,12 +1127,14 @@ def campusView(request, campus_slug, subnav=False):
             key=lambda related_institution: related_institution['name'])
 
         return render(request, 'calisphere/institutionViewInstitutions.html', {
+            # 'campus': campus_name,
             'title': campus_name,
             'featuredImage': featured_image,
             'campus_slug': campus_slug,
             'institutions': related_institutions,
             'institution': campus_details,
-            'contact_information': contact_information
+            'contact_information': contact_information,
+            'repository_id': None,
         })
 
     else:

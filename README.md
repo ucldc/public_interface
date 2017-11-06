@@ -5,7 +5,7 @@ get python, node, and ruby environments on your development host.
 
 ## requirements to build
 
- * node http://nodejs.org and node's package manager https://npmjs.org
+ * node http://nodejs.org (v0.10) and node's package manager https://npmjs.org
  * requires ruby environment where `gem install sass` has been run
  * requires python environment with `pip` or `virtualenv` set up
 

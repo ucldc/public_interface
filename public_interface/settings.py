@@ -111,10 +111,9 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'django.contrib.staticfiles', 'django.contrib.sites',
                   'django.contrib.humanize', 'django.contrib.sitemaps',
                   'easy_pjax', 'calisphere', 'static_sitemaps', 'health_check',
-                  'health_check.cache', 'health_check.storage', 'aws_xray_sdk.ext.django')
+                  'health_check.cache', 'health_check.storage', )
 
 MIDDLEWARE = (
-    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -187,13 +186,6 @@ else:
         }
     }
 
-
-XRAY_RECORDER = {
-    'AUTO_INSTRUMENT': True,
-    'AWS_XRAY_TRACING_NAME': 'calisphere public interface',
-    'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
-    'PLUGINS': ('ElasticBeanstalkPlugin', 'EC2Plugin'),
-}
 
 # Cache / Redis
 #

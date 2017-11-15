@@ -19,19 +19,19 @@ var ItemView = Backbone.View.extend({
 
   // User Event Handlers
   //----------------------
-  // These are event handlers for user interaction with the carousel, 
+  // These are event handlers for user interaction with the carousel,
   // surrounding links, and the related collections
-  
+
   events: {
     'click #js-linkBack'             : 'goToSearchResults',
     'beforeChange .carousel'         : 'loadSlides',
     'click .js-item-link'            : 'goToItemPage',
     'click .js-rc-page'              : 'paginateRelatedCollections',
-    'click .js-relatedCollection'    : 'goToCollectionPage'
+    'click .js-relatedCollection'    : 'clearQuery'
   },
 
-  // `click` triggered on `#js-linkBack`    
-  // This is the 'return to search results', 'return to <Collection>', or 
+  // `click` triggered on `#js-linkBack`
+  // This is the 'return to search results', 'return to <Collection>', or
   // 'return to <Institution>' link that appears above the carousel on the right
   goToSearchResults: function(e) {
     // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
@@ -49,7 +49,7 @@ var ItemView = Backbone.View.extend({
     });
   },
 
-  // `beforeChange` triggered on `.carousel`    
+  // `beforeChange` triggered on `.carousel`
   // lazy-loading slides on pagination of the carousel
   loadSlides: function(e, slick, currentSlide, nextSlide) {
     var numFound = $('#js-carousel').data('numfound');
@@ -57,10 +57,10 @@ var ItemView = Backbone.View.extend({
     var slidesToScroll = slick.options.slidesToScroll;
     var data_params;
 
-    //PREVIOUS BUTTON PRESSED   
+    //PREVIOUS BUTTON PRESSED
     //retrieve previous slides in search results
     if (
-      (currentSlide > nextSlide && (nextSlide !== 0 || currentSlide === slidesToScroll)) || 
+      (currentSlide > nextSlide && (nextSlide !== 0 || currentSlide === slidesToScroll)) ||
       (currentSlide === 0 && nextSlide > slick.slideCount - slidesToScroll && nextSlide < slick.slideCount)) {
       if (numLoaded < numFound && $('[data-item_number=0]').length === 0) {
         if (parseInt(this.carouselStart) - parseInt(this.carouselRows) > 0) {
@@ -78,11 +78,11 @@ var ItemView = Backbone.View.extend({
         }});
       }
     }
-    //NEXT BUTTON PRESSED   
+    //NEXT BUTTON PRESSED
     //retrieve next slides in search results
     else {
       if (numLoaded < numFound && $('[data-item_number=' + String(numFound-1) + ']').length === 0) {
-        this.carouselEnd = parseInt(this.carouselEnd) + parseInt(this.carouselRows);
+        this.carouselEnd = parseInt(this.carouselEnd||0) + parseInt(this.carouselRows||0);
         data_params = this.toJSON();
         data_params.start = this.carouselEnd;
         delete data_params.itemNumber;
@@ -94,7 +94,7 @@ var ItemView = Backbone.View.extend({
     }
   },
 
-  // `click` triggered on `.js-item-link`   
+  // `click` triggered on `.js-item-link`
   // when the user clicks an item in the carousel, navigate to that item
   // and update the query manager
   goToItemPage: function(e) {
@@ -148,7 +148,7 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-relatedCollection`
-  goToCollectionPage: function() {
+  clearQuery: function() {
     this.model.clear({silent: true});
   },
 
@@ -156,10 +156,10 @@ var ItemView = Backbone.View.extend({
   // --------------------
 
   // method adds `start` and `rows` to pjax and ajax queries.
-  // this is specific to which item is selected in the carousel. 
+  // this is specific to which item is selected in the carousel.
   toJSON: function() {
     var context = this.model.toJSON();
-    context.start = this.carouselStart;
+    context.start = this.carouselStart || 0;
     context.rows = this.carouselRows;
     return context;
   },
@@ -203,7 +203,7 @@ var ItemView = Backbone.View.extend({
     data_params.init = true;
 
     // simple AJAX call to get the first set of carousel items
-    // success callback puts the data into the carousel div, 
+    // success callback puts the data into the carousel div,
     // initiates slick, and calls changeWidth to set slidesToScroll
     // and slidesToShow options based on current window width
     $.ajax({
@@ -221,16 +221,38 @@ var ItemView = Backbone.View.extend({
     });
   },
 
+  // add the media element player if necessary
+  initMediaPlayer: function() {
+    if($('#obj__mejs').length) {
+      if (this.mediaplayer) {
+        if (!this.mediaplayer.paused) {
+          this.mediaplayer.pause();
+        }
+        this.mediaplayer.remove();
+        delete this.mediaplayer;
+      }
+
+      $('.media-player').mediaelementplayer({
+        stretching: 'responsive',
+        success: (function(that) {
+          return function(mediaElement, originalNode, instance) {
+            that.mediaplayer = instance;
+          };
+        }(this))
+      });
+    }
+  },
+
   // PJAX EVENT HANDLERS
   // ---------------------
-  
+
   // called on `pjax:beforeSend`
-  // Navigating between item pages is one of the rare cases where instead of 
-  // replacing the contents of  #js-pageContent with the results of a pjax call, 
+  // Navigating between item pages is one of the rare cases where instead of
+  // replacing the contents of  #js-pageContent with the results of a pjax call,
   // we replace the contents of #js-itemContainer. When a user clicks from an
   // item page to another item page, this event handler appends a special header
-  // to tell the server to use a different template 
-  // (`/calisphere/templates/calisphere/pjaxTemplates/pjax-item.html`) 
+  // to tell the server to use a different template
+  // (`/calisphere/templates/calisphere/pjaxTemplates/pjax-item.html`)
   // for the response
   pjax_beforeSend: function(e, xhr) {
     xhr.setRequestHeader('X-From-Item-Page', 'true');
@@ -239,7 +261,7 @@ var ItemView = Backbone.View.extend({
   // called on `pjax:end`
   pjax_end: function(that) {
     return function() {
-      // reset the query manager's item-specific info to the previous item. 
+      // reset the query manager's item-specific info to the previous item.
       if (that.popstate === 'back' || that.popstate === 'forward') {
         var queryObj;
         if ($('#js-carouselForm').length) {
@@ -266,10 +288,7 @@ var ItemView = Backbone.View.extend({
         linkItem.parent().toggleClass('carousel__item');
       }
 
-      // add the media element player if necessary
-      if($('#obj__mejs').length) {
-        $('.mejs-player').mediaelementplayer();
-      }
+      that.initMediaPlayer();
     };
   },
 
@@ -292,13 +311,14 @@ var ItemView = Backbone.View.extend({
     // initializes the carousel and the related collections
     this.initCarousel();
     this.paginateRelatedCollections();
+    this.initMediaPlayer();
 
-    // bind pjax handlers to `this`   
-    // we need to save the bound handler to `this.bound_pjax_end` so we can later 
+    // bind pjax handlers to `this`
+    // we need to save the bound handler to `this.bound_pjax_end` so we can later
     // remove these handlers by name in `destroy`
     this.bound_pjax_end = this.pjax_end(this);
     this.bound_pjax_popstate = this.pjax_popstate(this);
-    $(document).on('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);    
+    $(document).on('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);
     $(document).on('pjax:end', '#js-itemContainer', this.bound_pjax_end);
     $(document).on('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
   },
@@ -308,10 +328,10 @@ var ItemView = Backbone.View.extend({
     $(document).off('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);
     $(document).off('pjax:end', '#js-itemContainer', this.bound_pjax_end);
     $(document).off('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
-    
+
     // undelegate all user event handlers specified in `this.events`
     this.undelegateEvents();
-    
+
     // remove item-specific information from the query manager
     this.model.unsetItemInfo();
   }

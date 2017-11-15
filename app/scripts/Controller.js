@@ -25,7 +25,7 @@ var setupComponents = function(globalSearchForm, qm) {
   // in `destroy`), as well as various user-action handlers - click, submit, etc. 
 
   if ($('#js-facet').length) {
-    globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm});
+    globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm, popstate: globalSearchForm.popstate});
   } else if (globalSearchForm.facetForm) {
     globalSearchForm.facetForm.destroy();
     delete globalSearchForm.facetForm;

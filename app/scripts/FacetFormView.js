@@ -31,7 +31,7 @@ var FacetFormView = Backbone.View.extend({
     'click .js-a-check__header'               : 'toggleFacetDropdown',
     'click .js-a-check__update'               : 'updateFacets',
     'click .js-rc-page'                       : 'paginateRelatedCollections',
-    'click .js-relatedCollection'             : 'goToCollectionPage'
+    'click .js-relatedCollection'             : 'clearQuery'
   },
 
   // **METHODS THAT CHANGE THE QUERY MANAGER**
@@ -49,6 +49,9 @@ var FacetFormView = Backbone.View.extend({
   // `click` triggered on `.js-refine-filter-pill` (keyword pills, chiclets)
   removeRefineQuery: function(e) {
     var txtFilter = $(e.currentTarget).data('slug');
+    if (_.isNumber(txtFilter)) {
+      txtFilter = txtFilter.toString();
+    }
     $('input[form="js-facet"][name="rq"][value="' + txtFilter + '"]').val('');
     this.model.set({start: 0, rq: _.without(this.model.get('rq'), txtFilter)});
   },
@@ -299,7 +302,7 @@ var FacetFormView = Backbone.View.extend({
   // when a user navigates away from a search results page to a collection page
   // via related collections, they lose their search context.     
   // this is where it goes.
-  goToCollectionPage: function() {
+  clearQuery: function() {
     this.model.clear({silent: true});
   },
 
@@ -398,16 +401,16 @@ var FacetFormView = Backbone.View.extend({
   },
 
   // called via `setupComponents()` on `document.ready()` and `pjax:end`
-  initialize: function() {
+  initialize: function(opts) {
     // sets `this.render` to listen to whenever `this.model` (qm) fires a `change` event
     this.listenTo(this.model, 'change', this.render);
     // draw the page up correctly when initialized
     this.changeWidth($(window).width());
-    
-    // draw the tooltips and select/deselect all buttons correctly - this
-    // happens both on initialization and on pjax:end
-    this.toggleSelectDeselectAll();
-    this.toggleTooltips();
+
+    // retrieve query from DOM,
+    // toggle tooltips and select/deselect all links
+    this.popstate = opts.popstate ? opts.popstate : null;
+    this.pjax_end(this)();
 
     // bind pjax handlers to `this`   
     // we need to save the bound handler to `this.bound_pjax_end` so we can 

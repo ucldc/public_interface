@@ -148,6 +148,12 @@
 			<dt class="meta-block__type">Location</dt>
 			<dd class="meta-block__defin">{% for location in item.location %}{{ location }} <br> {% endfor %}</dd>
 		{% endif %}
+
+    {% if 'transcription' in item %}
+      <dt class="meta-block__type">Transcription</dt>
+      {% include "calisphere/component-metadata-dd.html" with value=item.transcription %}
+    {% endif %}
+
   </dl>
 
 </div>

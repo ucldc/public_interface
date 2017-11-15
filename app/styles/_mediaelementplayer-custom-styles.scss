@@ -1,67 +1,57 @@
 // ##### Custom Styles for MediaElement.js ##### //
 
-// ***** Sass placeholders extended into video wrapper div within _object-container.scss to make mejs responsive (see: https://css-tricks.com/rundown-of-handling-flexible-media ) ***** //
-
-%mejs-custom__video-container .mejs-container {
-  width: 100% !important;
-  height: auto !important;
-  padding-top: 75%; // adjusts aspect ratio of container box
-}
-
-%mejs-custom__video-container .mejs-overlay, %mejs-custom__video-container .mejs-poster {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-%mejs-custom__video-container .mejs-mediaelement video {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-// ***** Global reset to make mejs responsive ***** //
-
-.mejs-player {
-  width: 100% !important;
-}
-
-// ***** Set the button image paths ***** //
-
-.mejs-controls .mejs-button button {
-  background-image: url("../bower_components/mediaelement/build/controls.svg");
-}
-
-.mejs-overlay-button {
-  background-image: url("../bower_components/mediaelement/build/bigplay.svg")
-}
+//// ***** Sass placeholders extended into video wrapper div within _object-container.scss to make mejs responsive (see: https://css-tricks.com/rundown-of-handling-flexible-media ) ***** //
+//
+//%mejs__custom__video-container .mejs__container {
+//  width: 100% !important;
+//  height: auto !important;
+//  padding-top: 75%; // adjusts aspect ratio of container box
+//}
+//
+//%mejs__custom__video-container .mejs__overlay, %mejs__custom__video-container .mejs__poster {
+//  width: 100% !important;
+//  height: 100% !important;
+//}
+//
+//%mejs__custom__video-container .mejs__mediaelement video {
+//  position: absolute;
+//  top: 0; left: 0; right: 0; bottom: 0;
+//  width: 100% !important;
+//  height: 100% !important;
+//}
+//
+//// ***** Global reset to make mejs responsive ***** //
+//
+//.mejs__player {
+//  width: 100% !important;
+//}
 
 // ***** Reset the default mediaelementplayer.css skin colors ***** //
 
-.mejs-container .mejs-controls {
+.mejs__container .mejs__controls {
   background: $design-dark-gray-color;
 }
 
-.mejs-time-slider {
+.mejs__time-slider {
   border: 1px solid #fff;
   overflow: hidden;
 }
 
-.mejs-controls .mejs-time-rail .mejs-time-loaded {
+.mejs__controls .mejs__time-rail .mejs__time-loaded {
   background: $design-dark-gray-color;
 }
 
-.mejs-controls .mejs-time-rail .mejs-time-current {
+.mejs__controls .mejs__time-rail .mejs__time-current {
   background: $design-primary-color;
 }
 
-.mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-total {
+.mejs__controls .mejs__horizontal-volume-slider .mejs__horizontal-volume-total {
   border: 1px solid #fff;
 }
 
-.mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-current {
+.mejs__controls .mejs__horizontal-volume-slider .mejs__horizontal-volume-current {
   background: $design-primary-color;
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
-  border-left: 1px solid #fff;
+//  border-top: 1px solid #fff;
+//  border-bottom: 1px solid #fff;
+//  border-left: 1px solid #fff;
 }

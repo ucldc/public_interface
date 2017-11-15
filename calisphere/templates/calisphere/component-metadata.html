@@ -20,7 +20,11 @@
 
     {% if item.selectedComponent.date %}
       <dt class="meta-block__type">Date Created and/or Issued</dt>
-      {% include "calisphere/component-metadata-dd.html" with value=item.selectedComponent.date.0.displayDate %}
+      {% if item.selectedComponent.date.0.displayDate %}
+        {% include "calisphere/component-metadata-dd.html" with value=item.selectedComponent.date.0.displayDate %}
+      {% else %}
+        {% include "calisphere/component-metadata-dd.html" with value=item.selectedComponent.date %}
+      {% endif %}
     {% endif %}
 
     {% if item.selectedComponent.publisher %}

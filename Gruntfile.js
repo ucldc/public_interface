@@ -336,6 +336,7 @@ module.exports = function (grunt) {
             'styles/{,*/}*.*',
             'fonts/{,*/}*.*',
             'scripts/ComplexCarouselView.js',
+            'scripts/Controller.js',
             'scripts/ContactOwnerFormView.js',
             'scripts/ExhibitPageView.js',
             'scripts/FacetFormView.js',

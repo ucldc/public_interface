@@ -446,9 +446,9 @@ class ExhibitItem(models.Model):
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE, blank=True, null=True)
     lesson_plan = models.ForeignKey(LessonPlan, on_delete=models.CASCADE, blank=True, null=True)
     historical_essay = models.ForeignKey(HistoricalEssay, on_delete=models.CASCADE, blank=True, null=True)
-    order = PositionField(collection='exhibit')
-    lesson_plan_order = PositionField(collection='lesson_plan')
-    historical_essay_order = PositionField(collection='historical_essay')
+    order = models.IntegerField(blank=True, null=True)
+    lesson_plan_order = models.IntegerField(blank=True, null=True)
+    historical_essay_order = models.IntegerField(blank=True, null=True)
 
     essay = models.TextField(blank=True, verbose_name='Item-level exhibit information')
     render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='T')
@@ -517,7 +517,7 @@ class ExhibitItem(models.Model):
 class NotesItem(models.Model):
     title = models.CharField(max_length=200)
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE)
-    order = PositionField(collection='exhibit')
+    order = models.IntegerField(blank=True, null=True)
     essay = models.TextField(blank=True, verbose_name='Note')
     render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='T')
 
@@ -534,8 +534,8 @@ class BrowseTermGroup(models.Model):
     render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H')
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE, blank=True, null=True)
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE, blank=True, null=True)
-    order = PositionField(collection='theme')
-    exhibit_order = PositionField(collection='exhibit')
+    order = models.IntegerField(blank=True, null=True)
+    exhibit_order = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.group_title
@@ -548,7 +548,7 @@ class BrowseTerm(models.Model):
     link_text = models.CharField(max_length=200)
     link_location = models.CharField(max_length=500)
     browse_term_group = models.ForeignKey(BrowseTermGroup, on_delete=models.CASCADE)
-    order = PositionField(collection='browse_term_group')
+    order = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.link_text
@@ -560,7 +560,7 @@ class BrowseTerm(models.Model):
 class HistoricalEssayExhibit(models.Model):
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE)
     historicalEssay = models.ForeignKey(HistoricalEssay, on_delete=models.CASCADE)
-    order = PositionField(collection='exhibit')
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta(object):
         unique_together = ('exhibit', 'historicalEssay')
@@ -570,7 +570,7 @@ class HistoricalEssayExhibit(models.Model):
 class LessonPlanExhibit(models.Model):
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE)
     lessonPlan = models.ForeignKey(LessonPlan, on_delete=models.CASCADE)
-    order = PositionField(collection='exhibit')
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta(object):
         unique_together = ('exhibit', 'lessonPlan')
@@ -582,7 +582,7 @@ class LessonPlanExhibit(models.Model):
 class ExhibitTheme(models.Model):
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    order = PositionField(collection='theme')
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta(object):
         unique_together = ('exhibit', 'theme')
@@ -594,7 +594,7 @@ class ExhibitTheme(models.Model):
 class LessonPlanTheme(models.Model):
     lessonPlan = models.ForeignKey(LessonPlan, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    order = PositionField(collection='theme')
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta(object):
         unique_together = ('lessonPlan', 'theme')
@@ -604,7 +604,7 @@ class LessonPlanTheme(models.Model):
 class HistoricalEssayTheme(models.Model):
     historicalEssay = models.ForeignKey(HistoricalEssay, on_delete=models.CASCADE)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    order = PositionField(collection='theme')
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta(object):
         unique_together = ('historicalEssay', 'theme')

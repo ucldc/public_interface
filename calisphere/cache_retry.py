@@ -18,6 +18,9 @@ import itertools
 
 requests.packages.urllib3.disable_warnings()
 
+from aws_xray_sdk.core import patch
+patch(('requests',))
+
 SOLR_DEFAULTS = {
     'mm': '100%',
     'pf3': 'title',

@@ -83,7 +83,10 @@ var setupComponents = function(globalSearchForm, qm) {
       zoomInButton: 'obj__osd-button-zoom-in',
       zoomOutButton: 'obj__osd-button-zoom-out',
       homeButton: 'obj__osd-button-home',
-      fullPageButton: 'obj__osd-button-fullscreen'
+      fullPageButton: 'obj__osd-button-fullscreen',
+      rotateLeftButton: 'obj__osd-button-rotate-left',
+      rotateRightButton: 'obj__osd-button-rotate-right',
+      showRotationControl: true
     });
   } 
   // if the viewer exists, but the hosted image content 

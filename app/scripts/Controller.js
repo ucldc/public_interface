@@ -89,7 +89,7 @@ var setupComponents = function(globalSearchForm, qm) {
       showRotationControl: true
     });
 
-    globalSearchForm.viewer.addHandler("home", function (data) {
+    globalSearchForm.viewer.addHandler('home', function (data) {
         data.eventSource.viewport.setRotation(0);
     });
 

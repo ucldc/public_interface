@@ -88,6 +88,11 @@ var setupComponents = function(globalSearchForm, qm) {
       rotateRightButton: 'obj__osd-button-rotate-right',
       showRotationControl: true
     });
+
+    globalSearchForm.viewer.addHandler("home", function (data) {
+        data.eventSource.viewport.setRotation(0);
+    });
+
   } 
   // if the viewer exists, but the hosted image content 
   // selector `#obj__osd` does not, then just destroy the viewer

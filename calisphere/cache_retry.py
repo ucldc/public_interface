@@ -19,7 +19,9 @@ import itertools
 requests.packages.urllib3.disable_warnings()
 
 from aws_xray_sdk.core import patch
-patch(('requests',))
+
+if hasattr(settings,'XRAY_RECORDER'):
+    patch(('requests',))
 
 SOLR_DEFAULTS = {
     'mm': '100%',

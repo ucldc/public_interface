@@ -500,7 +500,8 @@ def itemViewCarousel(request):
             extra_filter = 'campus_url: "https://registry.cdlib.org/api/v1/campus/' + campus_id + '/"'
 
     solrParams = solrEncode(params, facet_filter_types)
-    solrParams['fq'].append(extra_filter)
+    if extra_filter:
+        solrParams['fq'].append(extra_filter)
 
     #if no query string or filters, do a "more like this" search
     if solrParams['q'] == '' and len(solrParams['fq']) == 0:

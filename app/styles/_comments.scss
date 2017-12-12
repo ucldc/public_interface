@@ -1,0 +1,72 @@
+/* ##### ReadMe #####
+
+- The class name 'comment' and its element suffixes can be renamed to whatever you like
+
+- Hexadecimal color values should be replaced with the Calisphere UI library Sass color variables 
+
+- Media query blocks should be replaced with the Calisphere UI library Sass media query mixins
+
+- The 'comment__link' (dialog balloon) element uses rem values so that its image and text scale uniformly if page text is zoomed in the browser.
+
+- To adjust size of dialog balloon, change the font-size rem value in 'comment__link'
+
+- The hover effect in ':hover' is optional and can be removed
+
+- The 2 'comment__text' links are not styled in this example; they should be styled using the Calisphere UI library Sass variables/mixin for orange links
+
+*/
+
+.comment {
+  padding: 1rem;
+  border-top: 2px solid $design-dark-gray-color;
+  font-family: KievitWeb, Arial, sans-serif;
+
+  @media (min-width: 500px) {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+}
+
+.comment__text {
+  flex: 1 1 auto;
+  margin-bottom: 1rem;
+
+  @media (min-width: 500px) {
+    margin-bottom: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 0.7rem;
+    color: $design-dark-gray-color;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+
+}
+
+.comment__link {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-right: 1rem;
+  padding: 1.7rem 1rem 3.5rem;
+  background: url('https://calisphere.org/calisphere_images/dialog-balloon.svg') no-repeat top center / 100% 100%;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+}

@@ -133,8 +133,6 @@ var ItemView = Backbone.View.extend({
     // don't need carousel specific item data for the related collections
     delete data_params.itemId;
     delete data_params.itemNumber;
-    delete data_params.referral;
-    delete data_params.referralName;
     if (e !== undefined) {
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {

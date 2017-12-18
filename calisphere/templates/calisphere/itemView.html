@@ -19,6 +19,16 @@
   {% endblock %}
 </div>
 
+{% if item.parsed_collection_data.0.disqus_shortname %}
+<div style="display: block; clear: both;">
+  <div id="disqus_thread"></div>
+  <div id="disqus_loader" style="text-align: center">
+    <button onclick='$.ajaxSetup({cache:true});$.getScript("http://{{ item.parsed_collection_data.0.disqus_shortname}}.disqus.com/embed.js");$.ajaxSetup({cache:false});$("#disqus_loader").remove();'>Load Disqus Comments</button>
+  </div>
+</div>
+{% endif %}
+
+
 <div class="related-coll--search-results-page" id="js-relatedCollections">
   {% include "calisphere/related-collections.html" %}
 </div>

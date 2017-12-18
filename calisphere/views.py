@@ -46,6 +46,14 @@ def getMoreCollectionData(collection_data):
         "{0}?format=json".format(collection['url']))
     collection['local_id'] = collection_details['local_id']
     collection['slug'] = collection_details['slug']
+    collection['harvest_type'] = collection_details['harvest_type']
+
+    production_disqus = settings.UCLDC_FRONT == 'https://calisphere.org/' or settings.UCLDC_DISQUS == 'prod'
+    if production_disqus:
+        collection['disqus_shortname'] = collection_details.get('disqus_shortname_prod')
+    else:
+        collection['disqus_shortname'] = collection_details.get('disqus_shortname_test')
+
     return collection
 
 
@@ -377,25 +385,24 @@ def itemView(request, item_id=''):
         item['parsed_collection_data'] = []
         item['parsed_repository_data'] = []
         item['institution_contact'] = []
-        for collection_data in item['collection_data']:
+        for collection_data in item.get('collection_data'):
             item['parsed_collection_data'].append(
                 getMoreCollectionData(collection_data))
-        if 'repository_data' in item:
-            for repository_data in item['repository_data']:
-                item['parsed_repository_data'].append(
-                    getRepositoryData(repository_data=repository_data))
+        for repository_data in item.get('repository_data'):
+            item['parsed_repository_data'].append(
+                getRepositoryData(repository_data=repository_data))
 
-                institution_url = item['parsed_repository_data'][0]['url']
-                institution_details = json_loads_url(institution_url +
-                                                     "?format=json")
-                if 'ark' in institution_details and institution_details['ark'] != '':
-                    contact_information = json_loads_url(
-                        "http://dsc.cdlib.org/institution-json/" +
-                        institution_details['ark'])
-                else:
-                    contact_information = ''
+            institution_url = item['parsed_repository_data'][0]['url']
+            institution_details = json_loads_url(institution_url +
+                                                 "?format=json")
+            if 'ark' in institution_details and institution_details['ark'] != '':
+                contact_information = json_loads_url(
+                    "http://dsc.cdlib.org/institution-json/" +
+                    institution_details['ark'])
+            else:
+                contact_information = ''
 
-                item['institution_contact'].append(contact_information)
+            item['institution_contact'].append(contact_information)
 
     meta_image = False
     if item_solr_search.results[0].get('reference_image_md5', False):
@@ -404,6 +411,7 @@ def itemView(request, item_id=''):
             '/crop/999x999/{0}'.format(
                 item_solr_search.results[0]['reference_image_md5']), )
 
+    ## do this w/o multiple returns?
     fromItemPage = request.META.get("HTTP_X_FROM_ITEM_PAGE")
     if fromItemPage:
         return render(request, 'calisphere/itemViewer.html', {

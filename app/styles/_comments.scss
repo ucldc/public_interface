@@ -18,7 +18,7 @@
 
 .comment {
   padding: 1rem;
-  border-top: 2px solid $design-dark-gray-color;
+  border-top: 1px solid $design-primary-color;
   font-family: KievitWeb, Arial, sans-serif;
 
   @media (min-width: 500px) {
@@ -31,6 +31,7 @@
 .comment__text {
   flex: 1 1 auto;
   margin-bottom: 1rem;
+  padding-left: 1rem;
 
   @media (min-width: 500px) {
     margin-bottom: 0;

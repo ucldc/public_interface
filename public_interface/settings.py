@@ -49,6 +49,7 @@ UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
 
 UCLDC_FRONT = getenv('UCLDC_FRONT', '')
 UCLDC_REDIS_URL = getenv('UCLDC_REDIS_URL', False)
+UCLDC_DISQUS = getenv('UCLDC_DISQUS', 'test')  # set to 'prod' to use the prod disqus shortcode value
 
 EMAIL_BACKEND = getenv('EMAIL_BACKEND',
                           'django.core.mail.backends.console.EmailBackend')

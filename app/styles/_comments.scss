@@ -17,24 +17,29 @@
 */
 
 .comment {
-  padding: 1rem;
+  padding-top: $layout-container-margin-sm; 
   border-top: 1px solid $design-primary-color;
   font-family: KievitWeb, Arial, sans-serif;
+  margin: $layout-component-margin 0 0 0;
 
-  @media (min-width: 500px) {
+  @include bp(md-screen) {
     display: flex;
     flex-direction: row-reverse;
+    margin-top: $layout-component-margin;
+    margin-right: $object-leftright-margin - $layout-container-margin-sm;
+    margin-left: $object-leftright-margin - $layout-container-margin-sm;
+    padding: $layout-container-margin-sm;
   }
 
 }
 
 .comment__text {
   flex: 1 1 auto;
-  margin-bottom: 1rem;
-  padding-left: 1rem;
+  margin-bottom: $layout-container-margin-sm;
 
-  @media (min-width: 500px) {
+  @include bp(md-screen) {
     margin-bottom: 0;
+    margin-left: $layout-container-margin-sm;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -54,9 +59,9 @@
 .comment__link {
   display: inline-block;
   flex: 0 0 auto;
-  margin-right: 1rem;
-  padding: 1.7rem 1rem 3.5rem;
-  background: url('https://calisphere.org/calisphere_images/dialog-balloon.svg') no-repeat top center / 100% 100%;
+  margin-right: $layout-container-margin-sm;
+  padding: 2rem 1rem 4.1rem;
+  background: url('https://calisphere.org/calisphere_images/dialog-balloon.svg') no-repeat center / 100%;
   color: #fff;
   font-size: 1.4rem;
   font-weight: bold;

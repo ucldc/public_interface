@@ -20,11 +20,18 @@
 </div>
 
 {% if item.parsed_collection_data.0.disqus_shortname %}
+
+<div id="disqus_loader" class="comment">
+    <div class="comment__text">
+      <h2>New! This item supports comments!</h2>
+      <p>We are testing a commenting feature on this collection. By using this feature, you agree to UC Riverside’s <a href="/privacy/"">comment policy</a>. <a href="#" onclick='$.ajaxSetup({cache:true});$.getScript("http://{{ item.parsed_collection_data.0.disqus_shortname}}.disqus.com/embed.js");$.ajaxSetup({cache:false});$("#disqus_loader").remove();return false;'>Load comments</a>.</p>
+    </div>
+    <a href="#" class="comment__link" onclick='$.ajaxSetup({cache:true});$.getScript("http://{{ item.parsed_collection_data.0.disqus_shortname}}.disqus.com/embed.js");$.ajaxSetup({cache:false});$("#disqus_loader").remove();return false;'>Join The <br>Discussion</a>
+  </div>
+</div>
+
 <div style="display: block; clear: both;">
   <div id="disqus_thread"></div>
-  <div id="disqus_loader" style="text-align: center">
-    <button onclick='$.ajaxSetup({cache:true});$.getScript("http://{{ item.parsed_collection_data.0.disqus_shortname}}.disqus.com/embed.js");$.ajaxSetup({cache:false});$("#disqus_loader").remove();'>Load Disqus Comments</button>
-  </div>
 </div>
 {% endif %}
 

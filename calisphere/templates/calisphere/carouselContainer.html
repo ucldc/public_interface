@@ -73,6 +73,8 @@
         <a href="{% url 'calisphere:campusView' linkBackId 'items' %}?{% if rq|length > 0 %}{% for r in rq %}&rq={{ r }}{% endfor %}{% endif %}" data-pjax="js-pageContent">
           back to {{ referralName }}
       {% endif %}
+    {% else %}
+      &nbsp;
     {% endif %}
   </div>
   

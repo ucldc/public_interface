@@ -131,7 +131,6 @@ var ItemView = Backbone.View.extend({
   paginateRelatedCollections: function(e) {
     var data_params = this.model.toJSON();
     // don't need carousel specific item data for the related collections
-    delete data_params.itemId;
     delete data_params.itemNumber;
     if (e !== undefined) {
       data_params.rc_page = $(e.currentTarget).data('rc_page');

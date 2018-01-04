@@ -27,7 +27,8 @@ var ItemView = Backbone.View.extend({
     'beforeChange .carousel'         : 'loadSlides',
     'click .js-item-link'            : 'goToItemPage',
     'click .js-rc-page'              : 'paginateRelatedCollections',
-    'click .js-relatedCollection'    : 'clearQuery'
+    'click .js-relatedCollection'    : 'clearQuery',
+    'click .js-disqus'               : 'initDisqus'
   },
 
   // `click` triggered on `#js-linkBack`
@@ -243,6 +244,14 @@ var ItemView = Backbone.View.extend({
     }
   },
 
+  initDisqus: function() {
+    var disqus_shortname = $('#disqus_loader').data('disqus');
+    $.ajaxSetup({cache:true});
+    $.getScript('http://' + disqus_shortname + '.disqus.com/embed.js');
+    $.ajaxSetup({cache:false});
+    $('#disqus_loader').hide();
+  },
+
   // PJAX EVENT HANDLERS
   // ---------------------
 
@@ -267,6 +276,10 @@ var ItemView = Backbone.View.extend({
         if ($('#js-carouselForm').length) {
           queryObj = that.model.getItemInfoFromDOM();
           that.model.set(queryObj, {silet: true});
+        }
+
+        if ($('#disqus_thread').html().length > 0) {
+          that.initDisqus();
         }
         that.popstate = null;
       }

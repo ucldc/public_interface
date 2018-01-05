@@ -19,22 +19,6 @@
   {% endblock %}
 </div>
 
-{% if item.parsed_collection_data.0.disqus_shortname %}
-
-<div id="disqus_loader" class="comment" data-disqus="{{ item.parsed_collection_data.0.disqus_shortname }}">
-  <div class="comment__text">
-    <h2>New! This item supports comments!</h2>
-    <p>We are testing a commenting feature on this collection. By using this feature, you agree to UC Riverside’s <a href="/privacy/"">comment policy</a>. <button class="button__link js-disqus">Load comments</a>.</p>
-  </div>
-  <button class="comment__link js-disqus">Join The <br>Discussion</a>
-</div>
-
-<div style="display: block; clear: both;">
-  <div id="disqus_thread"></div>
-</div>
-{% endif %}
-
-
 <div class="related-coll--search-results-page" id="js-relatedCollections">
   {% include "calisphere/related-collections.html" %}
 </div>

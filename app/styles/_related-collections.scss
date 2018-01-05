@@ -16,6 +16,18 @@
 
 }
 
+.related-coll__wrapper {
+  border-top: 1px solid $design-primary-color;
+  margin-top: $layout-container-margin-xs;
+
+  @include bp(sm-screen) {
+    margin-top: $layout-container-margin-sm;
+  }
+  @include bp(md-screen) {
+    margin-top: $layout-container-margin-md;
+  }
+}
+
 .related-coll__title {
   margin: 0.5em 0 0 0;
 

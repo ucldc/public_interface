@@ -26,9 +26,12 @@
     display: flex;
     flex-direction: row-reverse;
     margin-top: $layout-component-margin;
-    margin-right: $object-leftright-margin - $layout-container-margin-sm;
-    margin-left: $object-leftright-margin - $layout-container-margin-sm;
-    padding: $layout-container-margin-sm;
+    margin-right: 0;
+    margin-left: 0;
+    padding-top: $layout-component-margin;
+    padding-left: $object-leftright-margin;
+    padding-bottom: $layout-component-margin;
+    padding-right: $object-leftright-margin;
   }
 
 }
@@ -60,7 +63,7 @@
   display: inline-block;
   flex: 0 0 auto;
   margin-right: $layout-container-margin-sm;
-  padding: 2rem 1rem 4.1rem;
+  padding: 1.4rem 1rem 4.1rem;
   background: url('https://calisphere.org/calisphere_images/dialog-balloon.svg') no-repeat center / 100%;
   border: none;
   color: #fff;

@@ -20,17 +20,17 @@
   padding-top: $layout-container-margin-sm; 
   border-top: 1px solid $design-primary-color;
   font-family: KievitWeb, Arial, sans-serif;
-  margin: $layout-component-margin 0 0 0;
+  margin: $layout-container-margin-sm 0 0 0;
 
   @include bp(md-screen) {
     display: flex;
     flex-direction: row-reverse;
-    margin-top: $layout-component-margin;
+    margin-top: $layout-container-margin-md;
     margin-right: 0;
     margin-left: 0;
     padding-top: $layout-component-margin;
     padding-left: $object-leftright-margin;
-    padding-bottom: $layout-component-margin;
+    padding-bottom: 0;
     padding-right: $object-leftright-margin;
   }
 

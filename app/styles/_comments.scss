@@ -23,17 +23,17 @@
   margin: $layout-container-margin-sm 0 0 0;
 
   @include bp(md-screen) {
-    display: flex;
-    flex-direction: row-reverse;
-    margin-top: $layout-container-margin-md;
-    margin-right: 0;
-    margin-left: 0;
-    padding-top: $layout-component-margin;
-    padding-left: $object-leftright-margin;
-    padding-bottom: 0;
-    padding-right: $object-leftright-margin;
+    margin: $layout-container-margin-md 0 0 0;
+    padding: $layout-component-margin $object-leftright-margin 0 $object-leftright-margin;
   }
 
+}
+
+.comment_clickthrough {
+  @include bp(md-screen) {
+    display: flex;
+    flex-direction: row-reverse;
+  }
 }
 
 .comment__text {

@@ -1,4 +1,4 @@
-/*global Backbone */
+/*global Backbone, DISQUS */
 /*exported ItemView */
 
 'use strict';
@@ -245,12 +245,26 @@ var ItemView = Backbone.View.extend({
   },
 
   initDisqus: function() {
-    $('#disqus_thread').empty();
-    var disqus_shortname = $('#disqus_loader').data('disqus');
-    $.ajaxSetup({cache:true});
-    $.getScript('http://' + disqus_shortname + '.disqus.com/embed.js');
-    $.ajaxSetup({cache:false});
+    if(typeof DISQUS !== 'undefined') {
+      this.resetDisqus();
+    } else {
+      $('#disqus_thread').empty();
+      var disqus_shortname = $('#disqus_loader').data('disqus');
+      $.ajaxSetup({cache:true});
+      $.getScript('http://' + disqus_shortname + '.disqus.com/embed.js');
+      $.ajaxSetup({cache:false});
+    }
     $('#disqus_loader').hide();
+  },
+
+  resetDisqus: function() {
+    $('#disqus_thread').empty();
+    DISQUS.reset({
+      reload: true,
+      config: function() {
+        this.page.url = window.location.href;
+      }
+    });
   },
 
   // PJAX EVENT HANDLERS
@@ -279,8 +293,10 @@ var ItemView = Backbone.View.extend({
           that.model.set(queryObj, {silet: true});
         }
 
-        if ($('#disqus_thread').html().length > 0) {
-          that.initDisqus();
+        if ($('#disqus_thread').length) {
+          if ($('#disqus_thread').html().length > 0) {
+            that.resetDisqus();
+          }
         }
         that.popstate = null;
       }
@@ -326,8 +342,10 @@ var ItemView = Backbone.View.extend({
     this.initCarousel();
     this.paginateRelatedCollections();
     this.initMediaPlayer();
-    if ($('#disqus_thread').html().length > 0) {
-      this.initDisqus();
+    if ($('#disqus_thread').length) {
+      if ($('#disqus_thread').html().length > 0) {
+        this.resetDisqus();
+      }
     }
 
     // bind pjax handlers to `this`

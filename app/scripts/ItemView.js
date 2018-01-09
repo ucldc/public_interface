@@ -262,6 +262,8 @@ var ItemView = Backbone.View.extend({
     DISQUS.reset({
       reload: true,
       config: function() {
+        // *might* work to change the shortname for a pre-loaded disqus package
+        // this.forum = $('#disqus_loader').data('disqus');
         this.page.url = window.location.href;
       }
     });

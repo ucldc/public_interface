@@ -1,4 +1,4 @@
-/*global Backbone */
+/*global Backbone, DISQUS */
 /*exported ItemView */
 
 'use strict';
@@ -27,7 +27,8 @@ var ItemView = Backbone.View.extend({
     'beforeChange .carousel'         : 'loadSlides',
     'click .js-item-link'            : 'goToItemPage',
     'click .js-rc-page'              : 'paginateRelatedCollections',
-    'click .js-relatedCollection'    : 'clearQuery'
+    'click .js-relatedCollection'    : 'clearQuery',
+    'click .js-disqus'               : 'initDisqus'
   },
 
   // `click` triggered on `#js-linkBack`
@@ -243,6 +244,33 @@ var ItemView = Backbone.View.extend({
     }
   },
 
+  initDisqus: function() {
+    if(typeof DISQUS !== 'undefined') {
+      this.resetDisqus();
+    } else {
+      $('#disqus_thread').empty();
+      var disqus_shortname = $('#disqus_loader').data('disqus');
+      $.ajaxSetup({cache:true});
+      $.getScript('http://' + disqus_shortname + '.disqus.com/embed.js');
+      $.ajaxSetup({cache:false});
+    }
+    $('#disqus_loader').hide();
+  },
+
+  resetDisqus: function() {
+    $('#disqus_thread').empty();
+    DISQUS.reset({
+      reload: true,
+      config: function() {
+        // seems to work to change the shortname for a pre-loaded disqus package
+        // despite lack of documentation around this.forum and whether or not it's
+        // okay to change from this config function
+        this.forum = $('#disqus_loader').data('disqus');
+        this.page.url = window.location.href;
+      }
+    });
+  },
+
   // PJAX EVENT HANDLERS
   // ---------------------
 
@@ -267,6 +295,12 @@ var ItemView = Backbone.View.extend({
         if ($('#js-carouselForm').length) {
           queryObj = that.model.getItemInfoFromDOM();
           that.model.set(queryObj, {silet: true});
+        }
+
+        if ($('#disqus_thread').length) {
+          if ($('#disqus_thread').html().length > 0) {
+            that.resetDisqus();
+          }
         }
         that.popstate = null;
       }
@@ -312,6 +346,11 @@ var ItemView = Backbone.View.extend({
     this.initCarousel();
     this.paginateRelatedCollections();
     this.initMediaPlayer();
+    if ($('#disqus_thread').length) {
+      if ($('#disqus_thread').html().length > 0) {
+        this.resetDisqus();
+      }
+    }
 
     // bind pjax handlers to `this`
     // we need to save the bound handler to `this.bound_pjax_end` so we can later

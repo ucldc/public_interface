@@ -67,3 +67,19 @@
 {% else %}
   {% include "calisphere/item-metadata.html" %}
 {% endif %}
+
+{% if item.parsed_collection_data.0.disqus_shortname %}
+<div class="comment">
+  <div id="disqus_loader" class="comment_clickthrough" data-disqus="{{ item.parsed_collection_data.0.disqus_shortname }}">
+    <div class="comment__text">
+      <h2>New! This item supports comments!</h2>
+      <p>We are testing a commenting feature on this item. <button class="button__link js-disqus">Load comments</button>.</p>
+    </div>
+    <button class="comment__link js-disqus">Join The <br>Discussion</button>
+  </div>
+
+  <div style="display: block; clear: both;">
+    <div id="disqus_thread"></div>
+  </div>
+</div>
+{% endif %}

@@ -21,6 +21,17 @@
   }
 }
 
+.button__link {
+  background: none;
+  border: none;
+  color: $design-primary-color;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .button__close {
   margin: 0 5px 5px 0;
   border: 1px solid $design-dark-gray-color;

@@ -1,0 +1,82 @@
+/* ##### ReadMe #####
+
+- The class name 'comment' and its element suffixes can be renamed to whatever you like
+
+- Hexadecimal color values should be replaced with the Calisphere UI library Sass color variables 
+
+- Media query blocks should be replaced with the Calisphere UI library Sass media query mixins
+
+- The 'comment__link' (dialog balloon) element uses rem values so that its image and text scale uniformly if page text is zoomed in the browser.
+
+- To adjust size of dialog balloon, change the font-size rem value in 'comment__link'
+
+- The hover effect in ':hover' is optional and can be removed
+
+- The 2 'comment__text' links are not styled in this example; they should be styled using the Calisphere UI library Sass variables/mixin for orange links
+
+*/
+
+.comment {
+  padding-top: $layout-container-margin-sm; 
+  border-top: 1px solid $design-primary-color;
+  font-family: KievitWeb, Arial, sans-serif;
+  margin: $layout-container-margin-sm 0 0 0;
+
+  @include bp(md-screen) {
+    margin: $layout-container-margin-md 0 0 0;
+    padding: $layout-component-margin $object-leftright-margin 0 $object-leftright-margin;
+  }
+
+}
+
+.comment_clickthrough {
+  @include bp(md-screen) {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}
+
+.comment__text {
+  flex: 1 1 auto;
+  margin-bottom: $layout-container-margin-sm;
+
+  @include bp(md-screen) {
+    margin-bottom: 0;
+    margin-left: $layout-container-margin-sm;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 0.7rem;
+    color: $design-dark-gray-color;
+    // font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+
+}
+
+.comment__link {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-right: $layout-container-margin-sm;
+  padding: 1.7rem 1rem 4.4rem;
+  background: url('https://calisphere.org/calisphere_images/dialog-balloon.svg') no-repeat center / 100%;
+  border: none;
+  color: #fff;
+  font-size: 1.7rem;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+}

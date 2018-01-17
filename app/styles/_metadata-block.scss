@@ -1,6 +1,7 @@
 // ##### Metadata Block Component ##### //
 
 .meta-block {
+  @extend .clearfix; // Bootstrap class
   margin: $layout-component-margin 0 0 0;
 
   @include bp(md-screen) {

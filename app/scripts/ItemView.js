@@ -248,7 +248,7 @@ var ItemView = Backbone.View.extend({
       $('#disqus_thread').empty();
       var disqus_shortname = $('#disqus_loader').data('disqus');
       $.ajaxSetup({cache:true});
-      $.getScript('http://' + disqus_shortname + '.disqus.com/embed.js');
+      $.getScript('//' + disqus_shortname + '.disqus.com/embed.js');
       $.ajaxSetup({cache:false});
     }
     $('#disqus_loader').hide();

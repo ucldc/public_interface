@@ -65,6 +65,10 @@
           <div class="carousel-complex__thumbnail-container">
             <div class="carousel-complex__tile-icon fa-file-text-o"></div>
           </div>
+        {% else %}
+          <div class="carousel-complex__thumbnail-container">
+            <div class="carousel-complex__tile-icon fa-file"></div>
+          </div>
         {% endif %}
       </a>
       {# note that this conditional logic for whether or not to display a caption needs to match the logic for setting the context variable item.hasComponentCaptions in calisphere/views.py -- which is used above to to set the parent div class and determine how to position prev/next arrows on the slick carousel #}

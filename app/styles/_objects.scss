@@ -42,9 +42,18 @@ html.no-jquery .obj__osd-infobanner {
   @include thumbnail__tile-icon(17vw, 11vw, 11vw, 130px); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)
 }
 
+.obj__tile-icon.movingimage { @extend .fa-play-circle-o; }
+.obj__tile-icon.sound { @extend .fa-volume-up; }
+.obj__tile-icon.text { @extend .fa-file-text-o; }
+.obj__tile-icon.dataset { @extend .fa-bar-chart; }
+
 .obj__overlay-icon {
   @include thumbnail__overlay-icon(); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)
 }
+
+.obj__overlay-icon.movingimage { @extend .fa-play-circle-o; }
+.obj__overlay-icon.sound { @extend .fa-volume-up; }
+.obj__overlay-icon.dataset { @extend .fa-bar-chart; }
 
 // ***** Global Object Styles ***** //
 

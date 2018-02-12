@@ -1,12 +1,12 @@
 {% load calisphere-extras %}
-<title>Calisphere: {% if title %}{{title}}{% else %}The deeper you look, the more you'll discover.{% endif %}</title>
+<title>Calisphere: {% if title %}{{title}}{% else %}The deeper you look, the more you discover.{% endif %}</title>
     <!-- social media "cards" -->
     <!--  ↓ $('meta[property=og\\:type]) start marker for pjax hack -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Calisphere"/>
     <!--  ↕ stuff in the middle gets swapped out on `pjax:success` -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" property="og:title" content="{% if title %}{{ title }}{% else %}Calisphere: The deeper you look, the more you'll discover.{% endif %}" />
+    <meta name="twitter:title" property="og:title" content="{% if title %}{{ title }}{% else %}Calisphere: The deeper you look, the more you discover.{% endif %}" />
     <meta name="twitter:description" property="og:description" content="{% if description|is_string %}{{ description }}{% elif description %}
       {% for d in description %}{{ d }}{% endfor %}
     {% else %}Calisphere is a gateway to digital collections from California's great libraries, archives, and museums. Discover over 400,000 images, texts, and recordings—and counting.{% endif %}" />

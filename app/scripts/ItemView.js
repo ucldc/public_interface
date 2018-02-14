@@ -138,7 +138,8 @@ var ItemView = Backbone.View.extend({
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {
       if ($('.js-rc-page').length === 2) {
-        // stay on the same page
+        // stay on the same page when using the carousel to navigate 
+        // (not sure bug or feature???)
         data_params.rc_page = $($('.js-rc-page')[1]).data('rc_page') - 1;
       } else {
         data_params.rc_page = 0;

@@ -425,14 +425,6 @@ def itemView(request, item_id=''):
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
 
-    # print(search_results['id'])
-
-    # try:
-    #     exhibitItem = ExhibitItem.objects.get(item_id=search_results['id'])
-    #     print(exhibitItem.exhibit)
-    # except ObjectDoesNotExist:
-    #     print('foobar!')
-
     return render(request, 'calisphere/itemView.html', {
         'q': '',
         'item': search_results,
@@ -692,6 +684,15 @@ def relatedCollections(request, slug=None, repository_id=None):
                     context['filters'] = True
         return render(request, 'calisphere/related-collections.html', context)
 
+def relatedExhibitions(request):
+    params = request.GET.copy()
+    exhibits = list()
+    if ('itemId' in params):
+        exhibitItems = ExhibitItem.objects.filter(item_id=params['itemId'])
+        for exhibitItem in exhibitItems:
+            exhibits.append(exhibitItem.exhibit)
+
+    return render(request, 'calisphere/related-exhibitions.html', {'exhibits': exhibits})
 
 def collectionsDirectory(request):
     solr_collections = CollectionManager(settings.SOLR_URL,

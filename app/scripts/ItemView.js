@@ -149,8 +149,18 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-relatedCollection`
-  clearQuery: function() {
+  clearQuery: function(e) {
     this.model.clear({silent: true});
+    if($(e.currentTarget).data('relation') !== undefined) {
+      e.preventDefault();
+      this.model.set({ relation_ss: [$(e.currentTarget).data('relation')] });
+      $.pjax({
+        url: $(e.currentTarget).attr('href').split('?')[0],
+        container: '#js-pageContent',
+        data: this.model.toJSON(),
+        traditional: true
+      });
+    }
   },
 
   // HELPER METHODS

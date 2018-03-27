@@ -480,7 +480,7 @@ def itemViewCarousel(request):
     referral = params.get('referral')
     linkBackId = ''
     extra_filter = ''
-    facet_filter_types = FACET_FILTER_TYPES
+    facet_filter_types = copy.deepcopy(FACET_FILTER_TYPES)
     if referral == 'institution':
         linkBackId = params.get('repository_data', None)
     elif referral == 'collection':

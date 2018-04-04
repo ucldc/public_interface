@@ -16,28 +16,14 @@
         {% endif %}
 
         {% if item.harvest_type == "harvested" %}
-          {% if item.type_ss.0|lower == "moving image" %}
-          <div class="obj__overlay-icon fa-play-circle-o"></div>
-          {% elif item.type_ss.0|lower == "sound"%}
-          <div class="obj__overlay-icon fa-volume-up"></div>
-          {# elif item.type_ss.0|lower == "text"#}
-          <!-- <div class="obj__overlay-icon fa-file-text-o"></div> -->
-          {% elif item.type_ss.0|lower == "dataset" %}
-          <div class="obj__overlay-icon fa-bar-chart"></div>
+          {% if item.type_ss.0|lower != "text" %}
+            <div class="obj__overlay-icon {{ item.type_ss.0|lower|cut:' '}}"></div>
           {% endif %}
         {% endif %}
       </div>
     {% else %}
       <div class="thumbnail__container">
-        {% if item.type_ss.0|lower == "moving image" %}
-        <div class="obj__tile-icon fa-play-circle-o"></div>
-        {% elif item.type_ss.0|lower == "sound"%}
-        <div class="obj__tile-icon fa-volume-up"></div>
-        {% elif item.type_ss.0|lower == "text"%}
-        <div class="obj__tile-icon fa-file-text-o"></div>
-        {% elif item.type_ss.0|lower == "dataset" %}
-        <div class="obj__tile-icon fa-bar-chart"></div>
-        {% endif %}
+        <div class="obj__tile-icon {{ item.type_ss.0|lower|cut:' '}}"></div>
       </div>
     {% endif %}
     <div class="obj__caption">

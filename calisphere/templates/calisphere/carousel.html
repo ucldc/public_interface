@@ -1,6 +1,5 @@
 {% load calisphere-extras %}
 {% load static %}
-
   {% for carousel_item in search_results %}
   <div class="js-carousel_item {% if carousel_item.id == item_id %}carousel__item--selected{% else %}carousel__item{% endif %}">
     <a class="carousel__link js-item-link" href="{% url 'calisphere:itemView' carousel_item.id %}" data-item_id="{{ carousel_item.id }}" data-item_number="{{ start|add:forloop.counter0 }}">
@@ -38,7 +37,7 @@
           {% endif %}
         {% endif %}
       </div>
-      <div class="carousel__thumbnail-caption">{{ carousel_item.title.0|truncatewords:12 }}
+      <div class="carousel__thumbnail-caption">{{ start|add:forloop.counter0 }}: {{ carousel_item.title.0|truncatewords:12 }}
       </div>
     </a>
   </div>

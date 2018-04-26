@@ -54,30 +54,49 @@ var ItemView = Backbone.View.extend({
   carouselAfterChange: function(e, slick) {
     var data_params;
     if (this.addBefore === true) {
-      var start = $('[data-slick-index=0] a').data('item_number');
+      var firstSlide = $($('.js-carousel_item a')[0]);
       data_params = this.model.toJSON();
-      data_params.start = Math.max(start - 8, 0);
+      data_params.start = Math.max(firstSlide.data('item_number') - 8, 0);
       data_params.rows = 8;
+
+      // useful output for debugging this bit of code.
+          // console.log('item range: ' + $($('.js-carousel_item a')[0]).data('item_number') + ' - ' +
+          //   $($('.js-carousel_item a')[$('.js-carousel_item a').length-1]).data('item_number') + ' current slide: ' +
+          //   slickInstance.currentSlide + ' current slide item number: ' +
+          //   $($('.js-carousel_item a')[slickInstance.currentSlide]).data('item_number') + ' slide count: ' +
+          //   slickInstance.slideCount);
 
       $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(slickInstance) {
         return function(data) {
           slickInstance.currentSlide = 8;
           $('.carousel').slick('slickAdd', data, true);
+          if (slickInstance.slideCount > 40) {
+            //Destroy some nodes off the end
+            for (var i=0; i<8; i++) {
+              $('.carousel').slick('slickRemove', slickInstance.slideCount, true);
+            }
+          }
         };
       }(slick))});
       this.addBefore = false;
     }
 
     if (this.addAfter === true) {
-      var slides = $('.js-carousel_item');
-      var lastSlide = slides[slides.length - 1];
+      var lastSlide = $('.js-carousel_item')[$('.js-carousel_item').length - 1];
       data_params = this.model.toJSON();
       data_params.start = $(lastSlide).children('a').data('item_number') + 1;
       data_params.rows = 8;
 
-      $.ajax({data: data_params, traditional: true, url: '/carousel/', success: function(data) {
-        $('.carousel').slick('slickAdd', data);
-      }});
+      $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(slickInstance) {
+        return function(data) {
+          $('.carousel').slick('slickAdd', data);
+            // Destroy some nodes off the beginning
+            for (var i=0; i<8; i++) {
+              slickInstance.currentSlide = slickInstance.currentSlide - 1;
+              $('.carousel').slick('slickRemove', 1, true);
+            }
+          };
+      }(slick))});
       this.addAfter = false;
     }
   },
@@ -99,9 +118,8 @@ var ItemView = Backbone.View.extend({
     else if (nextSlide > currentSlide && numLoaded < numFound) {
       var lastItem = numFound-1;
       var slides = $('.js-carousel_item');
-      var lastSlide = $(slides[slides.length-1]).data('slick-index');
 
-      if (lastSlide-8 < nextSlide && nextSlide <= lastSlide && $('[data-item_number=' + lastItem + ']').length === 0) {
+      if (slides.length-8 <= nextSlide && nextSlide < slides.length && $('[data-item_number=' + lastItem + ']').length === 0) {
         this.addAfter = true;
       }
     }

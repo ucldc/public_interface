@@ -84,7 +84,7 @@ var GlobalSearchFormView = Backbone.View.extend({
 
   changeWidth: function(window_width) {
     if (this.facetForm !== undefined) { this.facetForm.changeWidth(window_width); }
-    // if (this.carousel !== undefined) { this.carousel.changeWidth(window_width); }
+    if (this.carousel !== undefined) { this.carousel.changeWidth(window_width); }
     if (this.complexCarousel !== undefined) { this.complexCarousel.changeWidth(window_width); }
   },
 

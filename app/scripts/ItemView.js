@@ -239,6 +239,7 @@ var ItemView = Backbone.View.extend({
       numFullThumbs++;
     }
 
+    this.carouselRows = numFullThumbs;
     $('.carousel').slick('slickSetOption', 'slidesToShow', numPartialThumbs, false);
     $('.carousel').slick('slickSetOption', 'slidesToScroll', numFullThumbs, true);
   },

@@ -11,23 +11,21 @@
 
 {% block content %}
 
-<div id="js-itemContainer" class="obj-container" data-itemId="{{ item.id }}">
+<div id="js-itemContainer" class="obj__container" data-itemId="{{ item.id }}">
   {% block itemContent %}
     {% include "calisphere/item.html" %}
   {% endblock %}
 </div>
 
-<div class="relatedContent">
-	<h3 style="margin-bottom: 20px;">Explore related content on Calisphere:</h3>
+<h2>Explore related content on Calisphere:</h2>
 
-  <div id="js-relatedExhibitions"></div>
+<div id="js-relatedExhibitions"></div>
 
-	<div id="js-carouselContainer" class="carousel__container"></div>
+<div id="js-carouselContainer" class="carousel__container"></div>
 
-  <div class="related-coll__wrapper">
-  	<div class="related-coll--search-results-page" id="js-relatedCollections">
-  	  {% include "calisphere/related-collections.html" %}
-  	</div>
+<div class="related-coll__item-wrapper">
+  <div class="related-coll--search-results-page" id="js-relatedCollections">
+    {% include "calisphere/related-collections.html" %}
   </div>
 </div>
 <!--

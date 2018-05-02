@@ -9,9 +9,9 @@
 var ItemView = Backbone.View.extend({
   el: $('#js-pageContent'),
   // Carousel Configuration options we'll use later
-  carouselRows: 16,
+  carouselRows: 8,
   carouselConfig: {
-    infinite: true,
+    infinite: false,
     speed: 300,
     variableWidth: true,
     lazyLoad: 'ondemand'
@@ -25,6 +25,7 @@ var ItemView = Backbone.View.extend({
   events: {
     'click #js-linkBack'             : 'goToSearchResults',
     'beforeChange .carousel'         : 'loadSlides',
+    'afterChange .carousel'          : 'carouselAfterChange',
     'click .js-item-link'            : 'goToItemPage',
     'click .js-rc-page'              : 'paginateRelatedCollections',
     'click .js-relatedCollection'    : 'clearQuery',
@@ -50,47 +51,76 @@ var ItemView = Backbone.View.extend({
     });
   },
 
+  carouselAfterChange: function(e, slick) {
+    var data_params;
+    if (this.addBefore === true) {
+      var firstSlide = $($('.js-carousel_item a')[0]);
+      data_params = this.model.toJSON();
+      data_params.start = Math.max(firstSlide.data('item_number') - this.carouselRows, 0);
+      data_params.rows = this.carouselRows;
+
+      // useful output for debugging this bit of code.
+          // console.log('item range: ' + $($('.js-carousel_item a')[0]).data('item_number') + ' - ' +
+          //   $($('.js-carousel_item a')[$('.js-carousel_item a').length-1]).data('item_number') + ' current slide: ' +
+          //   slickInstance.currentSlide + ' current slide item number: ' +
+          //   $($('.js-carousel_item a')[slickInstance.currentSlide]).data('item_number') + ' slide count: ' +
+          //   slickInstance.slideCount);
+
+      $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
+        return function(data) {
+          slickInstance.currentSlide = that.carouselRows;
+          $('.carousel').slick('slickAdd', data, true);
+          if (slickInstance.slideCount > that.carouselRows * 5) {
+            //Destroy some nodes off the end
+            for (var i=0; i<that.carouselRows; i++) {
+              $('.carousel').slick('slickRemove', slickInstance.slideCount, true);
+            }
+          }
+        };
+      }(this, slick))});
+      this.addBefore = false;
+    }
+
+    if (this.addAfter === true) {
+      var lastSlide = $('.js-carousel_item')[$('.js-carousel_item').length - 1];
+      data_params = this.model.toJSON();
+      data_params.start = $(lastSlide).children('a').data('item_number') + 1;
+      data_params.rows = this.carouselRows;
+
+      $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
+        return function(data) {
+          $('.carousel').slick('slickAdd', data);
+            // Destroy some nodes off the beginning
+            for (var i=0; i<that.carouselRows; i++) {
+              slickInstance.currentSlide = slickInstance.currentSlide - 1;
+              $('.carousel').slick('slickRemove', 1, true);
+            }
+          };
+      }(this, slick))});
+      this.addAfter = false;
+    }
+  },
+
   // `beforeChange` triggered on `.carousel`
   // lazy-loading slides on pagination of the carousel
   loadSlides: function(e, slick, currentSlide, nextSlide) {
-    var numFound = $('#js-carousel').data('numfound');
+    // e.preventDefault();
     var numLoaded = $('.carousel').slick('getSlick').slideCount;
-    var slidesToScroll = slick.options.slidesToScroll;
-    var data_params;
+    var numFound = $('#js-carousel').data('numfound');
 
-    //PREVIOUS BUTTON PRESSED
-    //retrieve previous slides in search results
-    if (
-      (currentSlide > nextSlide && (nextSlide !== 0 || currentSlide === slidesToScroll)) ||
-      (currentSlide === 0 && nextSlide > slick.slideCount - slidesToScroll && nextSlide < slick.slideCount)) {
-      if (numLoaded < numFound && $('[data-item_number=0]').length === 0) {
-        if (parseInt(this.carouselStart) - parseInt(this.carouselRows) > 0) {
-          this.carouselStart = parseInt(this.carouselStart) - parseInt(this.carouselRows);
-          data_params = this.toJSON();
-        } else {
-          data_params = this.toJSON();
-          data_params.rows = this.carouselStart;
-          this.carouselStart = data_params.start = 0;
-        }
-        delete data_params.itemNumber;
-
-        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: function(data) {
-            $('.carousel').slick('slickAdd', data, true);
-        }});
+    // PREVIOUS BUTTON PRESSED
+    if (nextSlide < currentSlide && numLoaded < numFound) {
+      if (0 <= nextSlide && nextSlide < this.carouselRows && $('[data-item_number=0]').length === 0) {
+        this.addBefore = true;
       }
     }
-    //NEXT BUTTON PRESSED
-    //retrieve next slides in search results
-    else {
-      if (numLoaded < numFound && $('[data-item_number=' + String(numFound-1) + ']').length === 0) {
-        this.carouselEnd = parseInt(this.carouselEnd||0) + parseInt(this.carouselRows||0);
-        data_params = this.toJSON();
-        data_params.start = this.carouselEnd;
-        delete data_params.itemNumber;
+    // NEXT BUTTON PRESSED
+    else if (nextSlide > currentSlide && numLoaded < numFound) {
+      var lastItem = numFound-1;
+      var slides = $('.js-carousel_item');
 
-        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: function(data) {
-            $('.carousel').slick('slickAdd', data);
-        }});
+      if (slides.length-this.carouselRows <= nextSlide && nextSlide < slides.length && $('[data-item_number=' + lastItem + ']').length === 0) {
+        this.addAfter = true;
       }
     }
   },
@@ -138,7 +168,7 @@ var ItemView = Backbone.View.extend({
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {
       if ($('.js-rc-page').length === 2) {
-        // stay on the same page when using the carousel to navigate 
+        // stay on the same page when using the carousel to navigate
         // (not sure bug or feature???)
         data_params.rc_page = $($('.js-rc-page')[1]).data('rc_page') - 1;
       } else {
@@ -184,20 +214,12 @@ var ItemView = Backbone.View.extend({
   // HELPER METHODS
   // --------------------
 
-  // method adds `start` and `rows` to pjax and ajax queries.
-  // this is specific to which item is selected in the carousel.
-  toJSON: function() {
-    var context = this.model.toJSON();
-    context.start = this.carouselStart || 0;
-    context.rows = this.carouselRows;
-    return context;
-  },
-
   // When the width changes, we have to change the carousel's slidesToShow
   // and slidesToScroll options (can't scroll by 8 in mobile mode)
   changeWidth: function() {
     var visibleCarouselWidth = $('#js-carousel .slick-list').prop('offsetWidth');
-    var currentSlide = $('.js-carousel_item[data-slick-index=' + $('.carousel').slick('slickCurrentSlide') + ']');
+    var currentSlide = $($('.js-carousel_item')[$('.carousel').slick('slickCurrentSlide')]);
+//    var currentSlide = $('.js-carousel_item[data-slick-index=' + $('.carousel').slick('slickCurrentSlide') + ']');
     var displayedCarouselPx = currentSlide.outerWidth() + parseInt(currentSlide.css('margin-right'));
     var numPartialThumbs = 1, numFullThumbs = 0;
 
@@ -223,12 +245,9 @@ var ItemView = Backbone.View.extend({
 
   // get the first set of slides for the carousel
   initCarousel: function() {
-    if (this.model.get('itemNumber') !== undefined) {
-      this.carouselStart = this.carouselEnd = this.model.get('itemNumber');
-    }
-
-    var data_params = this.toJSON();
-    delete data_params.itemNumber;
+    var data_params = this.model.toJSON();
+    data_params.rows = this.carouselRows*3;
+    data_params.start = this.carouselInitStart = Math.max(data_params.itemNumber - this.carouselRows, 0);
     data_params.init = true;
 
     // simple AJAX call to get the first set of carousel items
@@ -241,9 +260,17 @@ var ItemView = Backbone.View.extend({
       traditional: true,
       success: (function(that) {
         return function(data) {
+          var carouselConfigInit = Object.assign(
+            {
+              initialSlide: Math.min(that.carouselRows, that.model.attributes.itemNumber),
+              slidesToShow: that.carouselRows,
+              slidesToScroll: that.carouselRows
+            },
+            that.carouselConfig
+          );
           $('#js-carouselContainer').html(data);
           $('.carousel').show();
-          $('.carousel').slick(that.carouselConfig);
+          $('.carousel').slick(carouselConfigInit);
           that.changeWidth();
         };
       }(this))

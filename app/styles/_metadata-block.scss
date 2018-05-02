@@ -14,12 +14,6 @@
 	margin: 0;
 }
 
-.meta-block__list:after {
-    clear: both;
-    content: "";
-    display: block;
-}
-
 .meta-block__type {
   color: $design-dark-gray-color;
 

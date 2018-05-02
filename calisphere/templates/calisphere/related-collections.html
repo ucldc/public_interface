@@ -51,6 +51,7 @@
       {% endif %}
     {% endif %}
   </div>
+  <div class="related-coll__lockup-container">
   {% for related_collection in related_collections %}
     <div class="col-xs-12 col-sm-4"> 
       <a class="related-coll__link js-relatedCollection" href="{% url 'calisphere:collectionView' related_collection.collection_id %}" data-pjax="js-pageContent">
@@ -115,5 +116,6 @@
     <span class="fa fa-caret-right"></span>
   </button>
   {% endif %}
+  </div>
 
 </div>

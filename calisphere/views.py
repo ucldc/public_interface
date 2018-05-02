@@ -424,7 +424,6 @@ def itemView(request, item_id=''):
         })
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
-
     return render(request, 'calisphere/itemView.html', {
         'q': '',
         'item': search_results,
@@ -535,6 +534,7 @@ def itemViewCarousel(request):
             'fields': 'id, type_ss, reference_image_md5, title'})
         if solrParams.get('start') == 'NaN':
             solrParams['start'] = 0
+
         try:
             carousel_solr_search = SOLR_select(**solrParams)
         except HTTPError as e:
@@ -546,6 +546,7 @@ def itemViewCarousel(request):
 
     if 'init' in params:
         context = searchDefaults(params)
+        context['start'] = solrParams['start']
 
         context['filters'] = {}
         for filter_type in facet_filter_types:

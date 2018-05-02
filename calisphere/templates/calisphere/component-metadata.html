@@ -131,7 +131,7 @@
 
     <!-- should include institution name: UC Berkely, Bancroft Library -->
     <dt class="meta-block__type">Parent Item</dt>
-    <dd class="meta-block__defin"><a href="{% url 'calisphere:itemView' item.id %}" data-pjax="js-pageContent">{{ item.title.0 }}</a></dd>
+    <dd class="meta-block__defin"><a href="{% url 'calisphere:itemView' item.id %}" class="js-set-link">{{ item.title.0 }}</a></dd>
 
     {% if item.parsed_repository_data %}
       <dt class="meta-block__type">Contributing Institution</dt>

@@ -26,6 +26,9 @@
   <body>
 
     <div class="container-fluid">
+      <div class="announcement">
+        <a href="https://www.cdlib.org/cdlinfo/2018/04/16/over-one-million-digital-items-from-california-cultural-heritage-institutions-now-available-through-calisphere/">Announcing over one million items in Calisphere!</a>
+      </div>
       <header class="global-header">
         <div class="row">
           <div class="col-xs-12 col-sm-4">
@@ -46,7 +49,7 @@
 
           <div class="col-xs-12 col-sm-4 global-header__search">
           	<form class="global-header__search-form--homepage" role="search" id="js-searchForm" action="{% url 'calisphere:search' %}" method="get">
-              <label for="global-search__field" class="global-search__label">Search the collections</label>
+              <label for="global-search__field" class="global-search__label">Search over one million items</label>
               <div class="input-group">
                 <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
                 <span class="input-group-btn">
@@ -110,9 +113,9 @@
 			        <h1 class="home__{{ lock_up.img1.class }}-heading">The deeper you look, the more you discover.</h1>
               <form role="search" id="js-homeForm" action="{% url 'calisphere:search' %}" method="get">
 			        <div class="home__search">
-	              <label for="home__search-field" class="sr-only">Search the collections</label>
+	              <label for="home__search-field" class="sr-only">Search over one million items</label>
 	              <div class="input-group">
-	                <input id="home__search-field" form="js-homeForm" type="search" class="form-control input-lg" placeholder="Search the collections" name="q">
+	                <input id="home__search-field" form="js-homeForm" type="search" class="form-control input-lg" placeholder="Search over one million items" name="q">
 	                <span class="input-group-btn">
 	                  <button class="btn btn-default btn-lg home__search-button" type="submit">
 	                  </button>
@@ -210,7 +213,7 @@
 
           <div class="global-footer__search">
             <form class="global-footer__search-form" role="search" id="js-footerSearch" action="{% url 'calisphere:search' %}" method="get">
-              <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
+              <label for="global-footer__search-field" class="global-footer__search-label">Search over one million items</label>
               <div class="input-group">
                 <input id="global-footer__search-field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-footer__search-field js-globalSearch">
                 <span class="input-group-btn">
@@ -251,6 +254,9 @@
               </li>
               <li class="global-footer__nav-list-item">
                 <a class="global-footer__nav-link" href="{% url 'calisphere:privacyStatement' %}">Privacy Statement</a>
+              </li>
+              <li class="global-footer__nav-list-item">
+                <a class="global-footer__nav-link" href="https://www.cdlib.org/about/accessibility.html">Accessibility Policy</a>
               </li>
             </ul>
           </div>

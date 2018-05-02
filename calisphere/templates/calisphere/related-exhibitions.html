@@ -1,17 +1,22 @@
-<div class="row carousel__container" style="margin: 20px 0;">
-  {% for exhibit in exhibits %}
-    <div class="col-xs-2 col-md-3">
-      <a href="{{ exhibit.get_absolute_url }}" data-pjax="js-pageContent">
-        <div class="exhibit__lockup--med">
-          <div class="exhibit__lockup--med-image">
-            <div class="aspect-ratio-content exhibit__lockup--med-image-content" style="background-image: url('{{ exhibit.exhibit_lockup }}');">
+{% if exhibits|length > 0 %}
+<div class="carousel__container">
+  <div style="margin-bottom: 20px;"><strong>Exhibitions</strong> containing this item ({{exhibits|length}} found)</div>
+  <div class="row js-related-carousel exhibit__related-carousel" style="margin-bottom: 20px;">
+    {% for exhibit in exhibits %}
+      <div class="col-xs-2 col-md-3">
+        <a href="{{ exhibit.get_absolute_url }}" data-pjax="js-pageContent">
+          <div class="exhibit__lockup--med">
+            <div class="exhibit__lockup--med-image">
+              <div class="aspect-ratio-content exhibit__lockup--med-image-content" style="background-image: url('{{ exhibit.exhibit_lockup }}');">
+              </div>
+            </div>
+            <div class="exhibit__lockup--med-title">
+              <div class="exhibit__lockup--med-title-content">{{ exhibit.short_title }}</div>
             </div>
           </div>
-          <div class="exhibit__lockup--med-title">
-            <div class="exhibit__lockup--med-title-content">{{ exhibit.short_title }}</div>
-          </div>
-        </div>
-      </a>
-    </div>  
-  {% endfor %}
+        </a>
+      </div>
+    {% endfor %}
+  </div>
 </div>
+{% endif %}

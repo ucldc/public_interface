@@ -191,7 +191,30 @@ var ItemView = Backbone.View.extend({
     delete params.itemNumber;
 
     $.ajax({data: params, traditional: true, url: '/relatedExhibitions/', success: function(data) {
+        var carouselConfigInit = {
+          infinite: false,
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          responsive: [
+            {
+              breakpoint: 900,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 3
+              }
+            },
+            {
+              breakpoint: 650,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2
+              }
+            }
+          ]
+        };
         $('#js-relatedExhibitions').html(data);
+        $('.js-related-carousel').show();
+        $('.js-related-carousel').slick(carouselConfigInit);
       }
     });
   },
@@ -219,7 +242,6 @@ var ItemView = Backbone.View.extend({
   changeWidth: function() {
     var visibleCarouselWidth = $('#js-carousel .slick-list').prop('offsetWidth');
     var currentSlide = $($('.js-carousel_item')[$('.carousel').slick('slickCurrentSlide')]);
-//    var currentSlide = $('.js-carousel_item[data-slick-index=' + $('.carousel').slick('slickCurrentSlide') + ']');
     var displayedCarouselPx = currentSlide.outerWidth() + parseInt(currentSlide.css('margin-right'));
     var numPartialThumbs = 1, numFullThumbs = 0;
 
@@ -269,6 +291,10 @@ var ItemView = Backbone.View.extend({
             },
             that.carouselConfig
           );
+          // in more like this, that.model.attributes.itemNumber is undefined
+          if(!carouselConfigInit.initialSlide) {
+            carouselConfigInit.initialSlide = 0;
+          }
           $('#js-carouselContainer').html(data);
           $('.carousel').show();
           $('.carousel').slick(carouselConfigInit);

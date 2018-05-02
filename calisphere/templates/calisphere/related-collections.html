@@ -11,7 +11,7 @@
       <!-- if there's only one related collection, regardless of referral -->
       <!-- covers the case when we arrive on an item page from google, also -->
       {% elif num_related_collections == 1 %}
-        <strong>Collections</strong> containg this item ({{ num_related_collections }} found)
+        <strong>Collections</strong> containing this item ({{ num_related_collections }} found)
       <!-- if we're coming from an institution or campus page -->
       {% elif referral == 'institution' or referral == 'campus' %}
         <!-- if we've searched from an institution or campus page -->

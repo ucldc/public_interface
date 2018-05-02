@@ -12,7 +12,7 @@
   {% elif referral == 'institution' %}
     <div class="carousel__search-results">
       {% if rq|length > 0 %}
-        <strong>Other items</strong> in your earch results for "{{ rq|join:", " }}" ({{ numFound|intcomma }} found)
+        <strong>Other items</strong> in your search results for "{{ rq|join:", " }}" ({{ numFound|intcomma }} found)
       {% else %}
         <strong>Other items</strong> at {{ referralName }} ({{ numFound|intcomma }} found)
       {% endif %}
@@ -25,7 +25,7 @@
         <strong>Other items</strong> at {{ referralName }} ({{ numFound|intcomma }} found)
       {% endif %}
     </div>
-  {% elif referral == 'collection' and linkBackId %}
+  {% elif referral == 'collection' %}
     <div class="carousel__search-results">
       {% if rq|length > 0 %}
         <strong>Other items</strong> in your search results for "{{ rq|join:", " }}" ({{ numFound|intcomma }} found)

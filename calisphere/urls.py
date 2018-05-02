@@ -98,6 +98,7 @@ urlpatterns = [
         r'^relatedCollections/',
         views.relatedCollections,
         name='relatedCollections'),
+    url(r'^relatedExhibitions', views.relatedExhibitions, name='relatedExhibitions'),
     url(r'^carousel/', views.itemViewCarousel, name='carousel'),
     url(r'^contactOwner/', views.contactOwner, name='contactOwner'),
 ]

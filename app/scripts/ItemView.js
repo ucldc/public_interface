@@ -159,21 +159,39 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-rc-page`
+  // also called in initialize and pjax_end with e=undefined
   paginateRelatedCollections: function(e) {
     var data_params = this.model.toJSON();
     // don't need carousel specific item data for the related collections
-    delete data_params.itemId;
     delete data_params.itemNumber;
-    delete data_params.referral;
-    delete data_params.referralName;
     if (e !== undefined) {
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {
-      data_params.rc_page = 0;
+      if ($('.js-rc-page').length === 2) {
+        // stay on the same page when using the carousel to navigate
+        // (not sure bug or feature???)
+        data_params.rc_page = $($('.js-rc-page')[1]).data('rc_page') - 1;
+      } else {
+        data_params.rc_page = 0;
+      }
     }
     // regular ajax request - we don't need pushState on the url here
     $.ajax({data: data_params, traditional: true, url: '/relatedCollections/', success: function(data) {
         $('#js-relatedCollections').html(data);
+      }
+    });
+  },
+
+  // ultimately this will like get called from a 'click' triggered on paging exhibits
+  // as well as the initialize() and pjax_end() functions where it's called now
+  // for now most exhibit items really only exist in one exhibit - not so many that 
+  // we need pagination
+  paginateRelatedExhibitions: function() {
+    var params = this.model.toJSON();
+    delete params.itemNumber;
+
+    $.ajax({data: params, traditional: true, url: '/relatedExhibitions/', success: function(data) {
+        $('#js-relatedExhibitions').html(data);
       }
     });
   },
@@ -360,6 +378,12 @@ var ItemView = Backbone.View.extend({
         linkItem.parent().toggleClass('carousel__item');
       }
 
+      // when navigating between items, the related collections is *not* a part of
+      // the #js-itemContainer document document fragment returned, so here we manually 
+      // retrieve new related collections
+      that.paginateRelatedCollections(undefined);
+      that.paginateRelatedExhibitions();
+
       that.initMediaPlayer();
     };
   },
@@ -383,6 +407,7 @@ var ItemView = Backbone.View.extend({
     // initializes the carousel and the related collections
     this.initCarousel();
     this.paginateRelatedCollections();
+    this.paginateRelatedExhibitions();
     this.initMediaPlayer();
     if ($('#disqus_thread').length) {
       if ($('#disqus_thread').html().length > 0) {

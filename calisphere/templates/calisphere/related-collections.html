@@ -2,15 +2,55 @@
 {% load static %}
 
 <div class="related-coll" id="related-coll">
-  <h3 class="related-coll__title">
-    {% if num_related_collections == 1 %}
-      Go to collection:
-    {% elif q or rq or referral %}
-      {{ num_related_collections }} collection{{ num_related_collections|pluralize }} containing search results
+  <div class="related-coll__title">
+    <!-- if we're on an item page -->
+    {% if itemId %}
+      <!-- if we're coming from a collection page -->
+      {% if referral == 'collection' %}
+        <strong>Collections</strong> containing this item ({{ num_related_collections }} found)
+      <!-- if there's only one related collection, regardless of referral -->
+      <!-- covers the case when we arrive on an item page from google, also -->
+      {% elif num_related_collections == 1 %}
+        <strong>Collections</strong> containg this item ({{ num_related_collections }} found)
+      <!-- if we're coming from an institution or campus page -->
+      {% elif referral == 'institution' or referral == 'campus' %}
+        <!-- if we've searched from an institution or campus page -->
+        {% if q or rq or filters or filters|dictionary_length > 0 %}
+          <strong>Collections</strong> containing your search results ({{ num_related_collections }} found)
+        <!-- if we're just arriving from an institution or campus page item listing -->
+        {% else %}
+          <strong>Collections</strong> at {{ referralName }} ({{ num_related_collections }} found)
+        {% endif %}
+      <!-- if we're coming from search results -->
+      {% else %}
+        <strong>Collections</strong> containing your search results ({{ num_related_collections }} found)
+      {% endif %}
+
+    <!-- if we're on a repository or campus page -->
+    {% elif repository_id or campus_slug %}
+      <!-- if we've performed a search -->
+      {% if q or rq or filters or filters|dictionary_length > 0 %}
+        <!-- if we've explicitly selected a single collection from the facet sidebar -->
+        {% if filters.collection_url|length == 1 %}
+          Go to collection:
+        {% else %}
+          <strong>Collections</strong> containing your search results ({{ num_related_collections }} found)
+        {% endif %}
+      <!-- if we've not performed a search -->
+      {% else %}
+        <strong>Collections</strong> at {{ title }} ({{ num_related_collections }} found)
+      {% endif %}
+
+    <!-- we must be on a search page -->
     {% else %}
-      {{ num_related_collections }} collection{{ num_related_collections|pluralize }} with similar items
+      <!-- if we've explicitly selected a single collection from the facet sidebar -->
+      {% if filters.collection_url|length == 1 %}
+        Go to collection:
+      {% else %}
+        <strong>Collections</strong> containing your search results ({{ num_related_collections }} found)
+      {% endif %}
     {% endif %}
-  </h3>
+  </div>
   <div class="related-coll__lockup-container">
   {% for related_collection in related_collections %}
     <div class="col-xs-12 col-sm-4"> 

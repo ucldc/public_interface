@@ -1,4 +1,4 @@
-/*global Backbone, DISQUS */
+/*global Backbone, DISQUS, ga */
 /*exported ItemView */
 
 'use strict';
@@ -23,13 +23,15 @@ var ItemView = Backbone.View.extend({
   // surrounding links, and the related collections
 
   events: {
-    'click #js-linkBack'             : 'goToSearchResults',
-    'beforeChange .carousel'         : 'loadSlides',
-    'afterChange .carousel'          : 'carouselAfterChange',
-    'click .js-item-link'            : 'goToItemPage',
-    'click .js-rc-page'              : 'paginateRelatedCollections',
-    'click .js-relatedCollection'    : 'clearQuery',
-    'click .js-disqus'               : 'initDisqus'
+    'click #js-linkBack'                : 'goToSearchResults',
+    'beforeChange .carousel'            : 'loadSlides',
+    'afterChange .carousel'             : 'carouselAfterChange',
+    'beforeChange .js-related-carousel' : 'exhibitCarouselBeforeChange',
+    'click .js-relatedExhibition'       : 'goToExhibition',
+    'click .js-item-link'               : 'goToItemPage',
+    'click .js-rc-page'                 : 'paginateRelatedCollections',
+    'click .js-relatedCollection'       : 'selectRelatedCollection',
+    'click .js-disqus'                  : 'initDisqus'
   },
 
   // `click` triggered on `#js-linkBack`
@@ -52,6 +54,12 @@ var ItemView = Backbone.View.extend({
   },
 
   carouselAfterChange: function(e, slick) {
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        'related content',
+        'paginate items',
+        $('.carousel__search-results').data('set'));
+    }
     if(this.beforeChange) {
       var data_params;
       if (this.addBefore === true) {
@@ -116,6 +124,24 @@ var ItemView = Backbone.View.extend({
     }
   },
 
+  exhibitCarouselBeforeChange: function() {
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        'related content',
+        'paginate exhibitions',
+        $('.carousel__search-results').data('set'));
+    }
+  },
+
+  goToExhibition: function() {
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        'related content',
+        'select exhibition',
+        $('.carousel__search-results').data('set'));
+    }
+  },
+
   // `beforeChange` triggered on `.carousel`
   // lazy-loading slides on pagination of the carousel
   loadSlides: function(e, slick, currentSlide, nextSlide) {
@@ -151,6 +177,13 @@ var ItemView = Backbone.View.extend({
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
     if ($(e.currentTarget).data('item_number') !== undefined) {
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event',
+          'related content',
+          'select item',
+          $('.carousel__search-results').data('set'));
+      }
+
       this.model.set({
         itemNumber: $(e.currentTarget).data('item_number'),
         itemId: $(e.currentTarget).data('item_id')
@@ -182,6 +215,12 @@ var ItemView = Backbone.View.extend({
     // don't need carousel specific item data for the related collections
     delete data_params.itemNumber;
     if (e !== undefined) {
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event',
+          'related content',
+          'paginate collections',
+          $('.carousel__search-results').data('set'));
+      }
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {
       if ($('.js-rc-page').length === 2) {
@@ -237,7 +276,7 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-relatedCollection`
-  clearQuery: function(e) {
+  selectRelatedCollection: function(e) {
     this.model.clear({silent: true});
     if($(e.currentTarget).data('relation') !== undefined) {
       e.preventDefault();
@@ -248,6 +287,13 @@ var ItemView = Backbone.View.extend({
         data: this.model.toJSON(),
         traditional: true
       });
+    } else {
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event',
+          'related content',
+          'select collection',
+          $('.carousel__search-results').data('set'));
+      }
     }
   },
 

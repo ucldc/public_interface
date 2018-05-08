@@ -52,59 +52,74 @@ var ItemView = Backbone.View.extend({
   },
 
   carouselAfterChange: function(e, slick) {
-    var data_params;
-    if (this.addBefore === true) {
-      var firstSlide = $($('.js-carousel_item a')[0]);
-      data_params = this.model.toJSON();
-      data_params.start = Math.max(firstSlide.data('item_number') - this.carouselRows, 0);
-      data_params.rows = this.carouselRows;
+    if(this.beforeChange) {
+      var data_params;
+      if (this.addBefore === true) {
+        var firstSlide = $($('.js-carousel_item a')[0]);
+        data_params = this.model.toJSON();
+        data_params.start = Math.max(firstSlide.data('item_number') - this.carouselRows, 0);
+        data_params.rows = this.carouselRows;
 
-      // useful output for debugging this bit of code.
-          // console.log('item range: ' + $($('.js-carousel_item a')[0]).data('item_number') + ' - ' +
-          //   $($('.js-carousel_item a')[$('.js-carousel_item a').length-1]).data('item_number') + ' current slide: ' +
-          //   slickInstance.currentSlide + ' current slide item number: ' +
-          //   $($('.js-carousel_item a')[slickInstance.currentSlide]).data('item_number') + ' slide count: ' +
-          //   slickInstance.slideCount);
+        // useful output for debugging this bit of code.
+            // console.log('item range: ' + $($('.js-carousel_item a')[0]).data('item_number') + ' - ' +
+            //   $($('.js-carousel_item a')[$('.js-carousel_item a').length-1]).data('item_number') + ' current slide: ' +
+            //   slickInstance.currentSlide + ' current slide item number: ' +
+            //   $($('.js-carousel_item a')[slickInstance.currentSlide]).data('item_number') + ' slide count: ' +
+            //   slickInstance.slideCount);
 
-      $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
-        return function(data) {
-          slickInstance.currentSlide = that.carouselRows;
-          $('.carousel').slick('slickAdd', data, true);
-          if (slickInstance.slideCount > that.carouselRows * 5) {
-            //Destroy some nodes off the end
-            for (var i=0; i<that.carouselRows; i++) {
-              $('.carousel').slick('slickRemove', slickInstance.slideCount, true);
-            }
-          }
-        };
-      }(this, slick))});
-      this.addBefore = false;
-    }
-
-    if (this.addAfter === true) {
-      var lastSlide = $('.js-carousel_item')[$('.js-carousel_item').length - 1];
-      data_params = this.model.toJSON();
-      data_params.start = $(lastSlide).children('a').data('item_number') + 1;
-      data_params.rows = this.carouselRows;
-
-      $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
-        return function(data) {
-          $('.carousel').slick('slickAdd', data);
-            // Destroy some nodes off the beginning
-            for (var i=0; i<that.carouselRows; i++) {
-              slickInstance.currentSlide = slickInstance.currentSlide - 1;
-              $('.carousel').slick('slickRemove', 1, true);
+        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
+          return function(data) {
+            slickInstance.currentSlide = that.carouselRows;
+            slickInstance.slickAdd(data, true);
+            if (slickInstance.slideCount > that.carouselRows * 5) {
+              //Destroy some nodes off the end
+              for (var i=0; i<that.carouselRows; i++) {
+                slickInstance.slickRemove(slickInstance.slideCount, true);
+              }
             }
           };
-      }(this, slick))});
-      this.addAfter = false;
+        }(this, slick))});
+        this.addBefore = false;
+      }
+
+      if (this.addAfter === true) {
+        var lastSlide = $('.js-carousel_item')[$('.js-carousel_item').length - 1];
+        data_params = this.model.toJSON();
+        data_params.start = $(lastSlide).children('a').data('item_number') + 1;
+        data_params.rows = this.carouselRows;
+
+        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
+          return function(data) {
+            slickInstance.slickAdd(data);
+              // Destroy some nodes off the beginning
+              for (var i=0; i<that.carouselRows; i++) {
+                slickInstance.currentSlide = slickInstance.currentSlide - 1;
+                slickInstance.slickRemove(1, true);
+              }
+            };
+        }(this, slick))});
+        this.addAfter = false;
+      }
+      this.beforeChange = false;
+    }
+    else {
+      // afterChange triggered without beforeChange being triggered
+      var numFound = $('#js-carousel').data('numfound');
+      if ($('[data-item_number=' + (numFound-1) + ']').length === 1) {
+        // if the last item is loaded, assume the user was trying to hit 'next'
+        slick.slickGoTo(slick.currentSlide + slick.options.slidesToScroll + 1);
+      }
+      if ($('[data-item_number=0]').length === 1) {
+        // if the first item is loaded, assume the user was trying to hit 'prev'
+        slick.slickGoTo(0);
+      }
     }
   },
 
   // `beforeChange` triggered on `.carousel`
   // lazy-loading slides on pagination of the carousel
   loadSlides: function(e, slick, currentSlide, nextSlide) {
-    // e.preventDefault();
+    this.beforeChange = true;
     var numLoaded = $('.carousel').slick('getSlick').slideCount;
     var numFound = $('#js-carousel').data('numfound');
 
@@ -117,10 +132,12 @@ var ItemView = Backbone.View.extend({
     // NEXT BUTTON PRESSED
     else if (nextSlide > currentSlide && numLoaded < numFound) {
       var lastItem = numFound-1;
-      var slides = $('.js-carousel_item');
+      var remainder = numLoaded-nextSlide-this.carouselRows;
 
-      if (slides.length-this.carouselRows <= nextSlide && nextSlide < slides.length && $('[data-item_number=' + lastItem + ']').length === 0) {
-        this.addAfter = true;
+      if (remainder <= this.carouselRows && remainder > 0) {
+        if ($('[data-item_number=' + lastItem + ']').length === 0) {
+          this.addAfter = true;
+        }
       }
     }
   },

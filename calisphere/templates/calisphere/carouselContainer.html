@@ -2,7 +2,7 @@
 {% load humanize %}
 
   {% if q != '' %}
-    <div class="carousel__search-results">
+    <div class="carousel__search-results" data-set="search-results-set">
       {% if rq|length > 0 %}
         <strong>Other items</strong> in your search results for "{{ q }}, {{ rq|join:", " }}" ({{ numFound|intcomma }} found)
       {% else %}
@@ -10,7 +10,7 @@
       {% endif %}
     </div>
   {% elif referral == 'institution' %}
-    <div class="carousel__search-results">
+    <div class="carousel__search-results" data-set="institution-set">
       {% if rq|length > 0 %}
         <strong>Other items</strong> in your search results for "{{ rq|join:", " }}" ({{ numFound|intcomma }} found)
       {% else %}
@@ -18,7 +18,7 @@
       {% endif %}
     </div>
   {% elif referral == 'campus' %}
-    <div class="carousel__search-results">
+    <div class="carousel__search-results" data-set="campust-set">
       {% if rq|length > 0 %}
         <strong>Other items</strong> in your search results for "{{ rq|join:", " }}" ({{ numFound|intcomma }} found)
       {% else %}
@@ -26,7 +26,7 @@
       {% endif %}
     </div>
   {% elif referral == 'collection' %}
-    <div class="carousel__search-results">
+    <div class="carousel__search-results" data-set="collection-set">
       {% if rq|length > 0 %}
         <strong>Other items</strong> in your search results for "{{ rq|join:", " }}" ({{ numFound|intcomma }} found)
       {% else %}
@@ -34,7 +34,7 @@
       {% endif %}
     </div>
   {% else %}
-    <div class="carousel__search-results">
+    <div class="carousel__search-results" data-set="mlt-set">
       <strong>Similar items</strong> on Calisphere
     </div>
   {% endif %}

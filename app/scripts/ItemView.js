@@ -9,12 +9,15 @@
 var ItemView = Backbone.View.extend({
   el: $('#js-pageContent'),
   // Carousel Configuration options we'll use later
+  // update to 1.8.1 added nested divs. Added rows: 0 per 
+  // https://github.com/kenwheeler/slick/issues/3110
   carouselRows: 8,
   carouselConfig: {
     infinite: false,
     speed: 300,
     variableWidth: true,
-    lazyLoad: 'ondemand'
+    lazyLoad: 'ondemand', 
+    rows: 0
   },
 
   // User Event Handlers

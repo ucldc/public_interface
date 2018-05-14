@@ -254,6 +254,7 @@ var ItemView = Backbone.View.extend({
           infinite: false,
           slidesToShow: 4,
           slidesToScroll: 4,
+          rows: 0,
           responsive: [
             {
               breakpoint: 900,

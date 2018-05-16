@@ -546,7 +546,7 @@ def itemViewCarousel(request):
 
     if 'init' in params:
         context = searchDefaults(params)
-        context['start'] = solrParams['start']
+        context['start'] = solrParams['start'] if solrParams['start'] != 'NaN' else 0
 
         context['filters'] = {}
         for filter_type in facet_filter_types:

@@ -6,7 +6,7 @@
     "modernizr": "~2.8.2",
     "underscore": "~1.7.0",
     "jquery-pjax": "latest",
-    "slick.js": "=1.5.5",
+    "slick.js": "=1.8.1",
     "fontawesome": "~4.7.0",
     "picturefill": "~2.2.0",
     "mediaelement": "~4.1.2",

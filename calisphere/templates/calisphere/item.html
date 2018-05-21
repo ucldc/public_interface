@@ -55,7 +55,7 @@
     {% if 'structMap' in item and 'selected' in item and item.selected == True %}
       Summary Information.
     {% elif 'structMap' in item %}
-      Item information. <a href="{% url 'calisphere:itemView' item.id %}" data-pjax="js-pageContent">Go to summary information.</a>
+      Item information. <a href="{% url 'calisphere:itemView' item.id %}" class="js-set-link">Go to summary information.</a>
     {% else %}
       Item Information.
     {% endif %}

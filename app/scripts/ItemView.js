@@ -1,4 +1,4 @@
-/*global Backbone, DISQUS */
+/*global Backbone, DISQUS, ga */
 /*exported ItemView */
 
 'use strict';
@@ -9,12 +9,15 @@
 var ItemView = Backbone.View.extend({
   el: $('#js-pageContent'),
   // Carousel Configuration options we'll use later
-  carouselRows: 16,
+  // update to 1.8.1 added nested divs. Added rows: 0 per 
+  // https://github.com/kenwheeler/slick/issues/3110
+  carouselRows: 8,
   carouselConfig: {
-    infinite: true,
+    infinite: false,
     speed: 300,
     variableWidth: true,
-    lazyLoad: 'ondemand'
+    lazyLoad: 'ondemand', 
+    rows: 0
   },
 
   // User Event Handlers
@@ -23,12 +26,15 @@ var ItemView = Backbone.View.extend({
   // surrounding links, and the related collections
 
   events: {
-    'click #js-linkBack'             : 'goToSearchResults',
-    'beforeChange .carousel'         : 'loadSlides',
-    'click .js-item-link'            : 'goToItemPage',
-    'click .js-rc-page'              : 'paginateRelatedCollections',
-    'click .js-relatedCollection'    : 'clearQuery',
-    'click .js-disqus'               : 'initDisqus'
+    'click #js-linkBack'                : 'goToSearchResults',
+    'beforeChange .carousel'            : 'loadSlides',
+    'afterChange .carousel'             : 'carouselAfterChange',
+    'beforeChange .js-related-carousel' : 'exhibitCarouselBeforeChange',
+    'click .js-relatedExhibition'       : 'goToExhibition',
+    'click .js-item-link'               : 'goToItemPage',
+    'click .js-rc-page'                 : 'paginateRelatedCollections',
+    'click .js-relatedCollection'       : 'selectRelatedCollection',
+    'click .js-disqus'                  : 'initDisqus'
   },
 
   // `click` triggered on `#js-linkBack`
@@ -50,47 +56,117 @@ var ItemView = Backbone.View.extend({
     });
   },
 
+  carouselAfterChange: function(e, slick) {
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        'related content',
+        'paginate items',
+        $('.carousel__search-results').data('set'));
+    }
+    if(this.beforeChange) {
+      var data_params;
+      if (this.addBefore === true) {
+        var firstSlide = $($('.js-carousel_item a')[0]);
+        data_params = this.model.toJSON();
+        data_params.start = Math.max(firstSlide.data('item_number') - this.carouselRows, 0);
+        data_params.rows = this.carouselRows;
+
+        // useful output for debugging this bit of code.
+            // console.log('item range: ' + $($('.js-carousel_item a')[0]).data('item_number') + ' - ' +
+            //   $($('.js-carousel_item a')[$('.js-carousel_item a').length-1]).data('item_number') + ' current slide: ' +
+            //   slickInstance.currentSlide + ' current slide item number: ' +
+            //   $($('.js-carousel_item a')[slickInstance.currentSlide]).data('item_number') + ' slide count: ' +
+            //   slickInstance.slideCount);
+
+        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
+          return function(data) {
+            slickInstance.currentSlide = that.carouselRows;
+            slickInstance.slickAdd(data, true);
+            if (slickInstance.slideCount > that.carouselRows * 5) {
+              //Destroy some nodes off the end
+              for (var i=0; i<that.carouselRows; i++) {
+                slickInstance.slickRemove(slickInstance.slideCount, true);
+              }
+            }
+          };
+        }(this, slick))});
+        this.addBefore = false;
+      }
+
+      if (this.addAfter === true) {
+        var lastSlide = $('.js-carousel_item')[$('.js-carousel_item').length - 1];
+        data_params = this.model.toJSON();
+        data_params.start = $(lastSlide).children('a').data('item_number') + 1;
+        data_params.rows = this.carouselRows;
+
+        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: (function(that, slickInstance) {
+          return function(data) {
+            slickInstance.slickAdd(data);
+              // Destroy some nodes off the beginning
+              for (var i=0; i<that.carouselRows; i++) {
+                slickInstance.currentSlide = slickInstance.currentSlide - 1;
+                slickInstance.slickRemove(1, true);
+              }
+            };
+        }(this, slick))});
+        this.addAfter = false;
+      }
+      this.beforeChange = false;
+    }
+    else {
+      // afterChange triggered without beforeChange being triggered
+      var numFound = $('#js-carousel').data('numfound');
+      if ($('[data-item_number=' + (numFound-1) + ']').length === 1) {
+        // if the last item is loaded, assume the user was trying to hit 'next'
+        slick.slickGoTo(slick.currentSlide + slick.options.slidesToScroll + 1);
+      }
+      if ($('[data-item_number=0]').length === 1) {
+        // if the first item is loaded, assume the user was trying to hit 'prev'
+        slick.slickGoTo(0);
+      }
+    }
+  },
+
+  exhibitCarouselBeforeChange: function() {
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        'related content',
+        'paginate exhibitions',
+        $('.carousel__search-results').data('set'));
+    }
+  },
+
+  goToExhibition: function() {
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        'related content',
+        'select exhibition',
+        $('.carousel__search-results').data('set'));
+    }
+  },
+
   // `beforeChange` triggered on `.carousel`
   // lazy-loading slides on pagination of the carousel
   loadSlides: function(e, slick, currentSlide, nextSlide) {
-    var numFound = $('#js-carousel').data('numfound');
+    this.beforeChange = true;
     var numLoaded = $('.carousel').slick('getSlick').slideCount;
-    var slidesToScroll = slick.options.slidesToScroll;
-    var data_params;
+    var numFound = $('#js-carousel').data('numfound');
 
-    //PREVIOUS BUTTON PRESSED
-    //retrieve previous slides in search results
-    if (
-      (currentSlide > nextSlide && (nextSlide !== 0 || currentSlide === slidesToScroll)) ||
-      (currentSlide === 0 && nextSlide > slick.slideCount - slidesToScroll && nextSlide < slick.slideCount)) {
-      if (numLoaded < numFound && $('[data-item_number=0]').length === 0) {
-        if (parseInt(this.carouselStart) - parseInt(this.carouselRows) > 0) {
-          this.carouselStart = parseInt(this.carouselStart) - parseInt(this.carouselRows);
-          data_params = this.toJSON();
-        } else {
-          data_params = this.toJSON();
-          data_params.rows = this.carouselStart;
-          this.carouselStart = data_params.start = 0;
-        }
-        delete data_params.itemNumber;
-
-        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: function(data) {
-            $('.carousel').slick('slickAdd', data, true);
-        }});
+    // PREVIOUS BUTTON PRESSED
+    if (nextSlide < currentSlide && numLoaded < numFound) {
+      if (0 <= nextSlide && nextSlide < this.carouselRows && $('[data-item_number=0]').length === 0) {
+        this.addBefore = true;
       }
     }
-    //NEXT BUTTON PRESSED
-    //retrieve next slides in search results
-    else {
-      if (numLoaded < numFound && $('[data-item_number=' + String(numFound-1) + ']').length === 0) {
-        this.carouselEnd = parseInt(this.carouselEnd||0) + parseInt(this.carouselRows||0);
-        data_params = this.toJSON();
-        data_params.start = this.carouselEnd;
-        delete data_params.itemNumber;
+    // NEXT BUTTON PRESSED
+    else if (nextSlide > currentSlide && numLoaded < numFound) {
+      var lastItem = numFound-1;
+      var remainder = numLoaded-nextSlide-this.carouselRows;
 
-        $.ajax({data: data_params, traditional: true, url: '/carousel/', success: function(data) {
-            $('.carousel').slick('slickAdd', data);
-        }});
+      if (remainder <= this.carouselRows && remainder > 0) {
+        if ($('[data-item_number=' + lastItem + ']').length === 0) {
+          this.addAfter = true;
+        }
       }
     }
   },
@@ -104,6 +180,13 @@ var ItemView = Backbone.View.extend({
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
     if ($(e.currentTarget).data('item_number') !== undefined) {
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event',
+          'related content',
+          'select item',
+          $('.carousel__search-results').data('set'));
+      }
+
       this.model.set({
         itemNumber: $(e.currentTarget).data('item_number'),
         itemId: $(e.currentTarget).data('item_id')
@@ -129,17 +212,27 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-rc-page`
+  // also called in initialize and pjax_end with e=undefined
   paginateRelatedCollections: function(e) {
     var data_params = this.model.toJSON();
     // don't need carousel specific item data for the related collections
-    delete data_params.itemId;
     delete data_params.itemNumber;
-    delete data_params.referral;
-    delete data_params.referralName;
     if (e !== undefined) {
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event',
+          'related content',
+          'paginate collections',
+          $('.carousel__search-results').data('set'));
+      }
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {
-      data_params.rc_page = 0;
+      if ($('.js-rc-page').length === 2) {
+        // stay on the same page when using the carousel to navigate
+        // (not sure bug or feature???)
+        data_params.rc_page = $($('.js-rc-page')[1]).data('rc_page') - 1;
+      } else {
+        data_params.rc_page = 0;
+      }
     }
     // regular ajax request - we don't need pushState on the url here
     $.ajax({data: data_params, traditional: true, url: '/relatedCollections/', success: function(data) {
@@ -148,8 +241,46 @@ var ItemView = Backbone.View.extend({
     });
   },
 
+  // ultimately this will like get called from a 'click' triggered on paging exhibits
+  // as well as the initialize() and pjax_end() functions where it's called now
+  // for now most exhibit items really only exist in one exhibit - not so many that 
+  // we need pagination
+  paginateRelatedExhibitions: function() {
+    var params = this.model.toJSON();
+    delete params.itemNumber;
+
+    $.ajax({data: params, traditional: true, url: '/relatedExhibitions/', success: function(data) {
+        var carouselConfigInit = {
+          infinite: false,
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          rows: 0,
+          responsive: [
+            {
+              breakpoint: 900,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 3
+              }
+            },
+            {
+              breakpoint: 650,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2
+              }
+            }
+          ]
+        };
+        $('#js-relatedExhibitions').html(data);
+        $('.js-related-carousel').show();
+        $('.js-related-carousel').slick(carouselConfigInit);
+      }
+    });
+  },
+
   // `click` triggered on `.js-relatedCollection`
-  clearQuery: function(e) {
+  selectRelatedCollection: function(e) {
     this.model.clear({silent: true});
     if($(e.currentTarget).data('relation') !== undefined) {
       e.preventDefault();
@@ -160,26 +291,24 @@ var ItemView = Backbone.View.extend({
         data: this.model.toJSON(),
         traditional: true
       });
+    } else {
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event',
+          'related content',
+          'select collection',
+          $('.carousel__search-results').data('set'));
+      }
     }
   },
 
   // HELPER METHODS
   // --------------------
 
-  // method adds `start` and `rows` to pjax and ajax queries.
-  // this is specific to which item is selected in the carousel.
-  toJSON: function() {
-    var context = this.model.toJSON();
-    context.start = this.carouselStart || 0;
-    context.rows = this.carouselRows;
-    return context;
-  },
-
   // When the width changes, we have to change the carousel's slidesToShow
   // and slidesToScroll options (can't scroll by 8 in mobile mode)
   changeWidth: function() {
     var visibleCarouselWidth = $('#js-carousel .slick-list').prop('offsetWidth');
-    var currentSlide = $('.js-carousel_item[data-slick-index=' + $('.carousel').slick('slickCurrentSlide') + ']');
+    var currentSlide = $($('.js-carousel_item')[$('.carousel').slick('slickCurrentSlide')]);
     var displayedCarouselPx = currentSlide.outerWidth() + parseInt(currentSlide.css('margin-right'));
     var numPartialThumbs = 1, numFullThumbs = 0;
 
@@ -199,18 +328,16 @@ var ItemView = Backbone.View.extend({
       numFullThumbs++;
     }
 
+    this.carouselRows = numFullThumbs;
     $('.carousel').slick('slickSetOption', 'slidesToShow', numPartialThumbs, false);
     $('.carousel').slick('slickSetOption', 'slidesToScroll', numFullThumbs, true);
   },
 
   // get the first set of slides for the carousel
   initCarousel: function() {
-    if (this.model.get('itemNumber') !== undefined) {
-      this.carouselStart = this.carouselEnd = this.model.get('itemNumber');
-    }
-
-    var data_params = this.toJSON();
-    delete data_params.itemNumber;
+    var data_params = this.model.toJSON();
+    data_params.rows = this.carouselRows*3;
+    data_params.start = this.carouselInitStart = Math.max(data_params.itemNumber - this.carouselRows, 0);
     data_params.init = true;
 
     // simple AJAX call to get the first set of carousel items
@@ -223,9 +350,21 @@ var ItemView = Backbone.View.extend({
       traditional: true,
       success: (function(that) {
         return function(data) {
+          var carouselConfigInit = Object.assign(
+            {
+              initialSlide: Math.min(that.carouselRows, that.model.attributes.itemNumber),
+              slidesToShow: that.carouselRows,
+              slidesToScroll: that.carouselRows
+            },
+            that.carouselConfig
+          );
+          // in more like this, that.model.attributes.itemNumber is undefined
+          if(!carouselConfigInit.initialSlide) {
+            carouselConfigInit.initialSlide = 0;
+          }
           $('#js-carouselContainer').html(data);
           $('.carousel').show();
-          $('.carousel').slick(that.carouselConfig);
+          $('.carousel').slick(carouselConfigInit);
           that.changeWidth();
         };
       }(this))
@@ -332,6 +471,12 @@ var ItemView = Backbone.View.extend({
         linkItem.parent().toggleClass('carousel__item');
       }
 
+      // when navigating between items, the related collections is *not* a part of
+      // the #js-itemContainer document document fragment returned, so here we manually 
+      // retrieve new related collections
+      that.paginateRelatedCollections(undefined);
+      that.paginateRelatedExhibitions();
+
       that.initMediaPlayer();
     };
   },
@@ -355,6 +500,7 @@ var ItemView = Backbone.View.extend({
     // initializes the carousel and the related collections
     this.initCarousel();
     this.paginateRelatedCollections();
+    this.paginateRelatedExhibitions();
     this.initMediaPlayer();
     if ($('#disqus_thread').length) {
       if ($('#disqus_thread').html().length > 0) {

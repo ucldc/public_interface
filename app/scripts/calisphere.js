@@ -185,11 +185,13 @@ $(document).on('ready pjax:end', function() {
     var dim1 = $('[data-ga-dim1]').data('ga-dim1');
     var dim2 = $('[data-ga-dim2]').data('ga-dim2');
     var dim3 = Modernizr.sessionstorage.toString();
+    var dim4 = $('[data-ga-dim4]').data('ga-dim4');
 
     ga('set', 'location', window.location.href);
     if (dim1) { ga('set', 'dimension1', dim1); }
     if (dim2) { ga('set', 'dimension2', dim2); }
     if (dim3) { ga('set', 'dimension3', dim3); }
+    if (dim4) { ga('set', 'dimension4', dim4); }
     ga('send', 'pageview');
     if (inst_ga_code) {
       var inst_tracker_name = inst_ga_code.replace(/-/g,'x');

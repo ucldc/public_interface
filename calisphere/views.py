@@ -597,7 +597,7 @@ def relatedCollections(request, slug=None, repository_id=None):
 
     # mlt search
     if len(solrParams['q']) == 0 and len(solrParams['fq']) == 0:
-        item_id = params.get('itemId')
+        item_id = params.get('itemId', '')
         solrParams['q'] = 'id:' + item_id
         # print(solrParams)
         # print(ajaxRequest)

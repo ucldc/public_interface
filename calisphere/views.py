@@ -49,6 +49,7 @@ def getMoreCollectionData(collection_data):
     collection['local_id'] = collection_details['local_id']
     collection['slug'] = collection_details['slug']
     collection['harvest_type'] = collection_details['harvest_type']
+    collection['custom_facet'] = collection_details['custom_facet']
 
     production_disqus = settings.UCLDC_FRONT == 'https://calisphere.org/' or settings.UCLDC_DISQUS == 'prod'
     if production_disqus:

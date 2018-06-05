@@ -191,6 +191,14 @@ abbr {
   @extend .form-control;
 }
 
+// contact form error messages
+.custom-errors ul {
+  list-style: none;
+  padding-left: 0;
+  color: #f36f23;
+  margin-bottom: 0;
+}
+
 // calipshere btn
 
 .btn-calisphere {

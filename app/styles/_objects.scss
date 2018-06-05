@@ -58,6 +58,7 @@ html.no-jquery .obj__osd-infobanner {
 .obj__overlay-icon.movingimage { @extend .fa-play-circle-o; }
 .obj__overlay-icon.sound { @extend .fa-volume-up; }
 .obj__overlay-icon.dataset { @extend .fa-bar-chart; }
+.obj__overlay-icon.image { display: none; }
 
 // ***** Global Object Styles ***** //
 

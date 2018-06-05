@@ -64,7 +64,7 @@
         <a class="collection-intro__about-link" href="{{ collection.url_local }}" target="_blank">View this collection on the contributor's website.</a><br/>
       {% endif %}
       {% if collection.url_oac|length > 0 %}
-        <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View finding aid.</a>
+        <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View collection guide.</a>
       {% endif %}
       <label for="{{ collection_id }}" aria-hidden="true" style="display: none;">Current Collection ID</label>
       <input id="{{ collection_id }}" class="facet js-facet facet-collection_data" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked style="display: none;" aria-hidden="true">

@@ -1,5 +1,6 @@
 <div class="row primarysource">
   {% for item in exhibitItems %}
+    {% if item.solrData or item.custom_crop or item.custom_title %}
     <div class="col-xs-6 col-sm-3 col-md-2">
         <a class="primarysource__link js-exhibit-item" href="{% url url_name url_id item.item_id %}" title="{% if item.solrData %}{{ item.solrData.title.0 }}{% else %}{{ item.custom_title }}{% endif %}">
 
@@ -53,6 +54,7 @@
         </div>
         </a>
     </div>
+    {% endif %}
 
     {% if forloop.counter == 12 %}
       <div class="js-exhibit-items-overflow hidden-content">

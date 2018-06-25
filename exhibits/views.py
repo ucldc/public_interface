@@ -179,8 +179,7 @@ def exhibitView(request, exhibit_id, exhibit_slug):
     all_exhibitItems = exhibit.exhibititem_set.all().order_by('order')
     exhibitItems = []
     for exhibitItem in all_exhibitItems:
-        if (exhibitItem.solrData != None or exhibitItem.custom_title != '' or
-            exhibitItem.custom_crop != '' or exhibitItem.custom_metadata != ''):
+        if (exhibitItem.solrData() != None or exhibitItem.custom_title != ''):
             exhibitItems.append(exhibitItem)
 
     exhibitListing = []

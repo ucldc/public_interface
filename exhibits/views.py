@@ -175,7 +175,7 @@ def exhibitView(request, exhibit_id, exhibit_slug):
     if exhibit_slug != exhibit.slug:
         return redirect(exhibit)
 
-    exhibitItems = exhibit.exhibititem_set.all().order_by('order')
+    exhibitItems = exhibit.exhibititem_set.filter(Q(solrData__isnull=False) | Q(custom_title__isnull=False)).order_by('order')
     exhibitListing = []
     for theme in exhibit.published_themes().all():
         exhibits = theme.theme.published_exhibits().exclude(exhibit=exhibit).order_by('order')

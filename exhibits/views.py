@@ -176,7 +176,6 @@ def exhibitView(request, exhibit_id, exhibit_slug):
         return redirect(exhibit)
 
     exhibitItems = exhibit.exhibititem_set.all().order_by('order')
-
     exhibitListing = []
     for theme in exhibit.published_themes().all():
         exhibits = theme.theme.published_exhibits().exclude(exhibit=exhibit).order_by('order')

@@ -4,7 +4,6 @@ from builtins import range
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from exhibits.models import *
 from itertools import chain
 from django.conf import settings
@@ -176,11 +175,7 @@ def exhibitView(request, exhibit_id, exhibit_slug):
     if exhibit_slug != exhibit.slug:
         return redirect(exhibit)
 
-    all_exhibitItems = exhibit.exhibititem_set.all().order_by('order')
-    exhibitItems = []
-    for exhibitItem in all_exhibitItems:
-        if (exhibitItem.solrData() != None or exhibitItem.custom_title != ''):
-            exhibitItems.append(exhibitItem)
+    exhibitItems = exhibit.exhibititem_set.all().order_by('order')
 
     exhibitListing = []
     for theme in exhibit.published_themes().all():

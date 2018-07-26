@@ -131,9 +131,9 @@ var ComplexCarouselView = Backbone.View.extend({
     $('.carousel-complex').show();
     $('.carousel-complex__item-container').slick(this.carouselConfig);
     if ($('.carousel-complex__item--selected').length > 0) {
-      $('.carousel-complex__item-container').slick('slickGoTo', $('.carousel-complex__item--selected').data('slick-index'));
+      $('.carousel-complex__item-container').slick('slickGoTo', $('.carousel-complex__item--selected .carousel-complex__link').data('item_id'));
     } else if ($('.carousel-complex__tile--selected').length > 0) {
-      $('.carousel-complex__item-container').slick('slickGoTo', $('.carousel-complex__tile--selected').data('slick-index'));
+      $('.carousel-complex__item-container').slick('slickGoTo', $('.carousel-complex__tile--selected .carousel-complex__link').data('item_id'));
     }
   },
 

@@ -464,6 +464,7 @@ class ExhibitItem(models.Model):
     lon = models.FloatField(default=-122.2675416)
     place = models.CharField(max_length=512, blank=True)
     exact = models.BooleanField(default=False)
+
     def __str__(self):
         return self.item_id
 

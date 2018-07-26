@@ -439,18 +439,6 @@ class Theme(models.Model):
     def __str__(self):
         return self.title
 
-class PublishedExhibitItemManager(models.Manager):
-    def get_queryset(self):
-        if settings.EXHIBIT_PREVIEW:
-            return super(PublishedExhibitItemManager, self).get_queryset()
-        else:
-            exhibit_items = super(PublishedExhibitItemManager, self).get_queryset()
-            excludes = []
-            for exhibit_item in exhibit_items:
-                if not exhibit_item.solrData() and not exhibit_item.custom_crop:
-                    excludes.append(exhibit_item.id)
-            return exhibit_items.exclude(id__in=excludes)
-
 @python_2_unicode_compatible
 class ExhibitItem(models.Model):
     item_id = models.CharField(max_length=200)
@@ -476,8 +464,6 @@ class ExhibitItem(models.Model):
     lon = models.FloatField(default=-122.2675416)
     place = models.CharField(max_length=512, blank=True)
     exact = models.BooleanField(default=False)
-
-    objects = PublishedExhibitItemManager()
 
     def __str__(self):
         return self.item_id

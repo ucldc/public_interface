@@ -2,12 +2,13 @@ from __future__ import unicode_literals
 
 from builtins import range
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from exhibits.models import *
 from itertools import chain
 from django.conf import settings
 import random
+import json
 
 def calCultures(request):
     california_cultures = Theme.objects.filter(title__icontains='California Cultures').order_by('title')
@@ -216,3 +217,61 @@ def lessonPlanView(request, lesson_id, lesson_slug):
         relatedThemes.append((theme.theme, theme.theme.published_lessons().exclude(lessonPlan=lesson)))
     
     return render(request, 'exhibits/lessonPlanView.html', {'lessonPlan': lesson, 'q': '', 'exhibitItems': exhibitItems, 'relatedThemes': relatedThemes})
+
+def exhibitItemView(request):
+    response = {'exhibits': []}
+    exhibits = Exhibit.objects.all()
+    for exhibit in exhibits:
+        items = []
+        exhibit_items = exhibit.exhibititem_set.all().order_by('order')
+        for exhibit_item in exhibit_items:
+            items.append({
+                'item_id': exhibit_item.item_id,
+                'custom_crop': bool(exhibit_item.custom_crop),
+                'custom_metadata': exhibit_item.custom_metadata,
+                'custom_title': exhibit_item.custom_title})
+        response['exhibits'].append({
+            'title': exhibit.title, 
+            'url': reverse('exhibits:exhibitView', kwargs={
+                'exhibit_id': exhibit.id, 
+                'exhibit_slug': exhibit.slug}),
+            'id': exhibit.id,
+            'items': items})
+
+    essays = HistoricalEssay.objects.all()
+    for essay in essays:
+        items = []
+        exhibit_items = essay.exhibititem_set.all().order_by('order')
+        for exhibit_item in exhibit_items:
+            items.append({
+                'item_id': exhibit_item.item_id,
+                'custom_crop': bool(exhibit_item.custom_crop),
+                'custom_metadata': exhibit_item.custom_metadata,
+                'custom_title': exhibit_item.custom_title})
+        response['exhibits'].append({
+            'title': essay.title, 
+            'url': reverse('exhibits:essayView', kwargs={
+                'essay_id': essay.id, 
+                'essay_slug': essay.slug}),
+            'id': essay.id,
+            'items': items})
+
+    lessons = LessonPlan.objects.all()
+    for lesson in lessons:
+        items = []
+        exhibit_items = lesson.exhibititem_set.all().order_by('order')
+        for exhibit_item in exhibit_items:
+            items.append({
+                'item_id': exhibit_item.item_id,
+                'custom_crop': bool(exhibit_item.custom_crop),
+                'custom_metadata': exhibit_item.custom_metadata,
+                'custom_title': exhibit_item.custom_title})
+        response['exhibits'].append({
+            'title': lesson.title, 
+            'url': reverse('for-teachers:lessonPlanView', kwargs={
+                'lesson_id': lesson.id, 
+                'lesson_slug': lesson.slug}),
+            'id': lesson.id,
+            'items': items})
+
+    return JsonResponse(response)

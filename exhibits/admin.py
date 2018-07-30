@@ -27,7 +27,7 @@ class ExhibitItemInline(admin.TabularInline):
 
 class LessonPlanItemInline(admin.TabularInline):
     model = ExhibitItem
-    fields = ['lesson_plan_order', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
+    fields = ['lesson_plan_order', 'publish', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
     extra = 0
     formfield_overrides = {
         models.TextField: {'widget': forms.Textarea(attrs={'cols': 50, 'rows': 5})}
@@ -42,7 +42,7 @@ class LessonPlanItemInline(admin.TabularInline):
 
 class HistoricalEssayItemInline(admin.TabularInline):
     model = ExhibitItem
-    fields = ['historical_essay_order', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
+    fields = ['historical_essay_order', 'publish', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
     extra = 0
     formfield_overrides = {
         models.TextField: {'widget': forms.Textarea(attrs={'cols': 50, 'rows': 5})}

@@ -61,12 +61,23 @@
   </div>
   
   
-  {% if lessonPlan.byline %}
   <div class="row">
+    {% if lessonPlan.byline %}
     <h3>About this lesson plan:</h3>
     {% include "exhibits/render_as.html" with render_as=lessonPlan.byline_render_as text=lessonPlan.byline truncate=False container_class="exhibit__byline" %}
+    {% endif %}
+
+    <h3>Using this lesson plan:</h3>
+    <p>
+      The text of this lesson plan is available under a <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons CC-BY license</a>. You are free to share and adapt it however you like, provided you provide attribution as follows:
+    </p>
+    <p>
+      {{ lessonPlan.title }} curated by {{ lessonPlan.curator }}, available under a <a href="<a href='https://creativecommons.org/licenses/by/4.0/'>">CC BY 4.0 license</a>. &#169; {{ lessonPlan.copyright_year }}, {{ lessonPlan.copyright_holder }}.
+    </p>
+    <p>
+      Please note that this license applies only to the descriptive copy and does not apply to any and all digital items that may appear.
+    </p>
   </div>
-  {% endif %}
   
   {% if lessonPlan.published_exhibits.all|length > 0 %}
   <div class="exhibit__related-materials">

@@ -95,12 +95,22 @@
     </div>
   {% endfor %}
   
-  {% if theme.byline %}
   <div class="row">
+    {% if theme.byline %}
     <h3>About this theme:</h3>
     {% include "exhibits/render_as.html" with render_as=theme.byline_render_as text=theme.byline truncate=False container_class="" %}
+    {% endif %}
+    <h3>Using this theme:</h3>
+    <p>
+      The text of this theme is available under a <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons CC-BY license</a>. You are free to share and adapt it however you like, provided you provide attribution as follows:
+    </p>
+    <p>
+      {{ theme.title }} curated by {{ theme.curator }}, available under a <a href="<a href='https://creativecommons.org/licenses/by/4.0/'>">CC BY 4.0 license</a>. &#169; {{ theme.copyright_year }}, {{ theme.copyright_holder }}.
+    </p>
+    <p>
+      Please note that this license applies only to the descriptive copy and does not apply to any and all digital items that may appear.
+    </p>
   </div>
-  {% endif %}
   
   
 {% endblock %}

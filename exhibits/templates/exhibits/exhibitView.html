@@ -73,7 +73,7 @@
   <div class="row">
     {% if exhibit.byline %}
     <h2>Credits:</h2>
-    {% include "exhibits/render_as.html" with render_as=exhibit.byline_render_as text=exhibit.byline truncate=False container_class="exhibit__byline" %}
+    {% include "exhibits/render_as.html" with render_as=exhibit.byline_render_as text=exhibit.byline truncate=False %}
     {% endif %}
 
     <h2>Using this exhibition:</h2>
@@ -83,7 +83,7 @@
     <p>
       {{ exhibit.title }} curated by {{ exhibit.curator }}, available under a <a href="<a href='https://creativecommons.org/licenses/by/4.0/'>">CC BY 4.0 license</a>. &#169; {{ exhibit.copyright_year }}, {{ exhibit.copyright_holder }}.
     </p>
-    <p>
+    <p class="exhibit__byline">
       Please note that this license applies only to the descriptive copy and does not apply to any and all digital items that may appear.
     </p>
   </div>

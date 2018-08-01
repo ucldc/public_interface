@@ -12,6 +12,7 @@ from .models import *
 
 class ExhibitItemInline(admin.TabularInline):
     model = ExhibitItem
+    classes = ('collapse',)
     fields = ['order', 'publish', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
     extra = 0
     formfield_overrides = {
@@ -27,6 +28,7 @@ class ExhibitItemInline(admin.TabularInline):
 
 class LessonPlanItemInline(admin.TabularInline):
     model = ExhibitItem
+    classes = ('collapse',)
     fields = ['lesson_plan_order', 'publish', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
     extra = 0
     formfield_overrides = {
@@ -42,6 +44,7 @@ class LessonPlanItemInline(admin.TabularInline):
 
 class HistoricalEssayItemInline(admin.TabularInline):
     model = ExhibitItem
+    classes = ('collapse',)
     fields = ['historical_essay_order', 'publish', 'item_id', 'essay', 'render_as', 'img_display', 'imgUrl', 'custom_crop', 'custom_link', 'custom_title', 'custom_metadata', 'metadata_render_as']
     extra = 0
     formfield_overrides = {
@@ -57,38 +60,45 @@ class HistoricalEssayItemInline(admin.TabularInline):
 
 class NotesItemInline(admin.TabularInline):
     model = NotesItem
+    classes = ('collapse',)
     fields = ['order', 'title', 'render_as', 'essay']
     verbose_name = 'Note'
     extra = 0
 
 class HistoricalEssayExhibitInline(admin.TabularInline):
     model = HistoricalEssayExhibit
+    classes = ('collapse',)
     fields = ['order', 'historicalEssay']
     extra = 0
 
 class LessonPlanExhibitInline(admin.TabularInline):
     model = LessonPlanExhibit
+    classes = ('collapse',)
     fields = ['order', 'lessonPlan']
     extra = 0
 
 class ThemeExhibitInline(admin.TabularInline):
     model = ExhibitTheme
+    classes = ('collapse',)
     fields = ['theme']
     verbose_name = 'Theme'
     extra = 0
 
 class ExhibitThemeInline(admin.TabularInline):
     model = ExhibitTheme
+    classes = ('collapse',)
     fields = ['order', 'exhibit']
     extra = 0
 
 class HistoricalEssayThemeInline(admin.TabularInline):
     model = HistoricalEssayTheme
+    classes = ('collapse',)
     fields = ['order', 'historicalEssay']
     extra = 0
 
 class LessonPlanThemeInline(admin.TabularInline):
     model = LessonPlanTheme
+    classes = ('collapse',)
     fields = ['order', 'lessonPlan']
     extra = 0
 
@@ -98,6 +108,7 @@ class BrowseTermInline(admin.TabularInline):
     extra = 0
 
 class BrowseTermGroupInline(admin.TabularInline):
+    classes = ('collapse',)
     model = BrowseTermGroup
     fields = ['order', 'group_title', 'group_note']
     extra = 0
@@ -137,10 +148,10 @@ class HistoricalEssayAdmin(admin.ModelAdmin):
 class ExhibitAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,                      {'fields': [('title', 'slug'), ('short_title', 'blockquote')]}),
-        ('Hero Image and Lockup',   {'fields': [('hero', 'lockup_derivative'), ('item_id', 'alternate_lockup_derivative'), ('hero_first')]}),
-        ('Publish',                 {'fields': [('color', 'publish'), ('scraped_from')]}),
-        ('Exhibit Overview',        {'fields': [('overview', 'render_as')]}),
-        ('About this Exhibit',      {'fields': [('byline', 'byline_render_as'), ('curator', 'copyright_holder'), ('copyright_year', 'credits_display')], 'classes': ['collapse']}),
+        ('Hero Image and Lockup',   {'fields': [('hero', 'lockup_derivative'), ('item_id', 'alternate_lockup_derivative'), ('hero_first')], 'classes': ['collapse']}),
+        ('Publish',                 {'fields': [('color', 'publish'), ('scraped_from')], 'classes': ['collapse']}),
+        ('Exhibit Overview',        {'fields': [('overview', 'render_as')], 'classes': ['collapse']}),
+        ('About this Exhibit',      {'fields': [('byline', 'byline_render_as'), ('curator', 'copyright_holder'), ('copyright_year', 'credits_display')]}),
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
     inlines = [ExhibitItemInline, NotesItemInline, ThemeExhibitInline, HistoricalEssayExhibitInline, LessonPlanExhibitInline, BrowseTermGroupInline]

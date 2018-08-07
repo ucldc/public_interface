@@ -51,6 +51,9 @@ UCLDC_FRONT = getenv('UCLDC_FRONT', '')
 UCLDC_REDIS_URL = getenv('UCLDC_REDIS_URL', False)
 UCLDC_DISQUS = getenv('UCLDC_DISQUS', 'test')  # set to 'prod' to use the prod disqus shortcode value
 
+RECAPTCHA_PUBLIC_KEY = getenv('RECAPTCHA_PUBLIC_KEY', '')
+RECAPTCHA_PRIVATE_KEY = getenv('RECAPTCHA_PRIVATE_KEY', '')
+
 EMAIL_BACKEND = getenv('EMAIL_BACKEND',
                           'django.core.mail.backends.console.EmailBackend')
 
@@ -112,7 +115,7 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'django.contrib.staticfiles', 'django.contrib.sites',
                   'django.contrib.humanize', 'django.contrib.sitemaps',
                   'easy_pjax', 'calisphere', 'static_sitemaps', 'health_check',
-                  'health_check.cache', 'health_check.storage', )
+                  'health_check.cache', 'health_check.storage', 'snowpenguin.django.recaptcha2', )
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?

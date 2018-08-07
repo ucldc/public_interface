@@ -439,6 +439,13 @@ class Theme(models.Model):
     def __str__(self):
         return self.title
 
+class PublishedExhibitItemManager(models.Manager):
+    def get_queryset(self):
+        if settings.EXHIBIT_PREVIEW:
+            return super(PublishedExhibitItemManager, self).get_queryset()
+        else:
+            return super(PublishedExhibitItemManager, self).get_queryset().filter(publish=True)
+
 @python_2_unicode_compatible
 class ExhibitItem(models.Model):
     item_id = models.CharField(max_length=200)
@@ -449,6 +456,8 @@ class ExhibitItem(models.Model):
     order = models.IntegerField(blank=True, null=True)
     lesson_plan_order = models.IntegerField(blank=True, null=True)
     historical_essay_order = models.IntegerField(blank=True, null=True)
+
+    publish = models.BooleanField(verbose_name='Ready for publication?', default=True)
 
     essay = models.TextField(blank=True, verbose_name='Item-level exhibit information')
     render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='T')
@@ -464,6 +473,9 @@ class ExhibitItem(models.Model):
     lon = models.FloatField(default=-122.2675416)
     place = models.CharField(max_length=512, blank=True)
     exact = models.BooleanField(default=False)
+
+    objects = PublishedExhibitItemManager()
+    all_objects = models.Manager()
 
     def __str__(self):
         return self.item_id

@@ -7,6 +7,8 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from contact_form.views import ContactFormView
 from contact_form.forms import ContactForm
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 import urllib.parse
 
 
@@ -27,6 +29,7 @@ class CalisphereContactForm(ContactForm):
         widget=forms.Textarea,
         label='Message', )
     referer = forms.CharField(widget=forms.HiddenInput())
+    captcha = ReCaptchaField(widget=ReCaptchaWidget())
 
     template_name = 'contact_form/contact_form.txt'
     subject_template_name = "contact_form/contact_form_subject.txt"
@@ -40,6 +43,7 @@ class CalisphereContactForm(ContactForm):
             'email2',
             'body',
             'referer',
+            'captcha'
         ]
         if ('keyOrder' in self.fields):
             self.fields.keyOrder = fields_keyOrder

@@ -223,13 +223,14 @@ def exhibitItemView(request):
     exhibits = Exhibit.objects.all()
     for exhibit in exhibits:
         items = []
-        exhibit_items = exhibit.exhibititem_set.all().order_by('order')
+        exhibit_items = exhibit.exhibititem_set(manager='all_objects').all().order_by('order')
         for exhibit_item in exhibit_items:
             items.append({
                 'item_id': exhibit_item.item_id,
                 'custom_crop': bool(exhibit_item.custom_crop),
                 'custom_metadata': exhibit_item.custom_metadata,
-                'custom_title': exhibit_item.custom_title})
+                'custom_title': exhibit_item.custom_title,
+                'published': exhibit_item.publish})
         response['exhibits'].append({
             'title': exhibit.title, 
             'url': reverse('exhibits:exhibitView', kwargs={
@@ -241,13 +242,14 @@ def exhibitItemView(request):
     essays = HistoricalEssay.objects.all()
     for essay in essays:
         items = []
-        exhibit_items = essay.exhibititem_set.all().order_by('order')
+        exhibit_items = essay.exhibititem_set(manager='all_objects').all().order_by('order')
         for exhibit_item in exhibit_items:
             items.append({
                 'item_id': exhibit_item.item_id,
                 'custom_crop': bool(exhibit_item.custom_crop),
                 'custom_metadata': exhibit_item.custom_metadata,
-                'custom_title': exhibit_item.custom_title})
+                'custom_title': exhibit_item.custom_title,
+                'published': exhibit_item.publish})
         response['exhibits'].append({
             'title': essay.title, 
             'url': reverse('exhibits:essayView', kwargs={
@@ -259,13 +261,14 @@ def exhibitItemView(request):
     lessons = LessonPlan.objects.all()
     for lesson in lessons:
         items = []
-        exhibit_items = lesson.exhibititem_set.all().order_by('order')
+        exhibit_items = lesson.exhibititem_set(manager='all_objects').all().order_by('order')
         for exhibit_item in exhibit_items:
             items.append({
                 'item_id': exhibit_item.item_id,
                 'custom_crop': bool(exhibit_item.custom_crop),
                 'custom_metadata': exhibit_item.custom_metadata,
-                'custom_title': exhibit_item.custom_title})
+                'custom_title': exhibit_item.custom_title,
+                'published': exhibit_item.publish})
         response['exhibits'].append({
             'title': lesson.title, 
             'url': reverse('for-teachers:lessonPlanView', kwargs={

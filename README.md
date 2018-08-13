@@ -44,19 +44,20 @@ python manage.py runserver
 
 The Calisphere public interface should be running on http://localhost:8000
 
-## install npm / grunt
+## install npm / gulp
 
-if you need to work on the [HTML/CSS/JS](https://github.com/ucldc/public_interface/blob/master/app/ReadMe.md) then you will want to run grunt to assemble these components.
+if you need to work on the [HTML/CSS/JS](https://github.com/ucldc/public_interface/blob/master/app/ReadMe.md) then you will want to run gulp to assemble these components.
 
 ```
 brew install npm
+npm install -g gulp-cli
 npm install -g bower
 npm install
 bower install
 ```
 
 ```
-grunt serve
+gulp serve
 ```
 
 An html/design reference site will be running on http://localhost:9000/ 

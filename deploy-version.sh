@@ -43,7 +43,7 @@ fi
 
 ZIP="ucldc-$1.zip"
 
-grunt
+gulp
 cd app
 git checkout .
 cd ..

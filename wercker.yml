@@ -14,13 +14,13 @@ build:
                 cd test
                 ../node_modules/.bin/bower install
                 cd ..
-                ./node_modules/.bin/grunt test
+                ./node_modules/.bin/gulp test
 
         - script:
             name: build
             code: |
                 gem install sass
-                ./node_modules/.bin/grunt
+                ./node_modules/.bin/gulp
 
 deploy:
     steps:

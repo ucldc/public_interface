@@ -170,15 +170,6 @@ module.exports = function (grunt) {
         sourcemap: true,
         loadPath: 'bower_components'
       },
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= config.app %>/styles',
-          src: ['*.{scss,sass}'],
-          dest: '.tmp/styles',
-          ext: '.css'
-        }]
-      },
       server: {
         files: [{
           expand: true,

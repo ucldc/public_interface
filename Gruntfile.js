@@ -391,16 +391,6 @@ module.exports = function (grunt) {
     include: {
       build: '<%= config.app %>/*.html',
       tmp: '.tmp/*.html'
-    },
-
-    'include:clean': {
-       build: '<%= config.app %>/*.html',
-       tmp: '.tmp/*.html'
-    },
-
-    'include:clean-dest': {
-       build: '<%= config.dist %>/*.html',
-       tmp: '.tmp/*.html'
     }
   });
 
@@ -458,8 +448,6 @@ module.exports = function (grunt) {
     'rev',
     'usemin',
     'htmlmin',
-    'include:clean:build',
-    'include:clean-dest:build'
   ]);
 
   grunt.registerTask('default', [

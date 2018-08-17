@@ -200,7 +200,7 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         ignorePath: /^\/|\.\.\//,
-        src: ['<%= config.app %>/index.html'],
+        src: ['<%= config.app %>/library-footer.html', '<%= config.app %>/library-header.html'],
         exclude: ['bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js']
       }
     },
@@ -224,7 +224,7 @@ module.exports = function (grunt) {
         // use flow to disable uglify  http://stackoverflow.com/a/37958399/1763984
         // flow: { steps: { js: ['concat'], css: ['concat', 'cssmin'] }, post: {} }
       },
-      html: '<%= config.app %>/index.html'
+      html: ['<%= config.app %>/library-footer.html', '<%= config.app %>/library-header.html'],
     },
 
     // Performs rewrites based on rev and the useminPrepare configuration

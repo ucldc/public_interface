@@ -6,14 +6,17 @@
   "devDependencies": {
     "apache-server-configs": "^3.0.0",
     "autoprefixer": "^9.1.0",
+    "bower": "^1.8.4",
     "browser-sync": "^2.24.6",
     "del": "^3.0.0",
+    "docco": "^0.8.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-cli": "^2.0.1",
     "gulp-file-include": "^2.0.1",
     "gulp-imagemin": "^4.1.0",
     "gulp-jshint": "^2.1.0",
+    "gulp-modernizr": "^3.0.0",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.1",
     "gulp-sass-lint": "^1.4.0",
@@ -26,6 +29,9 @@
     "postcss-import": "^12.0.0",
     "postcss-svg": "^2.4.0",
     "wiredep": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=10.8.0"
   },
   "dependencies": {}
 }

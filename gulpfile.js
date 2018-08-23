@@ -13,6 +13,7 @@ const jshint = require('gulp-jshint');
 const uglify = require('gulp-uglify');
 const stylish = require('jshint-stylish');
 const imagemin = require('gulp-imagemin');
+const modernizr = require('gulp-modernizr');
 const gulp = require('gulp');
 
 gulp.task('sass-build', function() {
@@ -50,6 +51,13 @@ gulp.task('js-build', function() {
     .pipe(gulp.dest('dist/scripts'));
 });
 
+gulp.task('modernizr', function() {
+  return gulp.src('dist/{,**/}*.{css,js}')
+    .pipe(modernizr())
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/scripts'));
+});
+
 gulp.task('js-serve', function() {
 	return gulp.src('app/scripts/{,**/}*.js')
   .pipe(jshint())
@@ -58,7 +66,7 @@ gulp.task('js-serve', function() {
 });
 
 gulp.task('html-serve', function(done) {
-  return gulp.src('app/(,**/}*.html')
+  return gulp.src('app/*.html')
   .pipe(wiredep())
   .pipe(fileinclude({
     basepath: 'app/'
@@ -78,7 +86,7 @@ gulp.task('html-build', function() {
   .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-files', function() {
+gulp.task('copy-ico-png-txt-webp-htaccss', function() {
   return gulp.src([
     'app/*.{ico,png,txt}',
     'app/images/{,**/}*.webp',
@@ -88,25 +96,29 @@ gulp.task('copy-files', function() {
 
 gulp.task('copy-bower-files', function() {
   return gulp.src([
-    'bower_components/fontawesome',
-    'bower_components/openseadragon',
-    'bower_components/bootstrap-sass-official',
-  ])
+    'bower_components/fontawesome/{,**/}*',
+    'bower_components/openseadragon/{,**/}*',
+    'bower_components/bootstrap-sass-official/{,**/}*',
+    'bower_components/mediaelement{,**/}*'
+  ], { base: 'bower_components'})
   .pipe(gulp.dest('dist/bower_components/'))
 })
 
-gulp.task('font-build', function() {
+gulp.task('copy-fonts', function() {
   return gulp.src([
     'app/styles/fonts/{,**/}*.*',
     'app/fonts/{,**/}*.*'
-  ])
-  .pipe(gulp.dest('dist/fonts'));
+  ], { base: 'app'})
+  .pipe(gulp.dest('dist/'));
 });
 
 gulp.task('image-build', function() {
-  return gulp.src('app/images/{,**/}*.{gif,jpeg,jpg,png,svg}')
+  return gulp.src([
+    'app/images/{,**/}*.{gif,jpeg,jpg,png,svg}',
+    'app/styles/{,**/}*.{gif,jpeg,jpg,png,svg}'],
+    { base: 'app/' })
   .pipe(imagemin())
-  .pipe(gulp.dest('dist/images'))
+  .pipe(gulp.dest('dist/'))
 });
 
 gulp.task('clean', function() { return del(['./.tmp', './dist']); });
@@ -131,6 +143,8 @@ gulp.task('runserver', function() {
     port: 9000
 	});
 
+  // we should watch tests too
+  // gulp.watch(['test/spec/{,**/}*.js'], test)
   gulp.watch(['.tmp/*'], reload);
   gulp.watch(['app/admin/*'], reload);
   gulp.watch(['gulpfile.js']);
@@ -139,11 +153,21 @@ gulp.task('runserver', function() {
   gulp.watch(['app/{,**/}*.js'], gulp.parallel('js-serve'));
 });
 
+// we should have tests
+gulp.task('test', gulp.series('clean'));
+
 gulp.task('serve', gulp.series('clean',
 	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'runserver'));
 
-gulp.task('build', gulp.series('clean', gulp.parallel('sass-build', 'js-build', 'image-build', 'copy-files', 'font-build', 'copy-bower-files'), 'html-build'));
+gulp.task('build', gulp.series('clean', gulp.parallel(
+  'sass-build',
+  'js-build',
+  'image-build',
+  'copy-ico-png-txt-webp-htaccss',
+  'copy-fonts',
+  'copy-bower-files'
+  ), 'modernizr', 'html-build'));
 
+gulp.task('default', gulp.series('build'));
 
-
-
+gulp.task('serve:dist', gulp.parallel('serve', 'build'));

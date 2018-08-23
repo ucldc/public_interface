@@ -12,9 +12,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # http://stackoverflow.c
 cd $DIR
 
 gulp
-cd app
-git checkout .
-cd ..
 python manage.py collectstatic --noinput
 python manage.py test
 

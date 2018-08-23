@@ -1,7 +1,12 @@
 {
   "name": "public-interface",
+  "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ucldc/public_interface.git"
   },
   "devDependencies": {
     "apache-server-configs": "^3.0.0",

@@ -6,6 +6,8 @@ build:
 
         - npm-install
 
+        - bundle-install
+
         - script:
             name: run tests
             code: |
@@ -19,9 +21,8 @@ build:
         - script:
             name: build
             code: |
-                gem install sass
                 ./node_modules/.bin/gulp
-
+              # gem install
 deploy:
     steps:
       # Execute the s3sync deploy step, a step provided by wercker

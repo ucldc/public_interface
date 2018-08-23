@@ -95,12 +95,7 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
 });
 
 gulp.task('copy-bower-files', function() {
-  return gulp.src([
-    'bower_components/fontawesome/{,**/}*',
-    'bower_components/openseadragon/{,**/}*',
-    'bower_components/bootstrap-sass-official/{,**/}*',
-    'bower_components/mediaelement/{,**/}*'
-  ], { base: 'bower_components'})
+  return gulp.src('bower_components/{,**/}*')
   .pipe(gulp.dest('dist/bower_components/'))
 })
 

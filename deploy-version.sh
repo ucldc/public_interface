@@ -44,9 +44,6 @@ fi
 ZIP="ucldc-$1.zip"
 
 gulp
-cd app
-git checkout .
-cd ..
 
 # package app and upload
 zip $ZIP -r calisphere/ load-content.sh manage.py public_interface/ test/ requirements.txt README.md .ebextensions/ dist/ exhibits/ fixtures/

@@ -1,0 +1,439 @@
+"scenarios": [
+	{
+		"label": "Collection",
+		"url": "http://localhost:9000/collection-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collection-layout.html"
+		},
+	{
+		"label": "Collections - A-Z",
+		"url": "http://localhost:9000/collections-a-z-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-a-z-layout.html"
+	},
+	{
+		"label": "Collections - Random Explore",
+		"url": "http://localhost:9000/collections-random-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-random-layout.html"
+	},
+	{
+		"label": "Collections - Themed - California History",
+		"url": "http://localhost:9000/collections-themed-history-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-themed-history-layout.html"
+	},
+	{
+		"label": "Collections - Themed - California Cultures",
+		"url": "http://localhost:9000/collections-themed-cultures-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-themed-cultures-layout.html"
+	},
+	{
+		"label": "Collections - Themed - JARDA",
+		"url": "http://localhost:9000/collections-themed-jarda-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-themed-jarda-layout.html"
+	},
+	{
+		"label": "Collections - Title Search",
+		"url": "http://localhost:9000/collections-titlesearch-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-titlesearch-layout.html"
+	},
+	{
+		"label": "Home Page - Version 1",
+		"url": "http://localhost:9000/homepage-layout1.html",
+		"referenceUrl": "https://calisphere.org/static_root/homepage-layout1.html"
+	},
+	{
+		"label": "Home Page - Version 2",
+		"url": "http://localhost:9000/homepage-layout2.html",
+		"referenceUrl": "https://calisphere.org/static_root/homepage-layout2.html"
+	},
+	{
+		"label": "Home Page - Version 3",
+		"url": "http://localhost:9000/homepage-layout3.html",
+		"referenceUrl": "https://calisphere.org/static_root/homepage-layout3.html"
+	},
+	{
+		"label": "Home Page - Version 4",
+		"url": "http://localhost:9000/homepage-layout4.html",
+		"referenceUrl": "https://calisphere.org/static_root/homepage-layout4.html"
+	},
+	{
+		"label": "Institution - Non-UC - Featured",
+		"url": "http://localhost:9000/institution-non-uc-featured-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/institution-non-uc-featured-layout.html"
+	},
+	{
+		"label": "Institution - Non-UC",
+		"url": "http://localhost:9000/institution-non-uc-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/institution-non-uc-layout.html"
+	},
+
+	{
+		"label": "Institution - UC",
+		"url": "http://localhost:9000/institution-uc-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/institution-uc-layout.html"
+	},
+	{
+		"label": "Institution - Campus - Featured",
+		"url": "http://localhost:9000/institution-campus-featured-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/institution-campus-featured-layout.html"
+	},
+	{
+    	"label": "Institutions - UC / Statewide Partners",
+    	"url": "http://localhost:9000/institutions-partners-layout.html",
+    	"referenceUrl": "https://calisphere.org/static_root/institutions-partner-layout.html"
+	},
+	{
+		"label": "Object - Hosted Simple Image",
+		"url": "http://localhost:9000/object-hosted-simple-image-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-simple-image-layout.html"
+	},
+	{
+		"label": "Object - Hosted Simple Image - Comments",
+		"url": "http://localhost:9000/object-hosted-simple-image-comments-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-simple-image-comments-layout.html"
+	},
+	{
+		"label": "Object - Hosted Complex Image",
+		"url": "http://localhost:9000/object-hosted-complex-image-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-complex-image-layout.html"
+	},
+	{
+		"label": "Object - Hosted Complex Non-Image",
+		"url": "http://localhost:9000/object-hosted-complex-non-image-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-complex-non-image-layout.html"
+	},
+	{
+		"label": "Object - Hosted Audio",
+		"url": "http://localhost:9000/object-hosted-audio-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-audio-layout.html"
+	},
+	{
+		"label": "Object - Hosted Video",
+		"url": "http://localhost:9000/object-hosted-video-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-video-layout.html"
+	},
+	{
+		"label": "Object - Hosted File",
+		"url": "http://localhost:9000/object-hosted-file-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-file-layout.html"
+	},
+	{
+		"label": "Object - Harvest Image",
+		"url": "http://localhost:9000/object-harvest-image-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-image-layout.html"
+	},
+	{
+		"label": "Object - Harvest Audio",
+		"url": "http://localhost:9000/object-harvest-non-image-audio-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-non-image-audio-layout.html"
+	},
+	{
+		"label": "Object - Harvest Video",
+		"url": "http://localhost:9000/object-harvest-non-image-video-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-non-image-video-layout.html"
+	},
+	{
+		"label": "Object - Harvest Text",
+		"url": "http://localhost:9000/object-harvest-non-image-text-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-non-image-text-layout.html"
+	},
+	{
+		"label": "Search Results",
+		"url": "http://localhost:9000/search-results.html",
+		"referenceUrl": "https://calisphere.org/static_root/search-results.html"
+	},
+	{
+		"label": "Static - About",
+		"url": "http://localhost:9000/static-about-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/static-about-layout.html"
+	},
+	{
+		"label": "Static - Outreach",
+		"url": "http://localhost:9000/static-outreach-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/static-outreach-layout.html"
+	},
+
+	{
+		"label": "Exhibit",
+		"url": "http://localhost:9000/exhibit-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/exhibit-layout.html"
+	},
+	{
+		"label": "Theme",
+		"url": "http://localhost:9000/theme-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/theme-layout.html"
+	},
+
+	{
+		"label": "Institution - UC - Featured",
+		"url": "http://localhost:9000/institution-uc-featured-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/institution-uc-featured-layout.html"
+	},
+	{
+		"label": "Institution - Campus",
+		"url": "http://localhost:9000/institution-campus-layout.html",
+		"referenceUrl": "https://calisphere.org/static_root/institution-campus-layout.html"
+	},
+
+	{
+		"label": "Collections Grid",
+		"url": "http://localhost:9000/collections-grid.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-grid.html"
+	},
+	{
+		"label": "Search Results Grid",
+		"url": "http://localhost:9000/search-results-grid.html",
+		"referenceUrl": "https://calisphere.org/static_root/search-results-grid.html"
+	},
+
+	{
+		"label": "Alphabetical Navigation",
+		"url": "http://localhost:9000/alpha-nav.html",
+		"referenceUrl": "https://calisphere.org/static_root/alpha-nav.html"
+	},
+	{
+		"label": "Carousel",
+		"url": "http://localhost:9000/carousel.html",
+		"referenceUrl": "https://calisphere.org/static_root/carousel.html"
+	},
+	{
+		"label": "Collection Intro",
+		"url": "http://localhost:9000/collection-intro.html",
+		"referenceUrl": "https://calisphere.org/static_root/collection-intro.html"
+	},
+	{
+		"label": "Collections Intro",
+		"url": "http://localhost:9000/collections-intro.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-intro.html"
+	},
+	{
+		"label": "Collections Row and Image Mosaic",
+		"url": "http://localhost:9000/collections-row.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-row.html"
+	},
+	{
+		"label": "Collections Title Search",
+		"url": "http://localhost:9000/collections-titlesearch.html",
+		"referenceUrl": "https://calisphere.org/static_root/collections-titlesearch.html"
+	},
+	{
+		"label": "Comments",
+		"url": "http://localhost:9000/comments.html",
+		"referenceUrl": "https://calisphere.org/static_root/comments.html"
+	},
+	{
+		"label": "Facets",
+		"url": "http://localhost:9000/facets.html",
+		"referenceUrl": "https://calisphere.org/static_root/facets.html"
+	},
+	{
+		"label": "Filter",
+		"url": "http://localhost:9000/filter.html",
+		"referenceUrl": "https://calisphere.org/static_root/filter.html"
+	},
+	{
+		"label": "Footer",
+		"url": "http://localhost:9000/footer.html",
+		"referenceUrl": "https://calisphere.org/static_root/footer.html"
+	},
+	{
+		"label": "Header",
+		"url": "http://localhost:9000/header.html",
+		"referenceUrl": "https://calisphere.org/static_root/header.html"
+	},
+	{
+		"label": "Institutions Intro",
+		"url": "http://localhost:9000/institutions-intro.html",
+		"referenceUrl": "https://calisphere.org/static_root/institutions-intro.html"
+	},
+	{
+		"label": "Institutions Navigation",
+		"url": "http://localhost:9000/institutions-nav.html",
+		"referenceUrl": "https://calisphere.org/static_root/institutions-nav.html"
+	},
+	{
+		"label": "Institutions Textboxes",
+		"url": "http://localhost:9000/institutions-textboxes.html",
+		"referenceUrl": "https://calisphere.org/static_root/institutions-textboxes.html"
+	},
+	{
+		"label": "List View",
+		"url": "http://localhost:9000/listview.html",
+		"referenceUrl": "https://calisphere.org/static_root/listview.html"
+	},
+	{
+		"label": "Metadata",
+		"url": "http://localhost:9000/metadata.html",
+		"referenceUrl": "https://calisphere.org/static_root/metadata.html"
+	},
+	{
+		"label": "Object - Harvest Image",
+		"url": "http://localhost:9000/object-harvest-image.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-image.html"
+	},
+	{
+		"label": "Object - Hosted Audio",
+		"url": "http://localhost:9000/object-hosted-audio.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-audio.html"
+	},
+	{
+		"label": "Object - Hosted File",
+		"url": "http://localhost:9000/object-hosted-file.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-file.html"
+	},
+	{
+		"label": "Object - Hosted Simple Image",
+		"url": "http://localhost:9000/object-hosted-simple-image.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-simple-image.html"
+	},
+	{
+		"label": "Object - Hosted Complex Image",
+		"url": "http://localhost:9000/object-hosted-complex-image.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-complex-image.html"
+	},
+	{
+		"label": "Object - Hosted Video",
+		"url": "http://localhost:9000/object-hosted-video.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-hosted-video.html"
+	},
+	{
+		"label": "Pagination - Buttons",
+		"url": "http://localhost:9000/pagination-buttons.html",
+		"referenceUrl": "https://calisphere.org/static_root/pagination-buttons.html"
+	},
+	{
+		"label": "Pagination - Dropdown",
+		"url": "http://localhost:9000/pagination-dropdown.html",
+		"referenceUrl": "https://calisphere.org/static_root/pagination-dropdown.html"
+	},
+	{
+		"label": "Related Collections",
+		"url": "http://localhost:9000/related-collections.html",
+		"referenceUrl": "https://calisphere.org/static_root/related-collections.html"
+	},
+	{
+		"label": "Thumbnail View",
+		"url": "http://localhost:9000/thumbnail.html",
+		"referenceUrl": "https://calisphere.org/static_root/thumbnail.html"
+	},
+	{
+		"label": "Searchfield - Global",
+		"url": "http://localhost:9000/searchfield-global.html",
+		"referenceUrl": "https://calisphere.org/static_root/searchfield-global.html"
+	},
+	{
+		"label": "Search Collection",
+		"url": "http://localhost:9000/search-collection.html",
+		"referenceUrl": "https://calisphere.org/static_root/search-collection.html"
+	},
+	{
+		"label": "Search Within Results",
+		"url": "http://localhost:9000/search-within.html",
+		"referenceUrl": "https://calisphere.org/static_root/search-within.html"
+	},
+	{
+		"label": "Thumbnail/Listview Toggle",
+		"url": "http://localhost:9000/toggle.html",
+		"referenceUrl": "https://calisphere.org/static_root/toggle.html"
+	},
+	{
+		"label": "Buttons",
+		"url": "http://localhost:9000/buttons.html",
+		"referenceUrl": "https://calisphere.org/static_root/buttons.html"
+	},
+	{
+		"label": "Icons",
+		"url": "http://localhost:9000/icons.html",
+		"referenceUrl": "https://calisphere.org/static_root/icons.html"
+	},
+	{
+		"label": "Text",
+		"url": "http://localhost:9000/text.html",
+		"referenceUrl": "https://calisphere.org/static_root/text.html"
+	},
+	{
+		"label": "Responsive Image Test",
+		"url": "http://localhost:9000/responsive-img-test.html",
+		"referenceUrl": "https://calisphere.org/static_root/responsive-img-test.html"
+	},
+
+
+
+
+
+
+
+	{
+		"label": "boilerplate",
+		"url": "http://localhost:9000/boilerplate.html",
+		"referenceUrl": "https://calisphere.org/static_root/boilerplate.html"
+	},
+	{
+		"label": "component-heading",
+		"url": "http://localhost:9000/component-heading.html",
+		"referenceUrl": "https://calisphere.org/static_root/component-heading.html"
+	},
+	{
+		"label": "footer-test",
+		"url": "http://localhost:9000/footer-test.html",
+		"referenceUrl": "https://calisphere.org/static_root/footer-test.html"
+	},
+	{
+		"label": "gridtest",
+		"url": "http://localhost:9000/gridtest.html",
+		"referenceUrl": "https://calisphere.org/static_root/gridtest.html"
+	},
+	{
+		"label": "includetest",
+		"url": "http://localhost:9000/includetest.html",
+		"referenceUrl": "https://calisphere.org/static_root/includetest.html"
+	},
+	{
+		"label": "index",
+		"url": "http://localhost:9000/index.html",
+		"referenceUrl": "https://calisphere.org/static_root/index.html"
+	},
+	{
+		"label": "library-footer",
+		"url": "http://localhost:9000/library-footer.html",
+		"referenceUrl": "https://calisphere.org/static_root/library-footer.html"
+	},
+	{
+		"label": "library-header",
+		"url": "http://localhost:9000/library-header.html",
+		"referenceUrl": "https://calisphere.org/static_root/library-header.html"
+	},
+	{
+		"label": "object-harvest-non-image-audio",
+		"url": "http://localhost:9000/object-harvest-non-image-audio.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-non-image-audio.html"
+	},
+	{
+		"label": "object-harvest-non-image-text",
+		"url": "http://localhost:9000/object-harvest-non-image-text.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-non-image-text.html"
+	},
+	{
+		"label": "object-harvest-non-image-video",
+		"url": "http://localhost:9000/object-harvest-non-image-video.html",
+		"referenceUrl": "https://calisphere.org/static_root/object-harvest-non-image-video.html"
+	},
+	{
+		"label": "popover",
+		"url": "http://localhost:9000/popover.html",
+		"referenceUrl": "https://calisphere.org/static_root/popover.html"
+	},
+	{
+		"label": "search-results-grid2",
+		"url": "http://localhost:9000/search-results-grid2.html",
+		"referenceUrl": "https://calisphere.org/static_root/search-results-grid2.html"
+	},
+	{
+		"label": "shapes",
+		"url": "http://localhost:9000/shapes.html",
+		"referenceUrl": "https://calisphere.org/static_root/shapes.html"
+	},
+	{
+		"label": "test",
+		"url": "http://localhost:9000/test.html",
+		"referenceUrl": "https://calisphere.org/static_root/test.html"
+	}
+]

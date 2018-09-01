@@ -11,6 +11,7 @@
   "devDependencies": {
     "apache-server-configs": "^3.0.0",
     "autoprefixer": "^9.1.0",
+    "backstopjs": "^3.5.10",
     "bower": "^1.8.4",
     "browser-sync": "^2.24.6",
     "del": "^3.0.0",

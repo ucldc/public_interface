@@ -3,7 +3,7 @@
 		"label": "Collection",
 		"url": "http://localhost:9000/collection-layout.html",
 		"referenceUrl": "https://calisphere.org/static_root/collection-layout.html"
-		},
+	},
 	{
 		"label": "Collections - A-Z",
 		"url": "http://localhost:9000/collections-a-z-layout.html",

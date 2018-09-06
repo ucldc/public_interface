@@ -16,3 +16,5 @@ sitemaps/
 docs/
 .ruby-version
 app/admin/
+backstop_data/html_report/
+backstop_data/bitmaps_test/

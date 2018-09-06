@@ -40,7 +40,7 @@
       "requireSameDimensions": true
     }, 
     {
-      "label": "Back after Download",
+      "label": "PJAX Back After Download",
       "url": "https://calisphere.org/UCSF/items/",
       "onReadyScript": "puppet/kelsiBug.js"
     }

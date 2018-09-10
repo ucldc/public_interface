@@ -19,7 +19,7 @@
 .comment {
   padding-top: $layout-container-margin-sm; 
   border-top: 1px solid $design-primary-color;
-  font-family: KievitWeb, Arial, sans-serif;
+  font-family: SourceSansPro, Arial, sans-serif;
   margin: $layout-container-margin-sm 0 0 0;
 
   @include bp(md-screen) {

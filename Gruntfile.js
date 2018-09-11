@@ -334,7 +334,7 @@ module.exports = function (grunt) {
             'images/{,*/}*.webp',
             '{,*/}*.html',
             'styles/{,*/}*.*',
-            'fonts/{,*/}*.*',
+            'vendor-fonts/{,*/}*.*',
             'scripts/ComplexCarouselView.js',
             'scripts/Controller.js',
             'scripts/ContactOwnerFormView.js',

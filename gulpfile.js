@@ -101,8 +101,8 @@ gulp.task('copy-bower-files', function() {
 
 gulp.task('copy-fonts', function() {
   return gulp.src([
-    'app/styles/fonts/{,**/}*.*',
-    'app/fonts/{,**/}*.*'
+    'app/styles/vendor-fonts/{,**/}*.*',
+    'app/vendor-fonts/{,**/}*.*'
   ], { base: 'app'})
   .pipe(gulp.dest('dist/'));
 });
@@ -126,9 +126,10 @@ gulp.task('runserver', function() {
         '/bower_components': './bower_components',
         '/images': 'app/images',
         '/admin': 'app/admin',
-        '/styles/fonts': 'app/styles/fonts'
+        '/styles/vendor-fonts': 'app/styles/vendor-fonts'
       },
 		}, 
+    notify: false,
     middleware: [
       function (req, res, next) {
         res.setHeader('Access-Control-Allow-Origin', '*');

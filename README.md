@@ -148,3 +148,38 @@ This will generate sitemap files and write them to the `sitemaps` directory in t
 The sitemap.xml index file will be served statically by Django at the `UCLDC_FRONT` URL, i.e. https://calisphere.org/sitemap.xml
 
 Right now, each `sitemap-items-*.xml` file contains 50,000 urls and is under 10MB uncompressed, which is the [google limit](https://support.google.com/webmasters/answer/183668?hl=en&ref_topic=4581190). Some are over 9MB in size though, so if we add more metadata in the future, we might need to reduce the number of urls per file.
+
+# Testing via Backstop.js
+
+For now, make sure to install backstop globally, add to your PATH, or modify the commands below to include the path (node_modules/.bin/backstop), then run: 
+
+Testing production vs. calisphere-test 
+```
+backstop reference --config backstop_data/backstop_tests/prod-vs-test-ui.js
+backstop test --config backstop_data/backstop_tests/prod-vs-test-ui.js
+
+backstop reference --config backstop_data/backstop_tests/prod-vs-test-app.js
+backstop test --config backstop_data/backstop_tests/prod-vs-test-app.js
+```
+
+Testing production vs. localhost:9000 for the UI library and vs. 127.0.0.1:8000 for the app
+(must `gulp serve` and `python manage.py runserver` before running these tests)
+```
+backstop reference --config backstop_data/backstop_tests/prod-vs-local-ui.js
+backstop test --config backstop_data/backstop_tests/prod-vs-local-ui.js
+
+backstop reference --config backstop_data/backstop_tests/test-vs-local-ui.js
+backstop test --config backstop_data/backstop_tests/test-vs-local-ui.js
+```
+
+Testing calisphere-test vs. localhost:9000 for the UI library and vs. 127.0.0.1:8000 for the app
+(must `gulp serve` and `python manage.py runserver` before running these tests)
+```
+backstop reference --config backstop_data/backstop_tests/prod-vs-local-app.js
+backstop test --config backstop_data/backstop_tests/prod-vs-local-app.js
+
+backstop reference --config backstop_data/backstop_tests/test-vs-local-app.js
+backstop test --config backstop_data/backstop_tests/test-vs-local-app.js
+```
+
+Hope to incorporate into build tools at some point in the future. 

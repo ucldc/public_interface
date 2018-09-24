@@ -126,7 +126,7 @@ gulp.task('runserver', function() {
         '/bower_components': './bower_components',
         '/images': 'app/images',
         '/admin': 'app/admin',
-        '/styles/vendor-fonts': 'app/styles/vendor-fonts'
+        '/static_root/vendor-fonts': 'app/styles/vendor-fonts'
       },
 		}, 
     notify: false,

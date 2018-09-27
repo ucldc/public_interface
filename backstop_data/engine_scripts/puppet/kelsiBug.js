@@ -69,27 +69,29 @@ module.exports = async (page, scenario, vp) => {
 		const newPagePromise = promiseTimeout(6000, getNewPageWhenLoaded());
 		await page.click('#downloadModal .btn-primary');
 		// sometimes image opens in new tab, sometimes it opens in the same tab
-		const imgPage = await Promise.race([
-			newPagePromise,
-			page.waitForNavigation()
-		]);
-
-		// opened in the same tab
-		// press the back button to get back to item page
-		if (imgPage.url() === imgUrl) {
-			if (page.url() === imgUrl) {
-				await page.goBack();
-			} else {
-				// close the download modal
-				await Promise.all([
-					page.waitFor('#downloadModal', {visible: false}),
-					page.waitFor(1000),
-					page.click('#downloadModal .close')
-				]);
-			}
-		} else {
-			throw new Error("didn't open the image for download!");
+		try {
+			const imgPage = await Promise.race([
+				newPagePromise,
+				page.waitForNavigation()
+			]);
+			// opened in the same tab
+			// press the back button to get back to item page
+			if (imgPage.url() === imgUrl) {
+				if (page.url() === imgUrl) {
+					await page.goBack();
+				} else {
+					// close the download modal
+					await Promise.all([
+						page.waitFor('#downloadModal', {visible: false}),
+						page.waitFor(1000),
+						page.click('#downloadModal .close')
+					]);
+				}
+			} 
+		} catch(err) {
+			console.log("Didn't open the image for download! " + err);
 		}
+
 	}
 	// press the back button to get back to search results
 	await page.goBack();

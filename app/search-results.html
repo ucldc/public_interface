@@ -1,21 +1,21 @@
 <!doctype html>
-<!-- [include:library-header.html, {title: 'Search Results Layout', test_class: ''}] -->
+@@include("library-header.html", {"title": "Search Results Layout", "test_class": ""})
 
-  <!-- [include:components/header-component.html] -->
+  @@include("components/header-component.html")
 
   <h1>Search Results / <strong>Orange County</strong></h1>
 
   <div class="col-md-9 layout-col__1">
   
-    <!-- [include:components/filter-component.html] -->
+    @@include("components/filter-component.html")
   
   </div>
 
   <div class="col-md-3 layout-col__2">
 
-    <!-- [include:components/search-within-component.html] -->
+    @@include("components/search-within-component.html")
 
-    <!-- [include:components/facets-component.html] -->
+    @@include("components/facets-component.html")
 
   </div>
 
@@ -25,30 +25,30 @@
 
     <div class="row object-view-row">
 
-      <!-- [include:components/pagination-dropdown-component1.html] -->
+      @@include("components/pagination-dropdown-component1.html")
 
-      <!-- [include:components/toggle-component.html] -->
+      @@include("components/toggle-component.html")
 
     </div> <!-- .object-view-row -->
 
-    <!-- [include:components/thumbnail-component.html] -->
+    @@include("components/thumbnail-component.html")
 
     <div class="row">
 
-      <!-- [include:components/pagination-buttons-component.html] -->
+      @@include("components/pagination-buttons-component.html")
 
-      <!-- [include:components/pagination-dropdown-component2.html] -->
+      @@include("components/pagination-dropdown-component2.html")
 
     </div>
     
     <div class="related-coll--search-results-page">
 
-      <!-- [include:components/related-collections-component.html] -->
+      @@include("components/related-collections-component.html")
 
     </div>
 
   </div> <!-- col-md-9 layout-col__3 -->
   
-    <!-- [include:components/footer-component.html] -->
+    @@include("components/footer-component.html")
 
-<!-- [include:library-footer.html] -->
+@@include("library-footer.html")

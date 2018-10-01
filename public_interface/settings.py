@@ -261,7 +261,7 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = getenv('UCLDC_STATIC_URL',
-                       'http://localhost:9000/')  # `grunt serve`
+                       'http://localhost:9000/')  # `gulp serve`
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 

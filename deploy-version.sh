@@ -43,10 +43,7 @@ fi
 
 ZIP="ucldc-$1.zip"
 
-grunt
-cd app
-git checkout .
-cd ..
+gulp
 
 # package app and upload
 zip $ZIP -r calisphere/ load-content.sh manage.py public_interface/ test/ requirements.txt README.md .ebextensions/ dist/ exhibits/ fixtures/

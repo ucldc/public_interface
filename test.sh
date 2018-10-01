@@ -11,10 +11,7 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # http://stackoverflow.com/questions/59895
 cd $DIR
 
-grunt
-cd app
-git checkout .
-cd ..
+gulp
 python manage.py collectstatic --noinput
 python manage.py test
 

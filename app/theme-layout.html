@@ -1,7 +1,7 @@
 <!doctype html>
-<!-- [include:library-header.html, {title: 'Search Results Layout', test_class: ''}] -->
+@@include("library-header.html", {"title": "Search Results Layout", "test_class": ""})
 
-  <!-- [include:components/header-component.html] -->
+  @@include("components/header-component.html")
 
   <nav aria-label="breadcrumb" role="navigation">
     <span id="exhibit__breadcrumb-label">Exhibitions</span>
@@ -224,9 +224,9 @@
     <h2>About this theme:</h2>
     <p>"Native Americans" was created by the University of California in 2005 as part of the <a>California Cultures</a> project.</p>
   </div>
-    <!-- [include:components/footer-component.html] -->
+    @@include("components/footer-component.html")
 
-<!-- [include:library-footer.html] -->
+@@include("library-footer.html")
     
 <script>
   $('#js-exhibit__overview').click(function() {

@@ -931,16 +931,19 @@ def institutionView(request,
                     institution_type='repository|campus'):
     institution_url = 'https://registry.cdlib.org/api/v1/' + institution_type + '/' + institution_id + '/'
     institution_details = json_loads_url(institution_url + "?format=json")
-    if 'ark' in institution_details and institution_details['ark'] != '':
+
+    if not institution_details:
+        raise Http404("{0} does not exist".format(institution_id))
+
+    if institution_details.get('ark'):
         contact_information = json_loads_url(
             "http://dsc.cdlib.org/institution-json/" +
-            institution_details['ark'])
+            institution_details.get('ark'))
     else:
         contact_information = ''
 
-    if 'campus' in institution_details and len(
-            institution_details['campus']) > 0:
-        uc_institution = institution_details['campus']
+    if institution_details.get('campus'):
+        uc_institution = institution_details.get('campus')
     else:
         uc_institution = False
 
@@ -986,12 +989,12 @@ def institutionView(request,
         if institution_type == 'campus':
             context.update({
                 'repository_id': None,
-                'title': institution_details['name'],
-                'campus_slug': institution_details['slug'],
-                'related_collections': relatedCollections(request, slug=institution_details['slug']),
+                'title': institution_details.get('name'),
+                'campus_slug': institution_details.get('slug'),
+                'related_collections': relatedCollections(request, slug=institution_details.get('slug')),
                 'form_action':
                 reverse('calisphere:campusView',
-                kwargs={'campus_slug': institution_details['slug'],
+                kwargs={'campus_slug': institution_details.get('slug'),
                 'subnav': 'items'})
             })
             for campus in CAMPUS_LIST:
@@ -1012,9 +1015,9 @@ def institutionView(request,
             # title for UC institutions needs to show parent campus
             if uc_institution:
                 context['title'] = '{0} / {1}'.format(
-                    uc_institution[0]['name'], institution_details['name'])
+                    uc_institution[0]['name'], institution_details.get('name'))
             else:
-                context['title'] = institution_details['name']
+                context['title'] = institution_details.get('name')
 
             if uc_institution is False:
                 for unit in FEATURED_UNITS:
@@ -1078,7 +1081,7 @@ def institutionView(request,
                     collection_parts[2],
                     collection_parts[1], ))
             related_collections[i] = getCollectionMosaic(
-                collection_data['url'])
+                collection_data.get('url'))
 
         context = {
             'page': page,
@@ -1094,11 +1097,11 @@ def institutionView(request,
             context['prev_page'] = page - 1
 
         if institution_type == 'campus':
-            context['campus_slug'] = institution_details['slug']
-            context['title'] = institution_details['name']
+            context['campus_slug'] = institution_details.get('slug')
+            context['title'] = institution_details.get('name')
             for campus in CAMPUS_LIST:
-                if institution_id == campus['id'] and 'featuredImage' in campus:
-                    context['featuredImage'] = campus['featuredImage']
+                if institution_id == campus.get('id') and 'featuredImage' in campus:
+                    context['featuredImage'] = campus.get('featuredImage')
             context['repository_id'] = None
             context['institution']['campus'] = None
 
@@ -1109,14 +1112,14 @@ def institutionView(request,
             # refactor, as this is copy/pasted in this commit
             if uc_institution:
                 context['title'] = '{0} / {1}'.format(
-                    uc_institution[0]['name'], institution_details['name'])
+                    uc_institution[0]['name'], institution_details.get('name'))
             else:
-                context['title'] = institution_details['name']
+                context['title'] = institution_details.get('name')
 
             if uc_institution is False:
                 for unit in FEATURED_UNITS:
-                    if unit['id'] == institution_id:
-                        context['featuredImage'] = unit['featuredImage']
+                    if unit.get('id') == institution_id:
+                        context['featuredImage'] = unit.get('featuredImage')
 
             if 'featuredImage' not in context:
                 context['featuredImage'] = None

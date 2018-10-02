@@ -70,12 +70,23 @@
     </div>
   </div>
 
-  {% if exhibit.byline %}
   <div class="row">
-    <h2>About this exhibition:</h2>
-    {% include "exhibits/render_as.html" with render_as=exhibit.byline_render_as text=exhibit.byline truncate=False container_class="exhibit__byline" %}
+    {% if exhibit.byline %}
+    <h2>Credits:</h2>
+    {% include "exhibits/render_as.html" with render_as=exhibit.byline_render_as text=exhibit.byline truncate=False %}
+    {% endif %}
+
+    <h2>Using this exhibition:</h2>
+    <p>
+      The text of this exhibition is available under a <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons CC-BY license</a>. You are free to share and adapt it however you like, provided you provide attribution as follows:
+    </p>
+    <p>
+      {{ exhibit.title }} curated by {{ exhibit.curator }}, available under a <a href="<a href='https://creativecommons.org/licenses/by/4.0/'>">CC BY 4.0 license</a>. &#169; {{ exhibit.copyright_year }}, {{ exhibit.copyright_holder }}.
+    </p>
+    <p class="exhibit__byline">
+      Please note that this license applies only to the descriptive copy and does not apply to any and all digital items that may appear.
+    </p>
   </div>
-  {% endif %}
 
   {% if relatedExhibitsByTheme|length > 0 or exhibit.published_essays.all|length > 0 or exhibit.published_lessons.all|length > 0 %}
   <div class="exhibit__related-materials">

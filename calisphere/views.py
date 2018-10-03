@@ -130,12 +130,12 @@ def process_facets(facets, filters, facet_type=None):
                     collection = getCollectionData(
                         collection_id=api_url.group('url'))
                     display_facets.append(
-                        (collection['url'] + "::" + collection['name'], 0))
+                        ("{}::{}".format(collection.get('url'), collection.get('name')), 0))
                 elif api_url.group('collection_or_repo') == 'repository':
                     repository = getRepositoryData(
                         repository_id=api_url.group('url'))
                     display_facets.append(
-                        (repository['url'] + "::" + repository['name'], 0))
+                        ("{}::{}".format(repository.get('url'), repository.get('name')), 0))
             else:
                 display_facets.append((f, 0))
 
@@ -453,7 +453,7 @@ def search(request):
             'search_results': solr_search.results,
             'numFound': solr_search.numFound,
             'pages': int(math.ceil(old_div(float(solr_search.numFound), int(context['rows'])))),
-            'related_collections': relatedCollections(request),
+            'related_collections': getRelatedCollections(request)[0],
             'num_related_collections': len(params.getlist('collection_data'))
             if len(params.getlist('collection_data')) > 0 else
             len(context['facets']['collection_data']),
@@ -576,17 +576,12 @@ def itemViewCarousel(request):
             'item_id': item_id
         })
 
-
-def relatedCollections(request, slug=None, repository_id=None):
+def getRelatedCollections(request, slug=None, repository_id=None):
     params = request.GET.copy()
-    ajaxRequest = True if 'rc_page' in params else False
-
-    # get list of related collections
     solrParams = solrEncode(params, FACET_FILTER_TYPES, [{'facet': 'collection_data'}])
     solrParams['rows'] = 0
 
-    if 'campus_slug' in params:
-        slug = params.get('campus_slug')
+    slug = params.get('campus_slug') if params.get('campus_slug') else slug
 
     if slug:
         campus = filter(lambda c: c['slug'] == slug, CAMPUS_LIST)
@@ -598,11 +593,8 @@ def relatedCollections(request, slug=None, repository_id=None):
 
     # mlt search
     if len(solrParams['q']) == 0 and len(solrParams['fq']) == 0:
-        item_id = params.get('itemId', '')
-        solrParams['q'] = 'id:' + item_id
-        # print(solrParams)
-        # print(ajaxRequest)
-        # print(item_id)
+        if params.get('itemId'):
+            solrParams['q'] = 'id:' + params.get('itemId', '')
 
     related_collections = SOLR_select(**solrParams)
     related_collections = related_collections.facet_counts['facet_fields']['collection_data']
@@ -660,31 +652,35 @@ def relatedCollections(request, slug=None, repository_id=None):
 
                 three_related_collections.append(collection_data)
 
-    if not ajaxRequest:
-        return three_related_collections
-    else:
-        context = {
-            'q': params.get('q'),
-            'rq': params.getlist('rq'),
-            'num_related_collections': len(related_collections),
-            'related_collections': three_related_collections,
-            'rc_page': params.get('rc_page'),
-        }
-        if len(params.getlist('itemId')) > 0: 
-            context['itemId'] = params.get('itemId')
-        if len(params.getlist('referral')) > 0:
-            context['referral'] = params.get('referral')
-            context['referralName'] = params.get('referralName')
-            if context['referral'] == 'institution' or context['referral'] == 'campus': 
-                if (
-                    len(params.getlist('facet_decade')) > 0 
-                    or len(params.getlist('type_ss')) > 0 
-                    or len(params.getlist('collection_data')) > 0
-                ):
-                    context['filters'] = True
-                if context['referral'] == 'campus' and len(params.getlist('repository_data')) > 0:
-                    context['filters'] = True
-        return render(request, 'calisphere/related-collections.html', context)
+    return three_related_collections, len(related_collections)
+
+def relatedCollections(request, slug=None, repository_id=None):
+    params = request.GET.copy()
+
+    three_related_collections, num_related_collections = getRelatedCollections(request, slug, repository_id)
+
+    context = {
+        'q': params.get('q'),
+        'rq': params.getlist('rq'),
+        'num_related_collections': num_related_collections,
+        'related_collections': three_related_collections,
+        'rc_page': params.get('rc_page'),
+    }
+    if len(params.getlist('itemId')) > 0:
+        context['itemId'] = params.get('itemId')
+    if len(params.getlist('referral')) > 0:
+        context['referral'] = params.get('referral')
+        context['referralName'] = params.get('referralName')
+        if context['referral'] == 'institution' or context['referral'] == 'campus':
+            if (
+                len(params.getlist('facet_decade')) > 0
+                or len(params.getlist('type_ss')) > 0
+                or len(params.getlist('collection_data')) > 0
+            ):
+                context['filters'] = True
+            if context['referral'] == 'campus' and len(params.getlist('repository_data')) > 0:
+                context['filters'] = True
+    return render(request, 'calisphere/related-collections.html', context)
 
 def relatedExhibitions(request):
     params = request.GET.copy()
@@ -991,7 +987,7 @@ def institutionView(request,
                 'repository_id': None,
                 'title': institution_details.get('name'),
                 'campus_slug': institution_details.get('slug'),
-                'related_collections': relatedCollections(request, slug=institution_details.get('slug')),
+                'related_collections': getRelatedCollections(request, slug=institution_details.get('slug'))[0],
                 'form_action':
                 reverse('calisphere:campusView',
                 kwargs={'campus_slug': institution_details.get('slug'),
@@ -1005,7 +1001,7 @@ def institutionView(request,
             context.update({
                 'repository_id': institution_id,
                 'uc_institution': uc_institution,
-                'related_collections': relatedCollections(request, repository_id=institution_id),
+                'related_collections': getRelatedCollections(request, repository_id=institution_id)[0],
                 'form_action':
                 reverse('calisphere:repositoryView',
                 kwargs={'repository_id': institution_id,

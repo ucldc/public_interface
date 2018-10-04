@@ -779,8 +779,12 @@ def collectionsSearch(request):
 def collectionView(request, collection_id):
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')
-    for repository in collection_details['repository']:
-        repository['resource_id'] = repository['resource_uri'].split('/')[-2]
+
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    for repository in collection_details.get('repository'):
+        repository['resource_id'] = repository.get('resource_uri').split('/')[-2]
 
     params = request.GET.copy()
     context = searchDefaults(params)
@@ -788,8 +792,8 @@ def collectionView(request, collection_id):
     # Collection Views don't allow filtering or faceting by collection_data or repository_data
     facet_filter_types = filter(lambda facet_filter_type: facet_filter_type['facet'] != 'collection_data' and facet_filter_type['facet'] != 'repository_data', FACET_FILTER_TYPES)
     # Add Custom Facet Filter Types
-    if collection_details['custom_facet']:
-        for custom_facet in collection_details['custom_facet']:
+    if collection_details.get('custom_facet'):
+        for custom_facet in collection_details.get('custom_facet'):
             facet_filter_types.append({
                 'facet': custom_facet['facet_field'],
                 'display_name': custom_facet['label'],

@@ -130,12 +130,12 @@ def process_facets(facets, filters, facet_type=None):
                     collection = getCollectionData(
                         collection_id=api_url.group('url'))
                     display_facets.append(
-                        (collection['url'] + "::" + collection['name'], 0))
+                        ("{}::{}".format(collection.get('url'), collection.get('name')), 0))
                 elif api_url.group('collection_or_repo') == 'repository':
                     repository = getRepositoryData(
                         repository_id=api_url.group('url'))
                     display_facets.append(
-                        (repository['url'] + "::" + repository['name'], 0))
+                        ("{}::{}".format(repository.get('url'), repository.get('name')), 0))
             else:
                 display_facets.append((f, 0))
 
@@ -453,7 +453,7 @@ def search(request):
             'search_results': solr_search.results,
             'numFound': solr_search.numFound,
             'pages': int(math.ceil(old_div(float(solr_search.numFound), int(context['rows'])))),
-            'related_collections': relatedCollections(request),
+            'related_collections': getRelatedCollections(request)[0],
             'num_related_collections': len(params.getlist('collection_data'))
             if len(params.getlist('collection_data')) > 0 else
             len(context['facets']['collection_data']),
@@ -576,17 +576,12 @@ def itemViewCarousel(request):
             'item_id': item_id
         })
 
-
-def relatedCollections(request, slug=None, repository_id=None):
+def getRelatedCollections(request, slug=None, repository_id=None):
     params = request.GET.copy()
-    ajaxRequest = True if 'rc_page' in params else False
-
-    # get list of related collections
     solrParams = solrEncode(params, FACET_FILTER_TYPES, [{'facet': 'collection_data'}])
     solrParams['rows'] = 0
 
-    if 'campus_slug' in params:
-        slug = params.get('campus_slug')
+    slug = params.get('campus_slug') if params.get('campus_slug') else slug
 
     if slug:
         campus = filter(lambda c: c['slug'] == slug, CAMPUS_LIST)
@@ -598,11 +593,8 @@ def relatedCollections(request, slug=None, repository_id=None):
 
     # mlt search
     if len(solrParams['q']) == 0 and len(solrParams['fq']) == 0:
-        item_id = params.get('itemId', '')
-        solrParams['q'] = 'id:' + item_id
-        # print(solrParams)
-        # print(ajaxRequest)
-        # print(item_id)
+        if params.get('itemId'):
+            solrParams['q'] = 'id:' + params.get('itemId', '')
 
     related_collections = SOLR_select(**solrParams)
     related_collections = related_collections.facet_counts['facet_fields']['collection_data']
@@ -660,31 +652,38 @@ def relatedCollections(request, slug=None, repository_id=None):
 
                 three_related_collections.append(collection_data)
 
-    if not ajaxRequest:
-        return three_related_collections
-    else:
-        context = {
-            'q': params.get('q'),
-            'rq': params.getlist('rq'),
-            'num_related_collections': len(related_collections),
-            'related_collections': three_related_collections,
-            'rc_page': params.get('rc_page'),
-        }
-        if len(params.getlist('itemId')) > 0: 
-            context['itemId'] = params.get('itemId')
-        if len(params.getlist('referral')) > 0:
-            context['referral'] = params.get('referral')
-            context['referralName'] = params.get('referralName')
-            if context['referral'] == 'institution' or context['referral'] == 'campus': 
-                if (
-                    len(params.getlist('facet_decade')) > 0 
-                    or len(params.getlist('type_ss')) > 0 
-                    or len(params.getlist('collection_data')) > 0
-                ):
-                    context['filters'] = True
-                if context['referral'] == 'campus' and len(params.getlist('repository_data')) > 0:
-                    context['filters'] = True
-        return render(request, 'calisphere/related-collections.html', context)
+    return three_related_collections, len(related_collections)
+
+def relatedCollections(request, slug=None, repository_id=None):
+    params = request.GET.copy()
+
+    if not params:
+        raise Http404("No parameters to provide related collections")
+
+    three_related_collections, num_related_collections = getRelatedCollections(request, slug, repository_id)
+
+    context = {
+        'q': params.get('q'),
+        'rq': params.getlist('rq'),
+        'num_related_collections': num_related_collections,
+        'related_collections': three_related_collections,
+        'rc_page': params.get('rc_page'),
+    }
+    if len(params.getlist('itemId')) > 0:
+        context['itemId'] = params.get('itemId')
+    if len(params.getlist('referral')) > 0:
+        context['referral'] = params.get('referral')
+        context['referralName'] = params.get('referralName')
+        if context['referral'] == 'institution' or context['referral'] == 'campus':
+            if (
+                len(params.getlist('facet_decade')) > 0
+                or len(params.getlist('type_ss')) > 0
+                or len(params.getlist('collection_data')) > 0
+            ):
+                context['filters'] = True
+            if context['referral'] == 'campus' and len(params.getlist('repository_data')) > 0:
+                context['filters'] = True
+    return render(request, 'calisphere/related-collections.html', context)
 
 def relatedExhibitions(request):
     params = request.GET.copy()
@@ -783,8 +782,12 @@ def collectionsSearch(request):
 def collectionView(request, collection_id):
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')
-    for repository in collection_details['repository']:
-        repository['resource_id'] = repository['resource_uri'].split('/')[-2]
+
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    for repository in collection_details.get('repository'):
+        repository['resource_id'] = repository.get('resource_uri').split('/')[-2]
 
     params = request.GET.copy()
     context = searchDefaults(params)
@@ -792,8 +795,8 @@ def collectionView(request, collection_id):
     # Collection Views don't allow filtering or faceting by collection_data or repository_data
     facet_filter_types = filter(lambda facet_filter_type: facet_filter_type['facet'] != 'collection_data' and facet_filter_type['facet'] != 'repository_data', FACET_FILTER_TYPES)
     # Add Custom Facet Filter Types
-    if collection_details['custom_facet']:
-        for custom_facet in collection_details['custom_facet']:
+    if collection_details.get('custom_facet'):
+        for custom_facet in collection_details.get('custom_facet'):
             facet_filter_types.append({
                 'facet': custom_facet['facet_field'],
                 'display_name': custom_facet['label'],
@@ -931,16 +934,19 @@ def institutionView(request,
                     institution_type='repository|campus'):
     institution_url = 'https://registry.cdlib.org/api/v1/' + institution_type + '/' + institution_id + '/'
     institution_details = json_loads_url(institution_url + "?format=json")
-    if 'ark' in institution_details and institution_details['ark'] != '':
+
+    if not institution_details:
+        raise Http404("{0} does not exist".format(institution_id))
+
+    if institution_details.get('ark'):
         contact_information = json_loads_url(
             "http://dsc.cdlib.org/institution-json/" +
-            institution_details['ark'])
+            institution_details.get('ark'))
     else:
         contact_information = ''
 
-    if 'campus' in institution_details and len(
-            institution_details['campus']) > 0:
-        uc_institution = institution_details['campus']
+    if institution_details.get('campus'):
+        uc_institution = institution_details.get('campus')
     else:
         uc_institution = False
 
@@ -986,12 +992,12 @@ def institutionView(request,
         if institution_type == 'campus':
             context.update({
                 'repository_id': None,
-                'title': institution_details['name'],
-                'campus_slug': institution_details['slug'],
-                'related_collections': relatedCollections(request, slug=institution_details['slug']),
+                'title': institution_details.get('name'),
+                'campus_slug': institution_details.get('slug'),
+                'related_collections': getRelatedCollections(request, slug=institution_details.get('slug'))[0],
                 'form_action':
                 reverse('calisphere:campusView',
-                kwargs={'campus_slug': institution_details['slug'],
+                kwargs={'campus_slug': institution_details.get('slug'),
                 'subnav': 'items'})
             })
             for campus in CAMPUS_LIST:
@@ -1002,7 +1008,7 @@ def institutionView(request,
             context.update({
                 'repository_id': institution_id,
                 'uc_institution': uc_institution,
-                'related_collections': relatedCollections(request, repository_id=institution_id),
+                'related_collections': getRelatedCollections(request, repository_id=institution_id)[0],
                 'form_action':
                 reverse('calisphere:repositoryView',
                 kwargs={'repository_id': institution_id,
@@ -1012,9 +1018,9 @@ def institutionView(request,
             # title for UC institutions needs to show parent campus
             if uc_institution:
                 context['title'] = '{0} / {1}'.format(
-                    uc_institution[0]['name'], institution_details['name'])
+                    uc_institution[0]['name'], institution_details.get('name'))
             else:
-                context['title'] = institution_details['name']
+                context['title'] = institution_details.get('name')
 
             if uc_institution is False:
                 for unit in FEATURED_UNITS:
@@ -1078,7 +1084,7 @@ def institutionView(request,
                     collection_parts[2],
                     collection_parts[1], ))
             related_collections[i] = getCollectionMosaic(
-                collection_data['url'])
+                collection_data.get('url'))
 
         context = {
             'page': page,
@@ -1094,11 +1100,11 @@ def institutionView(request,
             context['prev_page'] = page - 1
 
         if institution_type == 'campus':
-            context['campus_slug'] = institution_details['slug']
-            context['title'] = institution_details['name']
+            context['campus_slug'] = institution_details.get('slug')
+            context['title'] = institution_details.get('name')
             for campus in CAMPUS_LIST:
-                if institution_id == campus['id'] and 'featuredImage' in campus:
-                    context['featuredImage'] = campus['featuredImage']
+                if institution_id == campus.get('id') and 'featuredImage' in campus:
+                    context['featuredImage'] = campus.get('featuredImage')
             context['repository_id'] = None
             context['institution']['campus'] = None
 
@@ -1109,14 +1115,14 @@ def institutionView(request,
             # refactor, as this is copy/pasted in this commit
             if uc_institution:
                 context['title'] = '{0} / {1}'.format(
-                    uc_institution[0]['name'], institution_details['name'])
+                    uc_institution[0]['name'], institution_details.get('name'))
             else:
-                context['title'] = institution_details['name']
+                context['title'] = institution_details.get('name')
 
             if uc_institution is False:
                 for unit in FEATURED_UNITS:
-                    if unit['id'] == institution_id:
-                        context['featuredImage'] = unit['featuredImage']
+                    if unit.get('id') == institution_id:
+                        context['featuredImage'] = unit.get('featuredImage')
 
             if 'featuredImage' not in context:
                 context['featuredImage'] = None

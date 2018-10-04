@@ -657,6 +657,9 @@ def getRelatedCollections(request, slug=None, repository_id=None):
 def relatedCollections(request, slug=None, repository_id=None):
     params = request.GET.copy()
 
+    if not params:
+        raise Http404("No parameters to provide related collections")
+
     three_related_collections, num_related_collections = getRelatedCollections(request, slug, repository_id)
 
     context = {

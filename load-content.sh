@@ -11,6 +11,13 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # http://stackoverflow.com/questions/59895
 cd $DIR
 
+if [[ -e /opt/python/current/env ]]
+  then
+    set +u
+    source /opt/python/current/env
+    set -u
+fi
+
 REGION=us-west-2
 filename="${UCLDC_EXHIBITIONS_DATA##*/}"         # http://unix.stackexchange.com/a/64435/40198
 name=$(echo $filename | rev | cut -c 4- | rev )  # http://stackoverflow.com/a/5863742/1763984

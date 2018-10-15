@@ -392,8 +392,11 @@ def itemView(request, item_id=''):
             item['parsed_collection_data'].append(
                 getMoreCollectionData(collection_data))
         for repository_data in item.get('repository_data'):
-            item['parsed_repository_data'].append(
-                getRepositoryData(repository_data=repository_data))
+            z = getRepositoryData(repository_data=repository_data).copy()
+            z.update({'aeon_url': 'https://google.com'})
+            item['parsed_repository_data'].append(z)
+            # getRepositoryData(repository_data=repository_data)
+            print(z)
 
             institution_url = item['parsed_repository_data'][0]['url']
             institution_details = json_loads_url(institution_url +

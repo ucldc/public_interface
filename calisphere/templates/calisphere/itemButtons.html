@@ -142,7 +142,7 @@ Permalink: {{ permalink }}</textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <a type="button" class="btn btn-primary" href="{{ repository.aeon_url }}?&Action=10&Form=30&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.title.0 }}&rft.date={{ item.date|join:', ' }}">Request Item through Aeon</a>
+        <a type="button" class="btn btn-primary" href="{{ repository.aeon_url }}&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.title.0 }}&rft.date={{ item.date|join:', ' }}">Request Item through Aeon</a>
       </div>
     </div>
   </div>

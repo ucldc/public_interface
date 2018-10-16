@@ -24,6 +24,7 @@ if hasattr(settings,'XRAY_RECORDER'):
     patch(('requests',))
 
 SOLR_DEFAULTS = {
+    'qf': 'title^10 description^5 subject^2',
     'mm': '100%',
     'pf3': 'title',
     'pf': 'text,title',

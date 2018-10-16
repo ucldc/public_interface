@@ -393,7 +393,7 @@ def itemView(request, item_id=''):
                 getMoreCollectionData(collection_data))
         for repository_data in item.get('repository_data'):
             z = getRepositoryData(repository_data=repository_data).copy()
-            z.update({'aeon_url': 'https://google.com'})
+            z.update({'aeon_url': 'http://training5.atlas-sys.com/aeon/aeon.dll'})
             item['parsed_repository_data'].append(z)
             # getRepositoryData(repository_data=repository_data)
             print(z)

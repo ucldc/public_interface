@@ -107,8 +107,8 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
 });
 
 gulp.task('copy-bower-files', function() {
-  return gulp.src('bower_components/{,**/}*')
-  .pipe(gulp.dest('dist/bower_components/'))
+  return gulp.src('bower_components/openseadragon/built-openseadragon/{,**/}*.*')
+  .pipe(gulp.dest('dist/bower_components/openseadragon/built-openseadragon/'))
 })
 
 gulp.task('copy-fonts', function() {
@@ -138,7 +138,8 @@ gulp.task('runserver', function() {
         '/bower_components': './bower_components',
         '/images': 'app/images',
         '/admin': 'app/admin',
-        '/static_root/vendor-fonts': 'app/styles/vendor-fonts'
+        '/static_root/vendor-fonts': 'app/styles/vendor-fonts',
+        '/vendor-fonts': 'app/styles/vendor-fonts',
       },
 		}, 
     notify: false,

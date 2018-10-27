@@ -32,6 +32,7 @@
     "gulp-wiredep": "^1.2.0",
     "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1",
+    "npm-wiredep": "0.0.4",
     "postcss-import": "^12.0.0",
     "postcss-svg": "^2.4.0",
     "wiredep": "^4.0.0"
@@ -39,5 +40,27 @@
   "engines": {
     "node": ">=10.8.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "backbone": "~1.2.1",
+    "bootstrap-sass": "~3.2.0",
+    "chai": "~1.8.0",
+    "desandro-classie": "^1.0.1",
+    "doc-ready": "~1.0.4",
+    "get-size": "~2.0.2",
+    "imagesloaded": "~3.1.8",
+    "isotope-layout": "~3.0.6",
+    "jquery": "~3.3.1",
+    "jquery-pjax": "^2.0.1",
+    "jquery.dotdotdot": "^1.7.4",
+    "mediaelement": "~4.1.2",
+    "nprogress": "~0.2.0",
+    "outlayer": "~2.1.0",
+    "picturefill": "~2.3.1",
+    "slick-carousel": "=1.8.1",
+    "tap-listener": "~2.0.0",
+    "typeahead.js": "~0.11.1",
+    "underscore": "~1.7.0",
+    "unidragger": "~2.1.0",
+    "unipointer": "~2.1.0"
+  }
 }

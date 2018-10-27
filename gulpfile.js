@@ -1,5 +1,6 @@
 const del = require('del');
 const wiredep = require('gulp-wiredep');
+const npmwiredep = require('npm-wiredep').stream;
 const sass = require('gulp-sass');
 const sassLint = require('gulp-sass-lint');
 const postcss = require('gulp-postcss');
@@ -83,18 +84,20 @@ gulp.task('html-serve', function(done) {
   .pipe(fileinclude({
     basepath: 'app/'
   }))
+  .pipe(npmwiredep({ exclude: [ 'backbone', 'underscore' ]}))
   .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('html-build', function() {
   return gulp.src('app/*.html')
   .pipe(wiredep())
-  .pipe(useref({ searchPath: 'dist' }))
+  .pipe(npmwiredep({ exclude: [ 'backbone', 'underscore' ]}))
+  .pipe(useref({ searchPath: ['dist', '.'] }))
   .pipe(fileinclude({
     basepath: 'app/'
   }))
   // replace html blocks, noAssets set to true - already made bundles
-  .pipe(useref({ noAssets: true, searchPath: 'dist' }))
+  .pipe(useref({ noAssets: true, searchPath: ['dist', '.'] }))
   .pipe(gulp.dest('dist'));
 });
 
@@ -136,6 +139,7 @@ gulp.task('runserver', function() {
 			baseDir: ['.tmp'],
 			routes: {
         '/bower_components': './bower_components',
+        '/node_modules': './node_modules',
         '/images': 'app/images',
         '/admin': 'app/admin',
         '/static_root/vendor-fonts': 'app/styles/vendor-fonts',

@@ -89,8 +89,8 @@ var GlobalSearchFormView = Backbone.View.extend({
   },
 
   pjax_beforeReplace: function() {
-    if($('#js-mosaicContainer').length > 0) {
-      $('#js-mosaicContainer').infinitescroll('destroy');
+    if($('#js-mosaicContainer').length > 0 && $('#js-collectionPagination').children().length) {
+      $('#js-mosaicContainer').infiniteScroll('destroy');
     }
 
   },

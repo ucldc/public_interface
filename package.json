@@ -48,6 +48,7 @@
     "doc-ready": "~1.0.4",
     "get-size": "~2.0.2",
     "imagesloaded": "~3.1.8",
+    "infinite-scroll": "^3.0.5",
     "isotope-layout": "~3.0.6",
     "jquery": "~3.3.1",
     "jquery-pjax": "^2.0.1",

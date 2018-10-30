@@ -5,7 +5,7 @@
     "modernizr": "~2.8.2",
     "fontawesome": "~4.7.0",
     "openseadragon": "~2.0.0",
-    "infinite-scroll": "~2.1.0",
+    "mocha": "~1.14.0"
   },
   "resolutions": {
     "slick.js": "~1.5.5",

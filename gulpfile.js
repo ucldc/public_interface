@@ -1,6 +1,5 @@
 const del = require('del');
 const wiredep = require('gulp-wiredep');
-const npmwiredep = require('npm-wiredep').stream;
 const sass = require('gulp-sass');
 const sassLint = require('gulp-sass-lint');
 const postcss = require('gulp-postcss');
@@ -84,14 +83,12 @@ gulp.task('html-serve', function(done) {
   .pipe(fileinclude({
     basepath: 'app/'
   }))
-  .pipe(npmwiredep({ exclude: [ 'backbone', 'underscore' ]}))
   .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('html-build', function() {
   return gulp.src('app/*.html')
   .pipe(wiredep())
-  .pipe(npmwiredep({ exclude: [ 'backbone', 'underscore' ]}))
   .pipe(useref({ searchPath: ['dist', '.'] }))
   .pipe(fileinclude({
     basepath: 'app/'
@@ -110,8 +107,8 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
 });
 
 gulp.task('copy-bower-files', function() {
-  return gulp.src('bower_components/openseadragon/built-openseadragon/{,**/}*.*')
-  .pipe(gulp.dest('dist/bower_components/openseadragon/built-openseadragon/'))
+  return gulp.src('node_modules/openseadragon/built-openseadragon/{,**/}*.*')
+  .pipe(gulp.dest('dist/node_modules/openseadragon/built-openseadragon/'))
 })
 
 gulp.task('copy-fonts', function() {

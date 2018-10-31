@@ -3,7 +3,6 @@
   "private": true,
   "dependencies": {
     "modernizr": "~2.8.2",
-    "fontawesome": "~4.7.0",
     "mocha": "~1.14.0"
   }
 }

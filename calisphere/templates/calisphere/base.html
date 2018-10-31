@@ -13,8 +13,8 @@
     <!-- Force favicon refresh per this stack overflow: http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh -->
     {% block styles %}
     {% if devMode %}
-      <link rel="stylesheet" href="{% static "bower_components/mediaelement/build/mediaelementplayer.css" %}" />
-      <link rel="stylesheet" href="{% static "bower_components/nprogress/nprogress.css" %}" />
+      <link rel="stylesheet" href="{% static "node_modules/mediaelement/build/mediaelementplayer.css" %}" />
+      <link rel="stylesheet" href="{% static "node_modules/nprogress/nprogress.css" %}" />
       <link rel="stylesheet" href="{% static "styles/main.css" %}" />
     {% else %}
       <link rel="stylesheet" href="{% static "styles/vendor.css" %}" />

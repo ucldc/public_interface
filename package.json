@@ -55,6 +55,7 @@
     "jquery.dotdotdot": "^1.7.4",
     "mediaelement": "~4.1.2",
     "nprogress": "~0.2.0",
+    "openseadragon": "^2.1.0",
     "outlayer": "~2.1.0",
     "picturefill": "~2.3.1",
     "slick-carousel": "=1.8.1",

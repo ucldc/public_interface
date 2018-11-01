@@ -107,9 +107,9 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
 });
 
 gulp.task('copy-bower-files', function() {
-  return gulp.src('node_modules/openseadragon/built-openseadragon/{,**/}*.*')
-  .pipe(gulp.dest('dist/node_modules/openseadragon/built-openseadragon/'))
-})
+  return gulp.src('node_modules/openseadragon/build/{,**/}*.*')
+  .pipe(gulp.dest('dist/node_modules/openseadragon/build/'))
+});
 
 gulp.task('copy-fonts', function() {
   return gulp.src([

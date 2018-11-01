@@ -1,5 +1,4 @@
 const del = require('del');
-const wiredep = require('gulp-wiredep');
 const sass = require('gulp-sass');
 const sassLint = require('gulp-sass-lint');
 const postcss = require('gulp-postcss');
@@ -79,7 +78,6 @@ gulp.task('js-serve', function() {
 
 gulp.task('html-serve', function(done) {
   return gulp.src('app/*.html')
-  .pipe(wiredep())
   .pipe(fileinclude({
     basepath: 'app/'
   }))
@@ -88,7 +86,6 @@ gulp.task('html-serve', function(done) {
 
 gulp.task('html-build', function() {
   return gulp.src('app/*.html')
-  .pipe(wiredep())
   .pipe(useref({ searchPath: ['dist', '.'] }))
   .pipe(fileinclude({
     basepath: 'app/'

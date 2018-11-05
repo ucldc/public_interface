@@ -103,7 +103,7 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
   .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-bower-files', function() {
+gulp.task('copy-openseadragon-files', function() {
   return gulp.src('node_modules/openseadragon/build/{,**/}*.*')
   .pipe(gulp.dest('dist/node_modules/openseadragon/build/'))
 });
@@ -132,7 +132,6 @@ gulp.task('runserver', function() {
 		server: {
 			baseDir: ['.tmp'],
 			routes: {
-        '/bower_components': './bower_components',
         '/node_modules': './node_modules',
         '/images': 'app/images',
         '/admin': 'app/admin',
@@ -155,7 +154,7 @@ gulp.task('runserver', function() {
   gulp.watch(['.tmp/*'], reload);
   gulp.watch(['app/admin/*'], reload);
   gulp.watch(['gulpfile.js']);
-  gulp.watch(['bower.json', 'app/{,**/}*.html'], gulp.parallel('html-serve'));
+  gulp.watch(['app/{,**/}*.html'], gulp.parallel('html-serve'));
   gulp.watch(['app/{,**/}*.scss'], gulp.parallel('sass-serve'));
   gulp.watch(['app/{,**/}*.js'], gulp.parallel('js-serve'));
 });
@@ -172,7 +171,7 @@ gulp.task('build', gulp.series('clean', gulp.parallel(
   'image-build',
   'copy-ico-png-txt-webp-htaccss',
   'copy-fonts',
-  'copy-bower-files'
+  'copy-openseadragon-files'
   ), 'modernizr', 'html-build', 'minifyCss', 'minifyJS'));
 
 gulp.task('default', gulp.series('build'));

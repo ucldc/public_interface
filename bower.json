@@ -1,8 +1,0 @@
-{
-  "name": "public-interface",
-  "private": true,
-  "dependencies": {
-    "modernizr": "~2.8.2",
-    "mocha": "~1.14.0"
-  }
-}

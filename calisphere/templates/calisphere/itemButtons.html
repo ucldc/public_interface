@@ -137,12 +137,12 @@ Permalink: {{ permalink }}</textarea>
         <h4 class="modal-title" id="requestModalTitle">Request Item</h4>
       </div>
       <div class="modal-body">
-        <p>Requests to view the original item or obtain copies of it must be made through Aeon, {% if repository.campus %}{{ repository.campus }}, {% endif %}{{ repository.name }}'s request system. Sign up for a free Aeon account to create a request for the item by clicking the link below. You can use Aeon to schedule an in-person visit at {% if repository.campus %}{{ repository.campus }}, {% endif %}{{ repository.name }} to see the original item, or place an order to obtain a photocopy or a digital copy.</p>
+        <p>Requests to view the original item or obtain copies of it must be made through Aeon, {% if repository.campus %}{{ repository.campus }}, {% endif %}{{ repository.name }}'s request system. Sign up for a free Aeon account to create a request for the item by clicking the button below. You can use Aeon to schedule an in-person visit at {% if repository.campus %}{{ repository.campus }}, {% endif %}{{ repository.name }} to see the original item, or place an order to obtain a photocopy or a digital copy.</p>
         <p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <a type="button" class="btn btn-primary" href="{{ repository.aeon_url }}&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.title.0 }}&rft.date={{ item.date|join:', ' }}">Request Item through Aeon</a>
+        <a type="button" class="btn btn-primary" href="{{ repository.aeon_url }}&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.collection_name.0 }}: {{ item.title.0 }}&ItemInfo1={{ item.title.0 }}">Request Item through Aeon</a>
       </div>
     </div>
   </div>
@@ -215,7 +215,7 @@ Permalink: {{ permalink }}</textarea>
         <!-- <span class="fa fa-exchange"></span> -->
         <!-- <span class="fa fa-archive"></span> -->
         <!-- <span class="fa fa-print"></span> -->
-      </span> Request {% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}
+      </span> Request {% if 'structMap' in item %}{{ item.contentFile.format }}{% elif item.type.0 == 'sound' %}item{% else %}{{ item.type.0 }}{% endif %}
     </a>
     {% endif %}
 

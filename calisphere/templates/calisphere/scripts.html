@@ -1,5 +1,6 @@
 {% load staticfiles %}
     {% if devMode %}
+      <script src="{% static "scripts/modernizr.js" %}"></script>
       <script src="{% static "node_modules/jquery/dist/jquery.js" %}"></script>
       <script src="{% static "node_modules/jquery-pjax/jquery.pjax.js" %}"></script>
       <script src="{% static "node_modules/underscore/underscore.js" %}"></script>
@@ -16,8 +17,6 @@
       <script src="{% static "node_modules/doc-ready/doc-ready.js" %}"></script>
       <script src="{% static "node_modules/desandro-classie/classie.js" %}"></script>
       <script src="{% static "node_modules/ev-emitter/ev-emitter.js" %}"></script>
-      <script src="{% static "node_modules/outlayer/item.js" %}"></script>
-      <script src="{% static "node_modules/outlayer/outlayer.js" %}"></script>
       <script src="{% static "node_modules/unipointer/unipointer.js" %}"></script>
       <script src="{% static "node_modules/unidragger/unidragger.js" %}"></script>
       <script src="{% static "node_modules/fizzy-ui-utils/utils.js" %}"></script>

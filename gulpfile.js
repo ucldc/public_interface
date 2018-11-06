@@ -64,9 +64,29 @@ gulp.task('minifyJS', function() {
 
 gulp.task('modernizr', function() {
   return gulp.src('dist/{,**/}*.{css,js}')
-    .pipe(modernizr())
+    .pipe(modernizr({
+      "options": [
+        "setClasses",
+        "addTest",
+        "html5printshiv",
+        "testProp"
+      ], "excludeTests": ['hidden']
+    }))
     .pipe(uglify())
     .pipe(gulp.dest('dist/scripts'));
+});
+
+gulp.task('modernizr-serve', function() {
+  return gulp.src('.tmp/{,**/}*.{css,js}')
+    .pipe(modernizr({
+      "options": [
+        "setClasses",
+        "addTest",
+        "html5printshiv",
+        "testProp"
+      ], "excludeTests": ['hidden']
+    }))
+    .pipe(gulp.dest('.tmp/scripts'));
 });
 
 gulp.task('js-serve', function() {
@@ -163,7 +183,7 @@ gulp.task('runserver', function() {
 gulp.task('test', gulp.series('clean'));
 
 gulp.task('serve', gulp.series('clean',
-	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'runserver'));
+	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'modernizr-serve', 'runserver'));
 
 gulp.task('build', gulp.series('clean', gulp.parallel(
   'sass-build',

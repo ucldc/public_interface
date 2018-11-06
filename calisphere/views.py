@@ -429,6 +429,8 @@ def itemView(request, item_id=''):
             'item': item_solr_search.results[0],
             'item_solr_search': item_solr_search,
             'meta_image': meta_image,
+            'repository_id': None,
+            'itemId': None,
         })
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])

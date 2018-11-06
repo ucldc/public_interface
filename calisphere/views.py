@@ -459,7 +459,9 @@ def search(request):
             len(context['facets']['collection_data']),
             'form_action': reverse('calisphere:search'),
             'FACET_FILTER_TYPES': FACET_FILTER_TYPES,
-            'filters': {}
+            'filters': {},
+            'repository_id': None,
+            'itemId': None,
         })
 
         for filter_type in FACET_FILTER_TYPES:

@@ -224,7 +224,7 @@ def solrEncode(params, filter_types, facet_types = []):
             selected_filters = " OR ".join(selected_filters)
             filters.append(selected_filters)
 
-    return {
+    query_value = {
         'q': query_terms_string,
         'rows': params.get('rows', '24'),
         'start': params.get('start', 0),
@@ -235,6 +235,13 @@ def solrEncode(params, filter_types, facet_types = []):
         'facet_limit': '-1',
         'facet_field': list(facet_type['facet'] for facet_type in facet_types)
     }
+
+    query_fields = params.get('qf')
+    if query_fields:
+        query_value.update({'qf': query_fields})
+
+    return query_value
+
 
 def getHostedContentFile(structmap):
     contentFile = ''
@@ -422,6 +429,8 @@ def itemView(request, item_id=''):
             'item': item_solr_search.results[0],
             'item_solr_search': item_solr_search,
             'meta_image': meta_image,
+            'repository_id': None,
+            'itemId': None,
         })
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
@@ -442,7 +451,8 @@ def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         params = request.GET.copy()
         context = searchDefaults(params)
-        solr_search = SOLR_select(**solrEncode(params, FACET_FILTER_TYPES))
+        solr_query = solrEncode(params, FACET_FILTER_TYPES)
+        solr_search = SOLR_select(**solr_query)
 
         # TODO: create a no results found page
         if len(solr_search.results) == 0: print('no results found')
@@ -459,7 +469,9 @@ def search(request):
             len(context['facets']['collection_data']),
             'form_action': reverse('calisphere:search'),
             'FACET_FILTER_TYPES': FACET_FILTER_TYPES,
-            'filters': {}
+            'filters': {},
+            'repository_id': None,
+            'itemId': None,
         })
 
         for filter_type in FACET_FILTER_TYPES:

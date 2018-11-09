@@ -39,10 +39,7 @@
   "dependencies": {
     "backbone": "~1.2.1",
     "bootstrap-sass": "~3.2.0",
-    "desandro-classie": "^1.0.1",
-    "doc-ready": "~1.0.4",
     "font-awesome": "~4.7.0",
-    "get-size": "~2.0.2",
     "imagesloaded": "~3.1.8",
     "infinite-scroll": "^3.0.5",
     "isotope-layout": "~3.0.6",
@@ -54,10 +51,7 @@
     "openseadragon": "^2.1.0",
     "picturefill": "~2.3.1",
     "slick-carousel": "=1.8.1",
-    "tap-listener": "~2.0.0",
     "typeahead.js": "~0.11.1",
-    "underscore": "~1.7.0",
-    "unidragger": "~2.1.0",
-    "unipointer": "~2.1.0"
+    "underscore": "~1.7.0"
   }
 }

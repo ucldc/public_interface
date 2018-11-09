@@ -2,7 +2,7 @@
 
 // ***** Vendor Variables ***** //
 
-$slick-font-path: "../../node_modules/font-awesome/fonts/";
+$slick-font-path: "../../bower_components/fontawesome/fonts/";
 $slick-font-family: "fontawesome";
 $slick-loader-path: "./";
 $slick-arrow-color: $design-primary-color;
@@ -16,8 +16,8 @@ $slick-opacity-not-active: 0.25;
 
 // ***** Vendor Libraries ***** //
 
-@import "../../node_modules/slick-carousel/slick/slick.scss";
-@import "../../node_modules/slick-carousel/slick/slick-theme.scss";
+@import "../../bower_components/slick.js/slick/slick.scss";
+@import "../../bower_components/slick.js/slick/slick-theme.scss";
 
 // ***** Vendor Overrides ***** //
 

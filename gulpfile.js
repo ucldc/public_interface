@@ -1,4 +1,5 @@
 const del = require('del');
+const wiredep = require('gulp-wiredep');
 const sass = require('gulp-sass');
 const sassLint = require('gulp-sass-lint');
 const postcss = require('gulp-postcss');
@@ -64,29 +65,9 @@ gulp.task('minifyJS', function() {
 
 gulp.task('modernizr', function() {
   return gulp.src('dist/{,**/}*.{css,js}')
-    .pipe(modernizr({
-      "options": [
-        "setClasses",
-        "addTest",
-        "html5printshiv",
-        "testProp"
-      ], "excludeTests": ['hidden']
-    }))
+    .pipe(modernizr())
     .pipe(uglify())
     .pipe(gulp.dest('dist/scripts'));
-});
-
-gulp.task('modernizr-serve', function() {
-  return gulp.src('.tmp/{,**/}*.{css,js}')
-    .pipe(modernizr({
-      "options": [
-        "setClasses",
-        "addTest",
-        "html5printshiv",
-        "testProp"
-      ], "excludeTests": ['hidden']
-    }))
-    .pipe(gulp.dest('.tmp/scripts'));
 });
 
 gulp.task('js-serve', function() {
@@ -98,6 +79,7 @@ gulp.task('js-serve', function() {
 
 gulp.task('html-serve', function(done) {
   return gulp.src('app/*.html')
+  .pipe(wiredep())
   .pipe(fileinclude({
     basepath: 'app/'
   }))
@@ -106,12 +88,13 @@ gulp.task('html-serve', function(done) {
 
 gulp.task('html-build', function() {
   return gulp.src('app/*.html')
-  .pipe(useref({ searchPath: ['dist', '.'] }))
+  .pipe(wiredep())
+  .pipe(useref({ searchPath: 'dist' }))
   .pipe(fileinclude({
     basepath: 'app/'
   }))
   // replace html blocks, noAssets set to true - already made bundles
-  .pipe(useref({ noAssets: true, searchPath: ['dist', '.'] }))
+  .pipe(useref({ noAssets: true, searchPath: 'dist' }))
   .pipe(gulp.dest('dist'));
 });
 
@@ -123,10 +106,10 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
   .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-openseadragon-files', function() {
-  return gulp.src('node_modules/openseadragon/build/{,**/}*.*')
-  .pipe(gulp.dest('dist/node_modules/openseadragon/build/'))
-});
+gulp.task('copy-bower-files', function() {
+  return gulp.src('bower_components/{,**/}*')
+  .pipe(gulp.dest('dist/bower_components/'))
+})
 
 gulp.task('copy-fonts', function() {
   return gulp.src([
@@ -152,11 +135,10 @@ gulp.task('runserver', function() {
 		server: {
 			baseDir: ['.tmp'],
 			routes: {
-        '/node_modules': './node_modules',
+        '/bower_components': './bower_components',
         '/images': 'app/images',
         '/admin': 'app/admin',
-        '/static_root/vendor-fonts': 'app/styles/vendor-fonts',
-        '/vendor-fonts': 'app/styles/vendor-fonts',
+        '/static_root/vendor-fonts': 'app/styles/vendor-fonts'
       },
 		}, 
     notify: false,
@@ -174,7 +156,7 @@ gulp.task('runserver', function() {
   gulp.watch(['.tmp/*'], reload);
   gulp.watch(['app/admin/*'], reload);
   gulp.watch(['gulpfile.js']);
-  gulp.watch(['app/{,**/}*.html'], gulp.parallel('html-serve'));
+  gulp.watch(['bower.json', 'app/{,**/}*.html'], gulp.parallel('html-serve'));
   gulp.watch(['app/{,**/}*.scss'], gulp.parallel('sass-serve'));
   gulp.watch(['app/{,**/}*.js'], gulp.parallel('js-serve'));
 });
@@ -183,7 +165,7 @@ gulp.task('runserver', function() {
 gulp.task('test', gulp.series('clean'));
 
 gulp.task('serve', gulp.series('clean',
-	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'modernizr-serve', 'runserver'));
+	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'runserver'));
 
 gulp.task('build', gulp.series('clean', gulp.parallel(
   'sass-build',
@@ -191,7 +173,7 @@ gulp.task('build', gulp.series('clean', gulp.parallel(
   'image-build',
   'copy-ico-png-txt-webp-htaccss',
   'copy-fonts',
-  'copy-openseadragon-files'
+  'copy-bower-files'
   ), 'modernizr', 'html-build', 'minifyCss', 'minifyJS'));
 
 gulp.task('default', gulp.series('build'));

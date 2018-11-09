@@ -2808,11 +2808,6 @@
       "integrity": "sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=",
       "dev": true
     },
-    "desandro-classie": {
-      "version": "1.0.1",
-      "resolved": "https://registry.npmjs.org/desandro-classie/-/desandro-classie-1.0.1.tgz",
-      "integrity": "sha1-qtTQupjIHNjov1Gs/3D41fnlGJM="
-    },
     "desandro-matches-selector": {
       "version": "2.0.2",
       "resolved": "https://registry.npmjs.org/desandro-matches-selector/-/desandro-matches-selector-2.0.2.tgz",
@@ -2841,14 +2836,6 @@
       "resolved": "https://registry.npmjs.org/dev-ip/-/dev-ip-1.0.1.tgz",
       "integrity": "sha1-p2o+0YVb56ASu4rBbLgPPADcKPA=",
       "dev": true
-    },
-    "doc-ready": {
-      "version": "1.0.4",
-      "resolved": "https://registry.npmjs.org/doc-ready/-/doc-ready-1.0.4.tgz",
-      "integrity": "sha1-N/U5GWnP+ZQwP9/vLl1QNX+BZNM=",
-      "requires": {
-        "eventie": "^1"
-      }
     },
     "docco": {
       "version": "0.8.0",
@@ -10983,14 +10970,6 @@
         }
       }
     },
-    "tap-listener": {
-      "version": "2.0.0",
-      "resolved": "https://registry.npmjs.org/tap-listener/-/tap-listener-2.0.0.tgz",
-      "integrity": "sha1-0uEdDY58krJqVq5PNVOKJItErWM=",
-      "requires": {
-        "unipointer": "^2.1.0"
-      }
-    },
     "tar": {
       "version": "2.2.1",
       "resolved": "https://registry.npmjs.org/tar/-/tar-2.2.1.tgz",
@@ -11425,14 +11404,6 @@
       "integrity": "sha512-KVGLW1Bri30x00yv4HNM8kBxoqFXr0Sbo55735nvrlsx4PYBZol3UtoWgO492fSwmsetzPEZzy73rbU8OGXJcA==",
       "dev": true
     },
-    "unidragger": {
-      "version": "2.1.0",
-      "resolved": "https://registry.npmjs.org/unidragger/-/unidragger-2.1.0.tgz",
-      "integrity": "sha1-5MI/X6uBiMY353bQs4EMfZieVWE=",
-      "requires": {
-        "unipointer": "~2.1.0"
-      }
-    },
     "union-value": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/union-value/-/union-value-1.0.0.tgz",
@@ -11465,21 +11436,6 @@
             "is-plain-object": "^2.0.1",
             "to-object-path": "^0.3.0"
           }
-        }
-      }
-    },
-    "unipointer": {
-      "version": "2.1.0",
-      "resolved": "https://registry.npmjs.org/unipointer/-/unipointer-2.1.0.tgz",
-      "integrity": "sha1-sen6KYbBMG2XMwWHukNNKFzP438=",
-      "requires": {
-        "ev-emitter": "~1.0.1"
-      },
-      "dependencies": {
-        "ev-emitter": {
-          "version": "1.0.3",
-          "resolved": "https://registry.npmjs.org/ev-emitter/-/ev-emitter-1.0.3.tgz",
-          "integrity": "sha1-7l73S27SjZEbMt3L/JeGf1gJN7w="
         }
       }
     },

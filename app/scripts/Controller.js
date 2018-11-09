@@ -148,17 +148,17 @@ var setupComponents = function(globalSearchForm, qm) {
   // Collections A-Z, Collections Random Explore, 
   // and Collections at <institution> Pages
   if($('#js-mosaicContainer').length) {
-    if($('#js-collectionPagination a.js-next').length) {
-      $('#js-mosaicContainer').infiniteScroll({
-        path: '#js-collectionPagination a.js-next',
-        append: '#js-mosaicContainer div.js-collectionMosaic',
-        history: false,
-        hideNav: '#js-collectionPagination',
-        debug: false,
-        status: '#js-loading'
-      });
-    } else {
-      $('#js-loading').hide();
-    }
+    $('#js-mosaicContainer').infinitescroll({
+      navSelector: '#js-collectionPagination',
+      nextSelector: '#js-collectionPagination a.js-next',
+      itemSelector: '#js-mosaicContainer div.js-collectionMosaic',
+      debug: false,
+      loading: {
+        finishedMsg: 'All collections showing.',
+        img: '//calisphere.org/static_root/images/orange-spinner.gif',
+        msgText: '',
+        selector: '#js-loading'
+      }
+    });
   }
 };

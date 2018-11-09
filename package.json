@@ -12,10 +12,11 @@
     "apache-server-configs": "^3.0.0",
     "autoprefixer": "^9.1.0",
     "backstopjs": "^3.5.10",
+    "bower": "^1.8.4",
     "browser-sync": "^2.24.6",
     "del": "^3.0.0",
     "docco": "^0.8.0",
-    "gulp": "4.0",
+    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-cli": "^2.0.1",
     "gulp-file-include": "^2.0.1",
@@ -28,36 +29,15 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
     "gulp-useref": "^3.1.5",
+    "gulp-wiredep": "^1.2.0",
     "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1",
     "postcss-import": "^12.0.0",
-    "postcss-svg": "^2.4.0"
+    "postcss-svg": "^2.4.0",
+    "wiredep": "^4.0.0"
   },
   "engines": {
     "node": ">=10.8.0"
   },
-  "dependencies": {
-    "backbone": "~1.2.1",
-    "bootstrap-sass": "~3.2.0",
-    "desandro-classie": "^1.0.1",
-    "doc-ready": "~1.0.4",
-    "font-awesome": "~4.7.0",
-    "get-size": "~2.0.2",
-    "imagesloaded": "~3.1.8",
-    "infinite-scroll": "^3.0.5",
-    "isotope-layout": "~3.0.6",
-    "jquery": "~3.3.1",
-    "jquery-pjax": "^2.0.1",
-    "jquery.dotdotdot": "^1.7.4",
-    "mediaelement": "~4.1.2",
-    "nprogress": "~0.2.0",
-    "openseadragon": "^2.1.0",
-    "picturefill": "~2.3.1",
-    "slick-carousel": "=1.8.1",
-    "tap-listener": "~2.0.0",
-    "typeahead.js": "~0.11.1",
-    "underscore": "~1.7.0",
-    "unidragger": "~2.1.0",
-    "unipointer": "~2.1.0"
-  }
+  "dependencies": {}
 }

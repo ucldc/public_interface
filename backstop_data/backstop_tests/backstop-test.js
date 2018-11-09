@@ -18,6 +18,8 @@ module.exports = options => {
         "height": 875
       }
     ],
+    "onBeforeScript": "puppet/onBefore.js",
+    "onReadyScript": "puppet/onReady.js",
     "scenarios": require(options.modulePath)({
       "urlRoot": options.urlRoot,
       "referenceUrlRoot": options.referenceUrlRoot

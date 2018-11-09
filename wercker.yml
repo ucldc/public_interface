@@ -10,6 +10,10 @@ build:
             name: run tests
             code: |
                 python manage.py test
+                ./node_modules/.bin/bower install
+                cd test
+                ../node_modules/.bin/bower install
+                cd ..
                 ./node_modules/.bin/gulp test
 
         - script:

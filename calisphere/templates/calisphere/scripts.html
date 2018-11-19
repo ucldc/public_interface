@@ -1,32 +1,23 @@
 {% load staticfiles %}
     {% if devMode %}
-      <script src="{% static "bower_components/jquery/dist/jquery.js" %}"></script>
-      <script src="{% static "bower_components/jquery-pjax/jquery.pjax.js" %}"></script>
-      <script src="{% static "bower_components/modernizr/modernizr.js" %}"></script>
-      <script src="{% static "bower_components/underscore/underscore-min.js" %}"></script>
-      <script src="{% static "bower_components/mediaelement/build/mediaelement-and-player.js" %}"></script>
-      <script src="{% static "bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js" %}"></script>
-      <script src="{% static "bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js" %}"></script>
-      <script src="{% static "bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js" %}"></script>
-      <script src="{% static "bower_components/slick.js/slick/slick.js" %}"></script>
-      <script src="{% static "bower_components/openseadragon/built-openseadragon/openseadragon/openseadragon.min.js" %}"></script>
-      <script src="{% static "bower_components/get-size/get-size.js" %}"></script>
-      <script src="{% static "bower_components/desandro-matches-selector/matches-selector.js" %}"></script>
-      <script src="{% static "bower_components/eventEmitter/EventEmitter.js" %}"></script>
-      <script src="{% static "bower_components/eventie/eventie.js" %}"></script>
-      <script src="{% static "bower_components/doc-ready/doc-ready.js" %}"></script>
-      <script src="{% static "bower_components/classie/classie.js" %}"></script>
-      <script src="{% static "bower_components/unipointer/unipointer.js" %}"></script>
-      <script src="{% static "bower_components/unidragger/unidragger.js" %}"></script>
-      <script src="{% static "bower_components/fizzy-ui-utils/utils.js" %}"></script>
-      <script src="{% static "bower_components/tap-listener/tap-listener.js" %}"></script>
-      <script src="{% static "bower_components/infinite-scroll/jquery.infinitescroll.js" %}"></script>
-      <script src="{% static "bower_components/imagesloaded/imagesloaded.pkgd.js" %}"></script>
-      <script src="{% static "bower_components/backbone/backbone.js" %}"></script>
-      <script src="{% static "bower_components/typeahead.js/dist/typeahead.bundle.js" %}"></script>
-      <script src="{% static "bower_components/nprogress/nprogress.js" %}"></script>
-      <script src="{% static "bower_components/jQuery.dotdotdot/src/js/jquery.dotdotdot.min.js" %}"></script>
-      <script src="{% static "bower_components/isotope/dist/isotope.pkgd.min.js" %}"></script>
+      <script src="{% static "scripts/modernizr.js" %}"></script>
+      <script src="{% static "node_modules/jquery/dist/jquery.js" %}"></script>
+      <script src="{% static "node_modules/jquery-pjax/jquery.pjax.js" %}"></script>
+      <script src="{% static "node_modules/underscore/underscore.js" %}"></script>
+      <script src="{% static "node_modules/mediaelement/build/mediaelement-and-player.js" %}"></script>
+      <script src="{% static "node_modules/bootstrap-sass/assets/javascripts/bootstrap/alert.js" %}"></script>
+      <script src="{% static "node_modules/bootstrap-sass/assets/javascripts/bootstrap/modal.js" %}"></script>
+      <script src="{% static "node_modules/bootstrap-sass/assets/javascripts/bootstrap/tooltip.js" %}"></script>
+      <script src="{% static "node_modules/slick-carousel/slick/slick.js" %}"></script>
+      <script src="{% static "node_modules/picturefill/dist/picturefill.js" %}"></script>
+      <script src="{% static "node_modules/openseadragon/build/openseadragon/openseadragon.min.js" %}"></script>
+      <script src="{% static "node_modules/infinite-scroll/dist/infinite-scroll.pkgd.js" %}"></script>
+      <script src="{% static "node_modules/imagesloaded/imagesloaded.pkgd.js" %}"></script>
+      <script src="{% static "node_modules/backbone/backbone.js" %}"></script>
+      <script src="{% static "node_modules/typeahead.js/dist/typeahead.bundle.js" %}"></script>
+      <script src="{% static "node_modules/nprogress/nprogress.js" %}"></script>
+      <script src="{% static "node_modules/jquery.dotdotdot/src/js/jquery.dotdotdot.js" %}"></script>
+      <script src="{% static "node_modules/isotope-layout/dist/isotope.pkgd.js" %}"></script>
 
       <script src="{% static "scripts/Controller.js" %}"></script>
       <script src="{% static "scripts/QueryManager.js" %}"></script>
@@ -37,9 +28,7 @@
       <script src="{% static "scripts/GlobalSearchFormView.js" %}"></script>
       <script src="{% static "scripts/ContactOwnerFormView.js" %}"></script>
     {% else %}
-      <script src="{% static "bower_components/masonry/dist/masonry.pkgd.min.js" %}"></script>
       <script src="{% static "scripts/vendor.js" %}"></script>
-      <script src="{% static "bower_components/isotope/dist/isotope.pkgd.min.js" %}"></script>
       <script src="{% static "scripts/vendor/modernizr.js" %}"></script>
     {% endif %}
 

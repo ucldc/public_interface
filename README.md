@@ -51,9 +51,7 @@ if you need to work on the [HTML/CSS/JS](https://github.com/ucldc/public_interfa
 ```
 brew install npm
 npm install -g gulp-cli
-npm install -g bower
 npm install
-bower install
 ```
 
 ```

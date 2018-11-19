@@ -80,7 +80,7 @@ strong {
   -webkit-font-smoothing: antialiased; // small fonts in Chrome on Mac OS don't appear bold without this
 }
 
-// Reset Bootstrap grid media queries by adding print media (located in _grid.scss in Bootstrap Bower package)
+// Reset Bootstrap grid media queries by adding print media (located in _grid.scss in Bootstrap npm package)
 
 @media (min-width: $screen-sm-min), print and (min-width: $print-sm-min)  {
   @include make-grid(sm);

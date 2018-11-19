@@ -99,6 +99,12 @@ def getRepositoryData(repository_data=None, repository_id=None, repository_url=N
     # details needed for stats
     repository['ga_code'] = repository_details.get(
         'google_analytics_tracking_code', None)
+
+    production_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+    if production_aeon:
+        repository['aeon_url'] = repository_details.get('aeon_prod', None)
+    else:
+        repository['aeon_url'] = repository_details.get('aeon_test', None)
     parent = repository_details['campus']
     pslug = ''
     if len(parent):

@@ -59,9 +59,15 @@
         >{{ collection.name }}</a> <br> {% endfor %}</dd>
     {% endif %}
 
-    {% if 'rights' in item %}
+    {% if 'rights' or 'rights_uri' in item %}
       <dt class="meta-block__type">Rights Information</dt>
-			<dd class="meta-block__defin">{% for rights in item.rights %}{{ rights }} <br>{% endfor %}</dd>
+      <dd class="meta-block__defin">
+      {% if 'rights' in item %}
+        {% for rights in item.rights %}{{ rights }} <br>{% endfor %}
+      {% endif %}
+      {% if 'rights_uri' in item %}
+        <a href="{{ item.rights_uri.url }}">{{ item.rights_uri.statement }}</a><br>
+      {% endif %}
     {% endif %}
 
     {% if 'rights_holder' in item %}

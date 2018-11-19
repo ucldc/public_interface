@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse, HttpResponse
 from calisphere.collection_data import CollectionManager
-from .constants import CAMPUS_LIST, DEFAULT_FACET_FILTER_TYPES, FACET_FILTER_TYPES, SORT_OPTIONS, FEATURED_UNITS, getCollectionData, getRepositoryData, collectionFilterDisplay, repositoryFilterDisplay
+from .constants import CAMPUS_LIST, DEFAULT_FACET_FILTER_TYPES, FACET_FILTER_TYPES, SORT_OPTIONS, FEATURED_UNITS, getCollectionData, getRepositoryData, collectionFilterDisplay, repositoryFilterDisplay, RIGHTS_STATEMENTS
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
@@ -420,6 +420,13 @@ def itemView(request, item_id=''):
             settings.UCLDC_FRONT,
             '/crop/999x999/{0}'.format(
                 item_solr_search.results[0]['reference_image_md5']), )
+
+    if item_solr_search.results[0].get('rights_uri'):
+        uri = item_solr_search.results[0].get('rights_uri')
+        item_solr_search.results[0]['rights_uri'] = {
+            'url': uri,
+            'statement': RIGHTS_STATEMENTS[uri]
+        }
 
     ## do this w/o multiple returns?
     fromItemPage = request.META.get("HTTP_X_FROM_ITEM_PAGE")

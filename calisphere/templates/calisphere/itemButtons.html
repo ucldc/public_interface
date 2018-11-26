@@ -215,7 +215,7 @@ Permalink: {{ permalink }}</textarea>
         <!-- <span class="fa fa-exchange"></span> -->
         <!-- <span class="fa fa-archive"></span> -->
         <!-- <span class="fa fa-print"></span> -->
-      </span> Order {% if 'structMap' in item %}{{ item.contentFile.format }}{% elif item.type.0 == 'sound' %}item{% else %}{{ item.type.0 }}{% endif %}
+      </span> Order {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' %}Item{% else %}{{ item.type.0|title }}{% endif %}
     </a>
     {% endif %}
 

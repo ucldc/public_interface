@@ -163,7 +163,7 @@ var ItemView = Backbone.View.extend({
       var lastItem = numFound-1;
       var remainder = numLoaded-nextSlide-this.carouselRows;
 
-      if (remainder <= this.carouselRows && remainder > 0) {
+      if (remainder < this.carouselRows && remainder >= 0) {
         if ($('[data-item_number=' + lastItem + ']').length === 0) {
           this.addAfter = true;
         }

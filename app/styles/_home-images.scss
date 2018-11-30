@@ -189,7 +189,7 @@ $home__img3-v4-md: "#{$home-aws-image-path}maria-felix_465w.jpg";
 	text-align: right;
 	font-size: 0.9em;
 
-	&:hover {
+	&:hover, &:focus {
 		color: #fff;
 	}
 

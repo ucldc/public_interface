@@ -4,7 +4,7 @@
 
 <div class="exhibit__modal">
   {% if prevItem %}
-  <a class="js-exhibit-item exhibit__modal-arrow" href="{% url url_name url_id prevItem.item_id %}">
+  <a class="js-exhibit-item exhibit__modal-arrow" href="{% url url_name url_id prevItem.item_id %}" aria-label="previous item">
     <div class="exhibit__modal-arrow-position">
       <i class="fa fa-angle-left" style="font-size: 70px;"></i>
     </div>
@@ -159,7 +159,7 @@
   </div>
 
   {% if nextItem %}
-  <a class="js-exhibit-item exhibit__modal-arrow" href="{% url url_name url_id nextItem.item_id %}">
+  <a class="js-exhibit-item exhibit__modal-arrow" href="{% url url_name url_id nextItem.item_id %}" aria-label="next item">
     <div class="exhibit__modal-arrow-position">
       <i class="fa fa-angle-right" style="font-size: 70px;"></i>
     </div>

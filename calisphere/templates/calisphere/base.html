@@ -66,6 +66,7 @@
           </div>
 
           <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links" aria-expanded="false">
+            <nav>
             <ul class="global-header__nav-list">
               <li class="global-header__nav-list-item">
                 <a class="global-header__nav-link" href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
@@ -89,11 +90,13 @@
                 <a class="global-header__nav-link" href="{% url 'calisphere:termsOfUse' %}">Terms of Use</a>
               </li>
             </ul>
+            </nav>
           </div>
 
         </div>
 
         <div class="global-header__bar">
+          <nav>
           <ul class="global-header__bar-list">
             <li class="global-header__bar-list-item">
               <a class="global-header__bar-links" href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">Contributing Institutions</a>
@@ -105,6 +108,7 @@
               <a class="global-header__bar-links" href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">Exhibitions</a>
             </li>
           </ul>
+          </nav>
         </div>
 
       </header>

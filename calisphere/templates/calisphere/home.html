@@ -61,6 +61,7 @@
           </div>
 
           <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links" aria-expanded="false">
+            <nav>
             <ul class="global-header__nav-list">
               <li class="global-header__nav-list-item">
                 <a class="global-header__nav-link" href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
@@ -84,11 +85,13 @@
                 <a class="global-header__nav-link" href="{% url 'calisphere:termsOfUse' %}">Terms of Use</a>
               </li>
             </ul>
+            </nav>
           </div>
 
         </div>
 
         <div class="global-header__bar">
+          <nav>
           <ul class="global-header__bar-list">
             <li class="global-header__bar-list-item">
               <a class="global-header__bar-links" href="{% url 'calisphere:campusDirectory' %}">Contributing Institutions</a>
@@ -100,6 +103,7 @@
               <a class="global-header__bar-links" href="{% url 'exhibits:randomExplore' %}">Exhibitions</a>
             </li>
           </ul>
+          </nav>
         </div>
 
       </header>
@@ -225,6 +229,7 @@
           </div>
 
           <div class="global-footer__nav">
+            <nav aria-label="footer navigation">
             <ul class="global-footer__nav-list--mobile">
               <li class="global-footer__nav-list-item--mobile">
                 <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:home' %}">Home</a>
@@ -259,6 +264,7 @@
                 <a class="global-footer__nav-link" href="https://www.cdlib.org/about/accessibility.html">Accessibility Policy</a>
               </li>
             </ul>
+            </nav>
           </div>
 
           <div class="global-footer__copyright">

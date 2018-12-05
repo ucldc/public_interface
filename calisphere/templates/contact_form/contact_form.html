@@ -15,7 +15,7 @@
     <form method="post">{% csrf_token %}
     {% for field in form %}
       {% if field.label != "Referer" and field.label != "Captcha" %}
-      <div class="form-group">
+      <div class="form-group required">
         <div class="custom-errors">{{ field.errors }}</div>
         {{ field.label_tag }}<div>{{ field }}</div>
       </div>

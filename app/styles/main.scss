@@ -191,6 +191,11 @@ abbr {
   @extend .form-control;
 }
 
+.form-group.required label:after {
+  content:"*";
+  color:red;
+}
+
 // contact form error messages
 .custom-errors ul {
   list-style: none;

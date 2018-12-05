@@ -138,7 +138,9 @@ html.no-background-blend-mode .theme__lockup--horizontal-color {
 }
 
 // TODO: add another child container with text that stays white?
-.theme__lockup--horizontal:hover .theme__lockup--horizontal-color {
+.theme__lockup--horizontal:hover .theme__lockup--horizontal-color,
+#js-exhibit-wrapper a:focus .theme__lockup--horizontal-color,
+.exhibitDirectory__exhibits a:focus .theme__lockup--horizontal-color {
   opacity: .6;
 }
 

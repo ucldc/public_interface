@@ -23,6 +23,11 @@
   text-decoration: underline;
 }
 
+.exhibit__blockquote a:hover,
+.exhibit__blockquote a:focus {
+  text-decoration: none;
+}
+
 .exhibit__items {
   background-color: #f0f0f0;
   margin: $exhibit-layout-component-margin (-$layout-component-margin);
@@ -317,15 +322,17 @@ a.exhibit__modal-arrow:hover {
   bottom: 0;
 }
 
-.primarysource__link:hover .exhibit__caption {
-  background-color: #6c6d6e;
+.primarysource__link:hover .exhibit__caption,
+.primarysource__link:focus .exhibit__caption {
+  background-color: #474848;
   height: auto;
   min-height: calc(1.4em + 20px);
   max-height: calc(3*1.4em + 20px);
 }
 
-.primarysource__link:hover .exhibit__caption:after {
-  background-color: #6c6d6e;
+.primarysource__link:hover .exhibit__caption:after,
+.primarysource__link:focus .exhibit__caption:after {
+  background-color: #474848;
 }
 
 .exhibit__items .thumbnail__link:hover {

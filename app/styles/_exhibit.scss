@@ -148,7 +148,8 @@
 .exhibit__lockup--med:hover, 
 #js-exhibit-wrapper a:focus .exhibit__lockup--med,
 .exhibitDirectory__exhibits a:focus .exhibit__lockup--med,
-.theme__exhibits a:focus .exhibit__lockup--med {
+.theme__exhibits a:focus .exhibit__lockup--med,
+.exhibit__related-carousel a:focus .exhibit__lockup--med {
   border: 3px solid $design-secondary-color;
 };
 
@@ -179,7 +180,8 @@
 .exhibit__lockup--med:hover .exhibit__lockup--med-title-content, 
 #js-exhibit-wrapper a:focus .exhibit__lockup--med .exhibit__lockup--med-title-content,
 .exhibitDirectory__exhibits a:focus .exhibit__lockup--med .exhibit__lockup--med-title-content,
-.theme__exhibits a:focus .exhibit__lockup--med .exhibit__lockup--med-title-content {
+.theme__exhibits a:focus .exhibit__lockup--med .exhibit__lockup--med-title-content,
+.slick-track a:focus .exhibit__lockup--med .exhibit__lockup--med-title-content {
   height: auto;
   transition: height 0.5s ease;
   min-height: 3em;
@@ -237,7 +239,10 @@ html.no-background-blend-mode .exhibit__lesson-lockup-color {
   opacity: 1;
 }
 
-.exhibit__essay-lockup:hover .exhibit__essay-lockup-color, .exhibit__lesson-lockup:hover .exhibit__lesson-lockup-color {
+.exhibit__essay-lockup:hover .exhibit__essay-lockup-color, 
+.exhibit__lesson-lockup:hover .exhibit__lesson-lockup-color,
+.exhibit__related-carousel a:focus .exhibit__essay-lockup .exhibit__essay-lockup-color,
+.exhibit__related-carousel a:focus .exhibit__lesson-lockup .exhibit__lesson-lockup-color {
   opacity: .6;
 }
 

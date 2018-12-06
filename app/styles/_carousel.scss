@@ -40,7 +40,7 @@ html.no-js .carousel {
   margin: 10px;
   opacity: 0.5;
 
-  &:hover {
+  &:hover, &:focus-within {
     opacity: 1;
   }
 

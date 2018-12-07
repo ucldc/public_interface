@@ -5,7 +5,6 @@
 @each $button__color-group, $button__color in
 
   (primary, $design-primary-color), // creates .button__primary class
-  (primary-black, $design-primary-color-with-black),
   (secondary, $design-secondary-color),
   (dark, $design-dark-gray-color),
   (light, $design-light-gray-color) {
@@ -19,6 +18,17 @@
       background: lighten($button__color, 15%);
       border: 1px solid lighten($button__color, 15%);
     }
+  }
+}
+
+.button__primary-black {
+  color: #000;
+  background: $design-primary-color-with-black;
+  border: 1px solid $design-primary-color-with-black;
+  &:hover, &:focus {
+    color: #FFF;
+    background: darken($design-primary-color-with-black, 15%);
+    border: 1px solid darken($design-primary-color-with-black, 15%);
   }
 }
 

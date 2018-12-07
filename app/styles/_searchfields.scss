@@ -24,12 +24,12 @@
 
 .global-search__button {
   height: 34px; // match the height of Bootstrap's form field
-  color: #fff;
+  color: #000;
   border: 1px solid $design-dark-gray-color;
-  background: $design-primary-color;
+  background: $design-primary-color-with-black;
 
   &:hover {
-    background: $link-hover-color;
+    background: darken($design-primary-color-with-black, 15%);
     color: #fff;
   }
 

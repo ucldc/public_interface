@@ -51,14 +51,14 @@
 .home__search-button {
   width: 60px;
   height: 46px; // match height of .input-lg
-  color: #fff;
-  border: 1px solid $design-primary-color;
-  background: $design-primary-color;
+  color: #000;
+  border: 1px solid $design-primary-color-with-black;
+  background: $design-primary-color-with-black;
   overflow: hidden;
 
   &:hover, &:focus {
-    color: #fff;
-    background: $link-hover-color;
+    color: #FFF;
+    background: darken($design-primary-color-with-black, 15%);
     border: $design-primary-color;
   }
 
@@ -115,6 +115,7 @@
 
   &:hover .home__thumbnail-caption--uc, &:focus .home__thumbnail-caption--uc {
 		background-image: none;
+		color: #000;
 	}
 
 	@include bp(md-screen) {
@@ -130,7 +131,7 @@
 	right: 0;
 	padding: 10px;
 	color: #fff;
-	background-color: rgba($design-primary-color, 1);
+	background-color: rgba($design-primary-color-with-black, 1);
 	background-image: inherit;
 	background-size: 100%;
 	background-position: bottom;
@@ -145,7 +146,7 @@
 
 html.no-background-blend-mode .home__thumbnail-caption--uc {
 	background-image: none;
-	background-color: rgba($design-primary-color, 0.7);
+	background-color: rgba($design-primary-color-with-black, 0.7);
 }
 
 .home__thumbnail-caption--inst {

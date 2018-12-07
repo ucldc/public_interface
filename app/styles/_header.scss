@@ -258,8 +258,8 @@ html.no-flexbox .global-header__nav-list-item {
 }
 
 .announcement {
-  background-color: $design-primary-color;
-  color: #fff;
+  background-color: $design-primary-color-with-black;
+  color: #000;
   text-align: center;
   margin: -10px -10px 20px -10px;
   padding: 0.7em 5% 0.5em 0;
@@ -275,7 +275,7 @@ html.no-flexbox .global-header__nav-list-item {
   }
 
   a {
-    color: #FFF;
+    color: #000;
   }
 
 }

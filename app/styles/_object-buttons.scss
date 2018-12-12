@@ -123,6 +123,11 @@ html.no-flexbox .obj-buttons__facebook {
 
 .obj-buttons__citation {
   @extend .button__dark;
+
+  font-size: 18.66px;
+  padding: 5px 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
 }
 
 .obj-buttons__contact-text {
@@ -152,6 +157,11 @@ html.no-flexbox .obj-buttons__contact-text {
 
 .button__contact-owner {
   width: 100%;
+  font-size: 18.66px;
+  padding: 5px 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  color: #fff;
 
   @include bp(sm-screen) {
     width: auto;

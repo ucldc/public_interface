@@ -258,12 +258,14 @@ html.no-flexbox .global-header__nav-list-item {
 }
 
 .announcement {
-  background-color: $design-primary-color-with-black;
-  color: #000;
+  background-color: $design-primary-color-with-white;
+  color: #fff;
   text-align: center;
   margin: -10px -10px 20px -10px;
   padding: 0.7em 5% 0.5em 0;
-  font-size: 1.2em;
+  font-size: 1.3em;
+  letter-spacing: 1px;
+  font-weight: 700;
 
   @include bp(sm-screen) {
     margin: -10px -10px 10px -10px;
@@ -275,7 +277,7 @@ html.no-flexbox .global-header__nav-list-item {
   }
 
   a {
-    color: #000;
+    color: #fff;
   }
 
 }

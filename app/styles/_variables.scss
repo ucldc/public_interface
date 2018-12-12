@@ -2,9 +2,11 @@
 
 // ***** Design Variables ***** //
 
-$design-primary-color: rgb(199, 79, 10); // dark orange
-$design-primary-color-with-black: rgb(243, 111, 35); // orange
+$design-primary-color: rgb(199, 79, 10); // dark orange for small orange text
+$design-primary-color-with-white: rgb(243, 106, 27); // orange bg for large white text // original orange
+$design-primary-color-with-black: rgb(243, 111, 35); // orange bg for small black text
 $design-secondary-color: rgb(0, 118, 138); // teal blue
+$design-secondary-color-light: rgb(0, 163, 173);
 $design-light-gray-color: rgb(229, 229, 229);
 $design-dark-gray-color: rgb(109, 111, 111);
 // $design-dark-gray-color: rgb(139, 141, 142);

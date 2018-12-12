@@ -24,17 +24,19 @@
 
 .global-search__button {
   height: 34px; // match the height of Bootstrap's form field
-  color: #000;
+  color: #FFF;
   border: 1px solid $design-dark-gray-color;
-  background: $design-primary-color-with-black;
+  background: $design-primary-color-with-white;
+  padding-top: 7px;
 
   &:hover {
-    background: darken($design-primary-color-with-black, 15%);
+    background: darken($design-primary-color-with-white, 15%);
     color: #fff;
   }
 
   .fa { // fa-search icon
-  	font-size: 1.1em;
+  	font-size: 1.34em;
+    font-weight: 700;
 
   }
 
@@ -59,6 +61,10 @@
 
 .search-within__button {
 	@extend .global-search__button;
+  font-size: 18.66px;
+  padding-top: 4px;
+  font-weight: 700;
+  letter-spacing: .05em;
 }
 
 // ***** Search Collection Results Search Field ***** //
@@ -80,4 +86,8 @@
 
 .search-collection__button {
   @extend .global-search__button;
+  font-size: 18.66px;
+  padding-top: 4px;
+  font-weight: 700;
+  letter-spacing: .05em;
 }

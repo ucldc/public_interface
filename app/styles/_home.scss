@@ -51,15 +51,15 @@
 .home__search-button {
   width: 60px;
   height: 46px; // match height of .input-lg
-  color: #000;
-  border: 1px solid $design-primary-color-with-black;
-  background: $design-primary-color-with-black;
+  color: #fff;
+  border: 1px solid $design-primary-color-with-white;
+  background: $design-primary-color-with-white;
   overflow: hidden;
 
   &:hover, &:focus {
     color: #FFF;
-    background: darken($design-primary-color-with-black, 15%);
-    border: $design-primary-color;
+    background: darken($design-primary-color-with-white, 15%);
+    border: $design-primary-color-with-white;
   }
 
   &:after {

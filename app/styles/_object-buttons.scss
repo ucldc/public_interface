@@ -125,7 +125,7 @@ html.no-flexbox .obj-buttons__facebook {
   @extend .button__dark;
 
   font-size: 18.66px;
-  padding: 5px 10px;
+  padding: 0px 5px;
   font-weight: 700;
   letter-spacing: .05em;
 }
@@ -158,7 +158,7 @@ html.no-flexbox .obj-buttons__contact-text {
 .button__contact-owner {
   width: 100%;
   font-size: 18.66px;
-  padding: 5px 10px;
+  padding: 0px 5px;
   font-weight: 700;
   letter-spacing: .05em;
   color: #fff;
@@ -173,6 +173,11 @@ html.no-flexbox .obj-buttons__contact-text {
 .obj-buttons__download-image {
   @extend .button__dark;
   display: none;
+
+  font-size: 18.66px;
+  padding: 0px 5px;
+  font-weight: 700;
+  letter-spacing: .05em;
 
   @include bp(sm-screen) {
     display: inline-block;

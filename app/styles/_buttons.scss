@@ -32,6 +32,17 @@
   }
 }
 
+.button__primary-white {
+  color: #FFF;
+  background: $design-primary-color-with-white;
+  border: 1px solid $design-primary-color-with-white;
+  &:hover, &:focus {
+    color: #FFF;
+    background: darken($design-primary-color-with-white, 15%);
+    border: 1px solid darken($design-primary-color-with-white, 15%);
+  }
+}
+
 .button__link {
   background: none;
   border: none;
@@ -76,7 +87,7 @@
 }
 
 .button__contact-owner {
-  @extend .button__primary-black;
+  @extend .button__primary-white;
 
   .fa {
     margin: 0 0.5em 0 0;

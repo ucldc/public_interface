@@ -274,7 +274,7 @@ FEATURED_UNITS = [{
 }, {
     'featuredImage': {
         'src': '/thumb-inst_la-public-library.jpg',
-        'url': '/item/26094--LAPL00027224/'
+        'url': '/item/22d1e87c7cd3224045ff45239c57436a/'
     },
     'id': '143'
 }, {

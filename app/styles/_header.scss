@@ -18,6 +18,11 @@ html.no-jquery .global-header__bars-icon {
   color: $design-dark-gray-color;
 }
 
+.global-header__bars-button {
+  padding: 0;
+  border: 0;
+}
+
 .global-header__logo {
   display: block;
   margin: 0 auto 10px;
@@ -53,6 +58,11 @@ html.no-jquery .global-header__bars-icon {
 
 .global-header__logo-link {
   display: block;
+
+  &:focus {
+    outline: $design-dark-gray-color auto 5px;
+    outline-offset: 5px;
+  }
 }
 
 .global-header__search-icon {
@@ -235,7 +245,7 @@ html.no-flexbox .global-header__nav-list-item {
     font-size: 1.3em;
     line-height: 1;
 
-    &:hover {
+    &:hover, &:focus {
       color: #fff;
     }
 

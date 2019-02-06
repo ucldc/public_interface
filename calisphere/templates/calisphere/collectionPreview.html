@@ -15,7 +15,7 @@
   <p class="collect-row__item-number"><strong>{{ collection.numFound|intcomma }} Item{{ collection.numFound|pluralize }}</strong></p>
 
   <div class="col-xs-12 col-sm-8">
-  	<a href="{% url 'calisphere:collectionView' collection.collection_id %}" class="collect-row__mosaic" data-pjax="js-pageContent">
+  	<a href="{% url 'calisphere:collectionView' collection.collection_id %}" class="collect-row__mosaic" tabindex="-1" data-pjax="js-pageContent">
   		<div class="col-sm-6">
 	  		{% for item in collection.display_items %}
           {% if forloop.counter <= 6 %}

@@ -24,13 +24,28 @@ var GlobalSearchFormView = Backbone.View.extend({
   // Toggle mobile menu with search box:
   toggleMobileMenu: function() {
     $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
+    if ($('.js-global-header__search').is(':visible')) {
+      $('.js-global-header__search').attr('aria-expanded', true);
+    } else {
+      $('.js-global-header__search').attr('aria-expanded', false);
+    }
     $('.js-global-header__mobile-links').toggleClass('.global-header__mobile-links global-header__mobile-links--selected');
+    if ($('.js-global-header__mobile-links').is(':visible')) {
+      $('.js-global-header__mobile-links').attr('aria-expanded', true);
+    } else {
+      $('.js-global-header__mobile-links').attr('aria-expanded', false);
+    }
   },
 
   // `events: 'click' '.js-global-header__search-icon'`   
   // Toggle only search box:
   toggleMobileSearch: function() {
     $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
+    if ($('.js-global-header__search').is(':visible')) {
+      $('.js-global-header__search').attr('aria-expanded', true);
+    } else {
+      $('.js-global-header__search').attr('aria-expanded', false);
+    }
   },
 
   // `events: 'click' '#js-global-header-logo'`   

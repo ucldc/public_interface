@@ -15,7 +15,7 @@
     <form method="post">{% csrf_token %}
     {% for field in form %}
       {% if field.label != "Referer" and field.label != "Captcha" %}
-      <div class="form-group">
+      <div class="form-group required">
         <div class="custom-errors">{{ field.errors }}</div>
         {{ field.label_tag }}<div>{{ field }}</div>
       </div>
@@ -41,10 +41,10 @@
 
   <div class="col-sm-4 static__sidebar">
 
-        <h3 class="static__sidebar-heading">How can we help you?</h3>
+        <h2 class="static__sidebar-heading">How can we help you?</h2>
         <p>Our <a href="/help/" data-pjax="js-pageContent">help page</a> contains search tips and answers to many frequently asked questions, such as how to find more information about an item or collection. If you're wondering about permissions and what you can do with items you find on Calisphere, a good starting point is the <a href="/terms/" data-pjax="js-pageContent">terms of use</a>.</p>
         <br>
-        <h3 class="static__sidebar-heading">Contact information</h3>
+        <h2 class="static__sidebar-heading">Contact information</h2>
         <p>Calisphere is a project of the University of California Libraries, developed and maintained by the <a href="http://cdlib.org/">California Digital Library</a>.</p>
         <p>California Digital Library (CDL)<br>
           Office of the President, University of California<br>

@@ -29,7 +29,7 @@
           <div class="col-xs-12 col-sm-4">
             <div class="row">
               <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
-                <i class="fa fa-bars"></i>
+                <button class="btn btn-link global-header__bars-button" aria-label="menu"><i class="fa fa-bars"></i></button>
               </div>
               <div class="col-xs-8 col-sm-12">
                 <a class="global-header__logo-link" href="{% url 'calisphere:home' %}">
@@ -48,14 +48,15 @@
               <div class="input-group">
                 <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
                 <span class="input-group-btn">
-                  <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+                  <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
                   </button>
                 </span>
               </div>
             </form>
           </div>
 
-          <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
+          <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links" aria-expanded="false">
+            <nav>
             <ul class="global-header__nav-list">
               <li class="global-header__nav-list-item">
                 <a class="global-header__nav-link" href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
@@ -79,11 +80,13 @@
                 <a class="global-header__nav-link" href="{% url 'calisphere:termsOfUse' %}">Terms of Use</a>
               </li>
             </ul>
+            </nav>
           </div>
 
         </div>
 
         <div class="global-header__bar">
+          <nav>
           <ul class="global-header__bar-list">
             <li class="global-header__bar-list-item">
               <a class="global-header__bar-links" href="{% url 'calisphere:campusDirectory' %}">Contributing Institutions</a>
@@ -95,6 +98,7 @@
               <a class="global-header__bar-links" href="{% url 'exhibits:randomExplore' %}">Exhibitions</a>
             </li>
           </ul>
+          </nav>
         </div>
 
       </header>
@@ -158,7 +162,7 @@
               <div class="input-group">
                 <input id="global-footer__search-field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-footer__search-field js-globalSearch">
                 <span class="input-group-btn">
-                  <button class="btn btn-default global-footer__search-button" type="submit"><i class="fa fa-search"></i>
+                  <button class="btn btn-default global-footer__search-button" type="submit" aria-label="search"><i class="fa fa-search"></i>
                   </button>
                 </span>
               </div>
@@ -166,6 +170,7 @@
           </div>
 
           <div class="global-footer__nav">
+            <nav aria-label="footer navigation">
             <ul class="global-footer__nav-list--mobile">
               <li class="global-footer__nav-list-item--mobile">
                 <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:home' %}">Home</a>
@@ -197,6 +202,7 @@
                 <a class="global-footer__nav-link" href="https://www.cdlib.org/about/accessibility.html">Accessibility Policy</a>
               </li>
             </ul>
+            </nav>
           </div>
 
           <div class="global-footer__copyright">
@@ -210,10 +216,12 @@
             <div class="col-xs-6 global-footer__social-icons">
               <a class="global-footer__twitter-icon"
                  title="Twitter"
-                 href="https://twitter.com/calisphere"><span class="fa fa-twitter-square"></span></a>
+                 href="https://twitter.com/calisphere"
+                 aria-label="Calisphere on Twitter"><span class="fa fa-twitter-square"></span></a>
               <a class="global-footer__facebook-icon"
                  title="Facebook"
-                 href="https://www.facebook.com/calisphere"><span class="fa fa-facebook-square"></span></a>
+                 href="https://www.facebook.com/calisphere"
+                 aria-label="Calisphere on Facebook"><span class="fa fa-facebook-square"></span></a>
             </div>
 
           </div>

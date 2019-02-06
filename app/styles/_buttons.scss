@@ -13,8 +13,8 @@
     color: #fff;
     background: $button__color;
     border: 1px solid $button__color;
-    &:hover {
-      color: #fff;
+    &:hover, &:focus {
+      color: #000;
       background: lighten($button__color, 15%);
       border: 1px solid lighten($button__color, 15%);
     }

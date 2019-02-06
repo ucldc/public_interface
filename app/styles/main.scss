@@ -191,11 +191,16 @@ abbr {
   @extend .form-control;
 }
 
+.form-group.required label:after {
+  content:"*";
+  color:red;
+}
+
 // contact form error messages
 .custom-errors ul {
   list-style: none;
   padding-left: 0;
-  color: #f36f23;
+  color: $design-primary-color;
   margin-bottom: 0;
 }
 

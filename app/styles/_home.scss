@@ -56,7 +56,7 @@
   background: $design-primary-color;
   overflow: hidden;
 
-  &:hover {
+  &:hover, &:focus {
     color: #fff;
     background: $link-hover-color;
     border: $design-primary-color;
@@ -113,7 +113,7 @@
     padding-top: 100%; // sets square aspect ratio
   }
 
-  &:hover .home__thumbnail-caption--uc {
+  &:hover .home__thumbnail-caption--uc, &:focus .home__thumbnail-caption--uc {
 		background-image: none;
 	}
 
@@ -180,7 +180,7 @@ html.no-background-blend-mode .home__thumbnail-caption--inst {
 		margin: 0 0 0 (-$layout-container-margin-md);
 	}
 
-	&:hover .home__contributing-content {
+	&:hover .home__contributing-content, &:focus .home__contributing-content {
 		text-decoration: underline;
 	}
 

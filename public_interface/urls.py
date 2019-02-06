@@ -38,7 +38,7 @@ urlpatterns = [
         lambda r: HttpResponse("User-agent: *\nDisallow: /", content_type="text/plain")
     ),
     url(r'^sitemap.xml', include('static_sitemaps.urls')),
-    url(r'^sitemaps/', include('calisphere.urls')),
+    url(r'^sitemaps/', include('calisphere.urls', namespace="sitemaps")),
     url(r'^healthcheck/', include('health_check.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

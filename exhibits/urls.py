@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 
 from . import views
 
+app_name = 'exhibits'
 urlpatterns = [
     url(r'^$', views.exhibitRandom, name='randomExplore'),
     url(r'jarda-related-resources/$', TemplateView.as_view(template_name='exhibits/jarda-related-resources.html'), name='jarda-related-resources'),

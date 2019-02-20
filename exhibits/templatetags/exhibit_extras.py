@@ -1,5 +1,4 @@
 from django.template import Library
-import markdown
 
 register = Library()
 

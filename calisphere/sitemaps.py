@@ -6,7 +6,7 @@ import time
 
 from django.contrib.sitemaps import Sitemap
 from django.apps import apps
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 
 from calisphere.collection_data import CollectionManager

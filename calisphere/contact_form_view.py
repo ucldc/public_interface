@@ -4,7 +4,7 @@ standard_library.install_aliases()
 from collections import OrderedDict
 from django import forms
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from contact_form.views import ContactFormView
 from contact_form.forms import ContactForm
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField

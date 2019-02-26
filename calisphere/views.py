@@ -1,5 +1,5 @@
-from __future__ import unicode_literals, print_function
-from __future__ import division
+
+
 from future import standard_library
 from functools import reduce
 standard_library.install_aliases()
@@ -217,10 +217,7 @@ def solrEncode(params, filter_types, facet_types = []):
         if (len(selected_filters) > 0):
             filter_transform = filter_type['filter_transform']
 
-            selected_filters = list(map(
-                lambda filterVal :
-                    '{0}: "{1}"'.format(filter_type['filter'], filter_transform(filterVal)),
-                selected_filters))
+            selected_filters = list(['{0}: "{1}"'.format(filter_type['filter'], filter_transform(filterVal)) for filterVal in selected_filters])
             selected_filters = " OR ".join(selected_filters)
             filters.append(selected_filters)
 
@@ -384,8 +381,8 @@ def itemView(request, item_id=''):
             if 'url_item' in item:
                 if item['url_item'].startswith('http://ark.cdlib.org/ark:'):
                     item['oac'] = True
-                    item['url_item'] = string.replace(
-                        item['url_item'], 'http://ark.cdlib.org/ark:',
+                    item['url_item'] = item['url_item'].replace(
+                        'http://ark.cdlib.org/ark:',
                         'http://oac.cdlib.org/ark:')
                     item['url_item'] = item['url_item'] + '/?brand=oac4'
                 else:
@@ -516,14 +513,14 @@ def itemViewCarousel(request):
                 'facet': custom_facet['facet_field'],
                 'display_name': custom_facet['label'],
                 'filter': custom_facet['facet_field'],
-                'filter_transform': lambda (a) : a,
-                'facet_transform': lambda (a) : a,
-                'filter_display': lambda (a) : a
+                'filter_transform': lambda a : a,
+                'facet_transform': lambda a : a,
+                'filter_display': lambda a : a
             })
     elif referral == 'campus':
         linkBackId = params.get('campus_slug', None)
         if linkBackId:
-            campus = filter(lambda c: c['slug'] == linkBackId, CAMPUS_LIST)
+            campus = [c for c in CAMPUS_LIST if c['slug'] == linkBackId]
             campus_id = campus[0]['id']
             if not campus_id or campus_id == '':
                 raise Http404("Campus registry ID not found")
@@ -603,7 +600,7 @@ def getRelatedCollections(request, slug=None, repository_id=None):
     slug = params.get('campus_slug') if params.get('campus_slug') else slug
 
     if slug:
-        campus = filter(lambda c: c['slug'] == slug, CAMPUS_LIST)
+        campus = [c for c in CAMPUS_LIST if c['slug'] == slug]
         extra_filter = 'campus_url: "https://registry.cdlib.org/api/v1/campus/' + campus[0]['id'] + '/"'
         solrParams['fq'].append(extra_filter)
     if repository_id:
@@ -619,7 +616,7 @@ def getRelatedCollections(request, slug=None, repository_id=None):
     related_collections = related_collections.facet_counts['facet_fields']['collection_data']
 
     # TODO: WHY IS THIS NECESSARY?
-    field = filter(lambda f: f['facet'] == 'collection_data', FACET_FILTER_TYPES)
+    field = [f for f in FACET_FILTER_TYPES if f['facet'] == 'collection_data']
     collection_urls = list(map(
         field[0]['filter_transform'],
         params.getlist('collection_data')))
@@ -812,7 +809,7 @@ def collectionView(request, collection_id):
     context = searchDefaults(params)
 
     # Collection Views don't allow filtering or faceting by collection_data or repository_data
-    facet_filter_types = filter(lambda facet_filter_type: facet_filter_type['facet'] != 'collection_data' and facet_filter_type['facet'] != 'repository_data', FACET_FILTER_TYPES)
+    facet_filter_types = [facet_filter_type for facet_filter_type in FACET_FILTER_TYPES if facet_filter_type['facet'] != 'collection_data' and facet_filter_type['facet'] != 'repository_data']
     # Add Custom Facet Filter Types
     if collection_details.get('custom_facet'):
         for custom_facet in collection_details.get('custom_facet'):
@@ -820,9 +817,9 @@ def collectionView(request, collection_id):
                 'facet': custom_facet['facet_field'],
                 'display_name': custom_facet['label'],
                 'filter': custom_facet['facet_field'],
-                'filter_transform': lambda (a) : a,
-                'facet_transform': lambda (a) : a,
-                'filter_display': lambda (a) : a
+                'filter_transform': lambda a : a,
+                'facet_transform': lambda a : a,
+                'filter_display': lambda a : a
             })
     extra_filter = 'collection_url: "' + collection_url + '"'
 
@@ -975,7 +972,7 @@ def institutionView(request,
         facet_filter_types = list(FACET_FILTER_TYPES)
         extra_filter = None
         if institution_type == 'repository':
-            facet_filter_types = filter(lambda f: f['facet'] != 'repository_data', FACET_FILTER_TYPES)
+            facet_filter_types = [f for f in FACET_FILTER_TYPES if f['facet'] != 'repository_data']
             extra_filter = 'repository_url: "' + institution_url + '"'
         elif institution_type == 'campus':
             extra_filter = 'campus_url: "' + institution_url + '"'

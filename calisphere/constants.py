@@ -316,7 +316,7 @@ FEATURED_UNITS = [{
 }, {
     'featuredImage': {
         'src': '/thumb-inst_lgbt.jpg',
-        'url': '/item/ark:/13030/kt7d5nf4s3/'
+        'url': '/item/ark:/13030/kt0m3nd81b/'
     },
     'id': '72'
 }, {

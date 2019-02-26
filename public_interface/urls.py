@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, print_function
+
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.http import HttpResponse

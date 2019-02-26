@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, print_function
+
 from builtins import next
 from builtins import range
 import os
@@ -62,7 +62,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
     def write_data_fast(self, section, site):
         ''' process data using generator and streaming xml '''
         # FIXME need to generalize this code if we ever want to use it for anything other than Calisphere items
-        items = site().items()  # generator yielding all items
+        items = list(site().items())  # generator yielding all items
 
         parts = []
 

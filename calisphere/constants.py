@@ -154,30 +154,30 @@ FACET_FILTER_TYPES = [{
     'facet': 'type_ss',
     'display_name': 'Type of Item',
     'filter': 'type_ss',
-    'filter_transform': lambda (filterVal) : filterVal,
-    'facet_transform': lambda (facetVal) : facetVal,
-    'filter_display': lambda (filterVal) : filterVal
+    'filter_transform': lambda filterVal : filterVal,
+    'facet_transform': lambda facetVal : facetVal,
+    'filter_display': lambda filterVal : filterVal
 }, {
     'facet': 'facet_decade',
     'display_name': 'Decade',
     'filter': 'facet_decade',
-    'filter_transform': lambda (filterVal) : filterVal,
-    'facet_transform': lambda (facetVal) : facetVal,
-    'filter_display': lambda (filterVal) : filterVal
+    'filter_transform': lambda filterVal : filterVal,
+    'facet_transform': lambda facetVal : facetVal,
+    'filter_display': lambda filterVal : filterVal
 }, {
     'facet': 'repository_data',
     'display_name': 'Contributing Institution',
     'filter': 'repository_url',
-    'filter_transform': lambda (filterVal) : repositoryIdToUrl(filterVal),
-    'facet_transform': lambda (facetVal) : getRepositoryData(repository_data=facetVal),
-    'filter_display': lambda (filterVal) : repositoryFilterDisplay(filterVal)
+    'filter_transform': lambda filterVal : repositoryIdToUrl(filterVal),
+    'facet_transform': lambda facetVal : getRepositoryData(repository_data=facetVal),
+    'filter_display': lambda filterVal : repositoryFilterDisplay(filterVal)
 }, {
     'facet': 'collection_data',
     'display_name': 'Collection',
     'filter': 'collection_url',
-    'filter_transform': lambda (filterVal) : collectionIdToUrl(filterVal),
-    'facet_transform': lambda (facetVal) : getCollectionData(collection_data=facetVal),
-    'filter_display': lambda (filterVal) : collectionFilterDisplay(filterVal)
+    'filter_transform': lambda filterVal : collectionIdToUrl(filterVal),
+    'facet_transform': lambda facetVal : getCollectionData(collection_data=facetVal),
+    'filter_display': lambda filterVal : collectionFilterDisplay(filterVal)
 }]
 
 # Make a copy of FACET_FILTER_TYPES to reset to original.

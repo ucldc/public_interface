@@ -1,6 +1,6 @@
 """ logic for cache / retry for solr and JSON from registry
 """
-from __future__ import unicode_literals, print_function
+
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
@@ -77,7 +77,7 @@ def SOLR(**params):
     res.raise_for_status()
     results = json.loads(res.content.decode('utf-8'))
     facet_counts = results.get('facet_counts', {})
-    for key, value in facet_counts.get('facet_fields', {}).items():
+    for key, value in list(facet_counts.get('facet_fields', {}).items()):
         # Make facet fields match edsu with grouper recipe
         facet_counts['facet_fields'][key] = dict(
             itertools.zip_longest(*[iter(value)] * 2, fillvalue=""))

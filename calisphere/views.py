@@ -556,7 +556,7 @@ def itemViewCarousel(request):
             carousel_solr_search = SOLR_select(**solrParams)
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
-            print(request.get_full_path())
+            print((request.get_full_path()))
             raise(e)
         search_results = carousel_solr_search.results
         numFound = carousel_solr_search.numFound

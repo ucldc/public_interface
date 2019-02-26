@@ -1,7 +1,7 @@
-from __future__ import division
+
 from builtins import str
 from builtins import range
-from past.builtins import basestring
+from past.builtins import str
 from past.utils import old_div
 from django.template import Library
 import ast
@@ -73,4 +73,4 @@ def current_page(start, rows):
 
 @register.filter
 def is_string(val):
-    return isinstance(val, basestring)
+    return isinstance(val, str)

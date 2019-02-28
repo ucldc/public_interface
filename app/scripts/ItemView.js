@@ -67,7 +67,7 @@ var ItemView = Backbone.View.extend({
       var inst_ga_code = $('[data-ga-code]').data('ga-code');
       if (inst_ga_code && (action === 'download' || action === 'request')) {
         var inst_tracker_name = inst_ga_code.replace(/-/g,'x');
-        ga( inst_tracker_name + '.send', 'event', category, action, label);
+        ga( inst_tracker_name + '.send', 'event', 'calisphere', action, label);
       }
     }
   },

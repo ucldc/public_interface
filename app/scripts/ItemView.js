@@ -34,7 +34,42 @@ var ItemView = Backbone.View.extend({
     'click .js-item-link'               : 'goToItemPage',
     'click .js-rc-page'                 : 'paginateRelatedCollections',
     'click .js-relatedCollection'       : 'selectRelatedCollection',
-    'click .js-disqus'                  : 'initDisqus'
+    'click .js-disqus'                  : 'initDisqus',
+    'click #js-downloadModal'           : 'sendGA',
+    'click #js-requestModal'            : 'sendGA',
+    'click #js-downloadBtn'             : 'sendGA',
+    'click #js-requestBtn'              : 'sendGA'
+
+  },
+
+  sendGA: function(e) {
+    var category = 'buttons',
+      action,
+      label = e.target.dataset['label'].toLowerCase();
+    switch(e.target.id) {
+      case 'js-downloadBtn':
+        action = 'download'
+        break;
+      case 'js-downloadModal':
+        action = 'open download modal'
+        break;
+      case 'js-requestBtn':
+        action = 'request'
+        break;
+      case 'js-requestModal':
+        action = 'open request modal'
+        break;
+    }
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event',
+        category, action, label);
+
+      let inst_ga_code = $('[data-ga-code]').data('ga-code');
+      if (inst_ga_code) {
+        let inst_tracker_name = inst_ga_code.replace(/-/g,'x');
+        ga( inst_tracker_name + '.send', 'event', category, action, label);
+      }
+    }
   },
 
   // `click` triggered on `#js-linkBack`

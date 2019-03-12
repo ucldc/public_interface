@@ -332,9 +332,8 @@ def itemView(request, item_id=''):
     for item in item_solr_search.results:
         if 'structmap_url' in item and len(item['structmap_url']) >= 1:
             item['harvest_type'] = 'hosted'
-            structmap_url = string.replace(item['structmap_url'],
-                                           's3://static',
-                                           'https://s3.amazonaws.com/static')
+            structmap_url = item['structmap_url'].replace(
+                's3://static', 'https://s3.amazonaws.com/static')
             structmap_data = json_loads_url(structmap_url)
 
             if 'structMap' in structmap_data:

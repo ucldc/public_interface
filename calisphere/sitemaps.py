@@ -1,4 +1,3 @@
-
 from builtins import object
 from past.utils import old_div
 import re
@@ -43,8 +42,10 @@ class InstitutionSitemap(HttpsSitemap):
     def location(self, item):
         return reverse(
             'calisphere:repositoryView',
-            kwargs={'repository_id': item,
-                    'subnav': 'items'})
+            kwargs={
+                'repository_id': item,
+                'subnav': 'items'
+            })
 
 
 class CollectionSitemap(HttpsSitemap):

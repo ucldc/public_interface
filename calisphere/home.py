@@ -30,7 +30,6 @@ class HomeView(TemplateView):
                 math.floor((int(solr_collections.total_objects) - 1) / 25000) *
                 25000))
 
-
     @method_decorator(gzip_page)
     def get(self, request):
         """ view for home page """
@@ -39,13 +38,10 @@ class HomeView(TemplateView):
         random.shuffle(self.home_data['statewide_partners'])
 
         # return one lock_up; and arrays for the featured stuff
-        return render(request, self.template_name, {
-            'lock_up':
-            self.home_data['home'][0],
-            'uc_partners':
-            self.home_data['uc_partners'],
-            'statewide_partners':
-            self.home_data['statewide_partners'],
-            'total_objects':
-            self.total_objects,
-        })
+        return render(
+            request, self.template_name, {
+                'lock_up': self.home_data['home'][0],
+                'uc_partners': self.home_data['uc_partners'],
+                'statewide_partners': self.home_data['statewide_partners'],
+                'total_objects': self.total_objects,
+            })

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 from future import standard_library
 standard_library.install_aliases()
 from builtins import chr
@@ -39,7 +38,7 @@ class CollectionManager(object):
                 '{0}/query?facet.field=collection_data&facet=on&rows=0&facet.limit=-1&facet.mincount=1'
                 .format(solr_url))
             req = urllib.request.Request(url, None,
-                                  {'X-Authentication-Token': solr_key})
+                                         {'X-Authentication-Token': solr_key})
             save = {}
             solr_data = json_loads_url(req)
             save['data'] = self.data = solr_data['facet_counts'][
@@ -50,7 +49,8 @@ class CollectionManager(object):
             save['split'] = self.split
             save['no_collections'] = self.no_collections
             save['shuffled'] = self.shuffled
-            save['total_objects'] = self.total_objects = solr_data['response']['numFound']
+            save['total_objects'] = self.total_objects = solr_data['response'][
+                'numFound']
             cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT)
 
     def parse(self):
@@ -75,7 +75,8 @@ class CollectionManager(object):
                     elif c.lower() == current_char:
                         split_collections[current_char].append(collection_link)
                     else:
-                        while c.lower() != current_char and current_char <= 'z':
+                        while c.lower(
+                        ) != current_char and current_char <= 'z':
                             current_char = chr(ord(current_char) + 1)
                             split_collections[current_char] = []
                         split_collections[current_char].append(collection_link)

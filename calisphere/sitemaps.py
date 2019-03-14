@@ -1,5 +1,4 @@
 from builtins import object
-from past.utils import old_div
 import re
 import time
 
@@ -77,7 +76,7 @@ class ItemSitemap(object):
 
         self.limit = 15000  # 50,000 is google limit on urls per sitemap file
         self.solr_total = SOLR_select_nocache(q='').numFound
-        self.num_pages = old_div(self.solr_total, self.limit)
+        self.num_pages = self.solr_total // self.limit
 
     def items(self):
         ''' returns a generator containing data for all items in solr '''

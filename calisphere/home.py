@@ -22,7 +22,7 @@ class HomeView(TemplateView):
         """
         this_dir = os.path.dirname(os.path.realpath(__file__))
         this_data = os.path.join(this_dir, 'home-data.json')
-        self.home_data = json.loads(open(this_data).read(), encoding='utf-8')
+        self.home_data = json.loads(open(this_data).read())
         solr_collections = CollectionManager(settings.SOLR_URL,
                                              settings.SOLR_API_KEY)
         self.total_objects = intcomma(

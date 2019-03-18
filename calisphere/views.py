@@ -1005,7 +1005,7 @@ def statewideDirectory(request):
                     0] == char.upper:
                 bin.append(repository)
         if len(bin) > 0:
-            bin.sort()
+            bin.sort(key=lambda r: r['name'])
             binned_repositories.append({char: bin})
 
     return render(

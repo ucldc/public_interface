@@ -737,7 +737,7 @@ def relatedCollections(request, slug=None, repository_id=None):
         'rq': params.getlist('rq'),
         'num_related_collections': num_related_collections,
         'related_collections': three_related_collections,
-        'rc_page': params.get('rc_page'),
+        'rc_page': int(params.get('rc_page')),
     }
     if len(params.getlist('itemId')) > 0:
         context['itemId'] = params.get('itemId')

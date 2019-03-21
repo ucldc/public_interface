@@ -1180,7 +1180,7 @@ def institutionView(request,
             math.ceil(
                 float(
                     len(collections_solr_search.facet_counts[
-                        'facet_fields']['sort_collection_data'])) // 10))
+                        'facet_fields']['sort_collection_data'])) / 10))
         # doing the search again;
         # could we slice this from the results above?
         collectionsParams['facet_offset'] = (page - 1) * 10

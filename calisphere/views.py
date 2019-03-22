@@ -496,7 +496,7 @@ def search(request):
             solr_search.numFound,
             'pages':
             int(math.ceil(
-                    float(solr_search.numFound) // int(context['rows']))),
+                    solr_search.numFound / int(context['rows']))),
             'related_collections':
             getRelatedCollections(request)[0],
             'num_related_collections':
@@ -783,7 +783,7 @@ def collectionsDirectory(request):
         'collections': collections,
         'random': True,
         'pages': int(
-            math.ceil(float(len(solr_collections.shuffled)) // 10))
+            math.ceil(len(solr_collections.shuffled) / 10))
     }
 
     if page * 10 < len(solr_collections.shuffled):
@@ -800,7 +800,7 @@ def collectionsAZ(request, collection_letter):
     collections_list = solr_collections.split[collection_letter.lower()]
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
-    pages = int(math.ceil(float(len(collections_list)) // 10))
+    pages = int(math.ceil(len(collections_list) / 10))
 
     collections = []
     for collection_link in collections_list[(page - 1) * 10:page * 10]:
@@ -893,7 +893,7 @@ def collectionView(request, collection_id):
     context['search_results'] = solr_search.results
     context['numFound'] = solr_search.numFound
     context['pages'] = int(
-        math.ceil(float(solr_search.numFound) // int(context['rows'])))
+        math.ceil(solr_search.numFound / int(context['rows'])))
 
     context['facets'] = facetQuery(facet_filter_types, params, solr_search,
                                    extra_filter)
@@ -1084,7 +1084,7 @@ def institutionView(request,
             solr_search.numFound,
             'pages':
             int(math.ceil(
-                float(solr_search.numFound) // int(context['rows']))),
+                solr_search.numFound / int(context['rows']))),
             'institution':
             institution_details,
             'contact_information':
@@ -1178,9 +1178,8 @@ def institutionView(request,
 
         pages = int(
             math.ceil(
-                float(
-                    len(collections_solr_search.facet_counts[
-                        'facet_fields']['sort_collection_data'])) / 10))
+                len(collections_solr_search.facet_counts[
+                    'facet_fields']['sort_collection_data']) / 10))
         # doing the search again;
         # could we slice this from the results above?
         collectionsParams['facet_offset'] = (page - 1) * 10

@@ -7,8 +7,6 @@ six==1.10.0
 requests==2.21.0
 whitenoise==3.3.0
 markdown==2.6.8
-# django-positions==0.5.4
-https://github.com/amywieliczka/django-positions/archive/multi-collection-delete-issue.zip#egg=django-positions
 https://github.com/ucldc/md5s3stash/archive/master.zip#egg=md5s3stash
 django-redis==4.7.0
 redis==2.10.5

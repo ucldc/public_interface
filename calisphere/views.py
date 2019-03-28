@@ -758,11 +758,11 @@ def relatedCollections(request, slug=None, repository_id=None):
 
 def relatedExhibitions(request):
     params = request.GET.copy()
-    exhibits = list()
     if ('itemId' in params):
-        exhibitItems = ExhibitItem.objects.filter(item_id=params['itemId'])
-        for exhibitItem in exhibitItems:
-            exhibits.append(exhibitItem.exhibit)
+        exhibitItems = ExhibitItem.objects.select_related(
+            'exhibit').filter(item_id=params['itemId'])
+        exhibitIds = [ exhibitItem.exhibit.pk for exhibitItem in exhibitItems ]
+        exhibits = Exhibit.objects.filter(pk__in=exhibitIds)
 
     return render(request, 'calisphere/related-exhibitions.html',
                   {'exhibits': exhibits})

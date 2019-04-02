@@ -1,5 +1,5 @@
-from __future__ import unicode_literals
-from __future__ import absolute_import
+
+
 
 from django.contrib import admin
 from django.utils.safestring import mark_safe
@@ -131,7 +131,7 @@ class HistoricalEssayAdmin(admin.ModelAdmin):
     def credits_display(self, instance):
         if instance.curator or instance.copyright_year or instance.copyright_holder:
             return mark_safe(
-                u"""<p>The text of this essay is available under a 
+                """<p>The text of this essay is available under a 
                 <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons 
                 CC-BY license</a>. You are free to share and adapt it however you like, provided you 
                 provide attribution as follows:</p><p>{0} curated by {1}, availabled under 
@@ -161,7 +161,7 @@ class ExhibitAdmin(admin.ModelAdmin):
     def credits_display(self, instance):
         if instance.curator or instance.copyright_year or instance.copyright_holder:
             return mark_safe(
-                u"""<p>The text of this exhibition is available under a 
+                """<p>The text of this exhibition is available under a 
                 <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons 
                 CC-BY license</a>. You are free to share and adapt it however you like, provided you 
                 provide attribution as follows:</p><p>{0} curated by {1}, availabled under 
@@ -190,7 +190,7 @@ class LessonPlanAdmin(admin.ModelAdmin):
     def credits_display(self, instance):
         if instance.curator or instance.copyright_year or instance.copyright_holder:
             return mark_safe(
-                u"""<p>The text of this lesson plan is available under a 
+                """<p>The text of this lesson plan is available under a 
                 <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons 
                 CC-BY license</a>. You are free to share and adapt it however you like, provided you 
                 provide attribution as follows:</p><p>{0} curated by {1}, availabled under 
@@ -223,7 +223,7 @@ class ThemeAdmin(admin.ModelAdmin):
     def credits_display(self, instance):
         if instance.curator or instance.copyright_year or instance.copyright_holder:
             return mark_safe(
-                u"""<p>The text of this theme is available under a 
+                """<p>The text of this theme is available under a 
                 <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons 
                 CC-BY license</a>. You are free to share and adapt it however you like, provided you 
                 provide attribution as follows:</p><p>{0} curated by {1}, availabled under 

@@ -1,12 +1,10 @@
-from __future__ import division
 from builtins import object
-from past.utils import old_div
 import re
 import time
 
 from django.contrib.sitemaps import Sitemap
 from django.apps import apps
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 
 from calisphere.collection_data import CollectionManager
@@ -43,8 +41,10 @@ class InstitutionSitemap(HttpsSitemap):
     def location(self, item):
         return reverse(
             'calisphere:repositoryView',
-            kwargs={'repository_id': item,
-                    'subnav': 'items'})
+            kwargs={
+                'repository_id': item,
+                'subnav': 'items'
+            })
 
 
 class CollectionSitemap(HttpsSitemap):
@@ -76,7 +76,7 @@ class ItemSitemap(object):
 
         self.limit = 15000  # 50,000 is google limit on urls per sitemap file
         self.solr_total = SOLR_select_nocache(q='').numFound
-        self.num_pages = old_div(self.solr_total, self.limit)
+        self.num_pages = self.solr_total // self.limit
 
     def items(self):
         ''' returns a generator containing data for all items in solr '''

@@ -1,8 +1,5 @@
-from __future__ import division
 from builtins import str
 from builtins import range
-from past.builtins import basestring
-from past.utils import old_div
 from django.template import Library
 import ast
 
@@ -63,14 +60,14 @@ def subtract(a, b):
 
 @register.filter
 def divide(a, b):
-    return int(old_div(int(a), int(b)))
+    return int(int(a)//int(b))
 
 
 @register.filter
 def current_page(start, rows):
-    return int(old_div(int(start), int(rows))) + 1
+    return int(int(start)//int(rows)) + 1
 
 
 @register.filter
 def is_string(val):
-    return isinstance(val, basestring)
+    return isinstance(val, str)

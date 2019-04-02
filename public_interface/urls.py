@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, print_function
+
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.http import HttpResponse
@@ -23,7 +23,7 @@ sitemaps = {
 urlpatterns = [
     url(r'^', include('calisphere.urls', namespace="calisphere")),
     url(r'^exhibitions/', include('exhibits.urls', namespace="exhibits")),
-    url(r'^for-educators/', include('exhibits.teacher_urls', namespace="for-teachers")),
+    url(r'^for-educators/', include(('exhibits.teacher_urls', 'for-teachers'), namespace="for-teachers")),
     url(r'^cal-cultures/', calCultures, name="cal-cultures"),
 
     url(r'^admin/', admin.site.urls),

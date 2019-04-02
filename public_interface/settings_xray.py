@@ -1,6 +1,6 @@
-from __future__ import unicode_literals, print_function
 
-from settings import *
+
+from .settings import *
 
 INSTALLED_APPS =  INSTALLED_APPS + ('aws_xray_sdk.ext.django',)
 

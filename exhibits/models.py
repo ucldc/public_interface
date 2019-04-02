@@ -1,13 +1,12 @@
-from __future__ import unicode_literals
+
 
 from builtins import object
 import os.path
 
 from django.contrib.auth.models import User
 from django.db import models
-from positions.fields import PositionField
 from calisphere.cache_retry import SOLR_select, SOLR_raw, json_loads_url
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from calisphere.constants import getCollectionData, getRepositoryData
 from django.conf import settings

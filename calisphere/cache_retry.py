@@ -1,6 +1,6 @@
 """ logic for cache / retry for solr and JSON from registry
 """
-from __future__ import unicode_literals, print_function
+
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
@@ -20,8 +20,8 @@ requests.packages.urllib3.disable_warnings()
 
 from aws_xray_sdk.core import patch
 
-if hasattr(settings,'XRAY_RECORDER'):
-    patch(('requests',))
+if hasattr(settings, 'XRAY_RECORDER'):
+    patch(('requests', ))
 
 SOLR_DEFAULTS = {
     'mm': '100%',
@@ -60,8 +60,8 @@ SOLR_DEFAULTS = {
 
 """
 
-SolrResults = namedtuple('SolrResults',
-                         'results header numFound facet_counts nextCursorMark')
+SolrResults = namedtuple(
+    'SolrResults', 'results header numFound facet_counts nextCursorMark')
 
 
 def SOLR(**params):
@@ -77,7 +77,7 @@ def SOLR(**params):
     res.raise_for_status()
     results = json.loads(res.content.decode('utf-8'))
     facet_counts = results.get('facet_counts', {})
-    for key, value in facet_counts.get('facet_fields', {}).items():
+    for key, value in list(facet_counts.get('facet_fields', {}).items()):
         # Make facet fields match edsu with grouper recipe
         facet_counts['facet_fields'][key] = dict(
             itertools.zip_longest(*[iter(value)] * 2, fillvalue=""))
@@ -87,7 +87,8 @@ def SOLR(**params):
         results['responseHeader'],
         results['response']['numFound'],
         facet_counts,
-        results.get('nextCursorMark'), )
+        results.get('nextCursorMark'),
+    )
 
 
 # create a hash for a cache key
@@ -104,7 +105,8 @@ def json_loads_url(url_or_req):
     data = cache.get(key)
     if not data:
         try:
-            data = json.loads(urllib.request.urlopen(url_or_req).read().decode('utf-8'))
+            data = json.loads(
+                urllib.request.urlopen(url_or_req).read().decode('utf-8'))
         except urllib.error.HTTPError:
             data = {}
     return data

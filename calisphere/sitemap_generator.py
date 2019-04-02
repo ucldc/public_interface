@@ -1,4 +1,3 @@
-from __future__ import unicode_literals, print_function
 from builtins import next
 from builtins import range
 import os
@@ -83,8 +82,8 @@ class CalisphereSitemapGenerator(SitemapGenerator):
                     f.write('<url>')
                     f.write(
                         '<loc>https://calisphere.org/item/{0}/</loc>'.format(
-                            item['id']
-                        ))  # FIXME hardcoded to only work for Calisphere items
+                            item['id'])
+                    )  # FIXME hardcoded to only work for Calisphere items
                     # <lastmod>
                     f.write('<lastmod>{0}</lastmod>'.format(item['timestamp']))
                     # <changefreq>
@@ -93,8 +92,8 @@ class CalisphereSitemapGenerator(SitemapGenerator):
                     # FIXME hardcoded to only work for Calisphere items
                     if item['reference_image_md5']:
                         f.write(
-                            '<image:image><image:loc>https://calisphere.org/crop/999x999/{0}</image:loc></image:image>'.
-                            format(item['reference_image_md5']))
+                            '<image:image><image:loc>https://calisphere.org/crop/999x999/{0}</image:loc></image:image>'
+                            .format(item['reference_image_md5']))
                     f.write('</url>')
                 f.write('</urlset>')
 

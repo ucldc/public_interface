@@ -102,7 +102,7 @@
       <div class="col-md-6">
         {% if contact_information.description %}
           <p class="institution-intro__description" itemprop="description">
-            {{ contact_information.description }}
+            {{ contact_information.description|urlize }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>
         {% endif %}

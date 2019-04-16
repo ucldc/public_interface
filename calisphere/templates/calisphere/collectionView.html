@@ -57,7 +57,7 @@
       {% if 'description' in collection %}
       <h3 class="collection-intro__about-heading">About this Collection</h3>
         <span class="collection-intro__about-description">
-          {{ collection.description }}
+          {{ collection.description|urlize }}
         </span>
       {% endif %}
       {% if collection.url_local|length > 0 %}

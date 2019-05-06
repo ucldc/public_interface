@@ -360,9 +360,9 @@ FEATURED_UNITS = [{
                   {
                       'featuredImage': {
                           'src': '/thumb-inst_huntington.jpg',
-                          'url': '/item/ark:/13030/kt5t1nd9ph/'
+                          'url': '/item/be854e7cffc3281b4032a20a5b1d75fd/'
                       },
-                      'id': '146'
+                      'id': '304'
                   },
                   {
                       'featuredImage': {

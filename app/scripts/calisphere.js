@@ -45,9 +45,9 @@ $(document).ready(function() {
   // We capture the click handler on outbound links and the contact owner button
 
   if (typeof ga !== 'undefined') {
-    outboundSelector = 'a[href^="http://"], a[href^="https://"]'
-    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]'
-    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]'
+    var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
+    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
+    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
     $('body').on('click', outboundSelector, function() {
       var url = '';
       if($(this).attr('href')) {

@@ -49,7 +49,14 @@ $(document).ready(function() {
     outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]'
     outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]'
     $('body').on('click', outboundSelector, function() {
-      var url = $(this).attr('href');
+      var url = '';
+      if($(this).attr('href')) {
+        url = $(this).attr('href');
+      } else if($(this).attr('onclick')) {
+        var c = $(this).attr('onclick');
+        url = c.slice(15, c.length-2);
+      }
+
       ga('send', 'event', 'outbound', 'click', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
         // click captured and tracked, send the user along

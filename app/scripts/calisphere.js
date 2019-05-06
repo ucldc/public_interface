@@ -45,7 +45,10 @@ $(document).ready(function() {
   // We capture the click handler on outbound links and the contact owner button
 
   if (typeof ga !== 'undefined') {
-    $('body').on('click', 'a[href^="http://"], a[href^="https://"]', function() {
+    outboundSelector = 'a[href^="http://"], a[href^="https://"]'
+    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]'
+    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]'
+    $('body').on('click', outboundSelector, function() {
       var url = $(this).attr('href');
       ga('send', 'event', 'outbound', 'click', url, {
         'transport': 'beacon',  // use navigator.sendBeacon

@@ -114,11 +114,14 @@ def process_facets(facets, filters, facet_type=None):
     if facet_type and facet_type == 'facet_decade':
         display_facets = sorted(
             iter(list(display_facets.items())), key=operator.itemgetter(0))
-    else:
+    elif facet_type in ['type_ss', 'repository_data', 'collection_data']:
         display_facets = sorted(
             iter(list(display_facets.items())),
             key=operator.itemgetter(1),
             reverse=True)
+    else:
+        display_facets = sorted(
+            iter(list(display_facets.items())), key=operator.itemgetter(0))
 
     #append selected filters even if they have a count of 0
     for f in filters:

@@ -5,6 +5,7 @@ static_root
 .sass-cache
 bower_components
 *.py[cod]
+*.py.bak
 .DS_Store
 db.sqlite3
 ucldc-django-ebs.zip
@@ -23,3 +24,5 @@ backstop_data/uilib/html_report/
 backstop_data/uilib/bitmaps_test/
 backstop_data/uilib/bitmaps_reference/
 backstop_data/ci_report/
+backstop_data/backstop_tests/prod-vs-local-as-prod-ui.js
+media_root/

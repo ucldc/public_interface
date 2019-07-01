@@ -10,7 +10,8 @@
 
 <h1>Contact Calisphere</h1>
   <div id="contact-us-form" class="col-sm-8 static__main">
-<p>Please note that Calisphere does not own the items or collections on the site and has no further information about them. Questions about items and collections should be directed to their contributing institutions. Use the "contact owner" button or visit <a href="/institutions/" data-pjax="js-pageContent">the institution's page</a> for more information. If you have a question about using an item you found on Calisphere, you may want to first consult the <a href="/terms/" data-pjax="js-pageContent">Terms of Use</a>. Other frequently asked questions are addressed on our <a href="/help/" data-pjax="js-pageContent">help page</a>.</p>
+<p>Please note the California Digital Library, which maintains Calisphere, does not own the items or collections on the site and has no further information about them.</p>
+<p>Questions about items and collections should be directed to their contributing institutions. Use the "Contact Owner" button or visit <a href="/institutions/" data-pjax="js-pageContent">the institution's page</a> for more information. If you have a question about using an item you found on Calisphere, you may want to first consult the <a href="/terms/" data-pjax="js-pageContent">Terms of Use</a>. Other frequently asked questions are addressed on our <a href="/help/" data-pjax="js-pageContent">help page</a>.</p>
 <p>Use this form to report technical problems, send us comments, or ask questions about Calisphere.</p>
     <form method="post">{% csrf_token %}
     {% for field in form %}
@@ -32,7 +33,8 @@
         </strong> {{ request.META.HTTP_REFERER }}
         <input type="hidden" name="referer" value="{{ request.META.HTTP_REFERER }}">
       </div>
-      <div class="form-group">
+<p>*If this message concerns items or collections found on this site, please contact the <a href="/institutions/" data-pjax="js-pageContent">contributing institution</a> directly. Messages about items or collections submitted through this page may be forwarded to the contributing institution, as noted in our <a href="/privacy/" data-pjax="js-pageContent">Privacy Statement</a>.</p>
+  <div class="form-group">
         <button type="submit" class="btn btn-calisphere" value="Submit">Submit</button>
       </div>
     </form>

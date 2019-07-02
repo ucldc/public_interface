@@ -552,36 +552,6 @@ class NotesItem(models.Model):
     class Meta(object):
         ordering = ['order']
 
-@python_2_unicode_compatible
-class BrowseTermGroup(models.Model):
-    group_title = models.CharField(max_length=200, blank=True)
-    group_note = models.TextField(blank=True)
-    render_as = models.CharField(max_length=1, choices=RENDERING_OPTIONS, default='H')
-    theme = models.ForeignKey(Theme, on_delete=models.CASCADE, blank=True, null=True)
-    exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE, blank=True, null=True)
-    order = models.IntegerField(blank=True, null=True)
-    exhibit_order = models.IntegerField(blank=True, null=True)
-
-    def __str__(self):
-        return self.group_title
-
-    class Meta(object):
-        ordering = ['order']
-
-@python_2_unicode_compatible
-class BrowseTerm(models.Model):
-    link_text = models.CharField(max_length=200)
-    link_location = models.CharField(max_length=500)
-    browse_term_group = models.ForeignKey(BrowseTermGroup, on_delete=models.CASCADE)
-    order = models.IntegerField(blank=True, null=True)
-
-    def __str__(self):
-        return self.link_text
-
-    class Meta(object):
-        ordering = ['order']
-
-
 class HistoricalEssayExhibit(models.Model):
     exhibit = models.ForeignKey(Exhibit, on_delete=models.CASCADE)
     historicalEssay = models.ForeignKey(HistoricalEssay, on_delete=models.CASCADE)

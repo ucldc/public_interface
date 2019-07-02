@@ -156,16 +156,4 @@
   </div>
   {% endif %}
 
-  {% for browse_term_group in exhibit.browsetermgroup_set.all %}
-    <h3>{{ browse_term_group.group_title }}:</h3>
-
-    <p>{{ browse_term_group.group_note }}</p>
-    <div class="theme__browseTerms" style="-webkit-column-count: 6;-moz-column-count: 6;column-count: 6">
-      {% for browse_term in browse_term_group.browseterm_set.all %}
-        <button class="browseTerm" onclick="location.href='{{ browse_term.link_location }}';">{{ browse_term.link_text }}</button>
-      {% endfor %}
-    </div>
-  {% endfor %}
-
-
 {% endblock %}

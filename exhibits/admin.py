@@ -102,19 +102,6 @@ class LessonPlanThemeInline(admin.TabularInline):
     fields = ['order', 'lessonPlan']
     extra = 0
 
-class BrowseTermInline(admin.TabularInline):
-    model = BrowseTerm
-    fields = ['order', 'link_text', 'link_location']
-    extra = 0
-
-class BrowseTermGroupInline(admin.TabularInline):
-    classes = ('collapse',)
-    model = BrowseTermGroup
-    fields = ['order', 'group_title', 'group_note']
-    extra = 0
-
-
-
 class HistoricalEssayAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,                      {'fields': [('title', 'slug'), ('blockquote')]}),
@@ -154,7 +141,7 @@ class ExhibitAdmin(admin.ModelAdmin):
         ('About this Exhibit',      {'fields': [('byline', 'byline_render_as'), ('curator', 'copyright_holder'), ('copyright_year', 'credits_display')]}),
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
-    inlines = [ExhibitItemInline, NotesItemInline, ThemeExhibitInline, HistoricalEssayExhibitInline, LessonPlanExhibitInline, BrowseTermGroupInline]
+    inlines = [ExhibitItemInline, NotesItemInline, ThemeExhibitInline, HistoricalEssayExhibitInline, LessonPlanExhibitInline]
     list_display = ('title', 'hero', 'hero_first', 'slug', 'get_absolute_url', 'publish')
     prepopulated_fields = {'slug': ['title']}
     readonly_fields = ['credits_display']
@@ -204,9 +191,6 @@ class LessonPlanAdmin(admin.ModelAdmin):
             return None
     credits_display.short_description = "Credits preview"
 
-class BrowseTermGroupAdmin(admin.ModelAdmin):
-    inlines = [BrowseTermInline]
-
 class ThemeAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,                      {'fields': [('title', 'slug'), ('sort_title')]}),
@@ -216,7 +200,7 @@ class ThemeAdmin(admin.ModelAdmin):
         ('About this Theme',        {'fields': [('byline', 'byline_render_as'), ('curator', 'copyright_holder'), ('copyright_year', 'credits_display')], 'classes': ['collapse']}),
         ('Metadata',                {'fields': [('meta_description', 'meta_keywords')], 'classes': ['collapse']})
     ]
-    inlines = [ExhibitThemeInline, HistoricalEssayThemeInline, LessonPlanThemeInline, BrowseTermGroupInline]
+    inlines = [ExhibitThemeInline, HistoricalEssayThemeInline, LessonPlanThemeInline]
     list_display = ('title', 'hero', 'hero_first', 'slug', 'get_absolute_url', 'publish')
     prepopulated_fields = {'slug': ['title']}
     readonly_fields = ['credits_display']
@@ -246,4 +230,3 @@ admin.site.register(Exhibit, ExhibitAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(HistoricalEssay, HistoricalEssayAdmin)
 admin.site.register(LessonPlan, LessonPlanAdmin)
-admin.site.register(BrowseTermGroup, BrowseTermGroupAdmin)

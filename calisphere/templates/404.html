@@ -235,4 +235,10 @@
     {% include "calisphere/scripts.html" %}
     <script src="{% static "scripts/calisphere-home.js" %}"></script>
   </body>
+  <script>
+    if (typeof ga !== 'undefined') {
+      ga('set', 'location', window.location.href);
+      ga('send', 'event', 'error', '404', 'source: django');
+    }
+  </script>
 </html>

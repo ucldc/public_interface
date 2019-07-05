@@ -15,8 +15,10 @@
 
     <!-- Begin Filters -->
 
-      <div class="col-md-9 layout-col__1">
-
+      <div class="col-md-9 layout-col__1" role="group" aria-labelledby="filters-aria-label">
+        <div style="display: none" id="filters-aria-label">
+          Filters you've selected:
+        </div>
         <!-- Begin Filter Component -->
         {% block filters %}
         {% if filters|dictionary_length > 0 or rq|length > 0 %}<div class="filter">

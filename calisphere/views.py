@@ -510,6 +510,17 @@ def itemViewCarousel(request):
                     'value'
                 )
             )
+        # Add Custom Facet Filter Types
+        if params.get('relation_ss') and len(custom_facets) == 0:
+            facet_filter_types.append(
+                FacetFilterType(
+                    'relation_ss',
+                    'Relation',
+                    'relation_ss',
+                    'value',
+                    faceting_allowed = False
+                )
+            )
     elif referral == 'campus':
         linkBackId = params.get('campus_slug', None)
         if linkBackId:
@@ -838,6 +849,18 @@ def collectionView(request, collection_id):
                     'value'
                 )
             )
+    else:
+        if params.get('relation_ss'):
+            facet_filter_types.append(
+                FacetFilterType(
+                    'relation_ss',
+                    'Relation',
+                    'relation_ss',
+                    'value',
+                    faceting_allowed = False
+                )
+            )
+
     extra_filter = 'collection_url: "' + collection_url + '"'
 
     # perform the search

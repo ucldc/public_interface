@@ -106,92 +106,92 @@ def getRepositoryData(repository_data=None,
 
 
 class FacetFilterType(object):
-	def __init__(self, facet_solr_name, display_name, filter_solr_name, sort_by='count'):
-		self.facet = facet_solr_name
-		self.display_name = display_name
-		self.filter = filter_solr_name
-		self.sort_by = sort_by    # 'count' or 'value'
+    def __init__(self, facet_solr_name, display_name, filter_solr_name, sort_by='count'):
+        self.facet = facet_solr_name
+        self.display_name = display_name
+        self.filter = filter_solr_name
+        self.sort_by = sort_by    # 'count' or 'value'
 
-	def filter_transform(self, filterVal):
-		return filterVal
+    def filter_transform(self, filterVal):
+        return filterVal
 
-	def facet_transform(self, facetVal):
-		return facetVal
+    def facet_transform(self, facetVal):
+        return facetVal
 
-	def filter_display(self, filterVal):
-		return filterVal
+    def filter_display(self, filterVal):
+        return filterVal
 
-	def process_facets(self, facets, filter_params, sort_override=None):
-		filters = list(map(self.filter_transform, filter_params))
+    def process_facets(self, facets, filter_params, sort_override=None):
+        filters = list(map(self.filter_transform, filter_params))
 
-		#remove facets with count of zero
-		display_facets = dict(
-			(facet, count) for facet, count in list(facets.items()) if count != 0)
+        #remove facets with count of zero
+        display_facets = dict(
+            (facet, count) for facet, count in list(facets.items()) if count != 0)
 
-		#sort facets by value of sort_by - either count or value
-		sort_by = sort_override if sort_override else self.sort_by
-		if sort_by == 'value':
-			display_facets = sorted(
-				iter(list(display_facets.items())), key=operator.itemgetter(0))
-		elif sort_by == 'count':
-			display_facets = sorted(
-				iter(list(display_facets.items())),
-        		key=operator.itemgetter(1),
-        		reverse=True)
+        #sort facets by value of sort_by - either count or value
+        sort_by = sort_override if sort_override else self.sort_by
+        if sort_by == 'value':
+            display_facets = sorted(
+                iter(list(display_facets.items())), key=operator.itemgetter(0))
+        elif sort_by == 'count':
+            display_facets = sorted(
+                iter(list(display_facets.items())),
+                key=operator.itemgetter(1),
+                reverse=True)
 
         #append selected filters even if they have a count of 0
-		for f in filters:
-			if not any(f in facet[0] for facet in display_facets):
-				if self.facet == 'collection_data':
-					api_url = re.match(
-						r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?',
-					f)
-					collection = getCollectionData(
-						collection_id=api_url.group('id'))
-					display_facets.append(("{}::{}".format(
-						collection.get('url'), collection.get('name')), 0))
-				elif self.facet == 'repository_data':
-					api_url = re.match(
-						r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?',
-					f)
-					repository = getRepositoryData(
-						repository_id=api_url.group('id'))
-					display_facets.append(("{}::{}".format(
-						repository.get('url'), repository.get('name')), 0))
-				else:
-					display_facets.append((f, 0))
+        for f in filters:
+            if not any(f in facet[0] for facet in display_facets):
+                if self.facet == 'collection_data':
+                    api_url = re.match(
+                        r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?',
+                    f)
+                    collection = getCollectionData(
+                        collection_id=api_url.group('id'))
+                    display_facets.append(("{}::{}".format(
+                        collection.get('url'), collection.get('name')), 0))
+                elif self.facet == 'repository_data':
+                    api_url = re.match(
+                        r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?',
+                    f)
+                    repository = getRepositoryData(
+                        repository_id=api_url.group('id'))
+                    display_facets.append(("{}::{}".format(
+                        repository.get('url'), repository.get('name')), 0))
+                else:
+                    display_facets.append((f, 0))
 
-		return display_facets
+        return display_facets
 
-	def __str__(self):
-		return f'FacetFilterTypeClass: {self.facet}'
+    def __str__(self):
+        return f'FacetFilterTypeClass: {self.facet}'
 
-	def __getitem__(self, key):
-		return getattr(self, key)
+    def __getitem__(self, key):
+        return getattr(self, key)
 
 class RepositoryFacetFilterType(FacetFilterType):
-	def filter_transform(self, repositoryId):
-		repository_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
-		return repository_template.format(repositoryId)
+    def filter_transform(self, repositoryId):
+        repository_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
+        return repository_template.format(repositoryId)
 
-	def facet_transform(self, facetVal):
-		return getRepositoryData(repository_data=facetVal)
+    def facet_transform(self, facetVal):
+        return getRepositoryData(repository_data=facetVal)
 
-	def filter_display(self, filterVal):
-		repository = getRepositoryData(repository_id=filterVal)
-		repository.pop('local_id', None)
-		return repository
+    def filter_display(self, filterVal):
+        repository = getRepositoryData(repository_id=filterVal)
+        repository.pop('local_id', None)
+        return repository
 
 class CollectionFacetFilterType(FacetFilterType):
-	def filter_transform(self, collectionId):
-		collection_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
-		return collection_template.format(collectionId)
+    def filter_transform(self, collectionId):
+        collection_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
+        return collection_template.format(collectionId)
 
-	def facet_transform(self, facetVal):
-		return getCollectionData(collection_data=facetVal)
+    def facet_transform(self, facetVal):
+        return getCollectionData(collection_data=facetVal)
 
-	def filter_display(self, filterVal):
-		collection = getCollectionData(collection_id=filterVal)
-		collection.pop('local_id', None)
-		collection.pop('slug', None)
-		return collection
+    def filter_display(self, filterVal):
+        collection = getCollectionData(collection_id=filterVal)
+        collection.pop('local_id', None)
+        collection.pop('slug', None)
+        return collection

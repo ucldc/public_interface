@@ -507,7 +507,7 @@ def itemViewCarousel(request):
                     custom_facet['facet_field'],
                     custom_facet['label'],
                     custom_facet['facet_field'],
-                    'value'
+                    custom_facet.get('sort_by', 'count')
                 )
             )
     elif referral == 'campus':
@@ -835,7 +835,7 @@ def collectionView(request, collection_id):
                     custom_facet['facet_field'],
                     custom_facet['label'],
                     custom_facet['facet_field'],
-                    'value'
+                    custom_facet.get('sort_by', 'count')
                 )
             )
     extra_filter = 'collection_url: "' + collection_url + '"'

@@ -8,7 +8,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, JsonResponse, HttpResponse
 from calisphere.collection_data import CollectionManager
-from .constants import CAMPUS_LIST, DEFAULT_FACET_FILTER_TYPES, FACET_FILTER_TYPES, SORT_OPTIONS, FEATURED_UNITS, getCollectionData, getRepositoryData, collectionFilterDisplay, repositoryFilterDisplay, RIGHTS_STATEMENTS
+from .constants import *
+from .facet_filter_type import getCollectionData, getRepositoryData, FacetFilterType
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
@@ -104,45 +105,6 @@ def getCollectionMosaic(collection_url):
         'display_items': items
     }
 
-
-def process_facets(facets, filters, facet_type=None):
-    #remove facets with count of zero
-    display_facets = dict(
-        (facet, count) for facet, count in list(facets.items()) if count != 0)
-
-    #sort facets by facet value, else by count
-    if facet_type and facet_type == 'facet_decade':
-        display_facets = sorted(
-            iter(list(display_facets.items())), key=operator.itemgetter(0))
-    else:
-        display_facets = sorted(
-            iter(list(display_facets.items())),
-            key=operator.itemgetter(1),
-            reverse=True)
-
-    #append selected filters even if they have a count of 0
-    for f in filters:
-        if not any(f in facet[0] for facet in display_facets):
-            api_url = re.match(
-                r'^https://registry\.cdlib\.org/api/v1/(?P<collection_or_repo>collection|repository)/(?P<url>\d*)/?',
-                f)
-            if api_url is not None:
-                if api_url.group('collection_or_repo') == 'collection':
-                    collection = getCollectionData(
-                        collection_id=api_url.group('url'))
-                    display_facets.append(("{}::{}".format(
-                        collection.get('url'), collection.get('name')), 0))
-                elif api_url.group('collection_or_repo') == 'repository':
-                    repository = getRepositoryData(
-                        repository_id=api_url.group('url'))
-                    display_facets.append(("{}::{}".format(
-                        repository.get('url'), repository.get('name')), 0))
-            else:
-                display_facets.append((f, 0))
-
-    return display_facets
-
-
 def facetQuery(facet_filter_types, params, solr_search, extra_filter=None):
     # get facet counts
     # if the user's selected some of the available facets (ie - there are
@@ -154,7 +116,7 @@ def facetQuery(facet_filter_types, params, solr_search, extra_filter=None):
     # of the same type)
 
     facets = {}
-    for i, facet_filter_type in enumerate(facet_filter_types):
+    for facet_filter_type in facet_filter_types:
         facet_type = facet_filter_type['facet']
         if (len(params.getlist(facet_type)) > 0):
             exclude_facets_of_type = params.copy()
@@ -166,22 +128,15 @@ def facetQuery(facet_filter_types, params, solr_search, extra_filter=None):
                 solrParams['fq'].append(extra_filter)
             facet_search = SOLR_select(**solrParams)
 
-            facets[facet_type] = process_facets(
-                facet_search.facet_counts['facet_fields'][facet_type],
-                list(
-                    map(facet_filter_type['filter_transform'],
-                        params.getlist(facet_type))), facet_type)
+            solr_facets = facet_search.facet_counts['facet_fields'][facet_type]
         else:
-            facets[facet_type] = process_facets(
-                solr_search.facet_counts['facet_fields'][facet_type],
-                list(
-                    map(facet_filter_type['filter_transform'],
-                        params.getlist(facet_type)))
-                if facet_type in params else [], facet_type)
+            solr_facets = solr_search.facet_counts['facet_fields'][facet_type]
 
-        # facets[facet_type] = list(map(lambda facet_item : (facet_filter_type['facet_transform'](facet_item[0]), facet_item[1]), facets[facet_type]))
+        facets[facet_type] = facet_filter_type.process_facets(solr_facets,
+            params.getlist(facet_type))
+
         for j, facet_item in enumerate(facets[facet_type]):
-            facets[facet_type][j] = (facet_filter_type['facet_transform'](
+            facets[facet_type][j] = (facet_filter_type.facet_transform(
                 facet_item[0]), facet_item[1])
 
     return facets
@@ -547,14 +502,14 @@ def itemViewCarousel(request):
         collection_details = json_loads_url(collection_url + '?format=json')
         custom_facets = collection_details.get('custom_facet', [])
         for custom_facet in custom_facets:
-            facet_filter_types.append({
-                'facet': custom_facet['facet_field'],
-                'display_name': custom_facet['label'],
-                'filter': custom_facet['facet_field'],
-                'filter_transform': lambda a: a,
-                'facet_transform': lambda a: a,
-                'filter_display': lambda a: a
-            })
+            facet_filter_types.append(
+                FacetFilterType(
+                    custom_facet['facet_field'],
+                    custom_facet['label'],
+                    custom_facet['facet_field'],
+                    custom_facet.get('sort_by', 'count')
+                )
+            )
     elif referral == 'campus':
         linkBackId = params.get('campus_slug', None)
         if linkBackId:
@@ -665,12 +620,11 @@ def getRelatedCollections(request, slug=None, repository_id=None):
     related_collections = related_collections.facet_counts['facet_fields'][
         'collection_data']
 
-    # TODO: WHY IS THIS NECESSARY?
-    field = [f for f in FACET_FILTER_TYPES if f['facet'] == 'collection_data']
+    field = DEFAULT_FACET_FILTER_TYPES[3]
     collection_urls = list(
-        map(field[0]['filter_transform'], params.getlist('collection_data')))
+        map(field.filter_transform, params.getlist('collection_data')))
     # remove collections with a count of 0 and sort by count
-    related_collections = process_facets(related_collections, collection_urls)
+    related_collections = field.process_facets(related_collections, collection_urls)
     # remove 'count'
     related_collections = list(facet for facet, count in related_collections)
 
@@ -876,14 +830,14 @@ def collectionView(request, collection_id):
     # Add Custom Facet Filter Types
     if collection_details.get('custom_facet'):
         for custom_facet in collection_details.get('custom_facet'):
-            facet_filter_types.append({
-                'facet': custom_facet['facet_field'],
-                'display_name': custom_facet['label'],
-                'filter': custom_facet['facet_field'],
-                'filter_transform': lambda a: a,
-                'facet_transform': lambda a: a,
-                'filter_display': lambda a: a
-            })
+            facet_filter_types.append(
+                FacetFilterType(
+                    custom_facet['facet_field'],
+                    custom_facet['label'],
+                    custom_facet['facet_field'],
+                    custom_facet.get('sort_by', 'count')
+                )
+            )
     extra_filter = 'collection_url: "' + collection_url + '"'
 
     # perform the search
@@ -1190,11 +1144,11 @@ def institutionView(request,
         # solrpy gives us a dict == unsorted (!)
         # use the `facet_decade` mode of process_facets to do a lexical sort by value ....
         related_collections = list(
-            collection[0] for collection in process_facets(
+            collection[0] for collection in DEFAULT_FACET_FILTER_TYPES[3].process_facets(
                 collections_solr_search.facet_counts['facet_fields']
                 ['sort_collection_data'],
                 [],
-                'facet_decade',
+                'value',
             ))
         for i, related_collection in enumerate(related_collections):
             collection_parts = process_sort_collection_data(related_collection)
@@ -1288,7 +1242,7 @@ def campusView(request, campus_slug, subnav=False):
             facet_field=['repository_data'])
 
         related_institutions = list(
-            institution[0] for institution in process_facets(
+            institution[0] for institution in DEFAULT_FACET_FILTER_TYPES[2].process_facets(
                 institutions_solr_search.facet_counts['facet_fields']
                 ['repository_data'], []))
 

@@ -8,7 +8,7 @@ from django.db import models
 from calisphere.cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
-from calisphere.constants import getCollectionData, getRepositoryData
+from calisphere.facet_filter_type import getCollectionData, getRepositoryData
 from django.conf import settings
 from exhibits.custom_fields import HeroField
 from past import autotranslate

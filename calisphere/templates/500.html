@@ -26,7 +26,6 @@
       }
     </style>
 
-    {% if gaSiteCode %}
     <script type="text/javascript" async="" src="https://www.google-analytics.com/plugins/ua/linkid.js"></script>
     <script async="" src="//www.google-analytics.com/analytics.js"></script>
     <script>
@@ -39,7 +38,6 @@
       ga('require', 'linkid');
       ga('set', 'anonymizeIp', true);
     </script>
-    {% endif %}
   </head>
   <body>
     <div class="my-container">
@@ -66,12 +64,10 @@
       </p>
     </div>
   </body>
-  {% if gaSiteCode %}
   <script>
     if (typeof ga !== 'undefined') {
       ga('set', 'location', window.location.href);
       ga('send', 'event', 'error', '500', 'source: django');
     }
   </script>
-  {% endif %}
 </html>

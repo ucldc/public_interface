@@ -118,6 +118,7 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'health_check.cache', 'health_check.storage', 'snowpenguin.django.recaptcha2', )
 
 MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',

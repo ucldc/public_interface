@@ -48,6 +48,12 @@ var QueryManager = Backbone.Model.extend({
       var filters;
       if (formName === 'js-facet') {
         filters = $(formSelector + '.js-facet:visible').serializeArray();
+        var hiddenFilters = $(formSelector + '.js-facet:hidden').serializeArray();
+        for (var i=0; i<hiddenFilters.length; i++) {
+          if (hiddenFilters[i].name == 'relation_ss') {
+            filters.push(hiddenFilters[i])
+          }
+        }
       } else {
         filters = $(formSelector + '.js-filter').serializeArray();
       }

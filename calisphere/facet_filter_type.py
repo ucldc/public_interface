@@ -106,11 +106,12 @@ def getRepositoryData(repository_data=None,
 
 
 class FacetFilterType(object):
-    def __init__(self, facet_solr_name, display_name, filter_solr_name, sort_by='count'):
+    def __init__(self, facet_solr_name, display_name, filter_solr_name, sort_by='count', faceting_allowed=True):
         self.facet = facet_solr_name
         self.display_name = display_name
         self.filter = filter_solr_name
         self.sort_by = sort_by    # 'count' or 'value'
+        self.faceting_allowed = faceting_allowed
 
     def filter_transform(self, filterVal):
         return filterVal

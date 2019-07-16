@@ -144,18 +144,15 @@
     {% if 'relation' in item %}
 			<dt class="meta-block__type">Relation</dt>
 			<dd class="meta-block__defin">{% for relation in item.relation %}
-        {% if item.parsed_collection_data.0.custom_facet.0.facet_field == 'relation_ss' %}
         <a
           href="{% url 'calisphere:collectionView' item.parsed_collection_data.0.id %}?relation_ss={{ relation }}"
           data-relation="{{ relation }}"
           data-pjax="js-pageContent"
           class="js-relatedCollection"
         >
-        {% endif %}
         {{ relation }}
-        {% if item.parsed_collection_data.0.custom_facet.0.facet_field == 'relation_ss' %}
         </a>
-        {% endif %}<br> {% endfor %}</dd>
+        <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'provenance' in item %}

@@ -26,3 +26,4 @@ backstop_data/uilib/bitmaps_reference/
 backstop_data/ci_report/
 backstop_data/backstop_tests/prod-vs-local-as-prod-ui.js
 media_root/
+ucldc-*.zip

@@ -67,6 +67,9 @@ except ValueError:
 EMAIL_USE_TLS = bool(getenv('EMAIL_USE_TLS', ''))
 CSRF_COOKIE_SECURE = bool(getenv('CSRF_COOKIE_SECURE', ''))
 
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
 DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')
 
 ADMINS = (('', DEFAULT_FROM_EMAIL), )
@@ -118,6 +121,7 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'health_check.cache', 'health_check.storage', 'snowpenguin.django.recaptcha2', )
 
 MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',

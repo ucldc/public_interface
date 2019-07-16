@@ -717,6 +717,8 @@ def relatedExhibitions(request):
             'exhibit').filter(item_id=params['itemId'])
         exhibitIds = [ exhibitItem.exhibit.pk for exhibitItem in exhibitItems ]
         exhibits = Exhibit.objects.filter(pk__in=exhibitIds)
+    else:
+        raise Http404("No item id provided for related exhibitions")
 
     return render(request, 'calisphere/related-exhibitions.html',
                   {'exhibits': exhibits})

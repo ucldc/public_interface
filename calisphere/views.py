@@ -510,6 +510,17 @@ def itemViewCarousel(request):
                     custom_facet.get('sort_by', 'count')
                 )
             )
+        # Add Custom Facet Filter Types
+        if params.get('relation_ss') and len(custom_facets) == 0:
+            facet_filter_types.append(
+                FacetFilterType(
+                    'relation_ss',
+                    'Relation',
+                    'relation_ss',
+                    'value',
+                    faceting_allowed = False
+                )
+            )
     elif referral == 'campus':
         linkBackId = params.get('campus_slug', None)
         if linkBackId:
@@ -812,7 +823,6 @@ def collectionsSearch(request):
 def collectionView(request, collection_id):
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')
-
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
 
@@ -840,6 +850,18 @@ def collectionView(request, collection_id):
                     custom_facet.get('sort_by', 'count')
                 )
             )
+    else:
+        if params.get('relation_ss'):
+            facet_filter_types.append(
+                FacetFilterType(
+                    'relation_ss',
+                    'Relation',
+                    'relation_ss',
+                    'value',
+                    faceting_allowed = False
+                )
+            )
+
     extra_filter = 'collection_url: "' + collection_url + '"'
 
     # perform the search
@@ -848,6 +870,13 @@ def collectionView(request, collection_id):
     solr_search = SOLR_select(**solrParams)
     context['search_results'] = solr_search.results
     context['numFound'] = solr_search.numFound
+    total_items = SOLR_select(**{**solrParams, **{
+        'q': '',
+        'fq': [extra_filter],
+        'rows': 0,
+        'facet': 'false'
+    }})
+
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
@@ -865,6 +894,8 @@ def collectionView(request, collection_id):
                 map(filter_transform, params.getlist(param_name)))
 
     context.update({
+        'totalNumItems':
+        total_items.numFound,
         'FACET_FILTER_TYPES':
         facet_filter_types,
         'collection':

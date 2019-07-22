@@ -109,7 +109,7 @@
 {% endblock %}
 
 {% block objectsFound %}
-{{ numFound|intcomma }} item{{ numFound|pluralize }} found in this collection
+{{ numFound|intcomma }} item{{ numFound|pluralize }} found in this collection {% if numFound != totalNumItems %} of <a class="js-clear-filters">{{ totalNumItems }} items</a>{% endif %}
 {% endblock %}
 
 {% block relatedCollections %}

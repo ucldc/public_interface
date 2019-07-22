@@ -6,7 +6,7 @@ from django.apps import apps
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import Http404, JsonResponse, HttpResponse, QueryDict
 from calisphere.collection_data import CollectionManager
 from .constants import *
 from .facet_filter_type import getCollectionData, getRepositoryData, FacetFilterType
@@ -405,6 +405,7 @@ def itemView(request, item_id=''):
 
     ## do this w/o multiple returns?
     fromItemPage = request.META.get("HTTP_X_FROM_ITEM_PAGE")
+    item_id_query = QueryDict(f'itemId={item_id}')
     if fromItemPage:
         return render(
             request, 'calisphere/itemViewer.html', {
@@ -417,6 +418,7 @@ def itemView(request, item_id=''):
             })
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
+    related_collections, num_related_collections = getRelatedCollections(item_id_query)
     return render(
         request, 'calisphere/itemView.html', {
             'q': '',
@@ -424,10 +426,10 @@ def itemView(request, item_id=''):
             'item_solr_search': item_solr_search,
             'meta_image': meta_image,
             'rc_page': None,
-            'related_collections': None,
+            'related_collections': related_collections,
             'slug': None,
             'title': None,
-            'num_related_collections': None,
+            'num_related_collections': num_related_collections,
             'rq': None,
         })
 
@@ -453,7 +455,7 @@ def search(request):
             int(math.ceil(
                     solr_search.numFound / int(context['rows']))),
             'related_collections':
-            getRelatedCollections(request)[0],
+            getRelatedCollections(params)[0],
             'num_related_collections':
             len(params.getlist('collection_data'))
             if len(params.getlist('collection_data')) > 0 else len(
@@ -482,9 +484,9 @@ def search(request):
 
     return redirect('calisphere:home')
 
-
 def itemViewCarousel(request):
     params = request.GET.copy()
+    print(params)
     item_id = params.get('itemId')
     if item_id is None:
         raise Http404("No item id specified")
@@ -603,8 +605,7 @@ def itemViewCarousel(request):
             })
 
 
-def getRelatedCollections(request, slug=None, repository_id=None):
-    params = request.GET.copy()
+def getRelatedCollections(params, slug=None, repository_id=None):
     solrParams = solrEncode(params, FACET_FILTER_TYPES,
                             [{
                                 'facet': 'collection_data'
@@ -695,7 +696,7 @@ def relatedCollections(request, slug=None, repository_id=None):
         raise Http404("No parameters to provide related collections")
 
     three_related_collections, num_related_collections = getRelatedCollections(
-        request, slug, repository_id)
+        params, slug, repository_id)
 
     context = {
         'q': params.get('q'),
@@ -1090,7 +1091,7 @@ def institutionView(request,
                 institution_details.get('slug'),
                 'related_collections':
                 getRelatedCollections(
-                    request, slug=institution_details.get('slug'))[0],
+                    params, slug=institution_details.get('slug'))[0],
                 'form_action':
                 reverse(
                     'calisphere:campusView',
@@ -1110,7 +1111,7 @@ def institutionView(request,
                 'uc_institution':
                 uc_institution,
                 'related_collections':
-                getRelatedCollections(request,
+                getRelatedCollections(params,
                                       repository_id=institution_id)[0],
                 'form_action':
                 reverse(

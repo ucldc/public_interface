@@ -78,6 +78,7 @@
     {% endif %}
   </div>
 
+  {% if mlt == False %}
   <form id="js-carouselForm">
     <input type="hidden" name="q" value="{{ q }}" form="js-carouselForm">
     {% if rq %}
@@ -107,6 +108,7 @@
       <input type="hidden" name="campus_slug" value="{{ campus_slug }}" form="js-carouselForm">
     {% endif %}
   </form>
+  {% endif %}
 
   <div class="carousel" id="js-carousel" data-carousel_start="{{ start }}" data-numFound="{{ numFound }}">
     {% include "calisphere/carousel.html" %}

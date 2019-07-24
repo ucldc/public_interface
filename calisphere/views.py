@@ -419,6 +419,7 @@ def itemView(request, item_id=''):
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
     related_collections, num_related_collections = getRelatedCollections(item_id_query)
+    carousel_search_results, carousel_numFound = itemViewCarouselMLT(item_id)
     return render(
         request, 'calisphere/itemView.html', {
             'q': '',
@@ -431,6 +432,9 @@ def itemView(request, item_id=''):
             'title': None,
             'num_related_collections': num_related_collections,
             'rq': None,
+            'search_results': carousel_search_results,
+            'numFound': carousel_numFound,
+            'mlt': True
         })
 
 
@@ -484,9 +488,28 @@ def search(request):
 
     return redirect('calisphere:home')
 
+
+def itemViewCarouselMLT(item_id):
+    carousel_solr_search = SOLR_raw(
+        q='id:' + item_id,
+        fields='id, type_ss, reference_image_md5, title',
+        mlt='true',
+        mlt_count='24',
+        mlt_fl='title,collection_name,subject',
+        mlt_mintf=1,
+    )
+    if json.loads(carousel_solr_search)['response']['numFound'] == 0:
+        raise Http404('No object with id "' + item_id + '" found.')
+    search_results = json.loads(
+        carousel_solr_search)['response']['docs'] + json.loads(
+            carousel_solr_search)['moreLikeThis'][item_id]['docs']
+    numFound = len(search_results)
+
+    return search_results, numFound
+
+
 def itemViewCarousel(request):
     params = request.GET.copy()
-    print(params)
     item_id = params.get('itemId')
     if item_id is None:
         raise Http404("No item id specified")
@@ -538,21 +561,7 @@ def itemViewCarousel(request):
 
     #if no query string or filters, do a "more like this" search
     if solrParams['q'] == '' and len(solrParams['fq']) == 0:
-        carousel_solr_search = SOLR_raw(
-            q='id:' + item_id,
-            fields='id, type_ss, reference_image_md5, title',
-            mlt='true',
-            mlt_count='24',
-            mlt_fl='title,collection_name,subject',
-            mlt_mintf=1,
-        )
-        if json.loads(carousel_solr_search)['response']['numFound'] == 0:
-            raise Http404('No object with id "' + item_id + '" found.')
-        search_results = json.loads(
-            carousel_solr_search)['response']['docs'] + json.loads(
-                carousel_solr_search)['moreLikeThis'][item_id]['docs']
-        numFound = len(search_results)
-        # numFound = json.loads(carousel_solr_search)['moreLikeThis'][item_id]['numFound']
+        search_results, numFound = itemViewCarouselMLT(item_id)
     else:
         solrParams.update({
             'facet': 'false',

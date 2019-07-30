@@ -33,6 +33,13 @@
         background-color: $design-light-gray-color;
 }
 
+.list-view__thumbnail__container {
+    @extend .thumbnail__container;
+    &:focus {
+      outline: 5px auto #7e3206;
+    }
+}
+
 .thumbnail__image { // sets the image within the container. . NOTE: this selector used for all instances of thumbnails throughout website
   position: absolute;
   top: 0;

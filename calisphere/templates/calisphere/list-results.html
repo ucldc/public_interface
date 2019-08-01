@@ -3,7 +3,7 @@
 {% for item in search_results %}
   <div class="row listview__container">
     <div class="col-xs-3">
-      <a class="thumbnail__container js-item-link" href="{% url 'calisphere:itemView' item.id %}" data-item_id="{{ item.id }}" data-item_number="{{ start|add:forloop.counter0 }}">
+      <a class="list-view__thumbnail__container js-item-link" href="{% url 'calisphere:itemView' item.id %}" data-item_id="{{ item.id }}" data-item_number="{{ start|add:forloop.counter0 }}">
         {% if 'reference_image_md5' in item %}
           <img class="thumbnail__image"
           src="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }}"

@@ -20,7 +20,7 @@ var FacetFormView = Backbone.View.extend({
     'click #thumbnails,#list'                 : 'toggleViewFormat',
     'change #pag-dropdown__sort'              : 'setSort',
     'change #pag-dropdown__view'              : 'setRows',
-    'click .js-prev,.js-next,a[data-start]'   : 'setStart',
+    'click .js-prev,.js-next,button[data-start]'   : 'setStart',
     'change .pag-dropdown__select--unstyled'  : 'setStart',
     'click .js-item-link'                     : 'goToItemPage',
     'click .js-a-check__link-deselect-all'    : 'deselectAll',

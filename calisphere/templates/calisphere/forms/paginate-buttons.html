@@ -7,7 +7,7 @@
     <!-- previous button -->
     {% if start|subtract:rows >= 0 %}
       <li class="pag-buttons__list-item">
-        <a class="btn btn-default button__prev" href="" data-start="{{ start|subtract:rows }}"><i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr></a>
+        <button class="btn btn-default button__prev" data-start="{{ start|subtract:rows }}"><i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr></button>
       </li>
     {% endif %}
     
@@ -15,7 +15,7 @@
     {% if pages <= 6 %}
       {% for page in pages|get_range %}
       <li class="pag-buttons__list-item">
-        <a class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" href="" data-start="{{ page|multiply:rows }}">{{ page|add:"1" }}</a>
+        <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}">{{ page|add:"1" }}</button>
       </li>
       {% endfor %}
     <!-- more than 6 pages of results -->
@@ -24,61 +24,61 @@
       {% if start|current_page:rows <= 4 %}
         {% for page in 5|get_range %}
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" href="" data-start="{{ page|multiply:rows }}">
+          <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}">
             {{ page|add:"1" }}
-          </a>
+          </button>
         </li>
         {% endfor %}
         <li class="pag-buttons__list-item">&#8230;</li>
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default" href="" data-start="{{ pages|subtract:1|multiply:rows }}">{{ pages }}</a>
+          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}">{{ pages }}</button>
         </li>
       <!-- the page we're currently on is one of the last 4, include last five buttons -->
       {% elif pages|subtract:4 < start|current_page:rows %}
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default" href="" data-start="0">1</a>
+          <button class="btn btn-default" data-start="0">1</button>
         </li>
         <li class="pag-buttons__list-item">&#8230;</li>
           {% for page in 5|get_range %}
           <li class="pag-buttons__list-item">
-            <a class="btn btn-default {% if start|current_page:rows == pages|subtract:5|add:page|add:1 %}pag-buttons__list-link--selected{% endif %}" href="" data-start="{{ pages|subtract:5|add:page|multiply:rows }}">
+            <button class="btn btn-default {% if start|current_page:rows == pages|subtract:5|add:page|add:1 %}pag-buttons__list-link--selected{% endif %}" data-start="{{ pages|subtract:5|add:page|multiply:rows }}">
               {{ pages|subtract:5|add:page|add:1 }}
-            </a>
+            </button>
           </li>
           {% endfor %}
       <!-- the page we're currently on is in the middle -->
       {% else %}
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default" href="" data-start="0">1</a>
+          <button class="btn btn-default" data-start="0">1</button>
         </li>
         <li class="pag-buttons__list-item">&#8230;</li>
         
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default" href="" data-start="{{ start|subtract:rows }}">
+          <button class="btn btn-default" data-start="{{ start|subtract:rows }}">
             {{ start|current_page:rows|subtract:1 }}
-          </a>
+          </button>
         </li>
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default pag-buttons__list-link--selected" data-start="{{ start }}">
+          <button class="btn btn-default pag-buttons__list-link--selected" data-start="{{ start }}">
             {{ start|current_page:rows }}
-          </a>
+          </button>
         </li>
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default" href="" data-start="{{ start|add:rows }}">
+          <button class="btn btn-default" data-start="{{ start|add:rows }}">
             {{ start|current_page:rows|add:1 }}
-          </a>
+          </button>
         </li>
         
         <li class="pag-buttons__list-item">&#8230;</li>
         <li class="pag-buttons__list-item">
-          <a class="btn btn-default" href="" data-start="{{ pages|subtract:1|multiply:rows }}">{{ pages }}</a>
+          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}">{{ pages }}</button>
         </li>
       {% endif %}
     {% endif %}
         
     <!-- next button -->
     {% if start|add:rows < numFound %}
-      <li class="pag-buttons__list-item"><a class="btn btn-default button__next" href="" data-start="{{ start|add:rows }}">Next <i class="fa fa-caret-right fa-lg"></i></a></li>
+      <li class="pag-buttons__list-item"><button class="btn btn-default button__next" data-start="{{ start|add:rows }}">Next <i class="fa fa-caret-right fa-lg"></i></button></li>
     {% endif %}
     
     

@@ -184,3 +184,19 @@
 }
 
 // ***** End Image Mosaic ***** //
+
+// ***** Begin Infinite Scroll ***** //
+
+.infinite-scroll {
+  display: block;
+  text-align: center;
+  margin: 40px auto 20px auto;
+}
+
+.infinite-scroll-request,
+.infinite-scroll-last,
+.infinite-scroll-error {
+  display: inline-block;
+}
+
+// ***** End Infinite Scroll ***** //

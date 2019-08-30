@@ -110,6 +110,22 @@ if EC2_PRIVATE_IP:
 
 SITE_ID = 1
 
+FEATURE_POLICY = {
+    'geolocation': 'none',
+    'midi': 'none',
+    'microphone': 'none',
+    'camera': 'none',
+    'magnetometer': 'none',
+    'gyroscope': 'none',
+    'accelerometer': 'none',
+    'ambient-light-sensor': 'none',
+    'autoplay': 'none',
+    'payment': 'none',
+
+    'fullscreen': 'self',
+    'sync-xhr': '*',
+}
+
 # Application definition
 
 INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
@@ -122,6 +138,7 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
 
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
+    'django_feature_policy.FeaturePolicyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',

@@ -16,7 +16,7 @@
     <!-- Begin Filters -->
 
       <div class="col-md-9 layout-col__1" role="group" aria-labelledby="filters-aria-label">
-        <div style="display: none" id="filters-aria-label">
+        <div class="display-none" id="filters-aria-label">
           Filters you've selected:
         </div>
         <!-- Begin Filter Component -->
@@ -38,7 +38,7 @@
           {% endfor %}
 
           {% for refine in rq %}
-            <input form="js-facet" type="text" style="display:none;" name="rq" value="{{ refine }}">
+            <input form="js-facet" type="text" class="display-none" name="rq" value="{{ refine }}">
             <button type="button" class="btn btn-default btn-xs js-refine-filter-pill button__close" data-slug="{{ refine }}">{{ refine }}<i class="fa fa-close button__close-icon"></i>
             </button>
           {% endfor %}
@@ -104,8 +104,8 @@
           <!-- Begin Toggle Component -->
 
           <div class="thumblist-toggle">
-            <label for="view_format" aria-hidden="true" style="display: none;">View Format</label>
-            <input form="js-facet" type="text" style="display: none;" id="view_format" name="view_format" value="{{ view_format }}" aria-hidden="true">
+            <label for="view_format" aria-hidden="true" class="display-none">View Format</label>
+            <input form="js-facet" type="text" class="display-none" id="view_format" name="view_format" value="{{ view_format }}" aria-hidden="true">
             <button id="thumbnails" class="btn btn-link thumblist-toggle__thumbnails{% if view_format == 'thumbnails' %}--selected{% endif %}">
               <span class="fa fa-th-large"></span>Thumbnails
             </button>
@@ -126,8 +126,8 @@
           {% include "calisphere/list-results.html" %}
         {% endif %}
 
-        <label for="start" aria-hidden="true" style="display: none;">Current Page Number</label>
-        <input form="js-facet" type="text" style="display:none;" id="start" name="start" value="{{ start }}" aria-hidden="true">
+        <label for="start" aria-hidden="true" class="display-none">Current Page Number</label>
+        <input form="js-facet" type="text" class="display-none" id="start" name="start" value="{{ start }}" aria-hidden="true">
 
         <!-- End Thumbnail and List View Components -->
 

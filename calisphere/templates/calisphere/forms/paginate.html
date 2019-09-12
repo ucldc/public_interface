@@ -39,9 +39,9 @@
   </select>
 
   {% if start|subtract:rows >= 0 %}
-	  <button class="js-prev btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|subtract:rows }}" aria-label="previous page"><span class="fa fa-caret-left fa-lg"></span></button>
+	  <a class="js-prev btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|subtract:rows }}" aria-label="previous page" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><span class="fa fa-caret-left fa-lg"></span></a>
   {% else %}
-  	<button class="js-prev btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-left fa-lg"></span></button>
+  	<a class="js-prev btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-left fa-lg"></span></a>
 	{% endif %}
 
   <label for="top-start-dropdown" class="sr-only">Current Page Number</label>
@@ -55,9 +55,9 @@
   <span class="pag-dropdown__total-number">of {{ pages }}</span>
 
   {% if start|add:rows < numFound %}
-	  <button class="js-next btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|add:rows }}" aria-label="next page"><span class="fa fa-caret-right fa-lg"></span></button>
+	  <a class="js-next btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|add:rows }}" aria-label="next page" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}"><span class="fa fa-caret-right fa-lg"></span></a>
   {% else %}
-    <button class="js-next btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-right fa-lg"></span></button>
+    <a class="js-next btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-right fa-lg"></span></a>
   {% endif %}
 
 </div>

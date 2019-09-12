@@ -7,7 +7,7 @@
     <!-- previous button -->
     {% if start|subtract:rows >= 0 %}
       <li class="pag-buttons__list-item">
-        <button class="btn btn-default button__prev" data-start="{{ start|subtract:rows }}"><i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr></button>
+        <a class="btn btn-default button__prev" aria-label="previous page" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr></a>
       </li>
     {% endif %}
     
@@ -15,7 +15,7 @@
     {% if pages <= 6 %}
       {% for page in pages|get_range %}
       <li class="pag-buttons__list-item">
-        <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}">{{ page|add:"1" }}</button>
+        <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}" aria-label="page {{ page|add:1 }}">{{ page|add:"1" }}</button>
       </li>
       {% endfor %}
     <!-- more than 6 pages of results -->
@@ -24,14 +24,14 @@
       {% if start|current_page:rows <= 4 %}
         {% for page in 5|get_range %}
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}">
+          <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}" aria-label="page {{ page|add:1 }}">
             {{ page|add:"1" }}
           </button>
         </li>
         {% endfor %}
         <li class="pag-buttons__list-item">&#8230;</li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}">{{ pages }}</button>
+          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}" aria-label="page {{ pages }}">{{ pages }}</button>
         </li>
       <!-- the page we're currently on is one of the last 4, include last five buttons -->
       {% elif pages|subtract:4 < start|current_page:rows %}
@@ -41,7 +41,7 @@
         <li class="pag-buttons__list-item">&#8230;</li>
           {% for page in 5|get_range %}
           <li class="pag-buttons__list-item">
-            <button class="btn btn-default {% if start|current_page:rows == pages|subtract:5|add:page|add:1 %}pag-buttons__list-link--selected{% endif %}" data-start="{{ pages|subtract:5|add:page|multiply:rows }}">
+            <button class="btn btn-default {% if start|current_page:rows == pages|subtract:5|add:page|add:1 %}pag-buttons__list-link--selected{% endif %}" data-start="{{ pages|subtract:5|add:page|multiply:rows }}" aria-label="page {{ pages|subtract:5|add:page|add:1 }}">
               {{ pages|subtract:5|add:page|add:1 }}
             </button>
           </li>
@@ -49,36 +49,36 @@
       <!-- the page we're currently on is in the middle -->
       {% else %}
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="0">1</button>
+          <button class="btn btn-default" data-start="0" aria-label="page 1">1</button>
         </li>
         <li class="pag-buttons__list-item">&#8230;</li>
         
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ start|subtract:rows }}">
+          <button class="btn btn-default" data-start="{{ start|subtract:rows }}" aria-label="page {{ start|current_page:rows|subtract:1 }}">
             {{ start|current_page:rows|subtract:1 }}
           </button>
         </li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default pag-buttons__list-link--selected" data-start="{{ start }}">
+          <button class="btn btn-default pag-buttons__list-link--selected" data-start="{{ start }}" aria-label="page {{ start|current_page:rows }}">
             {{ start|current_page:rows }}
           </button>
         </li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ start|add:rows }}">
+          <button class="btn btn-default" data-start="{{ start|add:rows }}" aria-label="page {{ start|current_page:rows|add:1 }}">
             {{ start|current_page:rows|add:1 }}
           </button>
         </li>
         
         <li class="pag-buttons__list-item">&#8230;</li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}">{{ pages }}</button>
+          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}" aria-label="page {{ pages }}">{{ pages }}</button>
         </li>
       {% endif %}
     {% endif %}
         
     <!-- next button -->
     {% if start|add:rows < numFound %}
-      <li class="pag-buttons__list-item"><button class="btn btn-default button__next" data-start="{{ start|add:rows }}">Next <i class="fa fa-caret-right fa-lg"></i></button></li>
+      <li class="pag-buttons__list-item"><a class="btn btn-default button__next" aria-label="next page" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}">Next <i class="fa fa-caret-right fa-lg"></i></a></li>
     {% endif %}
     
     

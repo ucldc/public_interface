@@ -20,7 +20,7 @@ var FacetFormView = Backbone.View.extend({
     'click #thumbnails,#list'                 : 'toggleViewFormat',
     'change #pag-dropdown__sort'              : 'setSort',
     'change #pag-dropdown__view'              : 'setRows',
-    'click .js-prev,.js-next,button[data-start]'   : 'setStart',
+    'click .js-prev,.js-next,a[data-start],button[data-start]'   : 'setStart',
     'change .pag-dropdown__select--unstyled'  : 'setStart',
     'click .js-item-link'                     : 'goToItemPage',
     'click .js-a-check__link-deselect-all'    : 'deselectAll',
@@ -93,6 +93,7 @@ var FacetFormView = Backbone.View.extend({
   // `click` triggered on `.js-prev,.js-next,a[data-start]` and
   // `change` triggered on `#pag-dropdown__select--unstyled`
   setStart: function(e) {
+    e.preventDefault();
     var start;
     if (e.type === 'click') {
       start = $(e.currentTarget).data('start');

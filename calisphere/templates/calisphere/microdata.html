@@ -16,5 +16,8 @@
       <meta name="og:image" content="{{ ucldcImages }}/photo_logo.jpg" />
     {% endif %}
     <link rel="canonical" href="{{ permalink }}" />
+    {% if meta_robots %}
+        <meta name="robots" content="{{ meta_robots }}" />
+    {% endif %}
     <!--  ↓ $('meta[name=twitter\\:creator]') this should come last for pjax hack -->
     <meta name="twitter:creator" content="@calisphere" />

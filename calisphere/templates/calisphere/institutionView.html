@@ -5,7 +5,7 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block page-metadata %}
-{% include "calisphere/microdata.html" with description=contact_information.description %}
+{% include "calisphere/microdata.html" with description=contact_information.description meta_robots="noindex,follow" %}
 {% endblock %}
 
 {% block pageTitle %}

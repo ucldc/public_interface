@@ -2,6 +2,10 @@
 {% load calisphere-extras %}
 {% load staticfiles %}
 
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with description=contact_information.description %}
+{% endblock %}
+
 {% block sidebar %}
 
   <div class="row">

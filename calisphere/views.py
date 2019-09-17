@@ -1090,12 +1090,18 @@ def institutionView(request,
             facet_filter_types
         })
 
+        page = (int(context['start']) // int(context['rows'])) + 1
         if institution_type == 'campus':
+            if (page > 1):
+                title = f"{institution_details.get('name')} Items - page {page}"
+            else:
+                title = f"{institution_details.get('name')} Items"
+
             context.update({
                 'repository_id':
                 None,
                 'title':
-                institution_details.get('name'),
+                title,
                 'campus_slug':
                 institution_details.get('slug'),
                 'related_collections':
@@ -1132,11 +1138,19 @@ def institutionView(request,
             })
 
             # title for UC institutions needs to show parent campus
-            if uc_institution:
-                context['title'] = '{0} / {1}'.format(
+            if uc_institution and page > 1:
+                context['title'] = '{0} / {1} Items - page {2}'.format(
+                    uc_institution[0]['name'], institution_details.get('name'),
+                    page)
+            elif uc_institution:
+                context['title'] = '{0} / {1} Items'.format(
                     uc_institution[0]['name'], institution_details.get('name'))
+            elif page > 1:
+                context['title'] = '{0} Items - page {1}'.format(
+                    institution_details.get('name'), page)
             else:
-                context['title'] = institution_details.get('name')
+                context['title'] = '{0} Items'.format(
+                    institution_details.get('name'))
 
             if uc_institution is False:
                 for unit in FEATURED_UNITS:
@@ -1218,7 +1232,12 @@ def institutionView(request,
 
         if institution_type == 'campus':
             context['campus_slug'] = institution_details.get('slug')
-            context['title'] = institution_details.get('name')
+            if page > 1:
+                context['title'] = '{0} Collections - page {1}'.format(
+                    institution_details.get('name'), page)
+            else:
+                context['title'] = institution_details.get('name')
+
             for campus in CAMPUS_LIST:
                 if institution_id == campus.get(
                         'id') and 'featuredImage' in campus:
@@ -1231,9 +1250,16 @@ def institutionView(request,
             context['uc_institution'] = uc_institution
             # title for UC institutions needs to show parent campus
             # refactor, as this is copy/pasted in this commit
-            if uc_institution:
+            if uc_institution and page > 1:
+                context['title'] = '{0} / {1} Collections - page {2}'.format(
+                    uc_institution[0]['name'], institution_details.get('name'),
+                    page)
+            elif uc_institution:
                 context['title'] = '{0} / {1}'.format(
                     uc_institution[0]['name'], institution_details.get('name'))
+            elif page > 1:
+                context['title'] = '{0} Collections - page {1}'.format(
+                    institution_details.get('name'), page)
             else:
                 context['title'] = institution_details.get('name')
 
@@ -1301,7 +1327,7 @@ def campusView(request, campus_slug, subnav=False):
             'calisphere/institutionViewInstitutions.html',
             {
                 # 'campus': campus_name,
-                'title': campus_name,
+                'title': f'{campus_name} Contributors',
                 'featuredImage': featured_image,
                 'campus_slug': campus_slug,
                 'institutions': related_institutions,

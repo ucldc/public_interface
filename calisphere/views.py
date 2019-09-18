@@ -46,6 +46,9 @@ def getMoreCollectionData(collection_data):
     )
     collection_details = json_loads_url("{0}?format=json".format(
         collection['url']))
+    if not collection_details:
+        return None
+
     collection['local_id'] = collection_details['local_id']
     collection['slug'] = collection_details['slug']
     collection['harvest_type'] = collection_details['harvest_type']
@@ -373,8 +376,10 @@ def itemView(request, item_id=''):
         item['parsed_repository_data'] = []
         item['institution_contact'] = []
         for collection_data in item.get('collection_data'):
-            item['parsed_collection_data'].append(
-                getMoreCollectionData(collection_data))
+            parsed_collection_data = getMoreCollectionData(collection_data)
+            if parsed_collection_data:
+                item['parsed_collection_data'].append(
+                    getMoreCollectionData(collection_data))
         for repository_data in item.get('repository_data'):
             item['parsed_repository_data'].append(
                 getRepositoryData(repository_data=repository_data))
@@ -688,14 +693,17 @@ def getRelatedCollections(params, slug=None, repository_id=None):
                 # TODO: get this from repository_data in solr rather than from the registry API
                 collection_details = json_loads_url(collection['url'] +
                                                     "?format=json")
-                if collection_details['repository'][0]['campus']:
+                if (collection_details.get('repository')
+                    and collection_details['repository'][0]['campus']):
                     collection_data[
                         'institution'] = collection_details['repository'][0][
                             'campus'][0]['name'] + ', ' + collection_details[
                                 'repository'][0]['name']
+                elif collection_details.get('repository'):
+                    collection_data['institution'] = collection_details.get(
+                        'repository')[0]['name']
                 else:
-                    collection_data['institution'] = collection_details[
-                        'repository'][0]['name']
+                    collection_data['institution'] = None
 
                 three_related_collections.append(collection_data)
 

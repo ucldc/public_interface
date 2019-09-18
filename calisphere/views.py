@@ -65,6 +65,10 @@ def getMoreCollectionData(collection_data):
 def getCollectionMosaic(collection_url):
     # get collection information from collection registry
     collection_details = json_loads_url(collection_url + "?format=json")
+
+    if not collection_details:
+        return None
+
     collection_repositories = []
     for repository in collection_details.get('repository'):
         if 'campus' in repository and len(repository['campus']) > 0:
@@ -1200,22 +1204,26 @@ def institutionView(request,
 
         # solrpy gives us a dict == unsorted (!)
         # use the `facet_decade` mode of process_facets to do a lexical sort by value ....
-        related_collections = list(
+        solr_related_collections = list(
             collection[0] for collection in DEFAULT_FACET_FILTER_TYPES[3].process_facets(
                 collections_solr_search.facet_counts['facet_fields']
                 ['sort_collection_data'],
                 [],
                 'value',
             ))
-        for i, related_collection in enumerate(related_collections):
+
+        related_collections = []
+        for i, related_collection in enumerate(solr_related_collections):
             collection_parts = process_sort_collection_data(related_collection)
             collection_data = getCollectionData(
                 collection_data='{0}::{1}'.format(
                     collection_parts[2],
                     collection_parts[1],
                 ))
-            related_collections[i] = getCollectionMosaic(
+            collection_mosaic = getCollectionMosaic(
                 collection_data.get('url'))
+            if collection_mosaic:
+                related_collections.append(collection_mosaic)
 
         context = {
             'page': page,

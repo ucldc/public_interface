@@ -38,6 +38,7 @@ var qm, globalSearchForm;
 
 $(document).ready(function() {
   // ***********************************
+  on_ready_pjax_end_handler()
 
   // **Google Event Tracking**
 
@@ -186,7 +187,7 @@ $(document).ready(function() {
 });
 
 
-$(document).on('ready pjax:end', function() {
+var on_ready_pjax_end_handler = function() {
   // send google analytics on pjax pages 
   /* globals ga: false */
   /* jshint latedef: false */
@@ -241,7 +242,9 @@ $(document).on('ready pjax:end', function() {
       window.location = datum.uri;
     });
   } // end title search
-});
+};
+$(document).on('pjax:end', on_ready_pjax_end_handler)
+
 //************************************
 
 // No support for background-blend-mode

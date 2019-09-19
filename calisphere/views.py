@@ -46,6 +46,9 @@ def getMoreCollectionData(collection_data):
     )
     collection_details = json_loads_url("{0}?format=json".format(
         collection['url']))
+    if not collection_details:
+        return None
+
     collection['local_id'] = collection_details['local_id']
     collection['slug'] = collection_details['slug']
     collection['harvest_type'] = collection_details['harvest_type']
@@ -65,6 +68,10 @@ def getMoreCollectionData(collection_data):
 def getCollectionMosaic(collection_url):
     # get collection information from collection registry
     collection_details = json_loads_url(collection_url + "?format=json")
+
+    if not collection_details:
+        return None
+
     collection_repositories = []
     for repository in collection_details.get('repository'):
         if 'campus' in repository and len(repository['campus']) > 0:
@@ -369,8 +376,10 @@ def itemView(request, item_id=''):
         item['parsed_repository_data'] = []
         item['institution_contact'] = []
         for collection_data in item.get('collection_data'):
-            item['parsed_collection_data'].append(
-                getMoreCollectionData(collection_data))
+            parsed_collection_data = getMoreCollectionData(collection_data)
+            if parsed_collection_data:
+                item['parsed_collection_data'].append(
+                    getMoreCollectionData(collection_data))
         for repository_data in item.get('repository_data'):
             item['parsed_repository_data'].append(
                 getRepositoryData(repository_data=repository_data))
@@ -684,14 +693,17 @@ def getRelatedCollections(params, slug=None, repository_id=None):
                 # TODO: get this from repository_data in solr rather than from the registry API
                 collection_details = json_loads_url(collection['url'] +
                                                     "?format=json")
-                if collection_details['repository'][0]['campus']:
+                if (collection_details.get('repository')
+                    and collection_details['repository'][0]['campus']):
                     collection_data[
                         'institution'] = collection_details['repository'][0][
                             'campus'][0]['name'] + ', ' + collection_details[
                                 'repository'][0]['name']
+                elif collection_details.get('repository'):
+                    collection_data['institution'] = collection_details.get(
+                        'repository')[0]['name']
                 else:
-                    collection_data['institution'] = collection_details[
-                        'repository'][0]['name']
+                    collection_data['institution'] = None
 
                 three_related_collections.append(collection_data)
 
@@ -1090,12 +1102,18 @@ def institutionView(request,
             facet_filter_types
         })
 
+        page = (int(context['start']) // int(context['rows'])) + 1
         if institution_type == 'campus':
+            if (page > 1):
+                title = f"{institution_details.get('name')} Items - page {page}"
+            else:
+                title = f"{institution_details.get('name')} Items"
+
             context.update({
                 'repository_id':
                 None,
                 'title':
-                institution_details.get('name'),
+                title,
                 'campus_slug':
                 institution_details.get('slug'),
                 'related_collections':
@@ -1132,11 +1150,19 @@ def institutionView(request,
             })
 
             # title for UC institutions needs to show parent campus
-            if uc_institution:
-                context['title'] = '{0} / {1}'.format(
+            if uc_institution and page > 1:
+                context['title'] = '{0} / {1} Items - page {2}'.format(
+                    uc_institution[0]['name'], institution_details.get('name'),
+                    page)
+            elif uc_institution:
+                context['title'] = '{0} / {1} Items'.format(
                     uc_institution[0]['name'], institution_details.get('name'))
+            elif page > 1:
+                context['title'] = '{0} Items - page {1}'.format(
+                    institution_details.get('name'), page)
             else:
-                context['title'] = institution_details.get('name')
+                context['title'] = '{0} Items'.format(
+                    institution_details.get('name'))
 
             if uc_institution is False:
                 for unit in FEATURED_UNITS:
@@ -1186,22 +1212,26 @@ def institutionView(request,
 
         # solrpy gives us a dict == unsorted (!)
         # use the `facet_decade` mode of process_facets to do a lexical sort by value ....
-        related_collections = list(
+        solr_related_collections = list(
             collection[0] for collection in DEFAULT_FACET_FILTER_TYPES[3].process_facets(
                 collections_solr_search.facet_counts['facet_fields']
                 ['sort_collection_data'],
                 [],
                 'value',
             ))
-        for i, related_collection in enumerate(related_collections):
+
+        related_collections = []
+        for i, related_collection in enumerate(solr_related_collections):
             collection_parts = process_sort_collection_data(related_collection)
             collection_data = getCollectionData(
                 collection_data='{0}::{1}'.format(
                     collection_parts[2],
                     collection_parts[1],
                 ))
-            related_collections[i] = getCollectionMosaic(
+            collection_mosaic = getCollectionMosaic(
                 collection_data.get('url'))
+            if collection_mosaic:
+                related_collections.append(collection_mosaic)
 
         context = {
             'page': page,
@@ -1218,7 +1248,12 @@ def institutionView(request,
 
         if institution_type == 'campus':
             context['campus_slug'] = institution_details.get('slug')
-            context['title'] = institution_details.get('name')
+            if page > 1:
+                context['title'] = '{0} Collections - page {1}'.format(
+                    institution_details.get('name'), page)
+            else:
+                context['title'] = institution_details.get('name')
+
             for campus in CAMPUS_LIST:
                 if institution_id == campus.get(
                         'id') and 'featuredImage' in campus:
@@ -1231,9 +1266,16 @@ def institutionView(request,
             context['uc_institution'] = uc_institution
             # title for UC institutions needs to show parent campus
             # refactor, as this is copy/pasted in this commit
-            if uc_institution:
+            if uc_institution and page > 1:
+                context['title'] = '{0} / {1} Collections - page {2}'.format(
+                    uc_institution[0]['name'], institution_details.get('name'),
+                    page)
+            elif uc_institution:
                 context['title'] = '{0} / {1}'.format(
                     uc_institution[0]['name'], institution_details.get('name'))
+            elif page > 1:
+                context['title'] = '{0} Collections - page {1}'.format(
+                    institution_details.get('name'), page)
             else:
                 context['title'] = institution_details.get('name')
 
@@ -1301,7 +1343,7 @@ def campusView(request, campus_slug, subnav=False):
             'calisphere/institutionViewInstitutions.html',
             {
                 # 'campus': campus_name,
-                'title': campus_name,
+                'title': f'{campus_name} Contributors',
                 'featuredImage': featured_image,
                 'campus_slug': campus_slug,
                 'institutions': related_institutions,

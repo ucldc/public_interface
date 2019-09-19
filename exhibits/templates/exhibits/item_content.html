@@ -6,13 +6,13 @@
   {% if prevItem %}
   <a class="js-exhibit-item exhibit__modal-arrow" href="{% url url_name url_id prevItem.item_id %}" aria-label="previous item">
     <div class="exhibit__modal-arrow-position">
-      <i class="fa fa-angle-left" style="font-size: 70px;"></i>
+      <i class="fa fa-angle-left exhibit__modal-arrow-size"></i>
     </div>
   </a>
   {% else %}
   <div class="exhibit__modal-arrow">
     <div class="exhibit__modal-arrow-position">
-      <i class="fa fa-angle-left" style="font-size: 70px; opacity: 0;"></i>
+      <i class="fa fa-angle-left exhibit__modal-arrow-size opacity-0"></i>
     </div>
   </div>
   {% endif %}
@@ -131,7 +131,7 @@
         {% endif %}
         {% if exhibitItem.custom_crop %}
           <div class="obj__icon-container">
-            <img class="obj__simple-image" src="{{ thumbnailUrl }}clip/{{ clipto }}/{{ exhibitItem.custom_crop }}" style="max-width: 100%">
+            <img class="obj__simple-image full-width-max" src="{{ thumbnailUrl }}clip/{{ clipto }}/{{ exhibitItem.custom_crop }}">
           </div>
         {% else %}
           <div class="thumbnail__container"></div>
@@ -161,13 +161,13 @@
   {% if nextItem %}
   <a class="js-exhibit-item exhibit__modal-arrow" href="{% url url_name url_id nextItem.item_id %}" aria-label="next item">
     <div class="exhibit__modal-arrow-position">
-      <i class="fa fa-angle-right" style="font-size: 70px;"></i>
+      <i class="fa fa-angle-right exhibit__modal-arrow-size"></i>
     </div>
   </a>
   {% else %}
   <div class="exhibit__modal-arrow">
     <div class="exhibit__modal-arrow-position">
-      <i class="fa fa-angle-left" style="font-size: 70px; opacity: 0;"></i>
+      <i class="fa fa-angle-left exhibit__modal-arrow-size opacity-0"></i>
     </div>
   </div>
   {% endif %}

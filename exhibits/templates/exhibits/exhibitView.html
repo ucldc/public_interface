@@ -8,11 +8,11 @@
 
 {% block content %}
   <div class="modal fade" id="js-exhibit-item" tabindex="-1" role="dialog">
-    <div class="modal-dialog" style="width: 100%;">
-      <div class="modal-header" style="margin-bottom: 10px; border-bottom: 0">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; text-shadow: 0; opacity: 1" data-url="{{ exhibit.get_absolute_url }}"><span aria-hidden="true">&times;</span></button>
+    <div class="modal-dialog full-width">
+      <div class="modal-header exhibit-item__modal-header">
+        <button type="button" class="exhibit-item__modal-close-btn close" data-dismiss="modal" aria-label="Close" data-url="{{ exhibit.get_absolute_url }}"><span aria-hidden="true">&times;</span></button>
       </div>
-      <div class="modal-content" style="border-radius: 0;">
+      <div class="modal-content exhibit-item__modal-content">
         <div id="js-exhibit-item__container">
           {% block itemContent %}
           {% endblock %}
@@ -41,7 +41,7 @@
   <div class="exhibit__hero" style="background-image: url('{{ thumbnailUrl }}clip/1400x280/{{ exhibit.hero }}')">
     <div class="col-sm-6">
       {% if exhibit.blockquote %}
-        <blockquote class="exhibit__blockquote">{{ exhibit.blockquote }}<br/><a href="#overview" class="js-blockquote" style="padding-right: 10px;">Read full overview</a>|<a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}" class="js-exhibit-item" style="padding-left: 10px;">Go to first item</a></blockquote>
+        <blockquote class="exhibit__blockquote">{{ exhibit.blockquote }}<br/><a href="#overview" class="js-blockquote padding-right-10">Read full overview</a>|<a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}" class="js-exhibit-item padding-left-10">Go to first item</a></blockquote>
       {% endif %}
     </div>
   </div>
@@ -55,7 +55,7 @@
   <div class="row">
     <div class="col-md-7">
       <div class="exhibit__overview" id="overview">
-        {% include "exhibits/render_as.html" with render_as=exhibit.render_as text=exhibit.overview truncate=True container_class="js-exhibit__overview" %}<span style="padding: 0 5px 0 2px;">|</span><a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}">Go to first item</a>
+        {% include "exhibits/render_as.html" with render_as=exhibit.render_as text=exhibit.overview truncate=True container_class="js-exhibit__overview" %}<span class="exhibit__overview-pipe">|</span><a href="{% url 'exhibits:itemView' exhibit.id exhibitItems.0.item_id %}">Go to first item</a>
       </div>
     </div>
     <div class="col-md-5">
@@ -94,7 +94,7 @@
   {% if relatedExhibitsByTheme|length > 0 %}
     {% for theme, exhibits in relatedExhibitsByTheme %}
       <h3>Explore more exhibitions in "<a href="{{ theme.get_absolute_url }}" data-pjax="js-pageContent">{{ theme }}</a>" ({{ exhibits|length }}):</h3>
-      <div class="exhibit__items" style="padding: 25px 25px 0 25px; margin-top: 0;">
+      <div class="exhibit__items exhibit__items-related-exhibits">
         <div class="row js-related-carousel exhibit__related-carousel">
           {% for exhibit in exhibits %}
             <div class="col-xs-2 col-md-3">

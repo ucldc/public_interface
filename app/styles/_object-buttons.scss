@@ -125,6 +125,11 @@ html.no-flexbox .obj-buttons__facebook {
   @extend .button__dark;
 }
 
+.citation__textarea {
+  width: 100%;
+  height: 11em;
+}
+
 .obj-buttons__contact-text {
   display: block; // needed for IE 10
   margin: 0 0 0.5em 0;
@@ -143,6 +148,11 @@ html.no-flexbox .obj-buttons__facebook {
   }
 
 }
+
+.contact-owner__form-col1 { margin-right: 20px; }
+.contact-owner__form-col2 { margin-left: 20px; }
+.contact-owner__form-border { border-left: 1px solid black; }
+.contact-owner__form-textarea { height: 7em; }
 
 html.no-flexbox .obj-buttons__contact-text {
   display: block;

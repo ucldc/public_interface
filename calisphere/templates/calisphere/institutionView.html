@@ -5,7 +5,7 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block page-metadata %}
-{% include "calisphere/microdata.html" with description=contact_information.description %}
+{% include "calisphere/microdata.html" with description=contact_information.description meta_robots="noindex,follow" %}
 {% endblock %}
 
 {% block pageTitle %}
@@ -70,8 +70,8 @@
             {% endif %}
           </ul>
           {% if numFound %}
-            <label for="{{ campus_slug }}" aria-hidden="true" style="display: none;">Campus Slug</label>
-            <input id="{{ campus_slug }}" class="facet js-facet facet-repository_data" form="js-facet" type="checkbox" name="campus_slug" value="{{ campus_slug }}" checked style="display: none;" aria-hidden="true">
+            <label for="{{ campus_slug }}" aria-hidden="true" class="display-none">Campus Slug</label>
+            <input id="{{ campus_slug }}" class="facet js-facet facet-repository_data display-none" form="js-facet" type="checkbox" name="campus_slug" value="{{ campus_slug }}" checked aria-hidden="true">
           {% endif %}
         </div>
       </div>
@@ -93,10 +93,10 @@
           {% endif %}
         </ul>
         {% if numFound %}
-          <label for="{{ repository_id }}" aria-hidden="true" style="display: none;">Institution ID</label>
-          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data"
+          <label for="{{ repository_id }}" aria-hidden="true" class="display-none">Institution ID</label>
+          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data display-none"
             form="js-facet" type="checkbox" name="repository_data"
-            value="{{ repository_id }}" checked style="display: none;" aria-hidden="true">
+            value="{{ repository_id }}" checked aria-hidden="true">
         {% endif %}
       </div>
       <div class="col-md-6">
@@ -133,10 +133,10 @@
           {% endif %}
         </ul>
         {% if numFound %}
-          <label for="{{ repository_id }}" aria-hidden="true" style="display: none;">Institution ID</label>
-          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data"
+          <label for="{{ repository_id }}" aria-hidden="true" class="display-none">Institution ID</label>
+          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data display-none"
             form="js-facet" type="checkbox" name="repository_data"
-            value="{{ repository_id }}" checked style="display: none;" aria-hidden="true">
+            value="{{ repository_id }}" checked aria-hidden="true">
         {% endif %}
       </div>
       <div class="col-md-6">
@@ -165,10 +165,10 @@
           {% endif %}
         </ul>
         {% if numFound %}
-          <label for="{{ repository_id }}" aria-hidden="true" style="display: none;">Institution ID</label>
-          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data"
+          <label for="{{ repository_id }}" aria-hidden="true" class="display-none">Institution ID</label>
+          <input id="{{ repository_id }}" class="facet js-facet facet-repository_data display-none"
             form="js-facet" type="checkbox" name="repository_data"
-            value="{{ repository_id }}" checked style="display: none;" aria-hidden="true">
+            value="{{ repository_id }}" checked aria-hidden="true">
         {% endif %}
       </div>
       <div class="col-md-6">

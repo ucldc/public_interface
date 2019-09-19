@@ -1,5 +1,9 @@
 {% extends "exhibits/exhibitView.html,exhibits/pjaxTemplates/pjax-exhibit-item.html"|pjax:request %}
 
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title=exhibit.title description=exhibit.blockquote meta_image=exhibit.social_media_card meta_robots="noindex,follow" %}
+{% endblock %}
+
 {% block itemContent %}
 {% include "exhibits/item_content.html" with url_name='exhibits:itemView' url_id=exhibitItem.exhibit.id item_count=exhibitItem.order|add:1 total_count=exhibitItem.exhibit.exhibititem_set.all|length %}
 {% endblock %}

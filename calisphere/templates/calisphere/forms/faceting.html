@@ -3,8 +3,8 @@
 
 <!-- TODO: add disambiguation for faceting search results, collection page, institution page -->
   <!-- value of the search query from the header form -->
-  <label for="js-facet-q" aria-hidden="true" style="display: none;">Query</label>
-  <input type="text" style="display:none;" name="q" value="{{ q }}" form="js-facet" aria-hidden="true" id="js-facet-q">
+  <label for="js-facet-q" aria-hidden="true" class="display-none">Query</label>
+  <input type="text" class="display-none" name="q" value="{{ q }}" form="js-facet" aria-hidden="true" id="js-facet-q">
   
   <!-- <button type="button" id="deselect-facets" class="btn btn-default btn-block">Deselect all</button> -->
 
@@ -22,11 +22,11 @@
       {% if facet_filter_type.faceting_allowed %}
       <div class="col-xs-12 col-sm-6 col-md-12">
       {% else %}
-      <div style="display: none">
+      <div class="display-none">
       {% endif %}
 
         <div class="check" role="group" aria-labelledby="{{ facet_type }}-aria-label">
-          <div style="display: none" id="{{ facet_type }}-aria-label">
+          <div class="display-none" id="{{ facet_type }}-aria-label">
           Facet search results by {{ facet_type_display }} - {% if filters|get_item:filter_type|length > 0 %}({{ filters|get_item:filter_type|length }} selected){% endif %}
           </div>
           <div class="check__header js-a-check__header">

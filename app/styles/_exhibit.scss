@@ -34,6 +34,11 @@
   padding: $exhibit-layout-component-margin;
 }
 
+.exhibit__items-related-exhibits {
+  padding: 25px 25px 0 25px;
+  margin-top: 0;
+}
+
 .exhibit__items-header {
   display: inline-block; 
   margin: 0 $exhibit-layout-component-margin 0 0;
@@ -301,6 +306,10 @@ html.no-background-blend-mode .exhibit__lesson-lockup-color {
   margin: auto 0;
 }
 
+.exhibit__modal-arrow-size {
+  font-size: 70px;
+}
+
 a.exhibit__modal-arrow:hover {
   background-color: $design-light-gray-color;
 }
@@ -414,4 +423,28 @@ a.exhibit__modal-arrow:hover {
 
 .essay__content {
   margin-top: $exhibit-layout-component-margin;
+}
+
+.exhibit__title-search-wrapper {
+  padding: 0 25px 25px 25px;
+}
+
+.exhibit-item__modal-header {
+  margin-bottom: 10px;
+  border-bottom: 0;
+}
+
+.exhibit-item__modal-close-btn,
+.exhibit-item__modal-close-btn:hover {
+  color: #fff;
+  text-shadow: 0;
+  opacity: 1;
+}
+
+.exhibit-item__modal-content {
+  border-radius: 0;
+}
+
+.exhibit__overview-pipe {
+  padding: 0 5px 0 2px;
 }

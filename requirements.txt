@@ -16,4 +16,5 @@ django-static-sitemaps==4.2.1
 django-health-check==3.9.0
 future==0.16.0
 aws-xray-sdk==0.93
-django-recaptcha2
+django-recaptcha2==1.4.1
+django-feature-policy==3.0.0

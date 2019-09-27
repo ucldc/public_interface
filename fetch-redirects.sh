@@ -11,24 +11,23 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # http://stackoverflow.com/questions/59895
 cd $DIR
 
-usage(){
-    echo "fetch-redirects.sh version-label"
-    exit 1
-}
-
-if [ $# -ne 1 ];
+if [[ -e /opt/python/current/env ]]
   then
-    usage
+    set +u
+    source /opt/python/current/env
+    set -u
 fi
 
-set -u
-
-DIR=redirects
-BUCKET=static-ucldc-cdlib-org
 REGION=us-west-2
-REDIRECTS="$1.txt"
+filename="${UCLDC_REDIRECT_IDS##*/}"         # http://unix.stackexchange.com/a/64435/40198
+name=$(echo $filename | rev | cut -c 4- | rev )  # http://stackoverflow.com/a/5863742/1763984
 
-aws s3 cp s3://$BUCKET/$DIR/$REDIRECTS CSPHERE_IDS.txt
+if [[ ! -e $name ]]  # have we seen this one before
+  then
+    aws s3 cp $UCLDC_REDIRECT_IDS .
+    httxt2dbm -i $filename -o CSPHERE_IDS.map
+  fi
+
 
 # Copyright (c) 2015, Regents of the University of California
 #

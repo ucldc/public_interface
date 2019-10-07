@@ -21,7 +21,7 @@ fi
 REGION=us-west-2
 filename="${UCLDC_REDIRECT_IDS##*/}"         # http://unix.stackexchange.com/a/64435/40198
 
-if [[ ! -e $filename ]]  # have we seen this one before
+if [[ ! -e $filename && ! -z $UCLDC_REDIRECT_IDS ]]  # have we seen this one before
   then
     aws s3 cp $UCLDC_REDIRECT_IDS .
     httxt2dbm -i $filename -o CSPHERE_IDS.map

@@ -59,6 +59,8 @@ html.no-jquery .obj__osd-infobanner {
 .obj__overlay-icon.sound { @extend .fa-volume-up; }
 .obj__overlay-icon.dataset { @extend .fa-bar-chart; }
 .obj__overlay-icon.image { display: none; }
+.obj__overlay-icon.physicalobject { display: none; }
+.obj__overlay.interactiveresource { display: none; }
 
 // ***** Global Object Styles ***** //
 

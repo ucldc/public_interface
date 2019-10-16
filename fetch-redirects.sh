@@ -11,54 +11,22 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # http://stackoverflow.com/questions/59895
 cd $DIR
 
-usage(){
-    ./beanstalk-describe.sh
-    echo "deploy-version.sh version-label environment-name"
-    exit 1
-}
-
-if [ $# -ne 2 ];
+if [[ -e /opt/python/current/env ]]
   then
-    usage
+    set +u
+    source /opt/python/current/env
+    set -u
 fi
 
-set -u
-
-DIR=ucldc-django-beanstalk
-BUCKET=ucldc-private-files
 REGION=us-west-2
-APPNAME=ucldc-django-west
+filename="${UCLDC_REDIRECT_IDS##*/}"         # http://unix.stackexchange.com/a/64435/40198
 
-# make sure environment actually exists
-env_exists=$(aws elasticbeanstalk describe-environments \
-  --environment-name "$2" \
-  --region $REGION \
-  | jq '.Environments | length')
-
-if [[ env_exists -ne 1 ]]
+if [[ ! -e $filename ]]  # have we seen this one before
   then
-    echo "environment $2 does not exist"
-    usage
-fi
+    aws s3 cp $UCLDC_REDIRECT_IDS .
+    httxt2dbm -i $filename -o CSPHERE_IDS.map
+  fi
 
-ZIP="ucldc-$1.zip"
-
-gulp
-
-# package app and upload
-zip $ZIP -r calisphere/ load-content.sh fetch-redirects.sh manage.py public_interface/ test/ requirements.txt README.md .ebextensions/ dist/ exhibits/ fixtures/
-aws s3 cp $ZIP s3://$BUCKET/$DIR/$ZIP
-aws elasticbeanstalk create-application-version \
-  --application-name $APPNAME \
-  --region $REGION \
-  --source-bundle S3Bucket=$BUCKET,S3Key=$DIR/$ZIP \
-  --version-label "$1"
-
-# deploy app to a running environment
-aws elasticbeanstalk update-environment \
-  --environment-name "$2" \
-  --region $REGION \
-  --version-label "$1"
 
 # Copyright (c) 2015, Regents of the University of California
 #

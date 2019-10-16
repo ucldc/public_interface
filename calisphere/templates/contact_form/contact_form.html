@@ -31,7 +31,7 @@
         <strong>
           Last page viewed:
         </strong> {{ request.META.HTTP_REFERER }}
-        <input type="hidden" name="referer" value="{{ request.META.HTTP_REFERER }}">
+        <input type="hidden" name="referer" value="{{ request.META.HTTP_REFERER }}"/>
       </div>
 <p>*If this message concerns items or collections found on this site, please contact the <a href="/institutions/" data-pjax="js-pageContent">contributing institution</a> directly. Messages about items or collections submitted through this page may be forwarded to the contributing institution, as noted in our <a href="/privacy/" data-pjax="js-pageContent">Privacy Statement</a>.</p>
   <div class="form-group">
@@ -60,6 +60,7 @@
         </ul>
 
   </div>
+</div>
 {% endblock %}
 
 {% block footerScripts %}

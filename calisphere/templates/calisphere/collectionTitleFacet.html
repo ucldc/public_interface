@@ -5,8 +5,10 @@
 
 {% block content %}
 
+<p>{{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }}
+
 {% for t, c in titles.items %}
-<p><a href="{{ form_action }}?q=&rq=title_ss%3A%22{{ t|urlencode }}%22">{{ t }}</a> ({{ c }})
+<div><a href="{{ form_action }}?q=&rq=title_ss%3A%22{{ t|urlencode }}%22">{{ t }}</a> ({{ c }})</div>
 {% endfor %}
 
 {% endblock %}

@@ -958,7 +958,10 @@ def collectionTitleFacet(request, collection_id):
     solr_search = SOLR_select(**solrParams)
 
     titles = solr_search.facet_counts.get('facet_fields').get('title_ss')
-    context.update({'titles': titles})
+    unique = len(titles)
+    records = sum(titles.values())
+    ratio = unique / records
+    context.update({'titles': titles, 'unique': unique, 'records': records, 'ratio': ratio})
 
     context.update({
         #'meta_robots': "noindex,follow",

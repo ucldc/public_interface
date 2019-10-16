@@ -966,7 +966,7 @@ def collectionTitleFacet(request, collection_id):
     context.update({
         #'meta_robots': "noindex,follow",
         'title': 'title reports should have unique titles too',
-        'meta_robots': False,
+        'meta_robots': 'None',
         'description': 'xxx',
         'collection': collection_details,
         'collection_id': collection_id,

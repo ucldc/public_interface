@@ -5,7 +5,32 @@
 
 {% block content %}
 
-<p>{{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }}
+<h2 class="collection-intro__institution-heading">Collection:
+	<a href="{% url 'calisphere:collectionView' collection_id %}"
+	   data-pjax="js-pageContent">
+		{{ collection.name }}
+	</a>
+</h2>
+<h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
+{% for repository in collection.repository %}
+  {% if 'campus' in repository and repository.campus.0.name %}
+    <a
+      href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+      class="collection-intro__institution-heading-link"
+      data-pjax="js-pageContent"
+    >{{ repository.campus.0.name }}</a>,
+  {% endif %}
+  <a
+    href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+    class="collection-intro__institution-heading-link"
+    data-pjax="js-pageContent"
+  >
+    {{ repository.name }}
+  </a>
+{% endfor %}
+</h2>
+
+<p><b>Unique / Total:</b> {{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }}
 
 {% for t, c in titles.items %}
 <div><a href="{{ form_action }}?q=&rq=title_ss%3A%22{{ t|urlencode }}%22">{{ t }}</a> ({{ c }})</div>

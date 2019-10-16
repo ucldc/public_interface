@@ -1,0 +1,12 @@
+{% extends "calisphere/base.html" %}
+{% load calisphere-extras %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block content %}
+
+{% for t, c in titles.items %}
+<p><a href="{{ form_action }}?q=&rq=title_ss%3A%22{{ t|urlencode }}%22">{{ t }}</a> ({{ c }})
+{% endfor %}
+
+{% endblock %}

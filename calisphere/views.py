@@ -934,7 +934,7 @@ def collectionView(request, collection_id):
 
 
 def collectionFacet(request, collection_id, facet):
-    if not facet in UCLDC_SCHEMA:
+    if not facet in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(facet))
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')

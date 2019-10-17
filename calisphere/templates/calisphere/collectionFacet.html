@@ -31,9 +31,12 @@
 </h2>
 
 <p><b>Unique / Total:</b> {{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }}
-
-{% for t, c in titles.items %}
-<div><a href="{{ form_action }}?q=&rq=title_ss%3A%22{{ t|urlencode }}%22">{{ t }}</a> ({{ c }})</div>
+<h3>{{ facet }}</h3>
+{% for label, count in values.items %}
+<div>
+  <a href="{{ form_action }}?q=&rq={{ facet }}_ss%3A%22{{ label|urlencode }}%22">{{ label }}</a>
+  ({{ count }})
+</div>
 {% endfor %}
 
 {% endblock %}

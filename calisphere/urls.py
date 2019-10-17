@@ -22,9 +22,9 @@ urlpatterns = [
     url(r'^collections/(?P<collection_id>\d*)/$',
         views.collectionView,
         name='collectionView'),
-    url(r'^collections/(?P<collection_id>\d*)/titles/$',
-        views.collectionTitleFacet,
-        name='collectionTitleFacet'),
+    url(r'^collections/(?P<collection_id>\d*)/(?P<facet>.*)/$',
+        views.collectionFacet,
+        name='collectionFacet'),
 
     # Redirects to new 'exhibitions'
     url(r'^collections/themed/$',

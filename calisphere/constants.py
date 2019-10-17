@@ -43,6 +43,36 @@ FACET_FILTER_TYPES = [
 # Make a copy of FACET_FILTER_TYPES to reset to original.
 DEFAULT_FACET_FILTER_TYPES = FACET_FILTER_TYPES[:]
 
+UCLDC_SCHEMA = [
+  "title",
+  "alternative_title",
+  "contributor",
+  "coverage",
+  "creator",
+  "date",
+  "description",
+  "extent",
+  "format",
+  "genre",
+  "identifier",
+  "language",
+  "location",
+  "provenance",
+  "publisher",
+  "relation",
+  "rights",
+  "rights_holder",
+  "rights_note",
+  "rights_date",
+  "rights_uri",
+  "source",
+  "spatial",
+  "subject",
+  "temporal",
+  "transcription",
+  "type",
+]
+
 CAMPUS_LIST = [
     {
         'featuredImage': {

@@ -4,13 +4,15 @@
 
 .obj-buttons {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
+  justify-content: space-between;
   margin: $layout-component-margin 0 0 0;
 
 	@include bp(sm-screen) {
     flex-flow: row nowrap;
-    justify-content: space-between;
+    justify-content: initial;
     overflow: hidden;
+    align-items: center;
   }
 
   @include bp(md-screen) {
@@ -19,9 +21,39 @@
 
 }
 
-html.no-flexbox .obj-buttons a {
+.obj-button {
   display: inline-block;
-  margin: 0 2px;
+  order: 1;
+  flex: 1 1 33%;
+  text-align: center;
+  margin: 0 0 $layout-component-margin 0;
+
+  @include bp(sm-screen) {
+    flex: 0 1 auto;
+    order: initial;
+    margin: 0;
+  }
+}
+
+.obj-buttons__contact-text {
+  order: 4;
+  flex: 1 1 100%;
+
+  @include bp(sm-screen) {
+    flex: 1 1 auto;
+    order: initial;
+  }
+}
+
+.obj-button__contact-owner {
+  @extend .obj-button;
+  order: 5;
+  flex: 1 1 100%;
+
+  @include bp(sm-screen) {
+    flex: 0 1 auto;
+    order: initial;
+  }
 }
 
 .obj-buttons--complex {
@@ -37,88 +69,6 @@ html.no-flexbox .obj-buttons a {
   @include bp(md-screen) {
     margin: 0 $object-leftright-margin;
   }
-
-}
-
-.obj-buttons__group1 {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-
-  @include bp(sm-screen) {
-    justify-content: space-between;
-    width: 180px;
-  }
-
-}
-
-.obj-buttons__group1--twitter {
-
-  @include bp(sm-screen) {
-    padding-top: 5px;
-    padding-right: 1em;
-  }
-
-}
-
-.obj-buttons__group1--fb {
-
-  @include bp(sm-screen) {
-    padding-right: 1em;
-  }
-
-}
-
-html.no-flexbox .obj-buttons__group1 {
-  float: left;
-}
-
-.obj-buttons__group2 {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  margin: 20px 0;
-
-  @include bp(sm-screen) {
-    flex-flow: row nowrap;
-    justify-content: flex-end;
-    align-items: center;
-    // width: 440px;
-    margin: 0;
-  }
-
-}
-
-html.no-flexbox .obj-buttons__group2 {
-  float: right;
-}
-
-.obj-buttons__envelope {
-  @extend .button__primary;
-}
-
-.obj-buttons__twitter {
-  display: block; // needed for IE 10
-  font-size: 1.9em;
-  line-height: 0.1;
-  color: rgb(41, 138, 201);
-}
-
-html.no-flexbox .obj-buttons__twitter {
-  position: relative;
-  top: 6px;
-}
-
-.obj-buttons__facebook {
-  display: block; // needed for IE 10
-  font-size: 1.9em;
-  line-height: 0.1;
-  color: rgb(46, 71, 124);
-}
-
-html.no-flexbox .obj-buttons__facebook {
-  position: relative;
-  top: 6px;
 }
 
 .obj-buttons__citation {
@@ -172,7 +122,6 @@ html.no-flexbox .obj-buttons__contact-text {
 
 .obj-buttons__download-image {
   @extend .button__dark;
-  display: none;
 
   @include bp(sm-screen) {
     display: inline-block;

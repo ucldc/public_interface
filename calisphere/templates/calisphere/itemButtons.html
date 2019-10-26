@@ -187,18 +187,15 @@ Permalink: {{ permalink }}</textarea>
 
 <div class="obj-buttons{% if 'structMap' in item %}--complex{% endif %}">
 
-  <div class="obj-buttons__group1">
-
-    <div>
-      <a class="btn btn-xs obj-buttons__citation" href="javascript: void(0)" data-toggle="modal" data-target="#citationModal">Get Citation</a>
-    </div>
-
+  <div class="obj-button">
+    <a class="btn btn-xs obj-buttons__citation" href="javascript: void(0)" data-toggle="modal" data-target="#citationModal">Get Citation</a>
   </div>
 
-  <div class="obj-buttons__group2">
+  <div class="obj-buttons__contact-text">
+    <span>Have a question about this item? </span>
+  </div>
 
-    <span class="obj-buttons__contact-text">Have a question about this item? </span>
-
+  <div class="obj-button__contact-owner">
     <a class="btn btn-xs button__contact-owner" {% if contactFlag == 'email' %}
       href="javascript: void(0)" data-toggle="modal" data-target="#contactOwnerModal"
       {% else %}
@@ -208,28 +205,30 @@ Permalink: {{ permalink }}</textarea>
       <span class="fa fa-envelope"></span>
       Contact Owner
     </a>
+  </div>
 
-    {% if item.parsed_repository_data.0.aeon_url %}
+  {% if item.parsed_repository_data.0.aeon_url %}
+  <div class="obj-button">
     <button type="button" class="btn btn-xs obj-buttons__download-image" 
       id="js-requestModal" data-toggle="modal" data-target="#requestModal"
       data-label="{% if 'structMap' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}">
       Order {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' %}Item{% else %}{{ item.type.0|title }}{% endif %}
-    </a>
-    {% endif %}
+    </button>
+  </div>
+  {% endif %}
 
-    {% if item.harvest_type == 'hosted' %}
-      {% if 'structMap' in item and 'contentFile' in item and item.contentFile.format == 'file' %}
-      {% else %}
+  {% if item.harvest_type == 'hosted' %}
+    {% if 'structMap' in item and 'contentFile' in item and item.contentFile.format == 'file' %}
+    {% else %}
+    <div class="obj-button">
       <button type="button" class="btn btn-xs obj-buttons__download-image" 
         id="js-downloadModal" data-toggle="modal" data-target="#downloadModal"
         data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">
         <span class="icon__download-image">
           <span class="fa fa-arrow-circle-o-down"></span>
         </span> Download {% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}
-      </a>
-      {% endif %}
+      </button>
+    </div>
     {% endif %}
-
-  </div>
-
+  {% endif %}
 </div>

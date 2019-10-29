@@ -43,6 +43,33 @@ FACET_FILTER_TYPES = [
 # Make a copy of FACET_FILTER_TYPES to reset to original.
 DEFAULT_FACET_FILTER_TYPES = FACET_FILTER_TYPES[:]
 
+# solr schema fields that have a `_ss` varient for facets
+UCLDC_SCHEMA_FACETS = [
+  "title",
+  "alternative_title",
+  "contributor",
+  "coverage",
+  "creator",
+  "date",
+  "extent",
+  "format",
+  "genre",
+  "identifier",
+  "language",
+  "location",
+  "publisher",
+  "relation",
+  "rights",
+  "rights_holder",
+  "rights_note",
+  "rights_date",
+  "source",
+  "spatial",
+  "subject",
+  "temporal",
+  "type",
+]
+
 CAMPUS_LIST = [
     {
         'featuredImage': {

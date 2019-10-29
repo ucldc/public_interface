@@ -933,6 +933,56 @@ def collectionView(request, collection_id):
     return render(request, 'calisphere/collectionView.html', context)
 
 
+def collectionFacet(request, collection_id, facet):
+    if not facet in UCLDC_SCHEMA_FACETS:
+        raise Http404("{} does not exist".format(facet))
+    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
+    collection_details = json_loads_url(collection_url + '?format=json')
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    for repository in collection_details.get('repository'):
+        repository['resource_id'] = repository.get('resource_uri').split(
+            '/')[-2]
+
+    params = request.GET.copy()
+    context = searchDefaults(params)
+    context.update({'facet': facet,})
+    # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
+    solrParams = {
+        'facet': 'true',
+        'rows': 0,
+        'facet_field': '{}_ss'.format(facet),
+        'fq': 'collection_url:"{}"'.format(collection_url),
+        'facet_limit': '-1',
+        'facet_mincount': 1,
+        'facet_sort': 'count',
+    }
+    solr_search = SOLR_select(**solrParams)
+
+    values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
+    if not values:
+        raise Http404("{0} has no values".format(facet))
+    unique = len(values)
+    records = sum(values.values())
+    ratio = unique / records
+    context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
+
+    context.update({
+        #'meta_robots': "noindex,follow",
+        'title': 'title reports should have unique titles too',
+        'meta_robots': 'None',
+        'description': 'xxx',
+        'collection': collection_details,
+        'collection_id': collection_id,
+        'form_action': reverse(
+            'calisphere:collectionView',
+            kwargs={'collection_id': collection_id}),
+    })
+
+    return render(request, 'calisphere/collectionFacet.html', context )
+
+
 def campusDirectory(request):
     repositories_solr_query = SOLR_select(
         q='*:*',

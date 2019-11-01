@@ -180,7 +180,7 @@ def solrEncode(params, filter_types, facet_types=[]):
     else:
         query_terms_string = " AND ".join(query_terms)
 
-    query_terms_string = query_terms_string.replace('?', '')
+    # query_terms_string = query_terms_string.replace('?', '')
 
     filters = []
     for filter_type in filter_types:
@@ -748,8 +748,8 @@ def relatedCollections(request, slug=None, repository_id=None):
 def relatedExhibitions(request):
     params = request.GET.copy()
     if ('itemId' in params):
-        exhibitItems = ExhibitItem.objects.select_related(
-            'exhibit').filter(item_id=params['itemId'])
+        exhibitItems = ExhibitItem.objects.select_related('exhibit').filter(
+            item_id=params['itemId']).exclude(exhibit__isnull=True)
         exhibitIds = [ exhibitItem.exhibit.pk for exhibitItem in exhibitItems ]
         exhibits = Exhibit.objects.filter(pk__in=exhibitIds)
     else:

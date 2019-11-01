@@ -180,7 +180,7 @@ def solrEncode(params, filter_types, facet_types=[]):
     else:
         query_terms_string = " AND ".join(query_terms)
 
-    query_terms_string = query_terms_string.replace('?', '')
+    # query_terms_string = query_terms_string.replace('?', '')
 
     filters = []
     for filter_type in filter_types:

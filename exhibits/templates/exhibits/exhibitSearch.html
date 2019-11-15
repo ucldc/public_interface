@@ -1,10 +1,11 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
-{% load calisphere-extras %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 {% load markdown_filter %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title="Exhibitions Title Search" description="Take a deep dive into a topic or era. Exhibitions are groups of items curated and interpreted by librarians, historians, and other experts. Join a civil rights protest. Marvel at the engineering of an early car. Get a glimpse of what life was like for people throughout history."%}
-{% endblock %}
+{% if calisphere %}
+  {% block page-metadata %}
+    {% include "calisphere/microdata.html" with title="Exhibitions Title Search" description="Take a deep dive into a topic or era. Exhibitions are groups of items curated and interpreted by librarians, historians, and other experts. Join a civil rights protest. Marvel at the engineering of an early car. Get a glimpse of what life was like for people throughout history."%}
+  {% endblock %}
+{% endif %}
 
 {% block content %}
 {% include "exhibits/exhibitsHeader.html" with active="search" %}

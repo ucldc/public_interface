@@ -40,5 +40,7 @@ def settings(request):
         'collection_q': None,
         'alphabet': None,
         'referral': None,
-        'exhibitMedia': settings.MEDIA_URL
+        'exhibitMedia': settings.MEDIA_URL,
+        'exhibitBaseTemplate': "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html",
+        'calisphere': True
     }

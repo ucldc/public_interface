@@ -1,10 +1,11 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
-{% load calisphere-extras %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 {% load markdown_filter %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title=exhibit.title description=exhibit.blockquote meta_image=exhibit.social_media_card %}
-{% endblock %}
+{% if calisphere %}
+  {% block page-metadata %}
+    {% include "calisphere/microdata.html" with title=exhibit.title description=exhibit.blockquote meta_image=exhibit.social_media_card %}
+  {% endblock %}
+{% endif %}
 
 {% block content %}
   <div class="modal fade" id="js-exhibit-item" tabindex="-1" role="dialog">
@@ -70,12 +71,16 @@
     </div>
   </div>
 
-  <div class="row">
-    {% if exhibit.byline %}
-    <h2>Credits:</h2>
-    {% include "exhibits/render_as.html" with render_as=exhibit.byline_render_as text=exhibit.byline truncate=False %}
-    {% endif %}
-
+  {% if exhibit.byline %}
+  <div class="row no-gutters">
+    <div class="col">
+      <h2>Credits:</h2>
+      {% include "exhibits/render_as.html" with render_as=exhibit.byline_render_as text=exhibit.byline truncate=False %}
+    </div>
+  </div>
+  {% endif %}
+  <div class="row no-gutters">
+    <div class="col">
     <h2>Using this exhibition:</h2>
     <p>
       The text of this exhibition is available under a <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons CC-BY license</a>. You are free to share and adapt it however you like, provided you provide attribution as follows:
@@ -86,6 +91,7 @@
     <p class="exhibit__byline">
       Please note that this license applies only to the descriptive copy and does not apply to any and all digital items that may appear.
     </p>
+    </div>
   </div>
 
   {% if relatedExhibitsByTheme|length > 0 or exhibit.published_essays.all|length > 0 or exhibit.published_lessons.all|length > 0 %}

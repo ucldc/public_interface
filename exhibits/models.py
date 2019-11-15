@@ -2,13 +2,12 @@
 
 from builtins import object
 import os.path
-
+import re
 from django.contrib.auth.models import User
 from django.db import models
-from calisphere.cache_retry import SOLR_select, SOLR_raw, json_loads_url
+from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
-from calisphere.facet_filter_type import getCollectionData, getRepositoryData
 from django.conf import settings
 from exhibits.custom_fields import HeroField
 from past import autotranslate
@@ -20,6 +19,52 @@ RENDERING_OPTIONS = (
     ('T', 'Plain Text'),
     ('M', 'Markdown')
 )
+
+# from django.conf import settings
+# print(settings)
+# print(settings.INSTALLED_APPS)
+# print('library_collection' in settings.INSTALLED_APPS)
+
+def getCollectionData(collection_data):
+    collection = {}
+    parts = collection_data.split('::')
+    collection['url'] = parts[0] if len(parts) >= 1 else ''
+    collection['name'] = parts[1] if len(parts) >= 2 else ''
+    collection_api_url = re.match(
+        r'^https://registry\.cdlib\.org/api/v1/collection/(?P<url>\d*)/?',
+        collection['url'])
+    if collection_api_url is None:
+        print('no collection api url:')
+        collection['id'] = ''
+    else:
+        collection['id'] = collection_api_url.group('url')
+
+        collection['local_id'] = ''
+        collection['slug'] = ''
+
+    return collection
+
+def getRepositoryData(repository_data):
+    repository = {}
+    parts = repository_data.split('::')
+    repository['url'] = parts[0] if len(parts) >= 1 else ''
+    repository['name'] = parts[1] if len(parts) >= 2 else ''
+    repository['campus'] = parts[2] if len(parts) >= 3 else ''
+
+    repository_api_url = re.match(
+        r'^https://registry\.cdlib\.org/api/v1/repository/(?P<url>\d*)/',
+        repository['url'])
+    if repository_api_url is None:
+        print('no repository api url')
+        repository['id'] = ''
+    else:
+        repository['id'] = repository_api_url.group('url')
+        # repository_details = app.registry.repository_data.get(
+        #     int(repository['id']), {})
+
+        repository['ga_code'] = ''
+
+    return repository
 
 # class ImageArk(models.Model):
 #     hero = models.ImageField(blank=True, verbose_name='Hero Image', upload_to='uploads/')

@@ -161,7 +161,8 @@ TEMPLATES = [{
     "DIRS": [],
     "APP_DIRS": True,
     "OPTIONS": {
-        "builtins": ["easy_pjax.templatetags.pjax_tags"],
+        "builtins": ["easy_pjax.templatetags.pjax_tags",
+        "exhibits.templatetags.exhibit_extras"],
         "context_processors": [
             "django.template.context_processors.request",
             "django.contrib.auth.context_processors.auth",

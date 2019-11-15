@@ -1,10 +1,11 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
-{% load calisphere-extras %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 {% load markdown_filter %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title=essay.title description="Calisphere supports classroom activities and research efforts for students from elementary school through higher education. Essays explore the history of California and the state's evolving diversity." meta_image=essay.social_media_card %}
-{% endblock %}
+{% if calisphere %}
+  {% block page-metadata %}
+    {% include "calisphere/microdata.html" with title=essay.title description="Calisphere supports classroom activities and research efforts for students from elementary school through higher education. Essays explore the history of California and the state's evolving diversity." meta_image=essay.social_media_card %}
+  {% endblock %}
+{% else %}
 
 {% block content %}
   <nav role="navigation">
@@ -55,12 +56,16 @@
     </div>
   </div>
 
-  <div class="row">
-    {% if essay.byline %}
+  {% if essay.byline %}
+  <div class="row no-gutters">
+    <div class="col">
     <h2>About this essay:</h2>
     {% include "exhibits/render_as.html" with render_as=essay.byline_render_as text=essay.byline truncate=False container_class="" %}
-    {% endif %}
-
+    </div>
+  </div>
+  {% endif %}
+  <div class="row no-gutters">
+    <div class="col">
     <h2>Using this essay:</h2>
     <p>
       The text of this essay is available under a <a href='https://creativecommons.org/licenses/by/4.0/'>Creative Commons CC-BY license</a>. You are free to share and adapt it however you like, provided you provide attribution as follows:
@@ -71,6 +76,7 @@
     <p>
       Please note that this license applies only to the descriptive copy and does not apply to any and all digital items that may appear.
     </p>
+    </div>
   </div>
 
 {% endblock %}

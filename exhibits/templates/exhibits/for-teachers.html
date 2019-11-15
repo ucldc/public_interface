@@ -1,10 +1,11 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
-{% load calisphere-extras %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 {% load markdown_filter %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title="Just for Educators" description='Calisphere supports classroom activities and research efforts for students from elementary school through higher education. Explore hundreds of thousands of primary source materials from libraries, archives, and museums across California.' %}
-{% endblock %}
+{% if calisphere %}
+  {% block page-metadata %}
+    {% include "calisphere/microdata.html" with title="Just for Educators" description='Calisphere supports classroom activities and research efforts for students from elementary school through higher education. Explore hundreds of thousands of primary source materials from libraries, archives, and museums across California.' %}
+  {% endblock %}
+{% endif %}
 
 {% block content %}
 <h1>Just for Educators</h1>
@@ -17,10 +18,10 @@
 
     <h2>What you'll find here</h2>
     <p>Calisphere contains hundreds of thousands of primary source materials from libraries, archives, and museums across California. Documents of world events and expressions of human culture, these materials are not limited by subject or scope. That said, the collection is particularly strong in U.S. and California history.</p>
-    <p>For general information about finding and using materials on Calisphere, <a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">visit the FAQ</a>.</p>
+    <p>For general information about finding and using materials on Calisphere, {% if not active_tab %}<a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">{% endif %}visit the FAQ{% if not active_tab %}</a>{% endif%}.</p>
 
     <h3>Exhibitions</h3>
-    <p>A good way for educators and students to start exploring Calisphere is by visiting our <a href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">exhibitions</a>. The exhibitions present small selections of Calisphere items in historical context, and many of them were originally created expressly for classroom learning. Some of the exhibitions are grouped into bigger themes: <a href="{% url 'exhibits:exhibitDirectory' 'cal-history' %}" data-pjax="js-pageContent">California History</a>, <a href="{% url 'exhibits:exhibitDirectory' 'cal-cultures' %}" data-pjax="js-pageContent">California Cultures</a>, and the <a href="{% url 'exhibits:exhibitDirectory' 'jarda' %}" data-pjax="js-pageContent">Japanese American Relocation Digital Archives (JARDA)</a>. As you explore the exhibitions, you can dive further down into <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">collections</a> to find more items</p>
+    <p>A good way for educators and students to start exploring Calisphere is by visiting our <a href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">exhibitions</a>. The exhibitions present small selections of Calisphere items in historical context, and many of them were originally created expressly for classroom learning. Some of the exhibitions are grouped into bigger themes: <a href="{% url 'exhibits:exhibitDirectory' 'cal-history' %}" data-pjax="js-pageContent">California History</a>, <a href="{% url 'exhibits:exhibitDirectory' 'cal-cultures' %}" data-pjax="js-pageContent">California Cultures</a>, and the <a href="{% url 'exhibits:exhibitDirectory' 'jarda' %}" data-pjax="js-pageContent">Japanese American Relocation Digital Archives (JARDA)</a>. As you explore the exhibitions, you can dive further down into {% if not active_tab %}<a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">{% endif %}collections{% if not active_tab %}</a>{% endif %} to find more items</p>
 
     <h3>Historical essays</h3>
     <p>Seven historical essays provide background for primary sources related to California history and Japanese American relocation and incarceration:</p>
@@ -41,7 +42,7 @@
     </p>
 
     <h2>Permissions</h2>
-    <p>Educators and students may use items from Calisphere in the classroom (for example in presentations and with print-outs) without permission. For other uses, you may need to contact the contributing institution and/or undertake a fair use assesment. For more information, please review the Calisphere <a href="{% url 'calisphere:termsOfUse' %}">terms of use</a>.</p>
+    <p>Educators and students may use items from Calisphere in the classroom (for example in presentations and with print-outs) without permission. For other uses, you may need to contact the contributing institution and/or undertake a fair use assesment. For more information, please review the Calisphere {% if not active_tab %}<a href="{% url 'calisphere:termsOfUse' %}">{% endif %}terms of use{% if not active_tab %}</a>{%endif %}.</p>
 
     <p>The narrative portions of all of the <a href="{% url 'exhibits:randomExplore' %}">exhibitions</a>, essays, and lesson plans may be quoted and used in nonprofit educational settings with the appropriate citation (information about authorship and date is included in the "About" section at the bottom of each exhibition, essay, and lesson).</p>
 
@@ -63,7 +64,7 @@
 
   	<h3 class="static__sidebar-heading">Permissions</h3>
     
-    <p>Educators and students may use items from Calisphere in the classroom (for example in presentations and with print-outs) without permission. For other uses, you may need to contact the contributing institution and/or undertake a fair use assesment. For more information, please review the Calisphere <a href="{% url 'calisphere:termsOfUse' %}">terms of use</a>.</p>
+    <p>Educators and students may use items from Calisphere in the classroom (for example in presentations and with print-outs) without permission. For other uses, you may need to contact the contributing institution and/or undertake a fair use assesment. For more information, please review the Calisphere {% if not active_tab %}<a href="{% url 'calisphere:termsOfUse' %}">{% endif %}terms of use{% if not active_tab %}</a>{% endif %}.</p>
 
     <p>The narrative portions of all of the <a href="{% url 'exhibits:randomExplore' %}">exhibitions</a>, essays, and lesson plans may be quoted and used in nonprofit educational settings with the appropriate citation (information about authorship and date is included in the "About" section at the bottom of each exhibition, essay, and lesson).</p>
   </div>

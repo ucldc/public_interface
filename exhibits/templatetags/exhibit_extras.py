@@ -52,3 +52,17 @@ def get_dimensions(text, delimiter):
 
 def get_ratio(x, y):
     return float(x) / float(y)
+
+@register.filter
+def is_string(val):
+    return isinstance(val, str)
+
+@register.filter
+def pjax_available(template_names, request):
+    try: 
+        from easy_pjax.templatetags.pjax_tags import pjax
+    except ImportError:
+        template_name = template_names.split(",",1)[0]
+        return template_name.strip()
+    else: 
+        return pjax(template_names, request)

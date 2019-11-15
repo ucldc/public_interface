@@ -1,10 +1,11 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
-{% load calisphere-extras %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 {% load markdown_filter %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title="California Cultures" description="California Cultures documents California's rich history of diversity and multicultural contributions." meta_image="https://calisphere.org/calisphere_images/cal_cultures_hero.jpg" %}
-{% endblock %}
+{% if calisphere %}
+  {% block page-metadata %}
+    {% include "calisphere/microdata.html" with title="California Cultures" description="California Cultures documents California's rich history of diversity and multicultural contributions." meta_image="https://calisphere.org/calisphere_images/cal_cultures_hero.jpg" %}
+  {% endblock %}
+{% endif %}
 
 {% block content %}
   <nav role="navigation">

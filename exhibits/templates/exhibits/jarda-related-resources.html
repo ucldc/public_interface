@@ -1,8 +1,10 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title='JARDA: Related Sites and Resources' %}
-{% endblock %}
+{% if calisphere %}
+	{% block page-metadata %}
+		{% include "calisphere/microdata.html" with title='JARDA: Related Sites and Resources' %}
+	{% endblock %}
+{% endif %}
 
 {% block content %}
 

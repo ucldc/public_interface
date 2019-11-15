@@ -1,10 +1,11 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
-{% load calisphere-extras %}
+{% extends exhibitBaseTemplate|pjax_available:request %}
 {% load markdown_filter %}
 
-{% block page-metadata %}
-{% include "calisphere/microdata.html" with title=lessonPlan.title description='Calisphere supports classroom activities and research efforts for students from elementary school through higher education. Use these lesson plans just as they are, or as springboards for your own creative ideas.' meta_image=lessonPlan.social_media_card %}
-{% endblock %}
+{% if calisphere %}
+  {% block page-metadata %}
+    {% include "calisphere/microdata.html" with title=lessonPlan.title description='Calisphere supports classroom activities and research efforts for students from elementary school through higher education. Use these lesson plans just as they are, or as springboards for your own creative ideas.' meta_image=lessonPlan.social_media_card %}
+  {% endblock %}
+{% endif %}
 
 {% block content %}
   <div class="modal fade" id="js-exhibit-item" tabindex="-1" role="dialog">

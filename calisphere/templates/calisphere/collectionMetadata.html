@@ -1,0 +1,59 @@
+{% extends "calisphere/base.html" %}
+{% load calisphere-extras %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block content %}
+
+<h2 class="collection-intro__institution-heading">Collection:
+	<a href="{% url 'calisphere:collectionView' collection_id %}"
+	   data-pjax="js-pageContent">
+		{{ collection.name }}
+	</a>
+</h2>
+<h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
+{% for repository in collection.repository %}
+  {% if 'campus' in repository and repository.campus.0.name %}
+    <a
+      href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+      class="collection-intro__institution-heading-link"
+      data-pjax="js-pageContent"
+    >{{ repository.campus.0.name }}</a>,
+  {% endif %}
+  <a
+    href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+    class="collection-intro__institution-heading-link"
+    data-pjax="js-pageContent"
+  >
+    {{ repository.name }}
+  </a>
+{% endfor %}
+</h2>
+
+<h3>Metadata Summary</h3>
+{{ summary_data.item_count|intcomma }} records in this collection
+
+<table border="1" style="padding: 10px; text-align: right;">
+  <tr>
+    <th>field</th>
+    <th>% records <br/> with field</th>
+    <th>% unique values <br/> in field</th>
+  </tr>
+  {% for facet, info in summary_data.items %}
+    {% if facet != 'item_count' and facet != 'collection_url' %}
+  <tr>
+      {% if info.uniq_percent == None or facet == 'description' or facet == 'transcription' %}
+    <td>{{ facet }}</td>
+      {% else %}
+    <td><a href="{{ form_action }}{{ facet }}/">{{ facet }}</a></td>
+      {% endif %}
+    <td>{{ info.percent }}</td>
+      {% if facet != 'rights_uri' and facet != 'transcription' %}
+    <td>{{ info.uniq_percent|default_if_none:"" }}</td>
+      {% endif %}
+  </tr>
+    {% endif %}
+  {% endfor %}
+</table>
+
+{% endblock %}

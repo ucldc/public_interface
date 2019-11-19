@@ -40,6 +40,7 @@ class HomeView(TemplateView):
         # return one lock_up; and arrays for the featured stuff
         return render(
             request, self.template_name, {
+                'meta_robots': None,
                 'lock_up': self.home_data['home'][0],
                 'uc_partners': self.home_data['uc_partners'],
                 'statewide_partners': self.home_data['statewide_partners'],

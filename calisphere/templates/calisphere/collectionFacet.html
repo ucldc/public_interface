@@ -35,7 +35,7 @@
 {% for label, count in values.items %}
 <div>
   <a href="{{ form_action }}?q=&rq={{ facet }}_ss%3A%22{{ label|urlencode }}%22">{{ label }}</a>
-  ({{ count }})
+  ({{ count|intcomma }})
 </div>
 {% endfor %}
 

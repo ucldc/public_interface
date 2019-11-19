@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
+from django.conf import settings
 from calisphere.home import HomeView
 from . import views
 
@@ -87,3 +88,10 @@ urlpatterns = [
     url(r'^carousel/', views.itemViewCarousel, name='carousel'),
     url(r'^contactOwner/', views.contactOwner, name='contactOwner'),
 ]
+
+if settings.UCLDC_METADATA_SUMMARY:
+    urlpatterns.insert(0,
+        url(r'^collections/(?P<collection_id>\d*)/metadata/$',
+            views.collectionMetadata,
+            name='collectionMetadata'),
+    )

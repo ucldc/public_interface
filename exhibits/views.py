@@ -134,7 +134,7 @@ def itemView(request, exhibit_id, item_id):
     except ObjectDoesNotExist:
         prevItem = None
 
-    if fromExhibitPage:
+    if fromExhibitPage and settings.CALISPHERE:
         return render(request, 'exhibits/itemView.html', {'exhibitItem': exhibitItem, 'nextItem': nextItem, 'prevItem': prevItem})
     else:
         exhibit = get_object_or_404(Exhibit, pk=exhibit_id)
@@ -169,7 +169,7 @@ def lessonPlanItemView(request, lesson_id, item_id):
 
 def exhibitView(request, exhibit_id, exhibit_slug):
     fromExhibitPage = request.META.get("HTTP_X_EXHIBIT_ITEM")
-    if fromExhibitPage:
+    if fromExhibitPage and settings.CALISPHERE:
         return render(request, 'exhibits/pjaxTemplates/pjax-exhibit-item.html')
 
     exhibit = get_object_or_404(Exhibit, pk=exhibit_id)
@@ -203,7 +203,7 @@ def themeView(request, theme_id, theme_slug):
 
 def lessonPlanView(request, lesson_id, lesson_slug):
     fromLessonPage = request.META.get("HTTP_X_EXHIBIT_ITEM")
-    if fromLessonPage:
+    if fromLessonPage and settings.CALISPHERE:
         return render(request, 'exhibits/pjaxTemplates/pjax-exhibit-item.html')
 
     lesson = get_object_or_404(LessonPlan, pk=lesson_id)

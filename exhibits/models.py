@@ -5,7 +5,6 @@ import os.path
 import re
 from django.contrib.auth.models import User
 from django.db import models
-from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
@@ -14,16 +13,52 @@ from past import autotranslate
 autotranslate(['md5s3stash'])
 from md5s3stash import md5s3stash
 
+try:
+    from calisphere.cache_retry import SOLR_select
+except ImportError:
+    import requests
+    import json
+    from collections import namedtuple
+    SolrResults = namedtuple(
+        'SolrResults', 'results header numFound facet_counts nextCursorMark')
+
+    def SOLR_select(**kwargs):
+        kwargs.update({
+            'mm': '100%',
+            'pf3': 'title',
+            'pf': 'text,title',
+            'qs': 12,
+            'ps': 12,
+        })
+        solr_url = '{}/query/'.format(settings.SOLR_URL)
+        solr_auth = {'X-Authentication-Token': settings.SOLR_API_KEY}
+        # Clean up optional parameters to match SOLR spec
+        query = {}
+        for key, value in list(kwargs.items()):
+            key = key.replace('_', '.')
+            query.update({key: value})
+        res = requests.post(solr_url, headers=solr_auth, data=query, verify=False)
+        res.raise_for_status()
+        results = json.loads(res.content.decode('utf-8'))
+        facet_counts = results.get('facet_counts', {})
+        for key, value in list(facet_counts.get('facet_fields', {}).items()):
+            # Make facet fields match edsu with grouper recipe
+            facet_counts['facet_fields'][key] = dict(
+                itertools.zip_longest(*[iter(value)] * 2, fillvalue=""))
+
+        return SolrResults(
+            results['response']['docs'],
+            results['responseHeader'],
+            results['response']['numFound'],
+            facet_counts,
+            results.get('nextCursorMark'),
+        )
+
 RENDERING_OPTIONS = (
     ('H', 'HTML'),
     ('T', 'Plain Text'),
     ('M', 'Markdown')
 )
-
-# from django.conf import settings
-# print(settings)
-# print(settings.INSTALLED_APPS)
-# print('library_collection' in settings.INSTALLED_APPS)
 
 def getCollectionData(collection_data):
     collection = {}

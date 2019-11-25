@@ -41,6 +41,6 @@ def settings(request):
         'alphabet': None,
         'referral': None,
         'exhibitMedia': settings.MEDIA_URL,
-        'exhibitBaseTemplate': "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html",
-        'calisphere': True
+        'exhibitBaseTemplate': settings.EXHIBIT_TEMPLATE,
+        'calisphere': settings.CALISPHERE
     }

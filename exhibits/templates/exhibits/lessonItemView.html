@@ -1,5 +1,0 @@
-{% extends "exhibits/lessonPlanView.html,exhibits/pjaxTemplates/pjax-exhibit-item.html"|pjax_available:request %}
-
-{% block itemContent %}
-{% include "exhibits/item_content.html" with url_name='for-teachers:lessonPlanItemView' url_id=exhibitItem.lesson_plan.id item_count=exhibitItem.lesson_plan_order|add:1 total_count=exhibitItem.lesson_plan.exhibititem_set.all|length %}
-{% endblock %}

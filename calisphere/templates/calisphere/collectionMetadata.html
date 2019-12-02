@@ -30,13 +30,30 @@
 {% endfor %}
 </h2>
 
-<p><b>Unique / Total:</b> {{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }}
-<h3>{{ facet }}</h3>
-{% for label, count in values.items %}
-<div>
-  <a href="{{ form_action }}?q=&rq={{ facet }}_ss%3A%22{{ label|urlencode }}%22">{{ label }}</a>
-  ({{ count|intcomma }})
-</div>
-{% endfor %}
+<h3>Metadata Summary</h3>
+{{ summary_data.item_count|intcomma }} records in this collection
+
+<table border="1" style="padding: 10px; text-align: right;">
+  <tr>
+    <th>field</th>
+    <th>% records <br/> with field</th>
+    <th>% unique values <br/> in field</th>
+  </tr>
+  {% for facet, info in summary_data.items %}
+    {% if facet != 'item_count' and facet != 'collection_url' %}
+  <tr>
+      {% if info.uniq_percent == None or facet == 'description' or facet == 'transcription' %}
+    <td>{{ facet }}</td>
+      {% else %}
+    <td><a href="{{ form_action }}{{ facet }}/">{{ facet }}</a></td>
+      {% endif %}
+    <td>{{ info.percent }}</td>
+      {% if facet != 'rights_uri' and facet != 'transcription' %}
+    <td>{{ info.uniq_percent|default_if_none:"" }}</td>
+      {% endif %}
+  </tr>
+    {% endif %}
+  {% endfor %}
+</table>
 
 {% endblock %}

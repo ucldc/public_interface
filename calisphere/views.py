@@ -771,6 +771,7 @@ def collectionsDirectory(request):
         collections.append(getCollectionMosaic(collection_link.url))
 
     context = {
+        'meta_robots': None,
         'collections': collections,
         'random': True,
         'pages': int(
@@ -918,6 +919,7 @@ def collectionView(request, collection_id):
                 map(filter_transform, params.getlist(param_name)))
 
     context.update({
+        'meta_robots': None,
         'totalNumItems':
         total_items.numFound,
         'FACET_FILTER_TYPES':
@@ -971,9 +973,8 @@ def collectionFacet(request, collection_id, facet):
     context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
 
     context.update({
-        #'meta_robots': "noindex,follow",
         'title': 'title reports should have unique titles too',
-        'meta_robots': 'None',
+        'meta_robots': None,
         'description': 'xxx',
         'collection': collection_details,
         'collection_id': collection_id,
@@ -983,6 +984,42 @@ def collectionFacet(request, collection_id, facet):
     })
 
     return render(request, 'calisphere/collectionFacet.html', context )
+
+
+def collectionMetadata(request, collection_id):
+    summary_url = os.path.join(
+        settings.UCLDC_METADATA_SUMMARY,
+        '{}.json'.format(collection_id),
+    )
+    summary_data = json_loads_url(summary_url)
+    if not summary_data:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
+    collection_details = json_loads_url(collection_url + '?format=json')
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    for repository in collection_details.get('repository'):
+        repository['resource_id'] = repository.get('resource_uri').split(
+            '/')[-2]
+
+    params = request.GET.copy()
+    context = searchDefaults(params)
+    context = {
+        'title': 'title reports should have unique titles too',
+        'meta_robots': None,
+        'description': 'xxx',
+        'collection': collection_details,
+        'collection_id': collection_id,
+        'summary_data': summary_data,
+        'UCLDC_SCHEMA_FACETS': UCLDC_SCHEMA_FACETS,
+        'form_action': reverse(
+            'calisphere:collectionView',
+            kwargs={'collection_id': collection_id}),
+    }
+
+    return render(request, 'calisphere/collectionMetadata.html', context)
 
 
 def campusDirectory(request):

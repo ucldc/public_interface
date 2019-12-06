@@ -3,11 +3,17 @@ language: python
 python:
   - 3.6
 
-before_script:
+install:
   - npm install
-  # - cd ..
+  - pip install -r requirements.txt
 
-install: "pip install -r requirements.txt"
+before_script:
+  - cd ..
+  - git checkout https://github.com/ucldc/exhibitapp.git
+  - cd exhibitapp
+  - pip install -r requirements.txt
+  - cd ../public_interface
+  - ln -s ../exhibitapp/exhibits/
 
 # https://github.com/travis-ci/travis-ci/issues/7940#issuecomment-311411559
 script:

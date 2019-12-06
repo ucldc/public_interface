@@ -9,7 +9,7 @@ install:
 
 before_script:
   - cd ..
-  - git checkout https://github.com/ucldc/exhibitapp.git
+  - git clone https://github.com/ucldc/exhibitapp.git
   - cd exhibitapp
   - pip install -r requirements.txt
   - cd ../public_interface

@@ -170,6 +170,7 @@ TEMPLATES = [{
             "django.contrib.auth.context_processors.auth",
             "django.contrib.messages.context_processors.messages",
             'public_interface.context_processors.settings',
+            'exhibits.context_processors.settings'
         ],
         "debug":
         UCLDC_DEVEL,

@@ -231,24 +231,25 @@ def getHostedContentFile(structmap):
                                                 structmap['id'])
         if iiif_url.startswith('//'):
             iiif_url = ''.join(['http:', iiif_url])
-        size = json_loads_url(iiif_url)['sizes'][-1]
+        iiif_info = json_loads_url(iiif_url)
+        if not iiif_info:
+            return None
+        size = iiif_info.get('sizes', [])[-1]
         if size['height'] > size['width']:
             access_size = {
                 'width': ((size['width'] * 1024) // size['height']),
                 'height': 1024
             }
-            access_url = json_loads_url(
-                iiif_url)['@id'] + "/full/,1024/0/default.jpg"
+            access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
         else:
             access_size = {
                 'width': 1024,
                 'height': ((size['height'] * 1024) // size['width'])
             }
-            access_url = json_loads_url(
-                iiif_url)['@id'] + "/full/1024,/0/default.jpg"
+            access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
 
         contentFile = {
-            'titleSources': json.dumps(json_loads_url(iiif_url)),
+            'titleSources': iiif_info,
             'format': 'image',
             'size': access_size,
             'url': access_url

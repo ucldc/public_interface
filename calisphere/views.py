@@ -227,28 +227,28 @@ def solrEncode(params, filter_types, facet_types=[]):
 def getHostedContentFile(structmap):
     contentFile = ''
     if structmap['format'] == 'image':
-        structmap_url = '{}{}/info.json'.format(settings.UCLDC_IIIF,
+        iiif_url = '{}{}/info.json'.format(settings.UCLDC_IIIF,
                                                 structmap['id'])
-        if structmap_url.startswith('//'):
-            structmap_url = ''.join(['http:', structmap_url])
-        size = json_loads_url(structmap_url)['sizes'][-1]
+        if iiif_url.startswith('//'):
+            iiif_url = ''.join(['http:', iiif_url])
+        size = json_loads_url(iiif_url)['sizes'][-1]
         if size['height'] > size['width']:
             access_size = {
                 'width': ((size['width'] * 1024) // size['height']),
                 'height': 1024
             }
             access_url = json_loads_url(
-                structmap_url)['@id'] + "/full/,1024/0/default.jpg"
+                iiif_url)['@id'] + "/full/,1024/0/default.jpg"
         else:
             access_size = {
                 'width': 1024,
                 'height': ((size['height'] * 1024) // size['width'])
             }
             access_url = json_loads_url(
-                structmap_url)['@id'] + "/full/1024,/0/default.jpg"
+                iiif_url)['@id'] + "/full/1024,/0/default.jpg"
 
         contentFile = {
-            'titleSources': json.dumps(json_loads_url(structmap_url)),
+            'titleSources': json.dumps(json_loads_url(iiif_url)),
             'format': 'image',
             'size': access_size,
             'url': access_url

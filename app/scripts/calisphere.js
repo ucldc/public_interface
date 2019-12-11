@@ -6,23 +6,6 @@
 // Cope with browser variance
 // --------------------------
 
-// Called on document ready, adds banner notice
-// to DOM for users without session storage
-function sessionStorageWarning() {
-  if (! Modernizr.sessionstorage) {
-    $('body').prepend(
-      $('<div/>', {'class': 'container-fluid'})
-      .append(
-        $('<div/>', {
-          'class': 'alert alert-warning alert-dismissible',
-          'role': 'alert'
-        }).text('Some features on the Calisphere beta site do not yet work in private browsing mode. For an optimal experience, please disable private browsing while on this site.')
-        .append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
-      )
-    );
-  }
-}
-
 // For IE
 if(typeof console === 'undefined') {
   console = { log: function() { } };
@@ -79,10 +62,6 @@ $(document).ready(function() {
       return false;
     });
   }
-  // ***********************************
-
-  // Add banner notice for users without session storage
-  sessionStorageWarning();
   // ***********************************
 
   // **Window Resize Tracking**
@@ -195,7 +174,7 @@ var on_ready_pjax_end_handler = function() {
     var inst_ga_code = $('[data-ga-code]').data('ga-code');
     var dim1 = $('[data-ga-dim1]').data('ga-dim1');
     var dim2 = $('[data-ga-dim2]').data('ga-dim2');
-    var dim3 = Modernizr.sessionstorage.toString();
+    // var dim3 = Modernizr.sessionstorage.toString();
     var dim4 = $('[data-ga-dim4]').data('ga-dim4');
 
     ga('set', 'location', window.location.href);

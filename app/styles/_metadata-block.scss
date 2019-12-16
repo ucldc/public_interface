@@ -44,3 +44,17 @@
   }
 
 }
+
+// collectionMetadata.html styles
+.metadata-summary {
+  padding: 10px; 
+  text-align: right;
+}
+
+.metadata-summary tr:nth-child(even) {
+  background-color: #EEE
+}
+
+.metadata-summary td, .metadata-summary th {
+  padding: 1px 5px 1px 10px;
+}

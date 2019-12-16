@@ -89,10 +89,12 @@
       </a>
     {% endfor %}
     {% else %}
+    {% with collection.repository.0 as repository %}
       <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Go to Institution Page
       </a>
+    {% endwith %}
     {% endif %}
   </div>
 

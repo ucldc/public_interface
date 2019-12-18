@@ -89,6 +89,8 @@ UCLDC_DEVEL = bool(os.environ.get('UCLDC_DEVEL'))
 # When EXHIBIT_PREVIEW = False, show only exhibits, themes, lesson plans, and essays marked 'published'
 # When EXHIBIT_PREVIEW = True, show ALL exhibits, themes, lesson plans, and essays
 EXHIBIT_PREVIEW = bool(os.environ.get('UCLDC_EXHIBIT_PREVIEW'))
+EXHIBIT_TEMPLATE = 'calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html'
+CALISPHERE = True
 
 # https://dryan.com/articles/elb-django-allowed-hosts/
 ALLOWED_HOSTS = [
@@ -163,12 +165,14 @@ TEMPLATES = [{
     "DIRS": [],
     "APP_DIRS": True,
     "OPTIONS": {
-        "builtins": ["easy_pjax.templatetags.pjax_tags"],
+        "builtins": ["easy_pjax.templatetags.pjax_tags",
+        "exhibits.templatetags.exhibit_extras"],
         "context_processors": [
             "django.template.context_processors.request",
             "django.contrib.auth.context_processors.auth",
             "django.contrib.messages.context_processors.messages",
             'public_interface.context_processors.settings',
+            'exhibits.context_processors.settings'
         ],
         "debug":
         UCLDC_DEVEL,

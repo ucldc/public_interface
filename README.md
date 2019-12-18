@@ -6,7 +6,6 @@ get python, node, and ruby environments on your development host.
 ## requirements to build
 
  * node http://nodejs.org (v10.8) and node's package manager https://npmjs.org
- * requires ruby environment where `gem install sass` has been run
  * requires python environment with `pip` or `virtualenv` set up
 
 ### what is happening here?
@@ -30,9 +29,17 @@ python installation left as an exercise to the reader
 
 ```
 # sudo easy_install virtualenv
-virtualenv-2.7 py27
-. py27/bin/activate
+virtualenv-2.7 py36 -p python3.6
+. py36/bin/activate
 pip install -r requirements.txt
+
+cd ..
+git clone https://github.com/ucldc/exhibitapp.git
+cd exhibitapp
+pip install -r requirements.txt
+cd ../public_interface
+ln -s ../exhibitapp/exhibits/
+
 python manage.py migrate
 ```
 
@@ -78,6 +85,11 @@ activate myenv
 git clone https://github.com/ucldc/public_interface.git
 cd public_interface
 pip install -r requirements.txt
+cd ..
+git clone https://github.com/ucldc/exhibitapp.git
+pip install -r requirements.txt
+cd ../public_interface
+ln -s ../exhibitapp/exhibits/
 ```
 edit `run.bat` in notepad, as per below
 ```

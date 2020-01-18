@@ -33,6 +33,18 @@ $(document).on('pjax:timeout', function() { return false; });
 
 var qm, globalSearchForm;
 
+function timeoutGACallback(callback, opt_timeout) {
+  var called = false;
+  function fn(){
+    if (!called) {
+      called = true;
+      callback();
+    }
+  }
+  setTimeout(fn, opt_timeout || 1000);
+  return fn;
+}
+
 // Initial Setup for all Calisphere pages
 // ----------------
 
@@ -61,9 +73,9 @@ $(document).ready(function() {
       ga('send', 'event', 'outbound', 'click', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
         // click captured and tracked, send the user along
-        'hitCallback': function () {
+        'hitCallback': timeoutGACallback(function() {
           document.location = url;
-        }
+        })
       });
       return false;
     });
@@ -72,9 +84,9 @@ $(document).ready(function() {
       var url = $(this).attr('href');
       ga('send', 'event', 'buttons', 'contact', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
-        'hitCallback': function () {
+        'hitCallback': timeoutGACallback(function () {
           document.location = url;
-        }
+        })
       });
       return false;
     });

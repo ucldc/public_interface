@@ -74,7 +74,7 @@ class ItemSitemap(object):
     '''
 
     def __init__(self, collection_url):
-        self.limit = 15000  # 50,000 is google limit on urls per sitemap file
+        self.limit = 50000  # 50,000 is google limit on urls per sitemap file
         self.collection_filter = 'collection_url: "' + collection_url + '"'
         self.solr_total = SOLR_select_nocache(q='', fq=[self.collection_filter]).numFound
         self.num_pages = math.ceil(self.solr_total / self.limit)

@@ -28,7 +28,6 @@ class CalisphereSitemapGenerator(SitemapGenerator):
             elif section == 'items':
                 collections = CollectionManager(settings.SOLR_URL,
                                  settings.SOLR_API_KEY).parsed
-                print(len(collections))
                 for collection in collections:
                     col_id = re.match(
                         r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',

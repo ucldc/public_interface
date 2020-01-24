@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 from calisphere.contact_form_view import CalisphereContactFormView
 from exhibits.views import calCultures
 
-from calisphere.sitemaps import CollectionSitemap, InstitutionSitemap, ItemSitemap, StaticSitemap
+from calisphere.sitemaps import *
 
 admin.autodiscover()
 
@@ -17,6 +17,10 @@ sitemaps = {
     'static': StaticSitemap,
     'institutions': InstitutionSitemap,
     'collections': CollectionSitemap,
+    'themes': ThemeSitemap,
+    'exhibitions': ExhibitSitemap,
+    'lessonPlans': LessonPlanSitemap,
+    'historicalEssays': HistoricalEssaySitemap,
     'items': ItemSitemap,
 }
 

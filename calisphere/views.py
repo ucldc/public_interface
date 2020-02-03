@@ -1469,7 +1469,11 @@ def sitemapSection(request, section):
     storage = _lazy_load(conf.STORAGE_CLASS)(location=conf.ROOT_DIR)
     path = os.path.join(conf.ROOT_DIR, 'sitemap-{}.xml'.format(section))
 
-    f = storage.open(path)
+    try:
+        f = storage.open(path)
+    except FileNotFoundError:
+        raise Http404("{0} does not exist".format(section))
+
     content = f.readlines()
     f.close()
     return HttpResponse(content, content_type='application/xml')
@@ -1479,7 +1483,11 @@ def sitemapSectionZipped(request, section):
     storage = _lazy_load(conf.STORAGE_CLASS)(location=conf.ROOT_DIR)
     path = os.path.join(conf.ROOT_DIR, 'sitemap-{}.xml.gz'.format(section))
 
-    f = storage.open(path)
+    try:
+        f = storage.open(path)
+    except FileNotFoundError:
+        raise Http404("{0} does not exist".format(section))
+
     content = f.readlines()
     f.close()
     return HttpResponse(content, content_type='application/zip')

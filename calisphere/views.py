@@ -196,13 +196,17 @@ def solrEncode(params, filter_types, facet_types=[]):
             selected_filters = " OR ".join(selected_filters)
             filters.append(selected_filters)
 
+    try:
+        rows = int(params.get('rows', 24))
+        start = int(params.get('start', 0))
+    except ValueError as err:
+        raise Http404("{0} does not exist".format(err))
+
     query_value = {
         'q':
         query_terms_string,
-        'rows':
-        params.get('rows', '24'),
-        'start':
-        params.get('start', 0),
+        'rows': rows,
+        'start': start,
         'sort':
         SORT_OPTIONS[params.get('sort', 'relevance' if query_terms else 'a')],
         'fq':

@@ -43,7 +43,6 @@ class InstitutionSitemap(HttpsSitemap):
             'calisphere:repositoryView',
             kwargs={
                 'repository_id': item,
-                'subnav': 'items'
             })
 
 

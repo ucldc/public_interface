@@ -1,3 +1,4 @@
+import re
 from builtins import next
 from builtins import range
 import os
@@ -7,7 +8,8 @@ from django.template import loader
 from django.contrib.sitemaps import Sitemap as RegularDjangoSitemap
 from static_sitemaps.generator import SitemapGenerator
 from static_sitemaps import conf
-
+from calisphere.collection_data import CollectionManager
+from public_interface import settings
 
 class CalisphereSitemapGenerator(SitemapGenerator):
     ''' subclass django-static-sitemaps '''
@@ -23,6 +25,15 @@ class CalisphereSitemapGenerator(SitemapGenerator):
         for section, site in list(self.sitemaps.items()):
             if issubclass(site, RegularDjangoSitemap):
                 parts.extend(self.write_data_regular(section, site))
+            elif section == 'items':
+                collections = CollectionManager(settings.SOLR_URL,
+                                 settings.SOLR_API_KEY).parsed
+                for collection in collections:
+                    col_id = re.match(
+                        r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',
+                    collection.url).group('collection_id')
+                    parts.extend(self.write_data_fast(
+                        f"collection_{col_id}", site, collection.url))
             else:
                 parts.extend(self.write_data_fast(section, site))
 
@@ -58,14 +69,14 @@ class CalisphereSitemapGenerator(SitemapGenerator):
 
         return parts
 
-    def write_data_fast(self, section, site):
+    def write_data_fast(self, section, site, collection_url=None):
         ''' process data using generator and streaming xml '''
         # FIXME need to generalize this code if we ever want to use it for anything other than Calisphere items
-        items = site().items()  # generator yielding all items
-
+        sitemap = site(collection_url)
+        items = sitemap.items()  # generator yielding all items
         parts = []
 
-        for page in range(site().num_pages):
+        for page in range(sitemap.num_pages):
             filename = conf.FILENAME_TEMPLATE % {
                 'section': section,
                 'page': page + 1
@@ -77,7 +88,11 @@ class CalisphereSitemapGenerator(SitemapGenerator):
                 f.write(
                     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
                 )
-                for n in range(site().limit):
+                if (page+1 == sitemap.num_pages):
+                    limit = sitemap.solr_total % sitemap.limit
+                else:
+                    limit = sitemap.limit
+                for n in range(limit):
                     item = next(items)
                     f.write('<url>')
                     f.write(

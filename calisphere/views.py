@@ -196,13 +196,17 @@ def solrEncode(params, filter_types, facet_types=[]):
             selected_filters = " OR ".join(selected_filters)
             filters.append(selected_filters)
 
+    try:
+        rows = int(params.get('rows', 24))
+        start = int(params.get('start', 0))
+    except ValueError as err:
+        raise Http404("{0} does not exist".format(err))
+
     query_value = {
         'q':
         query_terms_string,
-        'rows':
-        params.get('rows', '24'),
-        'start':
-        params.get('start', 0),
+        'rows': rows,
+        'start': start,
         'sort':
         SORT_OPTIONS[params.get('sort', 'relevance' if query_terms else 'a')],
         'fq':
@@ -1469,7 +1473,11 @@ def sitemapSection(request, section):
     storage = _lazy_load(conf.STORAGE_CLASS)(location=conf.ROOT_DIR)
     path = os.path.join(conf.ROOT_DIR, 'sitemap-{}.xml'.format(section))
 
-    f = storage.open(path)
+    try:
+        f = storage.open(path)
+    except FileNotFoundError:
+        raise Http404("{0} does not exist".format(section))
+
     content = f.readlines()
     f.close()
     return HttpResponse(content, content_type='application/xml')
@@ -1479,7 +1487,11 @@ def sitemapSectionZipped(request, section):
     storage = _lazy_load(conf.STORAGE_CLASS)(location=conf.ROOT_DIR)
     path = os.path.join(conf.ROOT_DIR, 'sitemap-{}.xml.gz'.format(section))
 
-    f = storage.open(path)
+    try:
+        f = storage.open(path)
+    except FileNotFoundError:
+        raise Http404("{0} does not exist".format(section))
+
     content = f.readlines()
     f.close()
     return HttpResponse(content, content_type='application/zip')

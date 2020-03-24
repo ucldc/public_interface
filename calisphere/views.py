@@ -320,7 +320,7 @@ def itemView(request, item_id=''):
                         if isinstance(v, list):
                             if isinstance(v[0], str):
                                 component[k] = [
-                                    name for name in v if name.strip()
+                                    name for name in v if name and name.strip()
                                 ]
                     # remove empty lists and empty strings from dict
                     item['selectedComponent'] = dict(

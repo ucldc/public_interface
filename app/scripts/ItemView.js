@@ -372,7 +372,12 @@ var ItemView = Backbone.View.extend({
   initCarousel: function() {
     var data_params = this.model.toJSON();
     data_params.rows = this.carouselRows*3;
-    data_params.start = this.carouselInitStart = Math.max(data_params.itemNumber - this.carouselRows, 0);
+    if (data_params.itemNumber) {
+      data_params.start = this.carouselInitStart = Math.max(
+        data_params.itemNumber - this.carouselRows, 0);
+    } else {
+      data_params.start = 0;
+    }
     data_params.init = true;
 
     // simple AJAX call to get the first set of carousel items

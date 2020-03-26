@@ -39,7 +39,8 @@ gulp.task('sass-serve', function() {
   .pipe(sass().on('error', sass.logError))
   .pipe(postcss())
   .pipe(sourcemaps.write('sourcemaps'))
-  .pipe(gulp.dest('.tmp'));
+  .pipe(gulp.dest('.tmp'))
+  .pipe(browserSync.stream());
 });
 
 gulp.task('minifyCss', function() {

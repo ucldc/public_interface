@@ -1,0 +1,106 @@
+{% extends "calisphere/facetValues.html" %}
+{% load calisphere-extras %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title=page_title description=collection.description %}
+{% endblock %}
+
+{% block pageTitle %}
+  <nav role="navigation">
+    <ol id="global__breadcrumb">
+      <li>
+        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+      </li>
+      <li>
+        items from <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a>
+        with the same {{ facet }}
+      </li>
+    </ol>
+  </nav>
+  <h1 id="js-collection" class="global__breadcrumb-header" data-collection="{{ collection_id }}" data-referralName="{{ facet_value }}">
+    {{ facet_value }}
+  </h1>
+{% endblock %}
+
+{% block additionalInfo %}
+
+<div class="collection-intro" data-ga-dim1="{{ collection.local_id }}{{ collection.slug }}">
+  <div class="col-md-3">
+    <div class="collection-intro__institution">
+      <h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
+        {% for repository in collection.repository %}
+          {% if 'campus' in repository and repository.campus.0.name %}
+            <a
+              href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+              class="collection-intro__institution-heading-link"
+              data-pjax="js-pageContent"
+            >{{ repository.campus.0.name }}</a>,
+          {% endif %}
+          <a
+            href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+            class="collection-intro__institution-heading-link"
+            data-pjax="js-pageContent"
+            data-ga-code="{{ repository.google_analytics_tracking_code }}"
+            data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
+          >
+            {{ repository.name }}
+          </a>
+          {% if forloop.counter < collection.repository|length %} and {% endif %}
+        {% endfor %}
+      </h2>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <div class="collection-intro__about">
+      {% if 'description' in collection %}
+      <h3 class="collection-intro__about-heading">About this Collection</h3>
+        <span class="collection-intro__about-description">
+          {{ collection.description|urlize }}
+        </span>
+      {% endif %}
+      {% if collection.url_local|length > 0 %}
+        <a class="collection-intro__about-link" href="{{ collection.url_local }}" target="_blank">View this collection on the contributor's website.</a><br/>
+      {% endif %}
+      {% if collection.url_oac|length > 0 %}
+        <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View collection guide.</a>
+      {% endif %}
+      <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
+      <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block sidebar %}
+<form id="js-facet" action="{{ form_action }}" method="get">
+{% block refineSearch %}
+<div class="row">
+  <div class="col-sm-6 col-md-12">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+        <span class="fa fa-angle-left fa-lg fa-fw"></span>
+        Go to Collection Page
+      </a>
+  </div>
+
+</div>
+ {% endblock %}
+ </form>
+{% endblock %}
+
+{% block objectsFound %}
+{{ numFound|intcomma }} item{{ numFound|pluralize }} in this collection have a
+  <em>{{ facet }}</em> of
+  »{{ facet_value }}«</b>
+
+{% endblock %}
+
+{% block relatedCollections %}
+{% endblock %}

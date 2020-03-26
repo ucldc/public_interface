@@ -1,0 +1,130 @@
+{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+{% load calisphere-extras %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title=q  description='' %}
+{% endblock %}
+
+{% block content %}
+
+    {% block pageTitle %}<h1>Search Results for "<strong>{{ q }}</strong>"</h1>{% endblock %}
+
+    {% block additionalInfo %}{% endblock %}
+
+      <div class="col-md-3 layout-col__2">
+        {% block sidebar %}
+          <form id="js-facet" action="{{ form_action }}" method="get">
+          {% block refineSearch %}
+
+            <!-- Begin Search Within Field -->
+            <div class="search-within">
+              <label for="search-within__field" class="search-within__label">Search within results</label>
+              <div class="input-group">
+                <input id="search-within__field" type="search" name="rq" class="form-control search-within__field" form="js-facet">
+                <span class="input-group-btn">
+                  <button class="btn btn-default search-within__button" type="submit" form="js-facet">Refine
+                  </button>
+                </span>
+              </div>
+            </div>
+            <!-- End Search Within Field -->
+
+          {% endblock %}
+
+          <!-- Begin Checkbox Groups -->
+          {% include "calisphere/forms/faceting.html" %}
+          <!-- End Checkbox Groups -->
+          </form>
+        {% endblock %}
+      </div>
+
+      <div class="col-md-9 layout-col__3">
+        {% block mainContent %}
+
+        <!-- TODO: facets.collection_name|length is only accurate if no collection filters have been applied -->
+        <h3 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
+          <a href="#related-coll">
+            {% if filters|get_item:'collection_url'|length == 0 %}
+              {{ facets.collection_data|length }} collection{{ facets.collection_data|pluralize }}
+            {% else %}
+              {{ filters|get_item:'collection_url'|length }} collection{{ filters|get_item:'collection_url'|pluralize }}
+            {% endif %}
+          </a>{% endblock %}
+        </h3>
+
+        <div class="row object-view-row">
+
+          <!-- Begin Dropdown Pagination Component -->
+          <!--  include "calisphere/forms/paginate.html" with view_format='list' rows='48' sort='oldest-start' -->
+          {% include "calisphere/forms/paginate.html" %}
+          <!-- End Dropdown Pagination Component -->
+
+          <!-- Begin Toggle Component -->
+
+
+          <!-- End Toggle Component -->
+
+        </div>
+
+        <!-- TODO: rewrite this form, POST bad. maintain state through javascript object -->
+
+        <!-- Begin Thumbnail and List View Components -->
+
+        {% if view_format == "thumbnails" %}
+          {% include "calisphere/item-thumb.html" %}
+        {% elif view_format == "list" %}
+          {% include "calisphere/list-results.html" %}
+        {% endif %}
+
+        <label for="start" aria-hidden="true" class="display-none">Current Page Number</label>
+        <input form="js-facet" type="text" class="display-none" id="start" name="start" value="{{ start }}" aria-hidden="true">
+
+        <!-- End Thumbnail and List View Components -->
+
+        <div class="row">
+          <div class="pag-dropdown">
+
+            {% if start|subtract:rows >= 0 %}
+              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><span class="fa fa-caret-left fa-lg"></span></a>
+            {% else %}
+              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-left fa-lg"></span></a>
+            {% endif %}
+
+            <label for="bottom-start-dropdown" class="sr-only">Current Page Number</label>
+            <select class="pag-dropdown__select--unstyled" form="js-facet" id="bottom-start-dropdown">
+              {% for page in pages|get_range %}
+              <option value="{% widthratio page 1 rows %}" {% if start|add:0 >= page|multiply:rows|add:0 and start|add:0 < page|add:1|multiply:rows|add:0 %}selected{% endif %}>{{ page|add:"1" }}</option>
+              {% endfor %}
+            </select>
+
+            <span class="pag-dropdown__total-number">of {{ pages }}</span>
+
+            {% if start|add:rows < numFound %}
+              <a class="js-next btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}">
+                <span class="fa fa-caret-right fa-lg"></span>
+              </a>
+            {% else %}
+              <a class="js-next btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-right fa-lg"></span></a>
+            {% endif %}
+
+  		    </div>
+
+          <!-- Begin Buttons Pagination Component -->
+            {% include "calisphere/forms/paginate-buttons.html" %}
+          <!-- End Buttons Pagination Component -->
+        </div>
+
+        <!-- Begin Related Collections Component -->
+        {% block relatedCollections %}
+        {% if num_related_collections %}
+        <div class="related-coll--search-results-page" id="js-relatedCollections">
+          {% include "calisphere/related-collections.html" %}
+        </div>
+        {% endif %}
+        {% endblock %}
+        <!-- End Related Collections Component -->
+      {% endblock %}
+      </div>
+{% endblock %}

@@ -320,7 +320,7 @@ def itemView(request, item_id=''):
                         if isinstance(v, list):
                             if isinstance(v[0], str):
                                 component[k] = [
-                                    name for name in v if name and name.strip()
+                                    name for name in v if name.strip()
                                 ]
                     # remove empty lists and empty strings from dict
                     item['selectedComponent'] = dict(
@@ -989,6 +989,88 @@ def collectionFacet(request, collection_id, facet):
     })
 
     return render(request, 'calisphere/collectionFacet.html', context )
+
+
+def collectionFacetValue(request, collection_id, facet, facet_value):
+    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
+    collection_details = json_loads_url(collection_url + '?format=json')
+
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+    if not facet in UCLDC_SCHEMA_FACETS:
+        raise Http404("{} does not exist".format(facet))
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    for repository in collection_details.get('repository'):
+        repository['resource_id'] = repository.get('resource_uri').split(
+            '/')[-2]
+
+    params = request.GET.copy()
+
+    escaped_facet_value = urllib.parse.unquote_plus(facet_value.replace('"', '\\"'))
+    parsed_facet_value = urllib.parse.unquote_plus(facet_value)
+    params.update({'rq': f"{facet}_ss:\"{escaped_facet_value}\""})
+    if not 'view_format' in params:
+        params.update({'view_format': 'list'})
+    if not 'rows' in params:
+        params.update({'rows': '48'})
+    if not 'sort' in params:
+        params.update({'sort': 'oldest-end'})
+
+    context = searchDefaults(params)
+
+
+    # Collection Views don't allow filtering or faceting by collection_data or repository_data
+    facet_filter_types = [
+        facet_filter_type for facet_filter_type in FACET_FILTER_TYPES
+        if facet_filter_type['facet'] != 'collection_data'
+        and facet_filter_type['facet'] != 'repository_data'
+    ]
+
+    extra_filter = 'collection_url: "' + collection_url + '"'
+
+    # perform the search
+    solrParams = solrEncode(params, facet_filter_types)
+    solrParams['fq'].append(extra_filter)
+    solr_search = SOLR_select(**solrParams)
+    context['search_results'] = solr_search.results
+    context['numFound'] = solr_search.numFound
+
+    total_items = SOLR_select(**{**solrParams, **{
+        'q': '',
+        'fq': [extra_filter],
+        'rows': 0,
+        'facet': 'false'
+    }})
+
+    context['pages'] = int(
+        math.ceil(solr_search.numFound / int(context['rows'])))
+
+    #context['facets'] = facetQuery(facet_filter_types, params, solr_search,
+    #                               extra_filter)
+
+    collection_name = collection_details.get('name')
+    context.update({'facet': facet,})
+    context.update({'facet_value': parsed_facet_value,})
+    context.update({
+        'meta_robots': None,
+        'totalNumItems': total_items.numFound,
+        'FACET_FILTER_TYPES': facet_filter_types,
+        'collection': collection_details,
+        'collection_id': collection_id,
+        'page_title': f"{facet}: {facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'solrParams': solrParams,
+        'form_action': reverse(
+            'calisphere:collectionFacetValue',
+            kwargs={
+              'collection_id': collection_id,
+              'facet': facet,
+              'facet_value': facet_value,
+            }),
+    })
+
+    return render(request, 'calisphere/collectionFacetValue.html', context )
 
 
 def collectionMetadata(request, collection_id):

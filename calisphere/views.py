@@ -978,9 +978,9 @@ def collectionFacet(request, collection_id, facet):
     context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
 
     context.update({
-        'title': 'title reports should have unique titles too',
-        'meta_robots': None,
-        'description': 'xxx',
+        'title': f"{facet} values from {collection_details['name']}",
+        'meta_robots': "noindex,nofollow",
+        'description': None,
         'collection': collection_details,
         'collection_id': collection_id,
         'form_action': reverse(
@@ -1054,12 +1054,12 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
     context.update({'facet': facet,})
     context.update({'facet_value': parsed_facet_value,})
     context.update({
-        'meta_robots': None,
+        'meta_robots': "noindex,nofollow",
         'totalNumItems': total_items.numFound,
         'FACET_FILTER_TYPES': facet_filter_types,
         'collection': collection_details,
         'collection_id': collection_id,
-        'page_title': f"{facet}: {facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'title': f"{facet}: {facet_value} ({solr_search.numFound} items) from: {collection_name}",
         'solrParams': solrParams,
         'form_action': reverse(
             'calisphere:collectionFacetValue',
@@ -1094,9 +1094,9 @@ def collectionMetadata(request, collection_id):
     params = request.GET.copy()
     context = searchDefaults(params)
     context = {
-        'title': 'title reports should have unique titles too',
-        'meta_robots': None,
-        'description': 'xxx',
+        'title': f"Metadata report for {collection_details['name']}",
+        'meta_robots': "noindex,nofollow",
+        'description': None,
         'collection': collection_details,
         'collection_id': collection_id,
         'summary_data': summary_data,

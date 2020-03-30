@@ -51,6 +51,8 @@ UCLDC_FRONT = getenv('UCLDC_FRONT', '')
 UCLDC_REDIS_URL = getenv('UCLDC_REDIS_URL', False)
 UCLDC_DISQUS = getenv('UCLDC_DISQUS', 'test')  # set to 'prod' to use the prod disqus shortcode value
 
+UCLDC_STRUCTMAP2 = getenv('UCLDC_STRUCTMAP2', False)
+
 UCLDC_METADATA_SUMMARY = getenv('UCLDC_METADATA_SUMMARY', False)
 
 RECAPTCHA_PUBLIC_KEY = getenv('RECAPTCHA_PUBLIC_KEY', '')

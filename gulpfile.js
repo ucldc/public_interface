@@ -171,7 +171,7 @@ gulp.task('runserver', function() {
 
   // we should watch tests too
   // gulp.watch(['test/spec/{,**/}*.js'], test)
-  gulp.watch('app/**/*.html').on('change', browserSync.reload);
+  gulp.watch(['app/**/*.html', 'app/admin/*']).on('change', browserSync.reload);
   gulp.watch(['gulpfile.js']);
   gulp.watch(['app/{,**/}*.html'], gulp.parallel('html-serve'));
   gulp.watch(['app/{,**/}*.scss'], gulp.parallel('sass-serve'));

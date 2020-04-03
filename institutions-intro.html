@@ -1,0 +1,89 @@
+<!doctype html>
+
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Institutions Intro Component</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Force favicon refresh per this stack overflow: http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh -->
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/vendor/modernizr.js"></script>
+
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+
+
+<h1>Calisphere UI Library</h1>
+
+<h2>Institutions Intro Component</h2>
+
+
+      <!-- Begin Institutions Intro Component -->
+
+      <div class="inst-intro">
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 institutions-intro__overview">
+            <p class="institutions-intro__text">All of the items on Calisphere have been contributed by educational and cultural heritage institutions in California. Use the tabs below to explore the rich digital collections of the ten University of California campuses and our partners statewide.</p>
+          </div>
+          <div class="col-xs-12 col-sm-6 institutions-intro__description">
+            
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-6
+          col-sm-3 institutions-intro__button-uc">
+            <a class="btn btn-default btn-block button__secondary" href="">UC Partners</a>
+          </div>
+          <div class="col-xs-6 col-sm-3 institutions-intro__button-state">
+            <a class="btn btn-default btn-block" href="">Statewide Partners</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- End Institutions Intro Component -->
+
+        
+
+  </div> <!-- end of .container-fluid -->
+
+  <!--
+    Ideally would include files more explicitly (as they were),
+    instead of including the pkgd.js files.
+
+    matches-selector, ev-emitter, and fizzy-ui-utils are currently
+    included twice (infinite-scroll.pkgd.js and isotope.pkgd.js)
+    I couldn't get Isotope working correctly without including the pkgd, though
+
+    mediaelement-and-player.js contains dependency 'global'
+    infinite-scroll.pkgd.js contains dependencies ev-emitter and fizzy-ui-utils
+    imagesloaded.pkgd.js contains dependencies EventEmitter and eventie
+    isotope.pkgd.js contains dependencies matches-selector, fizzy-ui-utils,
+      get-size, ev-emitter, outlayer, masonry-layout
+  -->
+  <script src="scripts/vendor.js"></script>
+
+  <script src="scripts/main.js"></script>
+
+  <!-- AW 2018-08-17: the remaining script tags have no business in 
+      the app library at all, except that we want them to get built 
+      with the grunt script. none of this JS is relevant or works 
+      with the app library in anyway. -->
+
+  <script src="scripts/calisphere.js"></script>
+
+  <script src="scripts/calisphere-home.js"></script>
+
+</body>
+</html>

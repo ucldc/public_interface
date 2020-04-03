@@ -1,0 +1,96 @@
+<!doctype html>
+
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Metadata Component</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Force favicon refresh per this stack overflow: http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh -->
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/vendor/modernizr.js"></script>
+
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+
+
+<h1>Calisphere UI Library</h1>
+
+<h2>Metadata Component</h2>
+
+
+<!-- Begin Metadata Inline Component -->
+
+<dl class="meta-inline__list">
+  <dt class="meta-inline__type">Title:</dt>
+  <dd class="meta-inline__defin">Walther League Picnic in Orange County Park, Orange, California, 1909</dd>
+
+  <dt class="meta-inline__type">Creator:</dt>
+  <dd class="meta-inline__defin">Hillebrecht, Henry William</dd>
+
+  <dt class="meta-inline__type">Date:</dt>
+  <dd class="meta-inline__defin">1909-09-06</dd>
+
+  <dt class="meta-inline__type">Contributing Institution:</dt>
+  <dd class="meta-inline__defin"><a href="">Orange Public Library</a></dd>
+
+  <dt class="meta-inline__type">Collection:</dt>
+  <dd class="meta-inline__defin"><a href="">Orange Public Library Local History Collection</a></dd>
+
+  <dt class="meta-inline__type">Identifier:</dt>
+  <dd class="meta-inline__defin">OPL2774, 10511179</dd>
+
+  <dt class="meta-inline__type">Format:</dt>
+  <dd class="meta-inline__defin">Photographic print, b&amp;w, 8.7 x 14.4cm.</dd>
+
+  <dt class="meta-inline__type">Notes:</dt>
+  <dd class="meta-inline__defin">Orange County</dd>
+
+  <dt class="meta-inline__type">Subject:</dt>
+  <dd class="meta-inline__defin">California; Orange; picnic; Walther League, Orange County</dd>
+
+</dl>
+
+<!-- End Metadata Inline Component -->
+
+        
+
+  </div> <!-- end of .container-fluid -->
+
+  <!--
+    Ideally would include files more explicitly (as they were),
+    instead of including the pkgd.js files.
+
+    matches-selector, ev-emitter, and fizzy-ui-utils are currently
+    included twice (infinite-scroll.pkgd.js and isotope.pkgd.js)
+    I couldn't get Isotope working correctly without including the pkgd, though
+
+    mediaelement-and-player.js contains dependency 'global'
+    infinite-scroll.pkgd.js contains dependencies ev-emitter and fizzy-ui-utils
+    imagesloaded.pkgd.js contains dependencies EventEmitter and eventie
+    isotope.pkgd.js contains dependencies matches-selector, fizzy-ui-utils,
+      get-size, ev-emitter, outlayer, masonry-layout
+  -->
+  <script src="scripts/vendor.js"></script>
+
+  <script src="scripts/main.js"></script>
+
+  <!-- AW 2018-08-17: the remaining script tags have no business in 
+      the app library at all, except that we want them to get built 
+      with the grunt script. none of this JS is relevant or works 
+      with the app library in anyway. -->
+
+  <script src="scripts/calisphere.js"></script>
+
+  <script src="scripts/calisphere-home.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!doctype html>
+
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Object View Layout</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Force favicon refresh per this stack overflow: http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh -->
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/vendor/modernizr.js"></script>
+
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+
+
+  
+        <!-- Begin Global Header -->
+        
+        <header class="global-header">
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-4">
+              <div class="row">
+                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
+                  <i class="fa fa-bars"></i>
+                </div>
+                <div class="col-xs-8 col-sm-12 global-header__logo">
+                  <a class="global-header__logo-link" href="/">
+                  </a>
+                </div>
+                <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
+                  <i class="fa fa-search"></i>
+                </div>
+              </div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
+              <form class="global-header__search-form" role="search" action="add-url-here" method="get">
+                <label for="global-search__field" class="global-search__label">Search the collections</label>
+                <div class="input-group">
+                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+            
+            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
+              <ul class="global-header__nav-list">
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
+                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
+              </ul>
+            </div>
+            
+          </div>
+
+          <div class="global-header__bar">
+            <ul class="global-header__bar-list">
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Contributing Institutions</a>
+              </li>
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Collections</a>
+              </li>
+              <li class="global-header__bar-list-item">
+                <a class="global-header__bar-links" href="">Exhibitions</a>
+              </li>
+            </ul>
+          </div>
+
+        </header>
+
+        <!-- End Global Header -->
+        
+
+  
+<!-- Begin Carousel Component -->
+<div id="js-carouselContainer">
+  
+<div class="carousel__search-results">
+  <a href="">Search results for "Orange County"</a>
+</div>
+
+<div class="carousel__items-number">
+  <!-- Displaying 1 - 6 of 67 -->
+  67 items found.
+</div>
+
+<div class="carousel">
+  
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz1.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">The name of this object if it were a long title lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item--selected">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img src="images/lazyfonz2.png" class="carousel__image--selected" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">Here is a shorter caption
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz3.png" alt="The Fonz">
+        <div class="carousel__overlay-icon fa-volume-up"></div>
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <div class="carousel__tile-icon fa-file-text-o"></div>
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz4.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">The name of this object if it were a long title lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <div class="carousel__tile-icon fa-volume-up"></div>
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz5.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">Here is a shorter caption
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz6.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz1.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">The name of this object if it were a long title lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz2.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">Here is a shorter caption
+      </div>
+    </a>
+  </div>
+
+  <div class="carousel__item">
+    <a href="" class="carousel__link">
+      <div class="thumbnail__container">
+        <img class="carousel__image" src="images/lazyfonz3.png" alt="The Fonz">
+      </div>
+      <div class="carousel__thumbnail-caption">This caption right here is a little bit longer
+      </div>
+    </a>
+  </div>
+
+</div>
+</div>
+
+<!-- End Carousel Component -->
+
+
+  <p class="text__breadcrumb-nav"><a href="">[Institution]</a> > <a href="">[Collection]</a> > Walther League Picnic</p>
+  
+  
+<!-- Object - Image Component -->
+
+<div class="object__base">
+
+	<h1>Image / <strong>Walther League Picnic</strong></h1>
+  
+  <div class="obj__container-osd">
+    
+    <div id="obj__osd"></div>
+
+    <div class="obj__osd-button-group">
+      
+      <a id="obj__osd-button-home" class="btn btn-default obj__osd-button" href="#">
+        <span class="fa fa-refresh fa-fw"></span>
+      </a>
+      <a id="obj__osd-button-zoom-in" class="btn btn-default obj__osd-button" href="#">
+        <span class="fa fa-plus fa-fw"></span>
+      </a>
+      <a id="obj__osd-button-zoom-out" class="btn btn-default obj__osd-button" href="#">
+        <span class="fa fa-minus fa-fw"></span>
+      </a>
+      <a id="obj__osd-button-fullscreen" class="btn btn-default obj__osd-button" href="">
+        <span class="fa fa-expand fa-fw"></span>
+      </a>
+
+    </div>
+
+    <script src="node_modules/openseadragon/build/openseadragon/openseadragon.min.js"></script>
+    
+    <script type="text/javascript">
+        var viewer = OpenSeadragon({
+            id: "obj__osd",
+            tileSources: [{"profile": ["http://iiif.io/api/image/2/level2.json", {"supports": ["canonicalLinkHeader", "profileLinkHeader", "mirroring", "rotationArbitrary", "sizeAboveFull"], "qualities": ["default", "bitonal", "gray", "color"], "formats": ["jpg", "png", "gif", "webp"]}], "tiles": [{"width": 1024, "scaleFactors": [1, 2, 4, 8, 16, 32, 64, 128]}], "protocol": "http://iiif.io/api/image", "sizes": [{"width": 35, "height": 48}, {"width": 70, "height": 95}, {"width": 140, "height": 189}, {"width": 280, "height": 377}, {"width": 559, "height": 753}, {"width": 1117, "height": 1506}, {"width": 2233, "height": 3011}, {"width": 4466, "height": 6022}], "height": 6022, "width": 4466, "@context": "http://iiif.io/api/image/2/context.json", "@id": "http://ucldciiifwest-env.elasticbeanstalk.com/001687cd-e327-4ed1-9788-da3899715794"}],
+            zoomInButton:   "obj__osd-button-zoom-in",
+            zoomOutButton:  "obj__osd-button-zoom-out",
+            homeButton:     "obj__osd-button-home",
+            fullPageButton: "obj__osd-button-fullscreen"
+        });
+    </script>
+
+	</div>
+
+</div>
+
+<!-- Object - Image Component -->
+
+
+  <div class="obj-buttons">
+
+    
+<!-- Object - Buttons Component -->
+
+<div class="obj-buttons__group1">
+
+  <a class="btn btn-xs obj-buttons__envelope" title="Email" href="">
+    <span class="fa fa-envelope-o fa-fw"></span>
+  </a>
+
+  <a class="obj-buttons__twitter" title="Twitter" href="">
+    <span class="fa fa-twitter-square"></span>
+  </a>
+
+  <a class="obj-buttons__facebook" title="Facebook" href="">
+    <span class="fa fa-facebook-square"></span>
+  </a>
+
+  <a class="btn btn-xs obj-buttons__citation" href="">
+    Get Citation
+  </a>
+
+</div>
+
+<div class="obj-buttons__group2">
+
+  <span class="obj-buttons__contact-text">Have a question about this item?</span>
+
+  <a class="btn btn-xs button__contact-owner" href="">
+    <span class="fa fa-envelope"></span>
+    Contact Owner 
+  </a>
+
+  <a class="btn btn-xs obj-buttons__download-image" href="">
+    <span class="icon__download-image">
+      <span class="fa fa-arrow-circle-o-down"></span>
+    </span> Download image
+  </a>
+
+</div>
+
+<!-- Object - Buttons Component -->
+
+
+  </div>
+
+  <div class="meta-block">
+
+    
+<!-- Begin Metadata Block Component -->
+
+<dl class="meta-block__list">
+  <dt class="meta-block__type">Title</dt>
+  <dd class="meta-block__defin">Portrait of Karlheinz Stockhausen, composer</dd>
+
+  <dt class="meta-block__type">Creator</dt>
+  <dd class="meta-block__defin">Freeman, Betty, 1921-2009</dd>
+
+  <dt class="meta-block__type">Date Created and/or Issued</dt>
+  <dd class="meta-block__defin">1966<br>2003</dd>
+
+  <dt class="meta-block__type">Publication Information</dt>
+  <dd class="meta-block__defin">Los Angeles Philharmonic Association</dd>
+
+  <dt class="meta-block__type">Contributing Institution</dt>
+  <dd class="meta-block__defin">Los Angeles Philharmonic Archives</dd>
+
+  <dt class="meta-block__type">Collection</dt>
+  <dd class="meta-block__defin">Records of the Los Angeles Philharmonic Archives</dd>
+
+  <dt class="meta-block__type">Rights Information</dt>
+  <dd class="meta-block__defin">Copyrighted<br>
+  Transmission or reproduction of materials protected by copyright beyond that allowed by fair use requires the written permission of the copyright owners. In addition, the reproduction of some materials may be restricted by terms of gift or purchase agreements, donor restrictions, privacy and publicity rights, licensing and trademarks. Works not in the public domain cannot be commercially exploited without permission of the copyright owner. Responsibility for any use rests exclusively with the user.</dd>
+
+  <dt class="meta-block__type">Rights Holder and Contact</dt>
+  <dd class="meta-block__defin">Los Angeles Philharmonic Association<br>
+  Los Angeles Philharmonic Archives (213) 972-7689, archives@laphil.org</dd>
+
+  <dt class="meta-block__type">Date of Copyright</dt>
+  <dd class="meta-block__defin">1966</dd>
+
+  <dt class="meta-block__type">Description</dt>
+  <dd class="meta-block__defin">Karlheinz Stockhausen at Disneyland</dd>
+
+  <dt class="meta-block__type">Type</dt>
+  <dd class="meta-block__defin">Image</dd>
+
+  <dt class="meta-block__type">Format</dt>
+  <dd class="meta-block__defin">1 photographic print; 25.5 x 20 cm</dd>
+
+  <dt class="meta-block__type">Identifier</dt>
+  <dd class="meta-block__defin">claphila_015<br> 
+  ark:/13030/kt3b69r9cn</dd>
+
+  <dt class="meta-block__type">Language</dt>
+  <dd class="meta-block__defin">eng</dd>
+
+  <dt class="meta-block__type">Subject</dt>
+  <dd class="meta-block__defin">Stackhausen, Karlheinz, 1928-2007 <br>
+  Composers</dd>
+
+  <dt class="meta-block__type">Place</dt>
+  <dd class="meta-block__defin">Disneyland (Calif.)</dd>
+
+  <dt class="meta-block__type">Source</dt>
+  <dd class="meta-block__defin">Selected photograph from the Betty Freeman Papers (SC.MSS.FREE)</dd>
+
+</dl>
+
+<!-- End Metadata Block Component -->
+
+    
+  </div>
+
+  
+<!-- Begin comments component -->
+
+<div class="comment">
+  <div class="comment__text">
+    <h2>New! This item supports comments!</h2>
+    <p>We are testing a commenting feature on this item. <a href="">Load comments</a>.</p>
+  </div>
+  <a href="" class="comment__link">Join The <br>Discussion</a>
+</div>
+
+<!-- End comments component -->
+
+
+  <div class="related-coll--object-page">
+  
+    <!-- Begin Related Collections Group Component -->
+
+    <div class="related-coll" id="related-coll">
+
+      <h3 class="related-coll__title">12 Collections Found with Similar Objects</h3>
+
+      <div class="col-xs-12 col-sm-4">
+        <a class="related-coll__link" href="">
+          <div class="related-coll__container">
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__thumbnail-container1">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+                <div class="related-coll__overlay-icon--large fa-video-camera"></div>
+              </div>
+              <div class="related-coll__thumbnail-container2">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+              <div class="related-coll__thumbnail-container3">
+                <div class="related-coll__tile-icon fa-file-text-o"></div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 related-coll__caption">
+              <p>Los Angeles Times Photographic Archive</p>
+              <p>Institution: UCLA, Library Special Collections, Charles E. Young Research Library</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-xs-12 col-sm-4">
+        <a class="related-coll__link" href="">
+          <div class="related-coll__container">
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__thumbnail-container1">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+              <div class="related-coll__thumbnail-container2">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+                <div class="related-coll__overlay-icon fa-volume-up"></div>
+              </div>
+              <div class="related-coll__thumbnail-container3">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 related-coll__caption">
+              <p>Los Angeles Times Photographic Archive</p>
+              <p>Institution: UCLA, Library Special Collections, Charles E. Young Research Library, Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-xs-12 col-sm-4">
+        <div class="related-coll__container">
+          <a class="related-coll__link" href="">
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__thumbnail-container1">
+                <div class="related-coll__tile-icon--large fa-file-text-o"></div>
+              </div>
+              <div class="related-coll__thumbnail-container2">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+              <div class="related-coll__thumbnail-container3">
+                <img class="thumbnail__image" src="images/birds1-thumb.jpg" alt="bird">
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12">
+              <div class="related-coll__caption">
+                <p>Los Angeles Times Photographic Archive</p>
+                <p>Institution: UCLA, Library Special Collections, Charles E. Young Research Library</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <button class="btn btn-link related-coll__prev-button">
+        <span class="fa fa-caret-left"></span>
+        <abbr title="Previous">Prev</abbr>
+      </button>
+
+      <button class="btn btn-link related-coll__next-button">
+        Next
+        <span class="fa fa-caret-right"></span>
+      </button>
+
+    </div>
+
+    <!-- End Related Collections Group Component -->
+
+  </div>
+
+  <div class="row">
+
+  
+    <!-- Begin Global Footer Component -->
+
+    <div class="col-xs-12">
+
+      <footer class="global-footer">
+
+        <div class="global-footer__search">
+          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
+          <div class="input-group">
+            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+              
+        <div class="global-footer__nav">
+          <ul class="global-footer__nav-list--mobile">
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
+            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
+          </ul>
+          <ul class="global-footer__nav-list">
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
+            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
+          </ul>
+        </div>
+
+        <div class="global-footer__copyright">
+          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
+
+          <div class="col-xs-6 global-footer__social-icons-text">
+            <p>Connect with us:</p>
+          </div>
+          <div class="col-xs-6 global-footer__social-icons">
+            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+          </div>
+          
+        </div>
+    
+      </footer>
+
+    </div>
+
+    <!-- End Global Footer Component -->
+
+
+  </div>
+            
+
+  </div> <!-- end of .container-fluid -->
+
+  <!--
+    Ideally would include files more explicitly (as they were),
+    instead of including the pkgd.js files.
+
+    matches-selector, ev-emitter, and fizzy-ui-utils are currently
+    included twice (infinite-scroll.pkgd.js and isotope.pkgd.js)
+    I couldn't get Isotope working correctly without including the pkgd, though
+
+    mediaelement-and-player.js contains dependency 'global'
+    infinite-scroll.pkgd.js contains dependencies ev-emitter and fizzy-ui-utils
+    imagesloaded.pkgd.js contains dependencies EventEmitter and eventie
+    isotope.pkgd.js contains dependencies matches-selector, fizzy-ui-utils,
+      get-size, ev-emitter, outlayer, masonry-layout
+  -->
+  <script src="scripts/vendor.js"></script>
+
+  <script src="scripts/main.js"></script>
+
+  <!-- AW 2018-08-17: the remaining script tags have no business in 
+      the app library at all, except that we want them to get built 
+      with the grunt script. none of this JS is relevant or works 
+      with the app library in anyway. -->
+
+  <script src="scripts/calisphere.js"></script>
+
+  <script src="scripts/calisphere-home.js"></script>
+
+</body>
+</html>
+

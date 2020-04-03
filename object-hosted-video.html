@@ -1,0 +1,104 @@
+<!doctype html>
+
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Object - Hosted Video Component</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Force favicon refresh per this stack overflow: http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh -->
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/vendor/modernizr.js"></script>
+
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+
+
+<h1>Calisphere UI Library</h1>
+
+<h2>Object Hosted Video Component</h2>
+
+
+<!-- Object - Hosted Video Component -->
+
+<div class="object__base">
+
+	<h1>Video / <strong>Ampex Videofile Information System</strong></h1>
+  
+  <div class="obj-container__video">
+
+    <video controls="controls" class="mejs-player" preload="none">
+      <source src="http://av-cdn.calisphere.org/cst_00002_access_1500Kbps.mpeg4" type="video/mp4">
+    </video>
+  
+    <script>
+    <!--
+    /*
+    var opts = {
+      // http://stackoverflow.com/questions/9113633/replacing-media-source-http-with-rtmp-in-mediaelementsjs-based-on-browser-capa
+      success: function(media, node, player) {
+        if (media.pluginType == 'flash' && node.getAttribute('data-rtmp')) {
+          media.setSrc(node.getAttribute('data-rtmp'));
+          media.load();
+          media.play();
+        }
+      }, 
+      features: ['playpause','progress','current','duration','tracks','volume','fullscreen' ,'googleanalytics'],
+      pauseOtherPlayers: true,
+    };
+    if(FlashDetect.installed){
+      opts.mode='shim';
+    }
+    $($('video').mediaelementplayer(opts));
+    */
+    -->
+    </script>
+
+  </div>
+
+</div>
+
+<!-- Object - Hosted Video Component -->
+
+        
+
+  </div> <!-- end of .container-fluid -->
+
+  <!--
+    Ideally would include files more explicitly (as they were),
+    instead of including the pkgd.js files.
+
+    matches-selector, ev-emitter, and fizzy-ui-utils are currently
+    included twice (infinite-scroll.pkgd.js and isotope.pkgd.js)
+    I couldn't get Isotope working correctly without including the pkgd, though
+
+    mediaelement-and-player.js contains dependency 'global'
+    infinite-scroll.pkgd.js contains dependencies ev-emitter and fizzy-ui-utils
+    imagesloaded.pkgd.js contains dependencies EventEmitter and eventie
+    isotope.pkgd.js contains dependencies matches-selector, fizzy-ui-utils,
+      get-size, ev-emitter, outlayer, masonry-layout
+  -->
+  <script src="scripts/vendor.js"></script>
+
+  <script src="scripts/main.js"></script>
+
+  <!-- AW 2018-08-17: the remaining script tags have no business in 
+      the app library at all, except that we want them to get built 
+      with the grunt script. none of this JS is relevant or works 
+      with the app library in anyway. -->
+
+  <script src="scripts/calisphere.js"></script>
+
+  <script src="scripts/calisphere-home.js"></script>
+
+</body>
+</html>
+

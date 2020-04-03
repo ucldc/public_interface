@@ -1,0 +1,122 @@
+<!doctype html>
+
+<html class="no-js no-jquery">
+  <head>
+    <meta charset="utf-8">
+    <title>Filter Component</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
+    <!-- Force favicon refresh per this stack overflow: http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh -->
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/vendor/modernizr.js"></script>
+
+  </head>
+  <body class="">
+    <!--[if lt IE 10]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div class="container-fluid">
+
+
+<h1>Calisphere UI Library</h1>
+
+<h2>Filter Component</h2>
+
+
+    <!-- Begin Filter Component -->
+        
+        <div class="filter">
+
+          <span class="filter__note">Filters you've selected:</span>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Image<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Image Set<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">California and the Postwar Suburban Home<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Japanese American Internment<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">1960 - 1969<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">The Bracero Program<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <button type="button" class="btn btn-default btn-xs button__close">Another Filter<i class="fa fa-close button__close-icon"></i>
+          </button>
+
+          <a class="button__view filter__more-link js-filter__more-link" href="">View 6 More Selected Filters</a>
+
+          <span class="filter__more js-filter__more">
+            
+            <button type="button" class="btn btn-default btn-xs button__close">Text<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Video<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Life on the Home Front<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">1950 - 1959<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Richmond Shipyards<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <button type="button" class="btn btn-default btn-xs button__close">Berkeley Public Library<i class="fa fa-close button__close-icon"></i>
+            </button>
+
+            <a class="button__view filter__less-link js-filter__less-link" href="">View Less Selected Filters</a>
+
+          </span>
+
+          <button type="button" class="btn btn-default btn-xs button__clear filter__clear-all">Clear Filters
+          </button>
+
+        </div>
+
+        <!-- End Filter Component -->
+
+        
+
+  </div> <!-- end of .container-fluid -->
+
+  <!--
+    Ideally would include files more explicitly (as they were),
+    instead of including the pkgd.js files.
+
+    matches-selector, ev-emitter, and fizzy-ui-utils are currently
+    included twice (infinite-scroll.pkgd.js and isotope.pkgd.js)
+    I couldn't get Isotope working correctly without including the pkgd, though
+
+    mediaelement-and-player.js contains dependency 'global'
+    infinite-scroll.pkgd.js contains dependencies ev-emitter and fizzy-ui-utils
+    imagesloaded.pkgd.js contains dependencies EventEmitter and eventie
+    isotope.pkgd.js contains dependencies matches-selector, fizzy-ui-utils,
+      get-size, ev-emitter, outlayer, masonry-layout
+  -->
+  <script src="scripts/vendor.js"></script>
+
+  <script src="scripts/main.js"></script>
+
+  <!-- AW 2018-08-17: the remaining script tags have no business in 
+      the app library at all, except that we want them to get built 
+      with the grunt script. none of this JS is relevant or works 
+      with the app library in anyway. -->
+
+  <script src="scripts/calisphere.js"></script>
+
+  <script src="scripts/calisphere-home.js"></script>
+
+</body>
+</html>

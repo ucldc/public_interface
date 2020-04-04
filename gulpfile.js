@@ -13,6 +13,8 @@ const stylish = require('jshint-stylish');
 const imagemin = require('gulp-imagemin');
 const modernizr = require('gulp-modernizr');
 const gulp = require('gulp');
+const ghpages = require('gh-pages');
+const { spawn } = require('child_process');
 
 gulp.task('sass-build', function() {
  return gulp.src('app/{,**/}*.scss')
@@ -176,6 +178,13 @@ gulp.task('runserver', function() {
   gulp.watch(['app/{,**/}*.html'], gulp.parallel('html-serve'));
   gulp.watch(['app/{,**/}*.scss'], gulp.parallel('sass-serve'));
   gulp.watch(['app/{,**/}*.js'], gulp.parallel('js-serve'));
+});
+
+gulp.task('publish', function(cb) {
+  return spawn('NODE_DEBUG=gh-pages npm run publish', {
+    stdio: 'inherit',
+    shell: true,
+  });
 });
 
 // we should have tests

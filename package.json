@@ -2,7 +2,7 @@
   "name": "public-interface",
   "version": "1.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "publish": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "browser-sync": "^2.24.6",
     "del": "^3.0.0",
     "docco": "^0.8.0",
+    "gh-pages": "^2.2.0",
     "gulp": "4.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-cli": "^2.0.1",

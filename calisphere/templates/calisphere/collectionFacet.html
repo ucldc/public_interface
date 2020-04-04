@@ -34,7 +34,7 @@
 <h3>{{ title }}</h3>
 {% for label, count in values.items %}
 <div>
-  <a href="./{{ label }}/"> {{ label }}</a>
+  <a href="./{{ label|qencode }}/"> {{ label }}</a>
   ({{ count|intcomma }})
 </div>
 {% endfor %}

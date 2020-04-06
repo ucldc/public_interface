@@ -19,13 +19,17 @@
 
 // @import "testing";
 
-// ***** Custom Elements ***** //
+// ***** Elements ***** //
 
 @import "buttons";
 @import "icons";
 @import "text";
 
-// ***** Custom Components ***** //
+// ***** Sub Components ***** //
+
+@import "mobile-nav";
+
+// ***** Components ***** //
 
 @import "alpha-nav";
 @import "carousel";
@@ -40,6 +44,7 @@
 @import "filter";
 @import "footer";
 @import "header";
+@import "header-nav";
 @import "home";
 @import "home-images";
 @import "institution-intro";
@@ -64,7 +69,7 @@
 @import "exhibit";
 @import "theme";
 
-// ***** Custom Layouts ***** //
+// ***** Layouts ***** //
 
 @import "alignment";
 @import "print";

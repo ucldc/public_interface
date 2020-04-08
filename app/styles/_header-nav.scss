@@ -1,0 +1,49 @@
+// ##### Header Navigation ##### //
+
+.header-nav {
+
+  @include bp(sm-screen) {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: -($layout-container-margin-sm);
+    margin-left: -($layout-container-margin-sm);
+    padding: 0.3em;
+    background-color: $design-secondary-color;
+
+    ul {
+      display: flex;
+      flex-grow: 1;
+      max-width: 70rem;
+    }
+
+    li {
+      flex-grow: 1;
+
+      &:not(:last-child) a {
+        border-right: 1px solid #fff;
+      }
+    }
+
+    a {
+      display: block;
+      padding-top: 0.3em;
+      padding-bottom: 0.3em;
+      color: #fff;
+      font-size: 1.4em;
+      text-align: center;
+      line-height: 1;
+
+      &:hover,
+      &:focus {
+        color: #fff;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  @include bp(md-screen) {
+    margin-right: -($layout-container-margin-md);
+    margin-left: -($layout-container-margin-md);
+  }
+}

@@ -2,22 +2,6 @@
 
 // ***** These component base styles set the margin or padding between components within page layouts. Margin/padding within components should be set within their component Sass files, not here. ***** //
 
-.home {
-  
-  @include bp(sm-screen) {
-    margin: (-$layout-container-margin-md) 0 0 0;
-  }
-
-}
-
-.global-header {
-
-  @include bp(sm-screen) {
-    
-  }
-
-}
-
 .layout-col__3 {
 
   @include bp(md-screen) {

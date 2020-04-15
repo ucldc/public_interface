@@ -22,71 +22,47 @@
     <div class="container-fluid">
 
 
-  
-        <!-- Begin Global Header -->
-        
-        <header class="global-header">
+  <header class="header">
+  <button class="header__mobile-nav-button" aria-label="navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+  <a class="header__logo" href="/">
+    <img src="/images/logo-calisphere.svg" alt="Calisphere">
+  </a>
+  <button class="header__mobile-search-button" aria-label="search">
+    <i class="fa fa-search"></i>
+  </button>
+  <div class="header__search mobile-nav__item">
+    
+          <!-- Begin Global Search Field -->
 
-          <div class="row">
-            <div class="col-xs-12 col-sm-4">
-              <div class="row">
-                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
-                  <i class="fa fa-bars"></i>
-                </div>
-                <div class="col-xs-8 col-sm-12 global-header__logo">
-                  <a class="global-header__logo-link" href="/">
-                  </a>
-                </div>
-                <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
-                  <i class="fa fa-search"></i>
-                </div>
-              </div>
+          <form class="global-search" role="search">
+            <label for="global-search__field" class="global-search__label">Search over one million items</label>
+            <div class="input-group">
+              <input id="global-search__field" type="search" class="form-control global-search__field">
+              <span class="input-group-btn">
+                <button class="btn btn-default global-search__button" type="button"><span class="fa fa-search"></span>
+                </button>
+              </span>
             </div>
-                
-            <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
-              <form class="global-header__search-form" role="search" action="add-url-here" method="get">
-                <label for="global-search__field" class="global-search__label">Search the collections</label>
-                <div class="input-group">
-                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
-                  <span class="input-group-btn">
-                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
-                    </button>
-                  </span>
-                </div>
-              </form>
-            </div>
-            
-            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
-              <ul class="global-header__nav-list">
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
-              </ul>
-            </div>
-            
-          </div>
+          </form>
 
-          <div class="global-header__bar">
-            <ul class="global-header__bar-list">
-              <li class="global-header__bar-list-item">
-                <a class="global-header__bar-links" href="">Contributing Institutions</a>
-              </li>
-              <li class="global-header__bar-list-item">
-                <a class="global-header__bar-links" href="">Collections</a>
-              </li>
-              <li class="global-header__bar-list-item">
-                <a class="global-header__bar-links" href="">Exhibitions</a>
-              </li>
-            </ul>
-          </div>
+          <!-- End Global Search Field -->
 
-        </header>
+  </div>
+  <div class="header__nav">
+    <nav class="header-nav mobile-nav">
+  <ul>
+    <li><a href="#1">Contributing Institutions</a></li>
+    <li><a href="#2">Collections</a></li>
+    <li><a href="#3">Exhibitions</a></li>
+    <li><a href="#4">About</a></li>
+  </ul>
+</nav>
 
-        <!-- End Global Header -->
-        
+  </div>
+</header>
+
 
   
 <!-- Begin Carousel Component -->
@@ -456,58 +432,35 @@
 
   <div class="row">
 
-  
-    <!-- Begin Global Footer Component -->
+  <footer class="footer">
+  <a class="footer__logo" href="/">
+    <img src="/images/logo-calisphere.svg" alt="Calisphere">
+  </a>
+  <div class="footer__nav">
+    <nav class="footer-nav mobile-nav">
+  <ul>
+    <li><a href="#1">Contact Us</a></li>
+    <li><a href="#2">About</a></li>
+    <li><a href="#3">FAQs</a></li>
+    <li><a href="#4">Contributing Institutions</a></li>
+    <li><a href="#5">Collections</a></li>
+    <li><a href="#6">Exhibitions</a></li>
+    <li><a href="#7">Terms of Use</a></li>
+    <li><a href="#8">Privacy Statement</a></li>
+    <li><a href="#9">Accessibility</a></li>
+  </ul>
+</nav>
 
-    <div class="col-xs-12">
-
-      <footer class="global-footer">
-
-        <div class="global-footer__search">
-          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
-          <div class="input-group">
-            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
-            <span class="input-group-btn">
-              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
-              </button>
-            </span>
-          </div>
-        </div>
-              
-        <div class="global-footer__nav">
-          <ul class="global-footer__nav-list--mobile">
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
-          </ul>
-          <ul class="global-footer__nav-list">
-            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
-            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
-            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
-          </ul>
-        </div>
-
-        <div class="global-footer__copyright">
-          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
-
-          <div class="col-xs-6 global-footer__social-icons-text">
-            <p>Connect with us:</p>
-          </div>
-          <div class="col-xs-6 global-footer__social-icons">
-            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
-            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
-          </div>
-          
-        </div>
-    
-      </footer>
-
-    </div>
-
-    <!-- End Global Footer Component -->
+  </div>
+  <div class="footer__copyright">
+    Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.
+  </div>
+  <div class="footer__social-icons" role="group" aria-labelledby="footer-connect-label">
+    <span id="footer-connect-label">Connect with us:</span>
+    <a class="footer__twitter-icon" aria-label="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+    <a class="footer__facebook-icon" aria-label="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+  </div>
+</footer>
 
 
   </div>

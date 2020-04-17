@@ -1,0 +1,18 @@
+// ##### Sidebar ##### //
+
+.sidebar {
+  padding: $layout-component-margin $layout-component-margin 0.5em $layout-component-margin;
+  border: 1px solid $design-dark-gray-color;
+
+  h2 {
+    margin: 0 0 $layout-component-margin 0;
+    font-size: 1.4em;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 1em 0;
+  }
+}

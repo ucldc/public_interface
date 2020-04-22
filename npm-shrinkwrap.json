@@ -10571,6 +10571,11 @@
       "integrity": "sha1-PpNdfd1zYxuXZZlW1VEo6HtQhKM=",
       "dev": true
     },
+    "source-sans-pro": {
+      "version": "3.6.0",
+      "resolved": "https://registry.npmjs.org/source-sans-pro/-/source-sans-pro-3.6.0.tgz",
+      "integrity": "sha512-C1RFUGu+YASuqpgDRInTM7Y6OwqeWNOuKn7v0P/4Kh66epTI4PYWwPWP5kdA4l/VqzBAWiqoz5dk0trof73R7w=="
+    },
     "sparkles": {
       "version": "1.0.1",
       "resolved": "https://registry.npmjs.org/sparkles/-/sparkles-1.0.1.tgz",

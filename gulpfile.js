@@ -117,6 +117,22 @@ gulp.task('html-build', function() {
   .pipe(gulp.dest('dist'));
 });
 
+gulp.task('fonts-serve', function() {
+  return gulp.src([
+    'node_modules/font-awesome/fonts/*',
+    'node_modules/slick-carousel/slick/fonts/*.{woff,woff2}',
+    'node_modules/source-sans-pro/**/*.{woff,woff2}'])
+  .pipe(gulp.dest('.tmp/vendor-fonts'));
+});
+
+gulp.task('fonts-build', function() {
+  return gulp.src([
+    'node_modules/font-awesome/fonts/*',
+    'node_modules/slick-carousel/slick/fonts/*.{woff,woff2}',
+    'node_modules/source-sans-pro/**/*.{woff,woff2}'])
+  .pipe(gulp.dest('dist/vendor-fonts'));
+});
+
 gulp.task('copy-ico-png-txt-webp-htaccss', function() {
   return gulp.src([
     'app/*.{ico,png,txt}',
@@ -128,14 +144,6 @@ gulp.task('copy-ico-png-txt-webp-htaccss', function() {
 gulp.task('copy-openseadragon-files', function() {
   return gulp.src('node_modules/openseadragon/build/{,**/}*.*')
   .pipe(gulp.dest('dist/node_modules/openseadragon/build/'))
-});
-
-gulp.task('copy-fonts', function() {
-  return gulp.src([
-    'app/styles/vendor-fonts/{,**/}*.*',
-    'app/vendor-fonts/{,**/}*.*'
-  ], { base: 'app'})
-  .pipe(gulp.dest('dist/'));
 });
 
 gulp.task('image-build', function() {
@@ -157,8 +165,7 @@ gulp.task('runserver', function() {
         '/node_modules': './node_modules',
         '/images': 'app/images',
         '/admin': 'app/admin',
-        '/static_root/vendor-fonts': 'app/styles/vendor-fonts',
-        '/vendor-fonts': 'app/styles/vendor-fonts',
+        '/vendor-fonts': 'app/vendor-fonts'
       },
 		}, 
     notify: false,
@@ -191,16 +198,15 @@ gulp.task('publish', function(cb) {
 gulp.task('test', gulp.series('clean'));
 
 gulp.task('serve', gulp.series('clean',
-	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'modernizr-serve', 'runserver'));
+	gulp.parallel('html-serve', 'sass-serve', 'js-serve'), 'modernizr-serve', 'fonts-serve', 'runserver'));
 
 gulp.task('build', gulp.series('clean', gulp.parallel(
   'sass-build',
   'js-build',
   'image-build',
   'copy-ico-png-txt-webp-htaccss',
-  'copy-fonts',
   'copy-openseadragon-files'
-  ), 'modernizr', 'html-build', 'minifyCss', 'minifyJS'));
+  ), 'modernizr', 'html-build', 'fonts-build', 'minifyCss', 'minifyJS'));
 
 gulp.task('default', gulp.series('build'));
 

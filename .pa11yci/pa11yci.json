@@ -1,0 +1,41 @@
+{
+  "defaults": {
+    "runners": [
+      "axe",
+      "htmlcs"
+    ]
+  },
+  "urls": [
+    "http://127.0.0.1:8000/",
+    "http://127.0.0.1:8000/about/",
+    {
+      "url": "http://127.0.0.1:8000/about/",
+      "viewport": {
+        "width": 400,
+        "height": 600,
+        "isMobile": true
+      },
+      "screenCapture": "./.pa11yci/screencaptures/about-mobile.png"
+    },
+    "http://127.0.0.1:8000/collections/",
+    "http://127.0.0.1:8000/collections/26599/",
+    "http://127.0.0.1:8000/collections/num/",
+    "http://127.0.0.1:8000/collections/titleSearch/",
+    "http://127.0.0.1:8000/contact/",
+    "http://127.0.0.1:8000/exhibitions/",
+    "http://127.0.0.1:8000/exhibitions/5/native-americans-arts-and-traditions/",
+    "http://127.0.0.1:8000/exhibitions/browse/all/",
+    "http://127.0.0.1:8000/exhibitions/search/",
+    "http://127.0.0.1:8000/exhibitions/11/murder-and-mayhem-gold-rush-era/",
+    "http://127.0.0.1:8000/institutions/",
+    "http://127.0.0.1:8000/institutions/statewide-partners/",
+    "http://127.0.0.1:8000/institution/129/collections/",
+    "http://127.0.0.1:8000/item/118cf41652d85296fa98e76f7bfb3a2f/",
+    "http://127.0.0.1:8000/item/ark:/87280/t07p8w9r/",
+    "http://127.0.0.1:8000/help/",
+    "http://127.0.0.1:8000/privacy/",
+    "http://127.0.0.1:8000/search/?q=cats",
+    "http://127.0.0.1:8000/search/?q=cats&view_format=list",
+    "http://127.0.0.1:8000/terms/"
+  ]
+}

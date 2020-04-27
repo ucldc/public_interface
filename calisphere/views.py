@@ -162,6 +162,10 @@ def searchDefaults(params):
     return context
 
 
+def solr_escape(text):
+    return text.replace('?', '\\?').replace('"', '\\"')
+
+
 def solrEncode(params, filter_types, facet_types=[]):
     if len(facet_types) == 0:
         facet_types = filter_types
@@ -170,10 +174,11 @@ def solrEncode(params, filter_types, facet_types=[]):
     query_terms = []
     q = params.get('q')
     if q:
-        query_terms.append(q)
+        query_terms.append(solr_escape(q))
+
     for qt in params.getlist('rq'):
         if qt:
-            query_terms.append(qt)
+            query_terms.append(solr_escape(qt))
 
     if len(query_terms) == 1:
         query_terms_string = query_terms[0]
@@ -190,7 +195,7 @@ def solrEncode(params, filter_types, facet_types=[]):
 
             selected_filters = list([
                 '{0}: "{1}"'.format(filter_type['filter'],
-                                    filter_transform(filterVal))
+                                    solr_escape(filter_transform(filterVal)))
                 for filterVal in selected_filters
             ])
             selected_filters = " OR ".join(selected_filters)
@@ -1019,7 +1024,6 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
         params.update({'sort': 'oldest-end'})
 
     context = searchDefaults(params)
-
 
     # Collection Views don't allow filtering or faceting by collection_data or repository_data
     facet_filter_types = [

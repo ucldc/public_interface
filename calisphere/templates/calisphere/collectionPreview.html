@@ -25,7 +25,7 @@
               src="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }}"
               srcset="{{ thumbnailUrl }}crop/210x210/{{ item.reference_image_md5 }} 60w, {{ thumbnailUrl }}crop/310x310/{{ item.reference_image_md5 }} 50w"
               sizes="100vw"
-              alt="{{ item.title.0|truncatewords:12 }}">
+              alt="">
 
               {% if item.type_ss.0|lower == "moving image" %}
               <div class="collect-row__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-play-circle-o"></div>

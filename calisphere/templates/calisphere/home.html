@@ -56,109 +56,110 @@
           </nav>
         </div>
       </header>
-      <div id="js-pageContent">
+      <main id="js-pageContent">
 
         <div class="home">
 
-	        <div class="home__top-images">
+          <div class="home__top-images">
 
-		        <div class="home__{{ lock_up.img1.class }}">
-			        <h1 class="home__{{ lock_up.img1.class }}-heading">The deeper you look, the more you discover.</h1>
+            <div class="home__{{ lock_up.img1.class }}">
+              <h1 class="home__{{ lock_up.img1.class }}-heading">The deeper you look, the more you discover.</h1>
               <form role="search" id="js-homeForm" action="{% url 'calisphere:search' %}" method="get">
-			        <div class="home__search">
-	              <label for="home__search-field" class="sr-only">Search over one million items</label>
-	              <div class="input-group">
-	                <input id="home__search-field" form="js-homeForm" type="search" class="form-control input-lg" placeholder="Search over one million items" name="q" label="Search field">
-	                <span class="input-group-btn">
-	                  <button class="btn btn-default btn-lg home__search-button" type="submit" aria-label="search">
-	                  </button>
-	                </span>
-	              </div>
-	            </div>
+              <div class="home__search">
+                <label for="home__search-field" class="sr-only">Search over one million items</label>
+                <div class="input-group">
+                  <input id="home__search-field" form="js-homeForm" type="search" class="form-control input-lg" placeholder="Search over one million items" name="q" label="Search field">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default btn-lg home__search-button" type="submit" aria-label="search">
+                    </button>
+                  </span>
+                </div>
+              </div>
               </form>
-	            <a href="{% url 'calisphere:itemView' lock_up.img1.id  %}" class="home__{{ lock_up.img1.class }}-credit">
+              <a href="{% url 'calisphere:itemView' lock_up.img1.id  %}" class="home__{{ lock_up.img1.class }}-credit">
         {{ lock_up.img1.title }} / {{ lock_up.img1.contributor }}
               </a>
 
-		        </div>
+            </div>
 
-		        <div class="row home__img-main-row">
+            <div class="row home__img-main-row">
 
-			        <div class="col-xs-12 col-sm-8">
-				        <p class="home__{{ lock_up.img2.class }}-text">Calisphere is a gateway to digital collections from California's great libraries, archives, and museums. Discover over {{ total_objects }} images, texts, and recordings&#8212;and counting.</p>
-			        </div>
+              <div class="col-xs-12 col-sm-8">
+                <p class="home__{{ lock_up.img2.class }}-text">Calisphere is a gateway to digital collections from California's great libraries, archives, and museums. Discover over {{ total_objects }} images, texts, and recordings&#8212;and counting.</p>
+              </div>
 
-			        <div class="col-xs-8">
-				        <div class="home__{{ lock_up.img2.class }}">
+              <div class="col-xs-8">
+                <div class="home__{{ lock_up.img2.class }}">
                   <a href="{% url 'calisphere:itemView' lock_up.img2.id %}" class="home__{{ lock_up.img2.class }}-credit">
             {{ lock_up.img2.title }} / {{ lock_up.img2.contributor }}
                   </a>
-				        </div>
-			        </div>
+                </div>
+              </div>
 
-			        <div class="col-xs-4">
-				        <div class="home__{{ lock_up.img3.class }}">
-					        <a href="{% url 'calisphere:itemView' lock_up.img3.id %}" class="home__{{ lock_up.img3.class }}-credit">
+              <div class="col-xs-4">
+                <div class="home__{{ lock_up.img3.class }}">
+                  <a href="{% url 'calisphere:itemView' lock_up.img3.id %}" class="home__{{ lock_up.img3.class }}-credit">
             {{ lock_up.img3.title }} / {{ lock_up.img3.contributor }}
                   </a>
-				        </div>
-			        </div>
+                </div>
+              </div>
 
-		        </div>
+            </div>
 
-	        </div>
+          </div>
 
-	        <h2 class="home__heading2">Explore University of California collections:</h2>
+          <h2 class="home__heading2">Explore University of California collections:</h2>
 
-	        <div class="row home__thumbnail">
+          <div class="row home__thumbnail">
 
           {% for feature in uc_partners %}
-		        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-			        <a href="{% url 'calisphere:campusView' feature.id 'collections' %}" class="home__thumbnail-link" style="background-image: url('{{ ucldcImages }}/{{ feature.thumb }}');">
-				        <div class="home__thumbnail-caption--uc">
-					{{ feature.name }}
-				        </div>
-			        </a>
-		        </div>
+            <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+              <a href="{% url 'calisphere:campusView' feature.id 'collections' %}" class="home__thumbnail-link" style="background-image: url('{{ ucldcImages }}/{{ feature.thumb }}');">
+                <div class="home__thumbnail-caption--uc">
+          {{ feature.name }}
+                </div>
+              </a>
+            </div>
           {% endfor %}
 
-		        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-			        <div class="home__contributing-block">
-				        <a href="{% url 'calisphere:campusDirectory' %}" class="home__contributing-link">
-					        <span class="home__contributing-content">View all contributing institutions</span>
-				        </a>
-			        </div>
-		        </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+              <div class="home__contributing-block">
+                <a href="{% url 'calisphere:campusDirectory' %}" class="home__contributing-link">
+                  <span class="home__contributing-content">View all contributing institutions</span>
+                </a>
+              </div>
+            </div>
 
-	        </div>
+          </div>
 
-	        <div class="row home__thumbnail">
+          <div class="row home__thumbnail">
 
-		        <h2 class="home__heading2">Featured statewide partners:</h2>
+            <h2 class="home__heading2">Featured statewide partners:</h2>
 
 
           {% for feature in statewide_partners %}
-		        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-			        <a href="{% url 'calisphere:repositoryView' feature.id 'collections' %}" class="home__thumbnail-link" style="background-image: url('{{ ucldcImages }}/{{ feature.thumb }}');">
-				        <div class="home__thumbnail-caption--inst">
-					{{ feature.name }}
-				        </div>
-			        </a>
-		        </div>
+            <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+              <a href="{% url 'calisphere:repositoryView' feature.id 'collections' %}" class="home__thumbnail-link" style="background-image: url('{{ ucldcImages }}/{{ feature.thumb }}');">
+                <div class="home__thumbnail-caption--inst">
+          {{ feature.name }}
+                </div>
+              </a>
+            </div>
           {% endfor %}
 
-		        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-			        <div class="home__contributing-block">
-				        <a href="{% url 'calisphere:statewideDirectory' %}" class="home__contributing-link--inst">
-					        <span class="home__contributing-content--inst">View all statewide partners</span>
-				        </a>
-			        </div>
-		        </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+              <div class="home__contributing-block">
+                <a href="{% url 'calisphere:statewideDirectory' %}" class="home__contributing-link--inst">
+                  <span class="home__contributing-content--inst">View all statewide partners</span>
+                </a>
+              </div>
+            </div>
 
-	        </div>
+          </div>
 
         </div>
-      </div>
+
+      </main>
 
       <footer class="footer">
         <a class="footer__logo" id="js-global-header-logo" href="{% url 'calisphere:home' %}">

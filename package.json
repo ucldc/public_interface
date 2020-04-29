@@ -19,7 +19,7 @@
     "gulp-clean-css": "^3.10.0",
     "gulp-cli": "^2.0.1",
     "gulp-file-include": "^2.0.1",
-    "gulp-imagemin": "^6.2.0",
+    "gulp-imagemin": "^7.1.0",
     "gulp-jshint": "^2.1.0",
     "gulp-modernizr": "^3.4.0",
     "gulp-postcss": "^8.0.0",

@@ -4,7 +4,7 @@
 
 	<div class="col-xs-12 col-sm-4 collect-row__summary">
     <a href="{% url 'calisphere:collectionView' collection.collection_id %}" data-pjax="js-pageContent">
-      <h3 class="collect-row__title">{{ collection.name }}</h3>
+      <h2 class="collect-row__title">{{ collection.name }}</h2>
     </a>
     {% if 'description' in collection %}
       <p>{{ collection.description|truncatewords:100 }}</p>

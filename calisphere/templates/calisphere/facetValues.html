@@ -40,7 +40,7 @@
         {% block mainContent %}
 
         <!-- TODO: facets.collection_name|length is only accurate if no collection filters have been applied -->
-        <h3 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
+        <h2 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
           <a href="#related-coll">
             {% if filters|get_item:'collection_url'|length == 0 %}
               {{ facets.collection_data|length }} collection{{ facets.collection_data|pluralize }}
@@ -48,7 +48,7 @@
               {{ filters|get_item:'collection_url'|length }} collection{{ filters|get_item:'collection_url'|pluralize }}
             {% endif %}
           </a>{% endblock %}
-        </h3>
+        </h2>
 
         <div class="row object-view-row">
 

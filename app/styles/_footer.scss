@@ -17,6 +17,13 @@
   }
 }
 
+.footer__search {
+
+  @include bp(sm-screen) {
+    display: none;
+  }
+}
+
 .footer__nav {
   margin-bottom: 10px;
 }

@@ -14,11 +14,6 @@
 
 // ##### Global Header ##### //
 
-var headerWidth = window.matchMedia('(min-width: 650px)');
-var mobileNavButton = document.querySelector('.header__mobile-nav-button');
-var mobileNav = document.querySelector('.header__nav');
-var mobileSearchButton = document.querySelector('.header__mobile-search-button');
-var mobileSearch = document.querySelector('.header__search');
 var navOpenState;
 var searchOpenState;
 
@@ -35,6 +30,11 @@ function setAttrs (headerElState, headerEl, headerElButton) {
 }
 
 function watchHeaderWidth (headerWidth) {
+  var mobileSearch = document.querySelector('.header__search');
+  var mobileSearchButton = document.querySelector('.header__mobile-search-button');
+  var mobileNav = document.querySelector('.header__nav');
+  var mobileNavButton = document.querySelector('.header__mobile-nav-button');
+
   if (headerWidth.matches) {
     navOpenState = true;
     searchOpenState = true;
@@ -50,26 +50,32 @@ function watchHeaderWidth (headerWidth) {
 }
 
 if (document.querySelector('.header')) {
-  mobileNavButton.addEventListener('click', function () {
+  var mobileNavButton = document.querySelector('.header__mobile-nav-button');
+  mobileNavButton.addEventListener('click', function (e) {
+    var mobileNav = document.querySelector('.header__nav');
+
     if (navOpenState === true) {
       navOpenState = false;
     } else {
       navOpenState = true;
     }
-    setAttrs(navOpenState, mobileNav, mobileNavButton);
+    setAttrs(navOpenState, mobileNav, e.currentTarget);
   });
 
+  var mobileSearchButton = document.querySelector('.header__mobile-search-button');
   if (mobileSearchButton) {
-    mobileSearchButton.addEventListener('click', function () {
+    mobileSearchButton.addEventListener('click', function (e) {
+      var mobileSearch = document.querySelector('.header__search');
       if (searchOpenState === true) {
         searchOpenState = false;
       } else {
         searchOpenState = true;
       }
-      setAttrs(searchOpenState, mobileSearch, mobileSearchButton);
+      setAttrs(searchOpenState, mobileSearch, e.currentTarget);
     });
   }
 
+  var headerWidth = window.matchMedia('(min-width: 650px)');
   // Watch screen width and update nav/search open states:
   watchHeaderWidth(headerWidth);
   headerWidth.addListener(watchHeaderWidth);

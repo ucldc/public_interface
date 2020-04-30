@@ -1,6 +1,39 @@
 /*global _*/
 'use strict';
 
+function setAttrs (headerElState, headerEl, headerElButton) {
+  if (headerElState === false) {
+    headerEl.classList.add('is-closed');
+    headerEl.classList.remove('is-open');
+    headerElButton.setAttribute('aria-expanded', false);
+  } else {
+    headerEl.classList.add('is-open');
+    headerEl.classList.remove('is-closed');
+    headerElButton.setAttribute('aria-expanded', true);
+  }
+}
+
+function watchHeaderWidth (headerWidth) {
+  var mobileSearch = document.querySelector('.header__search');
+  var mobileSearchButton = document.querySelector('.header__mobile-search-button');
+  var mobileNav = document.querySelector('.header__nav');
+  var mobileNavButton = document.querySelector('.header__mobile-nav-button');
+
+  if (headerWidth.matches) {
+    navOpenState = true;
+    searchOpenState = true;
+  } else {
+    navOpenState = false;
+    searchOpenState = false;
+  }
+
+  if (mobileSearch) {
+    setAttrs(searchOpenState, mobileSearch, mobileSearchButton);
+  }
+  setAttrs(navOpenState, mobileNav, mobileNavButton);
+}
+
+
 $(document).ready(function() {
   if ($('.home').length) {
     _.each($('form'), function(el) {
@@ -10,37 +43,6 @@ $(document).ready(function() {
     var navOpenState;
     var searchOpenState;
 
-    function setAttrs (headerElState, headerEl, headerElButton) {
-      if (headerElState === false) {
-        headerEl.classList.add('is-closed');
-        headerEl.classList.remove('is-open');
-        headerElButton.setAttribute('aria-expanded', false);
-      } else {
-        headerEl.classList.add('is-open');
-        headerEl.classList.remove('is-closed');
-        headerElButton.setAttribute('aria-expanded', true);
-      }
-    }
-
-    function watchHeaderWidth (headerWidth) {
-      var mobileSearch = document.querySelector('.header__search');
-      var mobileSearchButton = document.querySelector('.header__mobile-search-button');
-      var mobileNav = document.querySelector('.header__nav');
-      var mobileNavButton = document.querySelector('.header__mobile-nav-button');
-
-      if (headerWidth.matches) {
-        navOpenState = true;
-        searchOpenState = true;
-      } else {
-        navOpenState = false;
-        searchOpenState = false;
-      }
-
-      if (mobileSearch) {
-        setAttrs(searchOpenState, mobileSearch, mobileSearchButton);
-      }
-      setAttrs(navOpenState, mobileNav, mobileNavButton);
-    }
 
     if (document.querySelector('.header')) {
       var mobileNavButton = document.querySelector('.header__mobile-nav-button');

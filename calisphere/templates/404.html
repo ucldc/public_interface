@@ -117,82 +117,89 @@
         </div>
       </div>
 
-      <div class="col-xs-12">
+      <footer class="footer">
+        <a class="footer__logo" id="js-global-header-logo" href="{% url 'calisphere:home' %}">
+          <img src="{% static 'images/logo-calisphere.svg' %}" alt="Calisphere">
+        </a>
 
-        <footer class="global-footer">
+        <div class="footer__search mobile-nav__item">
+          <form class="global-search" role="search" id="js-footerSearch" action="{% url 'calisphere:search' %}" method="get">
+            <label for="global-search__field" class="global-search__label">Search over one million items</label>
+            <div class="input-group">
+              <input id="global-search__field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
+              <span class="input-group-btn">
+                <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
+                </button>
+              </span>
+            </div>
+          </form>
+        </div>
 
-          <div class="global-footer__search">
-            <form class="global-footer__search-form" role="search" id="js-footerSearch" action="{% url 'calisphere:search' %}" method="get">
-              <label for="global-footer__search-field" class="global-footer__search-label">Search over one million items</label>
-              <div class="input-group">
-                <input id="global-footer__search-field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-footer__search-field js-globalSearch">
-                <span class="input-group-btn">
-                  <button class="btn btn-default global-footer__search-button" type="submit" aria-label="search"><i class="fa fa-search"></i>
-                  </button>
-                </span>
-              </div>
-            </form>
-          </div>
-
-          <div class="global-footer__nav">
-            <nav aria-label="footer navigation">
-            <ul class="global-footer__nav-list--mobile">
-              <li class="global-footer__nav-list-item--mobile">
-                <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:home' %}">Home</a>
+        <div class="footer__nav">
+          <nav class="footer-nav mobile-nav" aria-label="footer navigation">
+            <ul>
+              <li>
+                <a href="{% url 'contact_form' %}" data-pjax="js-pageContent">
+                  Contact Us
+                </a>
               </li>
-              <li class="global-footer__nav-list-item--mobile">
-                <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:about' %}">About</a>
+              <li>
+                <a href="{% url 'calisphere:about' %}" data-pjax="js-pageContent">
+                  About
+                </a>
               </li>
-              <li class="global-footer__nav-list-item--mobile">
-                <a class="global-footer__nav-link--mobile" href="{% url 'contact_form' %}">Contact</a>
+              <li>
+                <a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">
+                  FAQs
+                </a>
               </li>
-              <li class="global-footer__nav-list-item--mobile">
-                <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:help' %}">Help</a>
+              <li>
+                <a href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">
+                  Contributing Institutions
+                </a>
               </li>
-              <li class="global-footer__nav-list-item--mobile">
-                <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:campusDirectory' %}">Contributing Institutions</a>
+              <li>
+                <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">
+                  Collections
+                </a>
               </li>
-              <li class="global-footer__nav-list-item--mobile">
-                <a class="global-footer__nav-link--mobile" href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
+              <li>
+                <a href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">
+                  Exhibitions
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'calisphere:termsOfUse' %}" data-pjax="js-pageContent">
+                  Terms of Use
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'calisphere:privacyStatement' %}" data-pjax="js-pageContent">
+                  Privacy Statement
+                </a>
+              </li>
+              <li>
+                <a href="https://www.cdlib.org/about/accessibility.html">Accessibility</a>
               </li>
             </ul>
-            <ul class="global-footer__nav-list">
-              <li class="global-footer__nav-list-item">
-                <a class="global-footer__nav-link" href="{% url 'calisphere:termsOfUse' %}">Terms of Use</a>
-              </li>
-              <li class="global-footer__nav-list-item">
-                <a class="global-footer__nav-link" href="{% url 'calisphere:privacyStatement' %}">Privacy Statement</a>
-              </li>
-              <li class="global-footer__nav-list-item">
-                <a class="global-footer__nav-link" href="https://www.cdlib.org/about/accessibility.html">Accessibility</a>
-              </li>
-            </ul>
-            </nav>
-          </div>
+          </nav>
+        </div>
 
-          <div class="global-footer__copyright">
-            <p>Calisphere is a service of the
-              <a href="http://libraries.universityofcalifornia.edu/">UC Libraries</a>, powered by the
-              <a href="http://www.cdlib.org/">California Digital Library</a>.</p>
-
-            <div class="col-xs-6 global-footer__social-icons-text">
-              <p>Connect with us:</p>
-            </div>
-            <div class="col-xs-6 global-footer__social-icons">
-              <a class="global-footer__twitter-icon"
-                 title="Twitter"
-                 href="https://twitter.com/calisphere"
-                 aria-label="Calisphere on Twitter"><span class="fa fa-twitter-square"></span></a>
-              <a class="global-footer__facebook-icon"
-                 title="Facebook"
-                 href="https://www.facebook.com/calisphere"
-                 aria-label="Calisphere on Facebook"><span class="fa fa-facebook-square"></span></a>
-            </div>
-
-          </div>
-
-        </footer>
-
+        <div class="footer__copyright">
+          Calisphere is a service of the <a href="http://libraries.universityofcalifornia.edu/">UC Libraries</a>, powered by the <a href="http://www.cdlib.org/">California Digital Library</a>.
+        </div>
+        <div class="footer__social-icons" role="group" aria-labelledby="footer-connect-label">
+          <span id="footer-connect-label">Connect with us:</span>
+          <a class="footer__twitter-icon"
+             href="https://twitter.com/calisphere"
+             aria-label="Calisphere on Twitter"><span class="fa fa-twitter-square"></span>
+          </a>
+          <a class="footer__facebook-icon"
+             href="https://www.facebook.com/calisphere"
+             aria-label="Calisphere on Facebook"><span class="fa fa-facebook-square"></span>
+          </a>
+        </div>
+      </footer>
       </div>
 
 

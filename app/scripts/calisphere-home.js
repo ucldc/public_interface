@@ -1,6 +1,9 @@
 /*global _*/
 'use strict';
 
+var navOpenState;
+var searchOpenState;
+
 function setAttrs (headerElState, headerEl, headerElButton) {
   if (headerElState === false) {
     headerEl.classList.add('is-closed');
@@ -39,10 +42,6 @@ $(document).ready(function() {
     _.each($('form'), function(el) {
       el.reset();
     });
-
-    var navOpenState;
-    var searchOpenState;
-
 
     if (document.querySelector('.header')) {
       var mobileNavButton = document.querySelector('.header__mobile-nav-button');

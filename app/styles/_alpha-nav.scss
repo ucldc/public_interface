@@ -50,11 +50,10 @@
 
 .alphanav__list-link--inactive {
   @extend .alphanav__list-link;
-  color: $design-light-gray-color;
-  
+  color: #767676;
+
   &:hover {
-    color: $design-light-gray-color;
-    background: #FFF;
+    background: #fff;
   }
 }
 

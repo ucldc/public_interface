@@ -1,9 +1,5 @@
 // ##### Text Elements ##### //
 
-.text__breadcrumb-nav {
-	
-}
-
 .text__page-heading {
 	// font-size: 2em;
 }
@@ -19,16 +15,6 @@
     font-size: 1.5em;
   }
 
-}
-
-#global__breadcrumb li:after {
-  content: " / ";
-}
-
-#global__breadcrumb, #global__breadcrumb li {
-  padding-left: 0;
-  list-style-type: none;
-  display: inline-block;
 }
 
 .global__breadcrumb-header {

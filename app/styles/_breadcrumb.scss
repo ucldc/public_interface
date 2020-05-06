@@ -1,0 +1,29 @@
+// ##### Breadcrumb Navigation Components ##### //
+
+.breadcrumb--style1,
+.breadcrumb--style2 {
+  margin-bottom: 10px;
+
+  ul {
+    padding: 0;
+  }
+
+  li {
+    display: inline;
+    list-style-type: none;
+  }
+}
+
+.breadcrumb--style1 li {
+
+  &::after {
+    content: ' / ';
+  }
+}
+
+.breadcrumb--style2 li {
+
+  &:not(:last-child)::after {
+    content: ' > ';
+  }
+}

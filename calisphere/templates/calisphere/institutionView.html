@@ -26,7 +26,7 @@
     </ol>
   </nav>
 
-  <h1 id="js-institution" class="global__breadcrumb-header" {%if campus_slug%}data-campus="{{ campus_slug }}"{% else %}data-institution="{{ repository_id }}"{% endif %} data-referralName="{{ institution.name }}">
+  <h1 id="js-institution" {%if campus_slug%}data-campus="{{ campus_slug }}"{% else %}data-institution="{{ repository_id }}"{% endif %} data-referralName="{{ institution.name }}">
     {{ institution.name }}
   </h1>
 {% endblock %}

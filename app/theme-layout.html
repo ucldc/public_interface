@@ -1,15 +1,9 @@
 <!doctype html>
-@@include("library-header.html", {"title": "Search Results Layout", "test_class": ""})
+@@include("library-header.html", {"title": "Theme Layout", "test_class": ""})
 
   @@include("components/header-component.html")
 
-  <nav aria-label="breadcrumb" role="navigation">
-    <span id="exhibit__breadcrumb-label">Exhibitions</span>
-    <ol id="exhibit__breadcrumb" aria-labelledby="exhibit__breadcrumb-label">
-      <li><a href="#" aria-level="1">California Cultures</a></li>
-      <li><a href="#" aria-level="2">Native Americans</a></li>
-    </ol>
-  </nav>
+  @@include("components/breadcrumb-nav-style1-component.html")
 
   <div class="theme__hero" style="background-image: url('/images/exhibition.jpg')">
     <h1 class="theme__header" style="background-color: #00768a">Native Americans</h1>

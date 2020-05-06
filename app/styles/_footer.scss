@@ -1,7 +1,8 @@
 // ##### Global Footer ##### //
 
 .footer {
-  clear: left; // clear Bootstrap grid
+  width: 100%; // bootstrap grid
+  float: left; // bootstrap grid
   margin-top: 20px;
   padding-top: 10px;
   border-top: 2px solid $design-dark-gray-color;

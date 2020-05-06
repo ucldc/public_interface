@@ -1,5 +1,9 @@
 // ##### Home Page ##### //
 
+.home {
+  margin-top: -($header-bottom-margin);
+}
+
 // for testing grids:
 .home [class^="col-"] {
 	// border: $bblue;

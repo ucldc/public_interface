@@ -20,8 +20,14 @@
     "http://127.0.0.1:8000/collections/",
     "http://127.0.0.1:8000/collections/26599/",
     "http://127.0.0.1:8000/collections/num/",
-    "http://127.0.0.1:8000/collections/titleSearch/",
-    "http://127.0.0.1:8000/contact/",
+    {
+      "url": "http://127.0.0.1:8000/collections/titleSearch/",
+      "threshold": 2
+    },
+    {
+      "url": "http://127.0.0.1:8000/contact/",
+      "threshold": 3
+    },
     "http://127.0.0.1:8000/exhibitions/",
     "http://127.0.0.1:8000/exhibitions/5/native-americans-arts-and-traditions/",
     "http://127.0.0.1:8000/exhibitions/browse/all/",

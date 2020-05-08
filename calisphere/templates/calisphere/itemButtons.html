@@ -9,7 +9,7 @@
         <p class="margin-bottom-0">We recommend you include the following information in your citation. Look below the item for additional data you may want to include.</p>
       </div>
       <div class="modal-body">
-        <textarea class="citation__textarea" onclick="this.focus();this.select()">
+        <textarea class="citation__textarea" aria-label="Citation" onclick="this.focus();this.select()">
 Title: {{ item.title.0 }}{% if 'date' in item and item.date.0 %}
 Date: {{ item.date.0 }}{% endif %}
 Collection: {{ item.collection_name.0 }}
@@ -79,7 +79,7 @@ Permalink: {{ permalink }}</textarea>
                     </div>
                     <div class="form-group">
                       <label class="sr-only" for="contactOwner-specifiedDemographic">If "Other," please specify</label>
-                      <input type="text" class="form-control" id="contactOwner-speicifedDemographic" placeholder='If "Other," please specify' form="js-contactOwner" name="demographic-specification" disabled>
+                      <input type="text" class="form-control" id="contactOwner-specifiedDemographic" placeholder='If "Other," please specify' form="js-contactOwner" name="demographic-specification" disabled>
                     </div>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ Permalink: {{ permalink }}</textarea>
           <div class="modal-footer">
             <div class="float-left">
               <input type="checkbox" id="contactOwner-copySelf" form="js-contactOwner" name="copySelf">
-              <label for="copySelf">Check to send a copy of this message to your email.</label>
+              <label for="contactOwner-copySelf">Check to send a copy of this message to your email.</label>
             </div>
             <div class="float-right">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

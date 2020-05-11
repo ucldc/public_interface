@@ -11,12 +11,12 @@
 {% endblock %}
 
 {% block pageTitle %}
-  <nav role="navigation">
-    <ol id="global__breadcrumb">
+  <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
+    <ul>
       <li>
         <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
       </li>
-    </ol>
+    </ul>
   </nav>
 
   <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ collection.name }}">

@@ -1,55 +1,63 @@
 // ##### Alphabetical (A to Z) Navigation Component ##### //
 
-.alphanav__list {
+.alphanav ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.alphanav__list-item {
+.alphanav li {
   float: left;
   margin: $layout-component-margin / 2;
   padding: 0;
 
+  a,
+  span {
+    border: 1px solid $design-dark-gray-color;
+    border-radius: 5px;
+  }
+
   @include bp(sm-screen) {
+    display: block;
     float: none;
     margin: 0;
 
-    &:first-child .alphanav__list-link {
-      border-top: 1px solid $design-dark-gray-color;
+    a,
+    span {
+      border: none;
+      border-bottom: 1px solid $design-dark-gray-color;
+      border-radius: 0;
     }
 
-  }
+    &:first-child {
 
+      a,
+      span {
+        border-top: 1px solid $design-dark-gray-color;
+      }
+    }
+  }
 }
 
-.alphanav__list-link {
+.alphanav a,
+.alphanav span {
   display: block;
   padding: 0.25em 0;
   width: 2.3em;
   color: #000;
   font-size: 1.4em;
   text-align: center;
-  border: 1px solid $design-dark-gray-color;
-  border-radius: 5px;
 
+  &:focus,
   &:hover {
     color: #000;
     text-decoration: none;
     background: $design-light-gray-color;
   }
 
-  @include bp(sm-screen) {
-    float: none;
-    border: none;
-    border-bottom: 1px solid $design-dark-gray-color;
-    border-radius: initial;
-  }
-
 }
 
-.alphanav__list-link--inactive {
-  @extend .alphanav__list-link;
+.alphanav span {
   color: #767676;
 
   &:hover {
@@ -57,8 +65,7 @@
   }
 }
 
-.alphanav__list-link--selected {
-  @extend .alphanav__list-link;
+.alphanav a[aria-current] {
   color: #fff;
   background: $design-secondary-color;
 }

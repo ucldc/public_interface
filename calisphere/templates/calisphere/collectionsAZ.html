@@ -12,24 +12,24 @@
 
   <div class="col-xs-12 col-sm-1">
 
-		<div class="alphanav">
-		  <ul class="alphanav__list">
-		   	<li class="alphanav__list-item"><a class="{% if collection_letter == 'num' %}alphanav__list-link--selected{% else %}alphanav__list-link{% endif %}" href="{% url 'calisphere:collectionsAZ' 'num' %}" data-pjax="js-pageContent">#</a></li>
+		<nav class="alphanav" aria-label="A to Z">
+		  <ul>
+		   	<li><a {% if collection_letter == 'num' %}aria-current="page"{% endif %} href="{% url 'calisphere:collectionsAZ' 'num' %}" data-pjax="js-pageContent">#</a></li>
 
 			{% for char, display in alphabet %}
         {% if display %}
-    		  <li class="alphanav__list-item">
-            <a class="{% if char == collection_letter|upper %}alphanav__list-link--selected{% else %}alphanav__list-link{% endif %}"
+    		  <li>
+            <a {% if char == collection_letter|upper %}aria-current="page"{% endif %}
               href="{% url 'calisphere:collectionsAZ' char|lower %}" data-pjax="js-pageContent">
                 {{ char }}
             </a>
           </li>
         {% else %}
-  		    <li class="alphanav__list-item"><span class="alphanav__list-link--inactive">{{ char }}</span></li>
+  		    <li><span>{{ char }}</span></li>
         {% endif %}
 			{% endfor %}
 			</ul>
-		</div>
+		</nav>
 
 	</div>
 

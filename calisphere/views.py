@@ -1008,9 +1008,8 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
 
     params = request.GET.copy()
 
-    escaped_facet_value = urllib.parse.unquote_plus(facet_value.replace('"', '\\"'))
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
-    params.update({'rq': f"{facet}_ss:\"{escaped_facet_value}\""})
+    params.update({'rq': f"{facet}_ss:\"{parsed_facet_value}\""})
     if not 'view_format' in params:
         params.update({'view_format': 'list'})
     if not 'rows' in params:
@@ -1036,7 +1035,6 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
     solr_search = SOLR_select(**solrParams)
     context['search_results'] = solr_search.results
     context['numFound'] = solr_search.numFound
-
     total_items = SOLR_select(**{**solrParams, **{
         'q': '',
         'fq': [extra_filter],
@@ -1059,7 +1057,8 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
         'FACET_FILTER_TYPES': facet_filter_types,
         'collection': collection_details,
         'collection_id': collection_id,
-        'title': f"{facet}: {facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'title': f"{facet}: {parsed_facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'description': None,
         'solrParams': solrParams,
         'form_action': reverse(
             'calisphere:collectionFacetValue',

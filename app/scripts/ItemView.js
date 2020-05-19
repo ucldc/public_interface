@@ -61,7 +61,7 @@ var ItemView = Backbone.View.extend({
         break;
     }
     if (typeof ga !== 'undefined') {
-      ga('send', 'event',
+      ga('caliga.send', 'event',
         category, action, label);
 
       var inst_ga_code = $('[data-ga-code]').data('ga-code');
@@ -93,7 +93,7 @@ var ItemView = Backbone.View.extend({
 
   carouselAfterChange: function(e, slick) {
     if (typeof ga !== 'undefined') {
-      ga('send', 'event',
+      ga('caliga.send', 'event',
         'related content',
         'paginate items',
         $('.carousel__search-results').data('set'));
@@ -164,7 +164,7 @@ var ItemView = Backbone.View.extend({
 
   exhibitCarouselBeforeChange: function() {
     if (typeof ga !== 'undefined') {
-      ga('send', 'event',
+      ga('caliga.send', 'event',
         'related content',
         'paginate exhibitions',
         $('.carousel__search-results').data('set'));
@@ -173,7 +173,7 @@ var ItemView = Backbone.View.extend({
 
   goToExhibition: function() {
     if (typeof ga !== 'undefined') {
-      ga('send', 'event',
+      ga('caliga.send', 'event',
         'related content',
         'select exhibition',
         $('.carousel__search-results').data('set'));
@@ -216,7 +216,7 @@ var ItemView = Backbone.View.extend({
 
     if ($(e.currentTarget).data('item_number') !== undefined) {
       if (typeof ga !== 'undefined') {
-        ga('send', 'event',
+        ga('caliga.send', 'event',
           'related content',
           'select item',
           $('.carousel__search-results').data('set'));
@@ -254,7 +254,7 @@ var ItemView = Backbone.View.extend({
     delete data_params.itemNumber;
     if (e !== undefined) {
       if (typeof ga !== 'undefined') {
-        ga('send', 'event',
+        ga('caliga.send', 'event',
           'related content',
           'paginate collections',
           $('.carousel__search-results').data('set'));
@@ -328,7 +328,7 @@ var ItemView = Backbone.View.extend({
       });
     } else {
       if (typeof ga !== 'undefined') {
-        ga('send', 'event',
+        ga('caliga.send', 'event',
           'related content',
           'select collection',
           $('.carousel__search-results').data('set'));

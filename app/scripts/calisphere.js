@@ -70,7 +70,7 @@ $(document).ready(function() {
         url = c.slice(15, c.length-2);
       }
 
-      ga('send', 'event', 'outbound', 'click', url, {
+      ga('caliga.send', 'event', 'outbound', 'click', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
         // click captured and tracked, send the user along
         'hitCallback': timeoutGACallback(function() {
@@ -82,7 +82,7 @@ $(document).ready(function() {
 
     $('.button__contact-owner').on('click', function() {
       var url = $(this).attr('href');
-      ga('send', 'event', 'buttons', 'contact', url, {
+      ga('caliga.send', 'event', 'buttons', 'contact', url, {
         'transport': 'beacon',  // use navigator.sendBeacon
         'hitCallback': timeoutGACallback(function () {
           document.location = url;
@@ -210,12 +210,12 @@ var on_ready_pjax_end_handler = function() {
     var dim3 = Modernizr.sessionstorage.toString();
     var dim4 = $('[data-ga-dim4]').data('ga-dim4');
 
-    ga('set', 'location', window.location.href);
-    if (dim1) { ga('set', 'dimension1', dim1); }
-    if (dim2) { ga('set', 'dimension2', dim2); }
-    if (dim3) { ga('set', 'dimension3', dim3); }
-    if (dim4) { ga('set', 'dimension4', dim4); }
-    ga('send', 'pageview');
+    ga('caliga.set', 'location', window.location.href);
+    if (dim1) { ga('caliga.set', 'dimension1', dim1); }
+    if (dim2) { ga('caliga.set', 'dimension2', dim2); }
+    if (dim3) { ga('caliga.set', 'dimension3', dim3); }
+    if (dim4) { ga('caliga.set', 'dimension4', dim4); }
+    ga('caliga.send', 'pageview');
     if (inst_ga_code) {
       var inst_tracker_name = inst_ga_code.replace(/-/g,'x');
       ga('create', inst_ga_code, 'auto', {'name': inst_tracker_name});

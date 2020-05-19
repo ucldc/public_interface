@@ -1,4 +1,5 @@
 /* global QueryManager, GlobalSearchFormView, setupComponents */
+/* exported get_cali_ga_dimensions, get_inst_ga_dimensions */
 
 /* globals Modernizr: false */
 'use strict';
@@ -45,6 +46,30 @@ function timeoutGACallback(callback, opt_timeout) {
   return fn;
 }
 
+function get_cali_ga_dimensions() {
+  var dim1 = $('[data-ga-dim1]').data('ga-dim1');
+  var dim2 = $('[data-ga-dim2]').data('ga-dim2');
+  var dim3 = Modernizr.sessionstorage.toString();
+  var dim4 = $('[data-ga-dim4]').data('ga-dim4');
+  var dimensions = {};
+  if (dim1) { dimensions.dimension1 = dim1; }
+  if (dim2) { dimensions.dimension2 = dim2; }
+  if (dim3) { dimensions.dimension3 = dim3; }
+  if (dim4) { dimensions.dimension4 = dim4; }
+
+  return dimensions;
+}
+
+function get_inst_ga_dimensions() {
+  var dim1 = $('[data-ga-dim1]').data('ga-dim1');
+  var dim2 = $('[data-ga-dim2]').data('ga-dim2');
+  var dimensions = {};
+  if (dim1) { dimensions.dimension1 = dim1; }
+  if (dim2) { dimensions.dimension2 = dim2; }
+
+  return dimensions;
+}
+
 // Initial Setup for all Calisphere pages
 // ----------------
 
@@ -70,24 +95,25 @@ $(document).ready(function() {
         url = c.slice(15, c.length-2);
       }
 
-      ga('caliga.send', 'event', 'outbound', 'click', url, {
-        'transport': 'beacon',  // use navigator.sendBeacon
+      var fieldsObject = get_cali_ga_dimensions();
+      fieldsObject.transport = 'beacon'; // use navigator.sendBeacon
+      fieldsObject.hitCallback = timeoutGACallback(function(){
         // click captured and tracked, send the user along
-        'hitCallback': timeoutGACallback(function() {
-          document.location = url;
-        })
+        document.location = url;
       });
+      ga('caliga.send', 'event', 'outbound', 'click', url, fieldsObject);
       return false;
     });
 
     $('.button__contact-owner').on('click', function() {
       var url = $(this).attr('href');
-      ga('caliga.send', 'event', 'buttons', 'contact', url, {
-        'transport': 'beacon',  // use navigator.sendBeacon
-        'hitCallback': timeoutGACallback(function () {
-          document.location = url;
-        })
+
+      var fieldsObject = get_cali_ga_dimensions();
+      fieldsObject.transport = 'beacon'; // use navigator.sendBeacon
+      fieldsObject.hitCallback = timeoutGACallback(function() {
+        document.location = url;
       });
+      ga('caliga.send', 'event', 'buttons', 'contact', url, fieldsObject);
       return false;
     });
   }
@@ -204,26 +230,18 @@ var on_ready_pjax_end_handler = function() {
   /* globals ga: false */
   /* jshint latedef: false */
   if (typeof ga !== 'undefined') {
-    var inst_ga_code = $('[data-ga-code]').data('ga-code');
-    var dim1 = $('[data-ga-dim1]').data('ga-dim1');
-    var dim2 = $('[data-ga-dim2]').data('ga-dim2');
-    var dim3 = Modernizr.sessionstorage.toString();
-    var dim4 = $('[data-ga-dim4]').data('ga-dim4');
-
+    var dimensions = get_cali_ga_dimensions();
     ga('caliga.set', 'location', window.location.href);
-    if (dim1) { ga('caliga.set', 'dimension1', dim1); }
-    if (dim2) { ga('caliga.set', 'dimension2', dim2); }
-    if (dim3) { ga('caliga.set', 'dimension3', dim3); }
-    if (dim4) { ga('caliga.set', 'dimension4', dim4); }
-    ga('caliga.send', 'pageview');
+    ga('caliga.send', 'pageview', dimensions);
+
+    var inst_ga_code = $('[data-ga-code]').data('ga-code');
     if (inst_ga_code) {
       var inst_tracker_name = inst_ga_code.replace(/-/g,'x');
       ga('create', inst_ga_code, 'auto', {'name': inst_tracker_name});
       ga(inst_tracker_name + '.set', 'anonymizeIp', true);
       ga(inst_tracker_name + '.set', 'location', window.location.href);
-      if (dim1) { ga(inst_tracker_name + '.set', 'dimension1', dim1); }
-      if (dim2) { ga(inst_tracker_name + '.set', 'dimension2', dim2); }
-      ga( inst_tracker_name + '.send', 'pageview');
+      var inst_dimensions = get_inst_ga_dimensions();
+      ga( inst_tracker_name + '.send', 'pageview', inst_dimensions);
     }
   }
 

@@ -1,4 +1,4 @@
-/*global Backbone, DISQUS, ga */
+/*global Backbone, DISQUS, ga, get_cali_ga_dimensions, get_inst_ga_dimensions */
 /*exported ItemView */
 
 'use strict';
@@ -61,13 +61,15 @@ var ItemView = Backbone.View.extend({
         break;
     }
     if (typeof ga !== 'undefined') {
+      var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
-        category, action, label);
+        category, action, label, dimensions);
 
       var inst_ga_code = $('[data-ga-code]').data('ga-code');
       if (inst_ga_code && (action === 'download' || action === 'request')) {
         var inst_tracker_name = inst_ga_code.replace(/-/g,'x');
-        ga( inst_tracker_name + '.send', 'event', 'calisphere', action, label);
+        var inst_dimensions = get_inst_ga_dimensions();
+        ga( inst_tracker_name + '.send', 'event', 'calisphere', action, label, inst_dimensions);
       }
     }
   },
@@ -93,10 +95,12 @@ var ItemView = Backbone.View.extend({
 
   carouselAfterChange: function(e, slick) {
     if (typeof ga !== 'undefined') {
+      var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
         'related content',
         'paginate items',
-        $('.carousel__search-results').data('set'));
+        $('.carousel__search-results').data('set'),
+        dimensions);
     }
     if(this.beforeChange) {
       var data_params;
@@ -164,19 +168,23 @@ var ItemView = Backbone.View.extend({
 
   exhibitCarouselBeforeChange: function() {
     if (typeof ga !== 'undefined') {
+      var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
         'related content',
         'paginate exhibitions',
-        $('.carousel__search-results').data('set'));
+        $('.carousel__search-results').data('set'),
+        dimensions);
     }
   },
 
   goToExhibition: function() {
     if (typeof ga !== 'undefined') {
+      var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
         'related content',
         'select exhibition',
-        $('.carousel__search-results').data('set'));
+        $('.carousel__search-results').data('set'),
+        dimensions);
     }
   },
 
@@ -216,10 +224,12 @@ var ItemView = Backbone.View.extend({
 
     if ($(e.currentTarget).data('item_number') !== undefined) {
       if (typeof ga !== 'undefined') {
+        var dimensions = get_cali_ga_dimensions();
         ga('caliga.send', 'event',
           'related content',
           'select item',
-          $('.carousel__search-results').data('set'));
+          $('.carousel__search-results').data('set'),
+          dimensions);
       }
 
       this.model.set({
@@ -254,10 +264,12 @@ var ItemView = Backbone.View.extend({
     delete data_params.itemNumber;
     if (e !== undefined) {
       if (typeof ga !== 'undefined') {
+        var dimensions = get_cali_ga_dimensions();
         ga('caliga.send', 'event',
           'related content',
           'paginate collections',
-          $('.carousel__search-results').data('set'));
+          $('.carousel__search-results').data('set'),
+          dimensions);
       }
       data_params.rc_page = $(e.currentTarget).data('rc_page');
     } else {
@@ -328,10 +340,12 @@ var ItemView = Backbone.View.extend({
       });
     } else {
       if (typeof ga !== 'undefined') {
+        var dimensions = get_cali_ga_dimensions();
         ga('caliga.send', 'event',
           'related content',
           'select collection',
-          $('.carousel__search-results').data('set'));
+          $('.carousel__search-results').data('set'),
+          dimensions);
       }
     }
   },

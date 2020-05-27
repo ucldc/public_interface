@@ -180,6 +180,10 @@ def solrEncode(params, filter_types, facet_types=[]):
         if qt:
             query_terms.append(solr_escape(qt))
 
+    for qt in params.getlist('fq'):
+        if qt:
+            query_terms.append(qt)
+
     if len(query_terms) == 1:
         query_terms_string = query_terms[0]
     else:
@@ -1013,9 +1017,9 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
 
     params = request.GET.copy()
 
-    escaped_facet_value = urllib.parse.unquote_plus(facet_value.replace('"', '\\"'))
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
-    params.update({'rq': f"{facet}_ss:\"{escaped_facet_value}\""})
+    escaped_facet_value = solr_escape(parsed_facet_value)
+    params.update({'fq': f"{facet}_ss:\"{escaped_facet_value}\""})
     if not 'view_format' in params:
         params.update({'view_format': 'list'})
     if not 'rows' in params:
@@ -1040,7 +1044,6 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
     solr_search = SOLR_select(**solrParams)
     context['search_results'] = solr_search.results
     context['numFound'] = solr_search.numFound
-
     total_items = SOLR_select(**{**solrParams, **{
         'q': '',
         'fq': [extra_filter],
@@ -1063,7 +1066,8 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
         'FACET_FILTER_TYPES': facet_filter_types,
         'collection': collection_details,
         'collection_id': collection_id,
-        'title': f"{facet}: {facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'title': f"{facet}: {parsed_facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'description': None,
         'solrParams': solrParams,
         'form_action': reverse(
             'calisphere:collectionFacetValue',

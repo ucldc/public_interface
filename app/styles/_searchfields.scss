@@ -40,6 +40,18 @@
 
 }
 
+.global-search__field {
+
+  &::placeholder {
+    color: #000;
+  }
+
+  &:focus::placeholder {
+    color: $design-dark-gray-color;
+  }
+
+}
+
 // ***** Search Within Results Search Field ***** //
 
 .search-within {

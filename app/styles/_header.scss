@@ -62,12 +62,13 @@
 
   @include bp(sm-screen) {
     float: right;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     grid-column: 2 / -1;
     justify-self: end;
+    align-self: end;
 
-    @supports (display: grid) {
-      margin-bottom: 0;
+    @include bp(md-screen) {
+      margin-bottom: 20px;
     }
   }
 }

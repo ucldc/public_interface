@@ -47,9 +47,9 @@
 
         <div class="header__search mobile-nav__item js-global-header__search">
           <form class="global-search" role="search" id="js-searchForm" action="{% url 'calisphere:search' %}" method="get">
-            <label for="global-search__field" class="global-search__label">Search over one million items</label>
+            <label class="sr-only" for="global-search__field">Search over one million items</label>
             <div class="input-group">
-              <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
+              <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch" placeholder="Search over one million items">
               <span class="input-group-btn">
                 <button class="btn btn-default global-search__button" type="submit" aria-label="search">
                   <span class="fa fa-search"></span>

@@ -34,83 +34,48 @@
   </head>
   <body>
     <div class="container-fluid">
-      <header class="global-header">
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <div class="row">
-              <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
-                <button class="btn btn-link global-header__bars-button" aria-label="menu"><i class="fa fa-bars"></i></button>
-              </div>
-              <div class="col-xs-8 col-sm-12">
-                <a class="global-header__logo-link" id="js-global-header-logo" href="{% url 'calisphere:home' %}">
-                  <img class="global-header__logo" src="{% static "images/logo-calisphere.svg" %}" alt="Calisphere Logo">
-                </a>
-              </div>
-              <div class="col-xs-2 col-sm-12 global-header__search-icon js-global-header__search-icon">
-                <i class="fa fa-search"></i>
-              </div>
+      <header class="header">
+        <button class="header__mobile-nav-button js-global-header__bars-icon" aria-label="navigation">
+          <i class="fa fa-bars"></i>
+        </button>
+        <a class="header__logo" id="js-global-header-logo" href="{% url 'calisphere:home' %}">
+          <img src="{% static 'images/logo-calisphere.svg' %}" alt="Calisphere">
+        </a>
+        <button class="header__mobile-search-button js-global-header__search-icon" aria-label="search">
+          <i class="fa fa-search"></i>
+        </button>
+
+        <div class="header__search mobile-nav__item js-global-header__search">
+          <form class="global-search" role="search" id="js-searchForm" action="{% url 'calisphere:search' %}" method="get">
+            <label for="global-search__field" class="global-search__label">Search over one million items</label>
+            <div class="input-group">
+              <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
+              <span class="input-group-btn">
+                <button class="btn btn-default global-search__button" type="submit" aria-label="search">
+                  <span class="fa fa-search"></span>
+                </button>
+              </span>
             </div>
-          </div>
-
-          <div class="col-xs-12 col-sm-4 global-header__search js-global-header__search">
-            <form class="global-header__search-form" role="search" id="js-searchForm" action="{% url 'calisphere:search' %}" method="get">
-              <label for="global-search__field" class="global-search__label">Search over one million items</label>
-              <div class="input-group">
-                <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
-                <span class="input-group-btn">
-                  <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
-                  </button>
-                </span>
-              </div>
-            </form>
-          </div>
-
-          <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links" aria-expanded="false">
-            <nav>
-            <ul class="global-header__nav-list">
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+          </form>
+        </div>
+        <div class="header__nav js-global-header__mobile-links" aria-expanded="false">
+          <nav class="header-nav mobile-nav">
+            <ul>
+              <li>
+                <a href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">Contributing Institutions</a>
               </li>
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">Contributing Institutions</a>
+              <li>
+                <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
               </li>
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">Exhibitions</a>
+              <li>
+                <a href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">Exhibitions</a>
               </li>
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'calisphere:about' %}" data-pjax="js-pageContent">About</a>
-              </li>
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'contact_form' %}" data-pjax="js-pageContent">Contact</a>
-              </li>
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">Help</a>
-              </li>
-              <li class="global-header__nav-list-item">
-                <a class="global-header__nav-link" href="{% url 'calisphere:termsOfUse' %}">Terms of Use</a>
+              <li>
+                <a href="{% url 'calisphere:about' %}" data-pjax="js-pageContent">About</a>
               </li>
             </ul>
-            </nav>
-          </div>
-
-        </div>
-
-        <div class="global-header__bar">
-          <nav>
-          <ul class="global-header__bar-list">
-            <li class="global-header__bar-list-item">
-              <a class="global-header__bar-links" href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">Contributing Institutions</a>
-            </li>
-            <li class="global-header__bar-list-item">
-              <a class="global-header__bar-links" href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
-            </li>
-            <li class="global-header__bar-list-item">
-              <a class="global-header__bar-links" href="{% url 'exhibits:randomExplore' %}" data-pjax="js-pageContent">Exhibitions</a>
-            </li>
-          </ul>
           </nav>
         </div>
-
       </header>
       <div id="js-pageContent">{% block content %}{% endblock %}</div>
       {% include "calisphere/footer.html" %}

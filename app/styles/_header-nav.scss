@@ -7,27 +7,28 @@
     justify-content: flex-end;
     margin-right: -($layout-container-margin-sm);
     margin-left: -($layout-container-margin-sm);
-    padding: 0.3em;
+    padding-top: .3em;
+    padding-bottom: .3em;
     background-color: $design-secondary-color;
 
     ul {
       display: flex;
-      flex-grow: 1;
-      max-width: 70rem;
     }
 
     li {
-      flex-grow: 1;
 
       &:not(:last-child) a {
         border-right: 1px solid #fff;
+      }
+
+      &:last-child a {
+        padding-right: $layout-container-margin-sm;
       }
     }
 
     a {
       display: block;
-      padding-top: 0.3em;
-      padding-bottom: 0.3em;
+      padding: .3em 1.2em;
       color: #fff;
       font-size: 1.4em;
       text-align: center;
@@ -45,5 +46,16 @@
   @include bp(md-screen) {
     margin-right: -($layout-container-margin-md);
     margin-left: -($layout-container-margin-md);
+
+    li {
+
+      &:last-child a {
+        padding-right: $layout-container-margin-md;
+      }
+    }
+
+    a {
+      padding: .3em 1.5em;
+    }
   }
 }

@@ -5,12 +5,12 @@
   @include bp(sm-screen) {
 
     ul {
-      column-count: 3;
+      column-count: 2;
       column-gap: 20px;
     }
 
     li {
-      margin-bottom: .5rem;
+      margin-bottom: 1em;
     }
 
     a {

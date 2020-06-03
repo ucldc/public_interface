@@ -1,6 +1,7 @@
 // ##### Global Footer ##### //
 
 .footer {
+  display: grid;
   width: 100%; // bootstrap grid
   float: left; // bootstrap grid
   margin-top: 20px;
@@ -8,13 +9,26 @@
   border-top: 2px solid $design-dark-gray-color;
 
   @include bp(sm-screen) {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-column-gap: 10%;
+    grid-template-columns: 40% 1fr;
+    grid-column-gap: 15%;
+    grid-row-gap: 15px;
+  }
+}
+
+.footer__logo {
+  display: block;
+  margin-bottom: 10px;
+
+  img {
+    width: $header-logo-xs-width;
+    height: $header-logo-xs-height;
   }
 
-  @include bp(md-screen) {
-    grid-column-gap: 15%;
+  @include bp(sm-screen) {
+    
+    @supports (display: grid) {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -27,40 +41,50 @@
 
 .footer__nav {
   margin-bottom: 10px;
-}
 
-.footer__logo {
-  display: block;
-  margin-right: 10%;
-  margin-bottom: 10px;
+  @include bp(sm-screen) {
+    grid-row: 1 / 4;
+    grid-column: 2;
 
-  img {
-    width: $header-logo-xs-width;
-    height: $header-logo-xs-height;
+    @supports (display: grid) {
+      margin-bottom: 0;
+    }
   }
 }
 
 .footer__copyright {
   color: $design-dark-gray-color;
-  text-align: center;
-  grid-column: 1 / -1;
+  justify-self: center;
+  line-height: 1.2;
+
+  @include bp(sm-screen) {
+    grid-row: 3;
+    justify-self: start;
+  }
 }
 
 .footer__social-icons {
   display: flex;
   width: 17rem;
-  margin: 0 auto;
   justify-content: space-between;
   align-items: center;
-  grid-column: 1 / -1;
+  justify-self: center;
+
+  a {
+    font-size: 1.9em;
+    line-height: normal;
+  }
+
+  @include bp(sm-screen) {
+    grid-row: 2;
+    justify-self: start;
+  }
 }
 
 .footer__twitter-icon {
-  font-size: 1.9em;
   color: rgb(41, 138, 201);
 }
 
 .footer__facebook-icon {
-  font-size: 1.9em;
   color: rgb(46, 71, 124);
 }

@@ -71,3 +71,8 @@ def current_page(start, rows):
 @register.filter
 def is_string(val):
     return isinstance(val, str)
+
+
+@register.filter
+def qencode(val):
+    return val.replace('?', '%3F').replace(' ', '+')

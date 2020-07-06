@@ -18,6 +18,10 @@
   line-height: 1.6em;
 }
 
+.exhibit-item__blockquote {
+  font-size: $font-size-base;
+}
+
 .exhibit__blockquote a {
   color: #FFF; 
   text-decoration: underline;
@@ -84,6 +88,8 @@
 .exhibit__overview h4, .exhibit__notes h4 {
   font-size: 14px;
   font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  margin-bottom: 5px;
 }
 
 .exhibit__notes {

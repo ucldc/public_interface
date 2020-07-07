@@ -182,18 +182,13 @@
           <nav class="footer-nav mobile-nav" aria-label="footer navigation">
             <ul>
               <li>
-                <a href="{% url 'contact_form' %}">
-                  Contact Us
+                <a href="{% url 'calisphere:home' %}">
+                  Home
                 </a>
               </li>
               <li>
                 <a href="{% url 'calisphere:about' %}">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'calisphere:help' %}">
-                  FAQs
+                  About Calisphere
                 </a>
               </li>
               <li>
@@ -212,6 +207,11 @@
                 </a>
               </li>
               <li>
+                <a href="{% url 'calisphere:help' %}">
+                  FAQs
+                </a>
+              </li>
+              <li>
                 <a href="{% url 'calisphere:termsOfUse' %}">
                   Terms of Use
                 </a>
@@ -224,22 +224,25 @@
               <li>
                 <a href="https://www.cdlib.org/about/accessibility.html">Accessibility</a>
               </li>
+              <li>
+                <a href="{% url 'contact_form' %}">
+                  Contact Us
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
 
         <div class="footer__copyright">
-          Calisphere is a service of the <a href="http://libraries.universityofcalifornia.edu/">UC Libraries</a>, powered by the <a href="http://www.cdlib.org/">California Digital Library</a>.
+          Calisphere is a service of the <a href="http://libraries.universityofcalifornia.edu/">UC Libraries</a>,<br> powered by the <a href="http://www.cdlib.org/">California Digital Library</a>.
         </div>
         <div class="footer__social-icons" role="group" aria-labelledby="footer-connect-label">
           <span id="footer-connect-label">Connect with us:</span>
           <a class="footer__twitter-icon"
-             title="Twitter"
              href="https://twitter.com/calisphere"
              aria-label="Calisphere on Twitter"><span class="fa fa-twitter-square"></span>
           </a>
           <a class="footer__facebook-icon"
-             title="Facebook"
              href="https://www.facebook.com/calisphere"
              aria-label="Calisphere on Facebook"><span class="fa fa-facebook-square"></span>
           </a>

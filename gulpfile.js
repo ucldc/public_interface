@@ -6,7 +6,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const minifyCSS = require('gulp-clean-css');
 const useref = require('gulp-useref');
 const browserSync = require('browser-sync');
-const reload = browserSync.reload;
 const fileinclude = require('gulp-file-include');
 const jshint = require('gulp-jshint');
 const uglify = require('gulp-uglify');
@@ -14,6 +13,8 @@ const stylish = require('jshint-stylish');
 const imagemin = require('gulp-imagemin');
 const modernizr = require('gulp-modernizr');
 const gulp = require('gulp');
+const ghpages = require('gh-pages');
+const { spawn } = require('child_process');
 
 gulp.task('sass-build', function() {
  return gulp.src('app/{,**/}*.scss')
@@ -39,7 +40,8 @@ gulp.task('sass-serve', function() {
   .pipe(sass().on('error', sass.logError))
   .pipe(postcss())
   .pipe(sourcemaps.write('sourcemaps'))
-  .pipe(gulp.dest('.tmp'));
+  .pipe(gulp.dest('.tmp'))
+  .pipe(browserSync.stream());
 });
 
 gulp.task('minifyCss', function() {
@@ -171,12 +173,18 @@ gulp.task('runserver', function() {
 
   // we should watch tests too
   // gulp.watch(['test/spec/{,**/}*.js'], test)
-  gulp.watch(['.tmp/*'], reload);
-  gulp.watch(['app/admin/*'], reload);
+  gulp.watch(['app/**/*.html', 'app/admin/*']).on('change', browserSync.reload);
   gulp.watch(['gulpfile.js']);
   gulp.watch(['app/{,**/}*.html'], gulp.parallel('html-serve'));
   gulp.watch(['app/{,**/}*.scss'], gulp.parallel('sass-serve'));
   gulp.watch(['app/{,**/}*.js'], gulp.parallel('js-serve'));
+});
+
+gulp.task('publish', function(cb) {
+  return spawn('NODE_DEBUG=gh-pages npm run publish', {
+    stdio: 'inherit',
+    shell: true,
+  });
 });
 
 // we should have tests

@@ -1,2 +1,3 @@
 app/scripts/amy-autocomplete.js
 app/scripts/search.js
+app/scripts/vendor/modernizr-dev.js

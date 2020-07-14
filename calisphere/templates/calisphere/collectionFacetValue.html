@@ -6,8 +6,8 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block pageTitle %}
-  <nav role="navigation">
-    <ol id="global__breadcrumb">
+  <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
+    <ul>
       <li>
         <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
       </li>
@@ -15,9 +15,9 @@
         items from <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a>
         with the same {{ facet }}
       </li>
-    </ol>
+    </ul>
   </nav>
-  <h1 id="js-collection" class="global__breadcrumb-header" data-collection="{{ collection_id }}" data-referralName="{{ facet_value }}">
+  <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ facet_value }}">
     {{ facet_value }}
   </h1>
 {% endblock %}

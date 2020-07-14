@@ -1,18 +1,24 @@
 {% load calisphere-extras %}
 
-<p class="text__breadcrumb-nav">
+<nav class="breadcrumb--style2" aria-label="breadcrumb navigation">
+  <ul>
   {% if item.parsed_repository_data %}
-    <a href="{% url 'calisphere:repositoryView' item.parsed_repository_data.0.id 'collections' %}" data-pjax="js-pageContent">
+    <li>
+      <a href="{% url 'calisphere:repositoryView' item.parsed_repository_data.0.id 'collections' %}" data-pjax="js-pageContent">
       {% if item.parsed_repository_data.0.campus %}{{ item.parsed_repository_data.0.campus }}, {% endif %}
       {{ item.parsed_repository_data.0.name }}
-    </a>
+      </a>
+    </li>
   {% endif %}
-   >
+
   {% if item.parsed_collection_data %}
-    <a href="{% url 'calisphere:collectionView' item.parsed_collection_data.0.id %}" data-pjax="js-pageContent" class="js-relatedCollection">{{ item.parsed_collection_data.0.name }}</a>
+    <li>
+      <a href="{% url 'calisphere:collectionView' item.parsed_collection_data.0.id %}" data-pjax="js-pageContent" class="js-relatedCollection">{{ item.parsed_collection_data.0.name }}</a>
+    </li>
   {% endif %}
-   > {{ item.title.0 }}
-</p>
+    <li>{{ item.title.0 }}</li>
+  </ul>
+</nav>
 
 <h1 class="obj__heading">
   {% if item.harvest_type == 'hosted' %}

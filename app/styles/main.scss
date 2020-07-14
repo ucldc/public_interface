@@ -19,15 +19,21 @@
 
 // @import "testing";
 
-// ***** Custom Elements ***** //
+// ***** Elements ***** //
 
 @import "buttons";
 @import "icons";
 @import "text";
 
-// ***** Custom Components ***** //
+// ***** Sub Components ***** //
+
+@import "mobile-nav";
+
+// ***** Components ***** //
 
 @import "alpha-nav";
+@import "announcement";
+@import "breadcrumb";
 @import "carousel";
 @import "carousel-complex";
 @import "collection-intro";
@@ -39,7 +45,9 @@
 @import "facets";
 @import "filter";
 @import "footer";
+@import "footer-nav";
 @import "header";
+@import "header-nav";
 @import "home";
 @import "home-images";
 @import "institution-intro";
@@ -57,6 +65,7 @@
 @import "object-container";
 @import "pagination";
 @import "searchfields";
+@import "sidebar";
 @import "static";
 @import "thumbnail";
 @import "titlesearch";
@@ -64,7 +73,7 @@
 @import "exhibit";
 @import "theme";
 
-// ***** Custom Layouts ***** //
+// ***** Layouts ***** //
 
 @import "alignment";
 @import "print";

@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block pageTitle %}
-  <nav role="navigation">
-    <ol id="global__breadcrumb">
+  <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
+    <ul>
       <li>
         {% if campus_slug or uc_institution %}
           <a href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">Institutions</a>
@@ -23,10 +23,10 @@
         <a href="{% url 'calisphere:campusView' uc_institution.0.slug 'collections' %}" data-pjax="js-pageContent">{{ uc_institution.0.name }}</a>
       </li>
       {% endif %}
-    </ol>
+    </ul>
   </nav>
 
-  <h1 id="js-institution" class="global__breadcrumb-header" {%if campus_slug%}data-campus="{{ campus_slug }}"{% else %}data-institution="{{ repository_id }}"{% endif %} data-referralName="{{ institution.name }}">
+  <h1 id="js-institution" {%if campus_slug%}data-campus="{{ campus_slug }}"{% else %}data-institution="{{ repository_id }}"{% endif %} data-referralName="{{ institution.name }}">
     {{ institution.name }}
   </h1>
 {% endblock %}

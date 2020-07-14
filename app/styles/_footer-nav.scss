@@ -1,0 +1,20 @@
+// ##### Footer Navigation ##### //
+
+.footer-nav {
+
+  @include bp(sm-screen) {
+
+    ul {
+      column-count: 2;
+      column-gap: 20px;
+    }
+
+    li {
+      margin-bottom: 1em;
+    }
+
+    a {
+      color: $design-primary-color;
+    }
+  }
+}

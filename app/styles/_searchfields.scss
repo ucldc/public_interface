@@ -1,6 +1,13 @@
 // ##### Search Fields ##### //
 
-// ***** Global Header Search Field ***** //
+// ***** Search Within Subpage Header ***** //
+
+.global-search {
+
+  @include bp(sm-screen) {
+    width: 30rem;
+  }
+}
 
 .global-search__label {
   display: block;
@@ -12,14 +19,7 @@
 
   @include bp(sm-screen) {
     color: #000;
-    font-size: 1.3em;
-    text-align: center;
   }
-
-  @include bp(md-screen) {
-    font-size: 1.5em;
-  }
-
 }
 
 .global-search__button {
@@ -36,6 +36,18 @@
   .fa { // fa-search icon
   	font-size: 1.1em;
 
+  }
+
+}
+
+.global-search__field {
+
+  &::placeholder {
+    color: #000;
+  }
+
+  &:focus::placeholder {
+    color: $design-dark-gray-color;
   }
 
 }

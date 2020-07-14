@@ -1,62 +1,11 @@
-
-        <!-- Begin Global Header -->
-        
-        <header class="global-header">
-
-          <div class="row">
-            <div class="col-xs-12 col-sm-4">
-              <div class="row">
-                <div class="col-xs-2 col-sm-12 global-header__bars-icon js-global-header__bars-icon">
-                  <i class="fa fa-bars"></i>
-                </div>
-                <div class="col-xs-8 col-sm-12 global-header__logo">
-                  <a class="global-header__logo-link" href="/">
-                  </a>
-                </div>
-                <div class="col-xs-2 col-sm-12 global-header__search-icon--homepage">
-                  <i class="fa fa-search"></i>
-                </div>
-              </div>
-            </div>
-                
-            <div class="col-xs-12 col-sm-4 global-header__search">
-              <form class="global-header__search-form--homepage" role="search" action="add-url-here" method="get">
-                <label for="global-search__field" class="global-search__label">Search the collections</label>
-                <div class="input-group">
-                  <input id="global-search__field" name="q" value="" type="search" class="form-control global-search__field">
-                  <span class="input-group-btn">
-                    <button class="btn btn-default global-search__button" type="submit"><span class="fa fa-search"></span>
-                    </button>
-                  </span>
-                </div>
-              </form>
-            </div>
-            
-            <div class="col-xs-12 col-sm-4 global-header__nav js-global-header__mobile-links">
-              <ul class="global-header__nav-list">
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contributing Institutions</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Collections</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">About</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Contact</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Help</a></li>
-                <li class="global-header__nav-list-item"><a class="global-header__nav-link" href="">Terms of Use</a></li>
-              </ul>
-            </div>
-            
-          </div>
-
-          <div class="global-header__bar">
-            <ul class="global-header__bar-list">
-              <li class="global-header__bar-list-item">
-                <a class="global-header__bar-links" href="">Contributing Institutions</a>
-              </li>
-              <li class="global-header__bar-list-item">
-                <a class="global-header__bar-links" href="">Collections</a>
-              </li>
-            </ul>
-          </div>
-
-        </header>
-
-        <!-- End Global Header -->
-        
+<header class="header">
+  <button class="header__mobile-nav-button" aria-label="navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+  <a class="header__logo" href="/">
+    <img src="images/logo-calisphere.svg" alt="Calisphere">
+  </a>
+  <div class="header__nav">
+    @@include("components/header-nav-component.html")
+  </div>
+</header>

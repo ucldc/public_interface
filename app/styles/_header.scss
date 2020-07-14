@@ -1,281 +1,104 @@
 // ##### Global Header ##### //
 
-.global-header__bars-icon {
-  cursor: pointer;
-
-  @include bp(sm-screen) {
-    display: none;
-  }
-
-}
-
-html.no-jquery .global-header__bars-icon {
-  display: none;
-}
-
-.global-header__bars-icon .fa { // fa-bars icon
+%header-buttons {
+  display: none; // hide buttons unless header js runs normally (see js notes below)
+  padding: 0;
+  background-color: transparent;
+  border: none;
   font-size: 2.4em;
-  color: $design-dark-gray-color;
+  align-self: start;
 }
 
-.global-header__bars-button {
-  padding: 0;
-  border: 0;
+.header {
+  display: grid;
+  margin-bottom: $header-bottom-margin;
+  grid-template-columns: auto 1fr auto;
 }
 
-.global-header__logo {
-  display: block;
-  margin: 0 auto 10px;
-  width: $header-logo-xs-width;
-  height: $header-logo-xs-height;
-  
-  @include bp(sm-screen) {
-    margin: 0;
-    width: $header-logo-sm-width;
-    height: $header-logo-sm-height;
-  }
-  
-  @include bp(md-screen) {
-    margin: 0;
-    width: $header-logo-md-width;
-    height: $header-logo-md-height;
+.header__mobile-nav-button {
+  @extend %header-buttons;
+
+  .fa-bars {
+    color: $design-dark-gray-color;
   }
 }
 
-//html.no-svg .global-header__logo {
-//  background-image: url(../images/logo-calisphere.png);
-//  background-repeat: no-repeat;
-//  background-size: auto 46px;
-//
-//  @include bp(sm-screen) {
-//    background-size: auto 45px;
-//  }
-//
-//  @include bp(md-screen) {
-//    background-size: auto 55px;
-//  }
-//}
+.header__logo {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  justify-self: center;
 
-.global-header__logo-link {
-  display: block;
-
-  &:focus {
-    outline: $design-dark-gray-color auto 5px;
-    outline-offset: 5px;
-  }
-}
-
-.global-header__search-icon {
-  text-align: right;
-  cursor: pointer;
-
-  @include bp(sm-screen) {
-    display: none;
-  }
-
-}
-
-.global-header__search-icon--homepage { // hide on homepage
-  @extend .global-header__search-icon;
-  display: none;
-}
-
-html.no-jquery .global-header__search-icon {
-  display: none;
-}
-
-.global-header__search-icon .fa { // fa-search icon
-  font-size: 2.4em;
-  color: $design-primary-color;
-}
-
-.global-header__search {
-  display: none; // becomes 'block' on search-icon click
-
-  @include bp(sm-screen) {
-    display: block;
-  }
-
-}
-
-html.no-jquery .global-header__search {
-  display: block;
-}
-
-.global-header__search--selected {
-  display: block;
-}
-
-.global-header__search-form {
-  margin: 0 (-$layout-container-margin-xs);
-  padding: 15px $layout-box-padding;
-  background: $design-dark-gray-color;
-  border-bottom: 1px solid #fff;
-
-  @include bp(sm-screen) {
-    margin: 0;
-    padding: 0;
-    background: none;
-    border: none;
-  }
-
-}
-
-.global-header__search-form--homepage { // hide on homepage
-  @extend .global-header__search-form;
-  display: none;
-}
-
-.global-header__nav {
-  display: none;
-
-  @include bp(sm-screen) {
-    display: block;
-  }
-
-}
-
-html.no-jquery .global-header__nav {
-  display: block;
-}
-
-.global-header__mobile-links--selected {
-  display: block;
-}
-
-.global-header__nav-list {
-  margin: 0 (-$layout-container-margin-xs);
-  padding: 0;
-  list-style: none;
-  line-height: 1;
-
-  @include bp(sm-screen) {
-    display: flex;
-    justify-content: flex-end;
-    margin: 2px (-($layout-container-margin-sm/2)) 0 0;
-  }
-
-  @include bp(md-screen) {
-    margin: 2px (-($layout-container-margin-md/2)) 0 0;
-  }
-
-}
-
-html.no-flexbox .global-header__nav-list-item {
-
-  @include bp(sm-screen) {
-    float: left;
-  }
-
-}
-
- .global-header__nav-list-item:not(:nth-child(n+4)) { // select first three list items
-  display: block;
-
-  @include bp(sm-screen) {
-    display: none;
-  }
-
-}
-
-.global-header__nav-link {
-  display: block;
-  padding: 15px $layout-box-padding;
-  color: #fff;
-  border-bottom: 1px solid #fff;
-  background: $design-dark-gray-color;
-
-  &:hover {
-    text-decoration: none;
+  img {
+    width: $header-logo-xs-width;
+    height: $header-logo-xs-height;
   }
 
   @include bp(sm-screen) {
-    display: inline;
-    margin: 0 0.3em;
-    padding: 0;
-    color: #000;
-    border: none;
-    background: none;
-  }
+    margin-left: 0;
 
-  @include bp(md-screen) {
-    margin: 0 0.5em;
-    font-size: 1.2em;
-  }
-
-}
-
-.global-header__bar {
-  display: none;
-
-  @include bp(sm-screen) {
-    display: block;
-    margin: $layout-container-margin-sm (-$layout-container-margin-sm) $layout-component-margin (-$layout-container-margin-sm);
-    padding: 0.7em 3% 0.5em 0;
-    background: $design-secondary-color;
-    text-align: right;
-  }
-
-  @include bp(md-screen) {
-    margin: $layout-component-margin (-$layout-container-margin-md);
-    padding: 0.7em 5% 0.5em 0;
-  }
-
-}
-
-.global-header__bar-list {
-  margin: 0;
-  padding: 0;
-}
-
-.global-header__bar-list-item {
-  display: inline;
-  list-style: none;
-}
-
-.global-header__bar-list-item:not(:last-child) .global-header__bar-links {
-  border-right: 1px solid #fff;
-}
-
-.global-header__bar-links {
-
-  @include bp(sm-screen) {
-    padding: 0.1em 2em;
-    color: #fff;
-    font-size: 1.3em;
-    line-height: 1;
-
-    &:hover, &:focus {
-      color: #fff;
+    img {
+      width: $header-logo-md-width;
+      height: $header-logo-md-height;
     }
-
   }
 
   @include bp(md-screen) {
-    font-size: 1.4em;
+    margin-bottom: 20px;
   }
-
 }
 
-.announcement {
-  background-color: $design-primary-color;
-  color: #fff;
-  text-align: center;
-  margin: -10px -10px 20px -10px;
-  padding: 0.7em 5% 0.5em 0;
-  font-size: 1.2em;
+.header__mobile-search-button {
+  @extend %header-buttons;
+
+  .fa-search {
+    color: $design-primary-color;
+  }
+}
+
+.header__search {
+  grid-column: 1 / -1;
 
   @include bp(sm-screen) {
-    margin: -10px -10px 10px -10px;
-  }
+    float: right;
+    margin-bottom: 10px;
+    grid-column: 2 / -1;
+    justify-self: end;
+    align-self: end;
 
-  @include bp(md-screen) {
-    margin: -20px -40px 20px -40px;
-    font-size: 1.1em;
+    @include bp(md-screen) {
+      margin-bottom: 20px;
+    }
   }
+}
 
-  a {
-    color: #FFF;
+.header__nav {
+  clear: right;
+  grid-column: 1 / -1;
+}
+
+// ***** Classes Set by JS ***** //
+
+// If header js runs normally, aria-expanded attributes are added to buttons:
+
+.header__mobile-search-button[aria-expanded],
+.header__mobile-nav-button[aria-expanded] {
+  display: inline-block;
+
+  @include bp(sm-screen) {
+    display: none;
   }
+}
 
+// If header js runs normally, is-closed/open classes are added to header search and nav elements:
+
+.header__search.is-closed,
+.header__nav.is-closed {
+  display: none;
+}
+
+.header__search.is-open,
+.header__nav.is-open {
+  display: block;
 }

@@ -1,52 +1,19 @@
-
-    <!-- Begin Global Footer Component -->
-
-    <div class="col-xs-12">
-
-      <footer class="global-footer">
-
-        <div class="global-footer__search">
-          <label for="global-footer__search-field" class="global-footer__search-label">Search the collections</label>
-          <div class="input-group">
-            <input id="global-footer__search-field" type="search" class="form-control global-footer__search-field">
-            <span class="input-group-btn">
-              <button class="btn btn-default global-footer__search-button" type="button"><i class="fa fa-search"></i>
-              </button>
-            </span>
-          </div>
-        </div>
-              
-        <div class="global-footer__nav">
-          <ul class="global-footer__nav-list--mobile">
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="/">Home</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">About</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contact</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Help</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Contributing Institutions</a></li>
-            <li class="global-footer__nav-list-item--mobile"><a class="global-footer__nav-link--mobile" href="">Collections</a></li>
-          </ul>
-          <ul class="global-footer__nav-list">
-            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Terms of Use</a></li>
-            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Privacy Statement</a></li>
-            <li class="global-footer__nav-list-item"><a class="global-footer__nav-link" href="">Site Map</a></li>
-          </ul>
-        </div>
-
-        <div class="global-footer__copyright">
-          <p>Calisphere is a service of the <a href="">UC Libraries</a>, powered by the <a href="">California Digital Library</a>.</p>
-
-          <div class="col-xs-6 global-footer__social-icons-text">
-            <p>Connect with us:</p>
-          </div>
-          <div class="col-xs-6 global-footer__social-icons">
-            <a class="global-footer__twitter-icon" title="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
-            <a class="global-footer__facebook-icon" title="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
-          </div>
-          
-        </div>
-    
-      </footer>
-
-    </div>
-
-    <!-- End Global Footer Component -->
+<footer class="footer">
+  <a class="footer__logo" href="/">
+    <img src="images/logo-calisphere.svg" alt="Calisphere">
+  </a>
+  <div class="footer__search mobile-nav__item">
+    @@include("components/searchfield-global-component.html")
+  </div>
+  <div class="footer__nav">
+    @@include("components/footer-nav-component.html")
+  </div>
+  <div class="footer__copyright">
+    Calisphere is a service of the <a href="https://libraries.universityofcalifornia.edu/">UC Libraries</a>,<br> powered by the <a href="https://cdlib.org/">California Digital Library</a>.
+  </div>
+  <div class="footer__social-icons" role="group" aria-labelledby="footer-connect-label">
+    <span id="footer-connect-label">Connect with us:</span>
+    <a class="footer__twitter-icon" aria-label="Twitter" href=""><span class="fa fa-twitter-square"></span></a>
+    <a class="footer__facebook-icon" aria-label="Facebook" href=""><span class="fa fa-facebook-square"></span></a>
+  </div>
+</footer>

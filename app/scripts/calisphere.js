@@ -75,7 +75,7 @@ function get_inst_ga_dimensions() {
 
 $(document).ready(function() {
   // ***********************************
-  on_ready_pjax_end_handler()
+  on_ready_pjax_end_handler();
 
   // **Google Event Tracking**
 
@@ -273,7 +273,7 @@ var on_ready_pjax_end_handler = function() {
     });
   } // end title search
 };
-$(document).on('pjax:end', on_ready_pjax_end_handler)
+$(document).on('pjax:end', on_ready_pjax_end_handler);
 
 //************************************
 

@@ -7,10 +7,12 @@ var GlobalSearchFormView = Backbone.View.extend({
   el: $('body'),
   events: {
     'submit #js-searchForm,#js-footSearch':     'clearAndSubmit',
-    'click .js-global-header__bars-icon':       'toggleMobileMenu',
-    'click .js-global-header__search-icon':     'toggleMobileSearch',
+    'click .header__mobile-nav-button':         'toggleMobileMenu',
+    'click .header__mobile-search-button':      'toggleMobileSearch',
     'click #js-global-header-logo':             'clearQueryManager'
   },
+  navOpenState: true,
+  searchOpenState: true,
 
   // `events: 'submit' '#js-searchForm,#js-footSearch'`   
   // on submit, change the model, don't submit the form
@@ -20,32 +22,71 @@ var GlobalSearchFormView = Backbone.View.extend({
     e.preventDefault();
   },
 
-  // `events: 'click' '.js-global-header__bars-icon'`   
-  // Toggle mobile menu with search box:
-  toggleMobileMenu: function() {
-    $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
-    if ($('.js-global-header__search').is(':visible')) {
-      $('.js-global-header__search').attr('aria-expanded', true);
+  // toggles attributes for the header bar
+  // (headerElState is always True for desktop/tablet)
+  setAttrs: function(headerElState, headerEl, headerElButton) {
+    if (headerElState === false) {
+      headerEl.classList.add('is-closed');
+      headerEl.classList.remove('is-open');
+      headerElButton.setAttribute('aria-expanded', false);
     } else {
-      $('.js-global-header__search').attr('aria-expanded', false);
-    }
-    $('.js-global-header__mobile-links').toggleClass('.global-header__mobile-links global-header__mobile-links--selected');
-    if ($('.js-global-header__mobile-links').is(':visible')) {
-      $('.js-global-header__mobile-links').attr('aria-expanded', true);
-    } else {
-      $('.js-global-header__mobile-links').attr('aria-expanded', false);
+      headerEl.classList.add('is-open');
+      headerEl.classList.remove('is-closed');
+      headerElButton.setAttribute('aria-expanded', true);
     }
   },
 
-  // `events: 'click' '.js-global-header__search-icon'`   
-  // Toggle only search box:
-  toggleMobileSearch: function() {
-    $('.js-global-header__search').toggleClass('global-header__search global-header__search--selected');
-    if ($('.js-global-header__search').is(':visible')) {
-      $('.js-global-header__search').attr('aria-expanded', true);
+  // event handler bound in initialize function using native JS
+  // the events dictionary used for all other callback functions 
+  // automagically wraps callbacks such that 'this' references GlobalSearchFormView
+  // in this case, since we're binding via native JS, we have to pass 'that'
+  // into the event handler to access the GlobalSearchFormView
+  // makes use of window.matchMedia native JS feature
+  watchHeaderWidth: function(that) {
+    return function(headerWidth) {
+      var mobileSearch = document.querySelector('.header__search');
+      var mobileSearchButton = document.querySelector('.header__mobile-search-button');
+      var mobileNav = document.querySelector('.header__nav');
+      var mobileNavButton = document.querySelector('.header__mobile-nav-button');
+
+      if (headerWidth.matches) {
+        that.navOpenState = true;
+        that.searchOpenState = true;
+      } else {
+        that.navOpenState = false;
+        that.searchOpenState = false;
+      }
+      if (mobileSearch) {
+        that.setAttrs(that.searchOpenState, mobileSearch, mobileSearchButton);
+      }
+      that.setAttrs(that.navOpenState, mobileNav, mobileNavButton);
+    };
+  },
+
+  // `events: 'click' '.header__mobile-nav-button'`
+  // Toggle mobile menu with search box:
+  toggleMobileMenu: function(e) {
+    var mobileNav = document.querySelector('.header__nav');
+
+    if (this.navOpenState === true) {
+      this.navOpenState = false;
     } else {
-      $('.js-global-header__search').attr('aria-expanded', false);
+      this.navOpenState = true;
     }
+    this.setAttrs(this.navOpenState, mobileNav, e.currentTarget);
+  },
+
+  // `events: 'click' '.header__mobile-search-button'`
+  // Toggle only search box:
+  toggleMobileSearch: function(e) {
+    var mobileSearch = document.querySelector('.header__search');
+
+    if (this.searchOpenState === true) {
+      this.searchOpenState = false;
+    } else {
+      this.searchOpenState = true;
+    }
+    this.setAttrs(this.searchOpenState, mobileSearch, e.currentTarget);
   },
 
   // `events: 'click' '#js-global-header-logo'`   
@@ -59,6 +100,10 @@ var GlobalSearchFormView = Backbone.View.extend({
   initialize: function() {
     this.listenTo(this.model, 'change:q', this.render);
     $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
+
+    var headerWidth = window.matchMedia('(min-width: 650px)');
+    this.watchHeaderWidth(this)(headerWidth);
+    headerWidth.addListener(this.watchHeaderWidth(this));
   },
 
   // for use in pjax

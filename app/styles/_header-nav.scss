@@ -1,0 +1,61 @@
+// ##### Header Navigation ##### //
+
+.header-nav {
+
+  @include bp(sm-screen) {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: -($layout-container-margin-sm);
+    margin-left: -($layout-container-margin-sm);
+    padding-top: .3em;
+    padding-bottom: .3em;
+    background-color: $design-secondary-color;
+
+    ul {
+      display: flex;
+    }
+
+    li {
+
+      &:not(:last-child) a {
+        border-right: 1px solid #fff;
+      }
+
+      &:last-child a {
+        padding-right: $layout-container-margin-sm;
+      }
+    }
+
+    a {
+      display: block;
+      padding: .3em 1.2em;
+      color: #fff;
+      font-size: 1.4em;
+      text-align: center;
+      line-height: 1;
+
+      &:hover,
+      &:focus {
+        color: #fff;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  @include bp(md-screen) {
+    margin-right: -($layout-container-margin-md);
+    margin-left: -($layout-container-margin-md);
+
+    li {
+
+      &:last-child a {
+        padding-right: $layout-container-margin-md;
+      }
+    }
+
+    a {
+      padding: .3em 1.5em;
+    }
+  }
+}

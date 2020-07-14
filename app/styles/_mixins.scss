@@ -16,41 +16,6 @@
 
 }
 
-// Placeholders for the mobile navbar using a <ul> <li> <a> structure
-
-%navbar__container { // to be used with <ul>
-	margin: 0;
-  padding: 0;
-  list-style: none;
-  line-height: 1;
-}
-
-%navbar__bar { // to be used with <a>
-	display: block;
-  padding: 15px $layout-box-padding;
-  color: #fff;
-  background: $design-dark-gray-color;
-  border-bottom: 1px solid #fff;
-
-  &:hover {
-    text-decoration: none;
-  }
-
-}
-
-// Placeholder for the horizontal nav using a <ul> <li> <a> structure
-
-%horizontal-nav__link { // to be used with <li>
-	display: inline;
-  border-left: 1px solid $design-dark-gray-color;
-  padding: 0 0.5em;
-
-  &:first-child {
-    border-left: none;
-  }
-
-}
-
 // Set the attributes for a non-image thumbnail
 
 @mixin thumbnail__no-image($thumb-border: $design-primary-color) {

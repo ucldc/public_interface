@@ -1,0 +1,40 @@
+// ##### Mobile Navigation ##### //
+
+%mobile-nav-item {
+  display: block;
+  margin-right: -($layout-container-margin-sm);
+  margin-left: -($layout-container-margin-sm);
+  padding: 15px $layout-box-padding;
+  color: #fff;
+  background-color: $design-dark-gray-color;
+  border-bottom: 1px solid #fff;
+
+  @include bp(sm-screen) {
+    margin-right: 0;
+    margin-left: 0;
+    padding: 0;
+    color: #000;
+    background-color: transparent;
+    border-bottom: none;
+  }
+}
+
+.mobile-nav {
+  
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1;
+  }
+
+  a {
+    @extend %mobile-nav-item;
+  }
+}
+
+// applied to header__search:
+
+.mobile-nav__item {
+  @extend %mobile-nav-item;
+}

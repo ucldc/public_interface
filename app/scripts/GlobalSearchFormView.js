@@ -9,7 +9,7 @@ var GlobalSearchFormView = Backbone.View.extend({
     'submit #js-searchForm,#js-footSearch':     'clearAndSubmit',
     'click .header__mobile-nav-button':         'toggleMobileMenu',
     'click .header__mobile-search-button':      'toggleMobileSearch',
-    'click #js-global-header-logo':             'clearQueryManager'
+    'click .js-global-header-logo':             'clearQueryManager'
   },
   navOpenState: true,
   searchOpenState: true,
@@ -89,7 +89,7 @@ var GlobalSearchFormView = Backbone.View.extend({
     this.setAttrs(this.searchOpenState, mobileSearch, e.currentTarget);
   },
 
-  // `events: 'click' '#js-global-header-logo'`   
+  // `events: 'click' '.js-global-header-logo'`   
   // Clear the query manager's current query state
   clearQueryManager: function() {
     if (!_.isEmpty(this.model.attributes)) {

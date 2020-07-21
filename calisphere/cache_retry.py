@@ -99,7 +99,7 @@ def kwargs_md5(**kwargs):
 
 
 # wrapper function for json.loads(urllib2.urlopen)
-@retry(stop_max_delay=3000)  # milliseconds
+@retry(wait_exponential_multiplier=2, stop_max_delay=10000)  # milliseconds
 def json_loads_url(url_or_req):
     key = kwargs_md5(key='json_loads_url', url=url_or_req)
     data = cache.get(key)

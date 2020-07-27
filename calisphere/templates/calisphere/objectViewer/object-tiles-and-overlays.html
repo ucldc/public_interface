@@ -8,7 +8,6 @@
     {% endif %}
   >
     {% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}
-      <!-- {{item}} -->
       <div class="obj__icon-container">
         {% if item.reference_image_md5 %}
           <img class="obj__simple-image" src="{{ thumbnailUrl }}clip/500x500/{{ item.reference_image_md5 }}" alt="{{ item.title.0 }}" width={{item.reference_image_dimensions.0}} height={{item.reference_image_dimensions.1}} style="width: 

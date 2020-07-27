@@ -307,6 +307,8 @@ def itemView(request, item_id=''):
             raise Http404("{0} does not exist".format(item_id))
 
     for item in item_solr_search.results:
+        if 'reference_image_dimensions' in item:
+            item['reference_image_dimensions'] = item['reference_image_dimensions'].split(':')
         if 'structmap_url' in item and len(item['structmap_url']) >= 1:
             item['harvest_type'] = 'hosted'
             structmap_url = item['structmap_url'].replace(

@@ -15,9 +15,9 @@ install:
 
 before_script:
   - export BOTO_CONFIG=/dev/null # https://github.com/travis-ci/travis-ci/issues/7940#issuecomment-311411559
+  - npx gulp
   - python manage.py migrate --noinput
   - python manage.py loaddata exhibits/fixtures/exhibits-2019-12-18-migrate-exhibits.json
-  - npx gulp
   - python manage.py collectstatic --noinput
   - python manage.py runserver &
   - npx gulp serve &

@@ -10,26 +10,29 @@
     {% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}
       <div class="obj__icon-container">
         {% if item.reference_image_md5 %}
-          <img class="obj__simple-image" src="{{ thumbnailUrl }}clip/500x500/{{ item.reference_image_md5 }}" alt="{{ item.title.0 }}" width={{item.reference_image_dimensions.0}} height={{item.reference_image_dimensions.1}} style="width: 
-              {% if item.reference_image_dimensions.0 > item.reference_image_dimensions.1 %}
-                {% if item.reference_image_dimensions.0|add:0 > 500 %}
+          {% with item.reference_image_dimensions as dimensions %}
+          <img class="obj__simple-image" src="{{ thumbnailUrl }}clip/500x500/{{ item.reference_image_md5 }}" alt="{{ item.title.0 }}" width={{dimensions.0}} height={{dimensions.1}} style="
+            width:
+              {% if dimensions.0 >= dimensions.1 %}
+                {% if dimensions.0|add:0 > 500 %}
                   500px
                 {% else %}
-                  {{ item.reference_image_dimensions.0 }}
+                  {{ dimensions.0 }}
                 {% endif %}
               {% else %}
                 auto
               {% endif %}; 
             height: 
-              {% if item.reference_image_dimensions.1 > item.reference_image_dimensions.0 %}
-                {% if item.reference_image_dimensions.1|add:0 > 500 %}
+              {% if dimensions.1 >= dimensions.0 %}
+                {% if dimensions.1|add:0 > 500 %}
                   500px
                 {% else %}
-                  {{ item.reference_image_dimensions.1 }}
+                  {{ dimensions.1 }}
                 {% endif %}
               {% else %}
                 auto
               {% endif %};">
+          {% endwith %}
         {% elif item.contentFile.format|lower == 'file' %}
           <img class="obj__simple-image" src="{{ ucldcNuxeoThumbs }}{{ item.contentFile.id }}" alt="{{ item.title.0 }}">
         {% endif %}

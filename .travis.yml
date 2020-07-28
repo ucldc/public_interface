@@ -22,5 +22,4 @@ before_script:
   - python manage.py runserver &
 
 script:
-  - python manage.py test
   - npm run pa11yci

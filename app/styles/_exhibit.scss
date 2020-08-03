@@ -40,7 +40,13 @@
 
 .exhibit__view-all {
   padding: .2em .5em;
+
   background-color: #fff;
+
+  border: 1px solid $design-primary-color;
+  border-radius: 3px;
+  position: relative;
+  top: -.2em;
 }
 
 .exhibit__items-related-exhibits {

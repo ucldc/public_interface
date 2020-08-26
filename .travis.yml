@@ -23,5 +23,5 @@ before_script:
   - sleep 15
 
 script:
-  # - python manage.py test
+  - python manage.py test
   - npm run pa11yci

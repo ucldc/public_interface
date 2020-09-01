@@ -17,6 +17,12 @@
 
 .carousel__items-number {
   float: right;
+  padding: .2em .5em;
+  background-color: #fff;
+  border: 1px solid $design-primary-color;
+  border-radius: 3px;
+  top: -.2em;
+  position: relative;
 }
 
 .carousel {

@@ -29,7 +29,7 @@
         <button class="header__mobile-nav-button js-global-header__bars-icon" aria-label="navigation">
           <i class="fa fa-bars"></i>
         </button>
-        <a class="header__logo" id="js-global-header-logo" href="{% url 'calisphere:home' %}">
+        <a class="header__logo js-global-header-logo" href="{% url 'calisphere:home' %}">
           <img src="{% static 'images/logo-calisphere.svg' %}" alt="Calisphere">
         </a>
         <button class="header__mobile-search-button js-global-header__search-icon" aria-label="search">
@@ -38,9 +38,9 @@
 
         <div class="header__search mobile-nav__item js-global-header__search">
           <form class="global-search" role="search" id="js-searchForm" action="{% url 'calisphere:search' %}" method="get">
-            <label for="global-search__field" class="global-search__label">Search over one million items</label>
+            <label for="header__search-field" class="global-search__label">Search over one million items</label>
             <div class="input-group">
-              <input id="global-search__field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
+              <input id="header__search-field" form="js-searchForm" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
               <span class="input-group-btn">
                 <button class="btn btn-default global-search__button" type="submit" aria-label="search">
                   <span class="fa fa-search"></span>
@@ -118,15 +118,15 @@
       </div>
 
       <footer class="footer">
-        <a class="footer__logo" id="js-global-header-logo" href="{% url 'calisphere:home' %}">
+        <a class="footer__logo js-global-header-logo" href="{% url 'calisphere:home' %}">
           <img src="{% static 'images/logo-calisphere.svg' %}" alt="Calisphere">
         </a>
 
         <div class="footer__search mobile-nav__item">
           <form class="global-search" role="search" id="js-footerSearch" action="{% url 'calisphere:search' %}" method="get">
-            <label for="global-search__field" class="global-search__label">Search over one million items</label>
+            <label for="footer__search-field" class="global-search__label">Search over one million items</label>
             <div class="input-group">
-              <input id="global-search__field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
+              <input id="footer__search-field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
               <span class="input-group-btn">
                 <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
                 </button>

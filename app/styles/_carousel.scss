@@ -38,10 +38,16 @@ html.no-js .carousel {
 .carousel__item {
   width: 120px;
   margin: 10px;
-  opacity: 0.5;
+
+  .thumbnail__container {
+    opacity: 0.5;
+  }
 
   &:hover, &:focus-within {
-    opacity: 1;
+
+    .thumbnail__container {
+      opacity: 1;
+    }
   }
 
   @include bp(sm-screen) {
@@ -56,7 +62,10 @@ html.no-js .carousel__item {
 
 .carousel__item--selected {
   @extend .carousel__item;
-  opacity: 1;
+
+  .thumbnail__container {
+    opacity: 1;
+  }
 }
 
 .carousel__link {

@@ -85,7 +85,7 @@
         {% block mainContent %}
 
         <!-- TODO: facets.collection_name|length is only accurate if no collection filters have been applied -->
-        <h3 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
+        <h2 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
           <a href="#related-coll">
             {% if filters|get_item:'collection_url'|length == 0 %}
               {{ facets.collection_data|length }} collection{{ facets.collection_data|pluralize }}
@@ -93,7 +93,7 @@
               {{ filters|get_item:'collection_url'|length }} collection{{ filters|get_item:'collection_url'|pluralize }}
             {% endif %}
           </a>{% endblock %}
-        </h3>
+        </h2>
 
         <div class="row object-view-row">
 
@@ -126,7 +126,7 @@
           {% include "calisphere/list-results.html" %}
         {% endif %}
 
-        <label for="start" aria-hidden="true" class="display-none">Current Page Number</label>
+        <label for="start" aria-hidden="true" class="display-none">Current Set Number</label>
         <input form="js-facet" type="text" class="display-none" id="start" name="start" value="{{ start }}" aria-hidden="true">
 
         <!-- End Thumbnail and List View Components -->
@@ -135,12 +135,12 @@
           <div class="pag-dropdown">
 
             {% if start|subtract:rows >= 0 %}
-              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><span class="fa fa-caret-left fa-lg"></span></a>
+              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><span class="fa fa-caret-left fa-lg"></span></a>
             {% else %}
-              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-left fa-lg"></span></a>
+              <button type="button" class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" disabled><span class="fa fa-caret-left fa-lg"></span></button>
             {% endif %}
 
-            <label for="bottom-start-dropdown" class="sr-only">Current Page Number</label>
+            <label for="bottom-start-dropdown" class="sr-only">Current Set Number</label>
             <select class="pag-dropdown__select--unstyled" form="js-facet" id="bottom-start-dropdown">
               {% for page in pages|get_range %}
               <option value="{% widthratio page 1 rows %}" {% if start|add:0 >= page|multiply:rows|add:0 and start|add:0 < page|add:1|multiply:rows|add:0 %}selected{% endif %}>{{ page|add:"1" }}</option>
@@ -150,11 +150,11 @@
             <span class="pag-dropdown__total-number">of {{ pages }}</span>
 
             {% if start|add:rows < numFound %}
-              <a class="js-next btn btn-link pag-dropdown__arrow-icon" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}">
+              <a class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}">
                 <span class="fa fa-caret-right fa-lg"></span>
               </a>
             {% else %}
-              <a class="js-next btn btn-link pag-dropdown__arrow-icon" disabled><span class="fa fa-caret-right fa-lg"></span></a>
+              <button type="button" class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" disabled><span class="fa fa-caret-right fa-lg"></span></button>
             {% endif %}
 
   		    </div>

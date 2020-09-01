@@ -1,13 +1,19 @@
 <!doctype html>
 @@include("library-header.html", {"title": "Static - About Layout", "test_class": ""})
 
+  @@include("components/skip-nav-component.html")
+
   @@include("components/header-component.html")
 
-  <h1>About Calisphere</h1>
+  <main id="js-pageContent">
 
-  @@include("components/static-about-component.html")
+    <h1>About Calisphere</h1>
 
-  @@include("components/sidebar-component.html")
+    @@include("components/static-about-component.html")
+
+	@@include("components/sidebar-component.html")
+
+  </main>
 
   @@include("components/footer-component.html")
             

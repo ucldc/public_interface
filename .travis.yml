@@ -6,8 +6,6 @@ python:
 install:
   - npm install
   - pip install -r requirements.txt
-
-before_script:
   - cd ..
   - git clone https://github.com/ucldc/exhibitapp.git
   - cd exhibitapp
@@ -15,9 +13,15 @@ before_script:
   - cd ../public_interface
   - ln -s ../exhibitapp/exhibits/
 
-# https://github.com/travis-ci/travis-ci/issues/7940#issuecomment-311411559
-script:
-  - export BOTO_CONFIG=/dev/null
+before_script:
+  - export BOTO_CONFIG=/dev/null # https://github.com/travis-ci/travis-ci/issues/7940#issuecomment-311411559
   - npx gulp
+  - python manage.py migrate --noinput
+  - python manage.py loaddata exhibits/fixtures/exhibits-2019-12-18-migrate-exhibits.json
   - python manage.py collectstatic --noinput
+  - python manage.py runserver &
+  - sleep 15
+
+script:
   # - python manage.py test
+  - npm run pa11yci

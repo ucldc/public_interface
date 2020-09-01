@@ -14,7 +14,7 @@
 
   <div class="collect-intro__button-container">
     <a class="btn btn-default collect-intro__button {% if random %}button__secondary{% endif %}" href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Random Explore</a>
-    <a class="btn btn-default collect-intro__button {% if alphabet %}button__secondary{% endif %}" href="{% url 'calisphere:collectionsAZ' 'num' %}" data-pjax="js-pageContent">A - Z</a>
+    <a class="btn btn-default collect-intro__button {% if alphabet %}button__secondary{% endif %}" href="{% url 'calisphere:collectionsAZ' 'num' %}" data-pjax="js-pageContent" aria-label="A to Z">A - Z</a>
     <a class="btn btn-default collect-intro__button {% if collection_q %}button__secondary{% endif %}" href="{% url 'calisphere:collectionsTitleSearch' %}" data-pjax="js-pageContent">Title Search</a>
   </div>
 

@@ -46,7 +46,7 @@
 
 {% include "calisphere/itemButtons.html" %}
 
-<h3 class="meta-heading">
+<h2 class="meta-heading">
   {% if item.harvest_type == 'harvested' %}
     Item Information.
     <a class="meta-heading__preview-link" href="{{ item.url_item }}">
@@ -66,7 +66,7 @@
       Item Information.
     {% endif %}
   {% endif %}
-</h3>
+</h2>
 
 {% if 'selected' in item and item.selected == False %}
   {% include "calisphere/component-metadata.html" %}

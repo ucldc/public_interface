@@ -66,6 +66,7 @@
 @import "pagination";
 @import "searchfields";
 @import "sidebar";
+@import "skipnav";
 @import "static";
 @import "thumbnail";
 @import "titlesearch";
@@ -79,11 +80,6 @@
 @import "print";
 
 // ***** Global Styles ***** //
-
-a:focus {
-  outline: 0; // remove dotted border in Firefox
-  text-decoration: underline;
-}
 
 strong {
   -webkit-font-smoothing: antialiased; // small fonts in Chrome on Mac OS don't appear bold without this

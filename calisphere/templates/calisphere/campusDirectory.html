@@ -13,9 +13,9 @@
 <div class="inst-textboxes">
 {% for campus in campuses %}
 	<div class="inst-textboxes__box">
-		<h3 class="inst-textboxes__box-heading">
+		<h2 class="inst-textboxes__box-heading">
       <a href="{% url 'calisphere:campusView' campus.slug 'collections' %}" data-pjax="js-pageContent">{{ campus.name }}</a>
-    </h3>
+    </h2>
 		<ul class="inst-textboxes__list">
   {% for repository in repositories %}
     {% if repository.campus == campus.name %}

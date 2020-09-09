@@ -24,9 +24,7 @@ filename="${UCLDC_REDIRECT_IDS##*/}"         # http://unix.stackexchange.com/a/6
 aws s3 cp $UCLDC_REDIRECT_IDS .
 httxt2dbm -i $filename -o CSPHERE_IDS.map
 
-# filename="${UCLDC_REDIRECT_OUT##*/}"         # http://unix.stackexchange.com/a/64435/40198
-# aws s3 cp $UCLDC_REDIRECT_OUT .
-# httxt2dbm -i $filename -o OFF_CSPHERE.map
+httxt2dbm -i off_csphere.txt -o OFF_CSPHERE.map
 
 # Copyright (c) 2015, Regents of the University of California
 #

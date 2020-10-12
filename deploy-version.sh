@@ -46,7 +46,7 @@ ZIP="ucldc-$1.zip"
 gulp
 
 # package app and upload
-zip $ZIP -r calisphere/ load-content.sh fetch-redirects.sh manage.py public_interface/ test/ requirements.txt README.md .ebextensions/ dist/ exhibits/ fixtures/
+zip $ZIP -r calisphere/ load-content.sh fetch-redirects.sh manage.py off_csphere.txt public_interface/ test/ requirements.txt README.md .ebextensions/ dist/ exhibits/ fixtures/
 aws s3 cp $ZIP s3://$BUCKET/$DIR/$ZIP
 aws elasticbeanstalk create-application-version \
   --application-name $APPNAME \

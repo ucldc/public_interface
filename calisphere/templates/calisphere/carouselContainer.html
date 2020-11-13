@@ -39,12 +39,14 @@
     </div>
   {% endif %}
 
-  <div class="carousel__items-number" id="js-linkBack">
-    {% if q != '' %}
+  {% if q != '' %}
+    <div class="carousel__items-number" id="js-linkBack">
       <a href="{% url 'calisphere:search' %}?q={{ q }}{% if rq|length > 0 %}{% for r in rq %}&rq={{ r }}{% endfor %}{% endif %}" data-pjax="js-pageContent">
         back to search results
       </a>
-    {% elif referral == 'collection' %}
+    </div>
+  {% elif referral == 'collection' %}
+    <div class="carousel__items-number" id="js-linkBack">
       {% if rq|length > 0 %}
         <a href="{% url 'calisphere:collectionView' linkBackId %}?{% if rq|length > 0 %}{% for r in rq %}&rq={{ r }}{% endfor %}{% endif %}" data-pjax="js-pageContent">
           back to search results
@@ -54,7 +56,9 @@
           back to {{ referralName }}
         </a>
       {% endif %}
-    {% elif referral == 'institution' %}
+    </div>
+  {% elif referral == 'institution' %}
+    <div class="carousel__items-number" id="js-linkBack">
       {% if rq|length > 0 %}
         <a href="{% url 'calisphere:repositoryView' linkBackId 'items' %}?{% if rq|length > 0 %}{% for r in rq %}&rq={{ r }}{% endfor %}{% endif %}" data-pjax="js-pageContent">
           back to search results
@@ -64,7 +68,9 @@
           back to {{ referralName }}
         </a>
       {% endif %}
-    {% elif referral == 'campus' %}
+    </div>
+  {% elif referral == 'campus' %}
+    <div class="carousel__items-number" id="js-linkBack">
       {% if rq|length > 0 %}
         <a href="{% url 'calisphere:campusView' linkBackId 'items' %}?{% if rq|length > 0 %}{% for r in rq %}&rq={{ r }}{% endfor %}{% endif %}" data-pjax="js-pageContent">
           back to search results
@@ -72,11 +78,12 @@
       {% else %}
         <a href="{% url 'calisphere:campusView' linkBackId 'items' %}?{% if rq|length > 0 %}{% for r in rq %}&rq={{ r }}{% endfor %}{% endif %}" data-pjax="js-pageContent">
           back to {{ referralName }}
+        </a>
       {% endif %}
-    {% else %}
-      &nbsp;
-    {% endif %}
-  </div>
+    </div>
+  {% else %}
+    &nbsp;
+  {% endif %}
 
   {% if mlt == False %}
   <form id="js-carouselForm">

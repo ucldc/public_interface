@@ -25,14 +25,16 @@ var GlobalSearchFormView = Backbone.View.extend({
   // toggles attributes for the header bar
   // (headerElState is always True for desktop/tablet)
   setAttrs: function(headerElState, headerEl, headerElButton) {
-    if (headerElState === false) {
-      headerEl.classList.add('is-closed');
-      headerEl.classList.remove('is-open');
-      headerElButton.setAttribute('aria-expanded', false);
-    } else {
-      headerEl.classList.add('is-open');
-      headerEl.classList.remove('is-closed');
-      headerElButton.setAttribute('aria-expanded', true);
+    if (headerEl && headerElButton) {
+      if (headerElState === false) {
+        headerEl.classList.add('is-closed');
+        headerEl.classList.remove('is-open');
+        headerElButton.setAttribute('aria-expanded', false);
+      } else {
+        headerEl.classList.add('is-open');
+        headerEl.classList.remove('is-closed');
+        headerElButton.setAttribute('aria-expanded', true);
+      }
     }
   },
 

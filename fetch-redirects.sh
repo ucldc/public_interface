@@ -21,6 +21,7 @@ fi
 REGION=us-west-2
 filename="${UCLDC_REDIRECT_IDS##*/}"         # http://unix.stackexchange.com/a/64435/40198
 
+[-e CSPHERE_IDS.map ] && rm CSPHERE_IDS.map
 aws s3 cp $UCLDC_REDIRECT_IDS .
 httxt2dbm -i $filename -o CSPHERE_IDS.map
 

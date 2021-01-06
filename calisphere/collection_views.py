@@ -267,7 +267,7 @@ def collectionFacet(request, collection_id, facet):
             solr_thumbs = SOLR_select(**thumbParams)
             value['thumbnails'] = [result['reference_image_md5'] for result in solr_thumbs.results]
 
-    ratio = unique / records
+    ratio = round((unique / records) * 100, 2)
     context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
 
     context.update({
@@ -277,9 +277,31 @@ def collectionFacet(request, collection_id, facet):
         'collection': collection_details,
         'collection_id': collection_id,
         'form_action': reverse(
-            'calisphere:collectionView',
-            kwargs={'collection_id': collection_id}),
+            'calisphere:collectionFacet',
+            kwargs={'collection_id': collection_id, 'facet': facet}),
     })
+
+    summary_url = os.path.join(
+    settings.UCLDC_METADATA_SUMMARY,
+        '{}.json'.format(collection_id),
+    )
+    summary_data = json_loads_url(summary_url)
+    if not summary_data:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    item_count = summary_data.pop('item_count')
+    collection_url = summary_data.pop('collection_url')
+    del summary_data['description']
+    del summary_data['transcription']
+
+    filtered = [ dict({'field': k}, **v) for k,v in summary_data.items() if (v['percent'] != 0 and v['uniq_percent'] != 100) ]
+    filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
+
+    clusters = [getClusters(collection_url, field['field']) for field in filtered]
+    filtered_clusters = [cluster for cluster in clusters if len(cluster['values']) > 1]
+    clusters = filtered_clusters
+
+    context.update({'item_count': item_count, 'clusters': clusters})
 
     return render(request, 'calisphere/collectionFacet.html', context )
 

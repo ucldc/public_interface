@@ -284,14 +284,14 @@ def collectionFacet(request, collection_id, facet):
     return render(request, 'calisphere/collectionFacet.html', context )
 
 
-def collectionFacetValue(request, collection_id, facet, facet_value):
+def collectionFacetValue(request, collection_id, cluster, cluster_value):
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')
 
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
-    if not facet in UCLDC_SCHEMA_FACETS:
-        raise Http404("{} does not exist".format(facet))
+    if not cluster in UCLDC_SCHEMA_FACETS:
+        raise Http404("{} does not exist".format(cluster))
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
 
@@ -301,15 +301,9 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
 
     params = request.GET.copy()
 
-    parsed_facet_value = urllib.parse.unquote_plus(facet_value)
-    escaped_facet_value = solr_escape(parsed_facet_value)
-    params.update({'fq': f"{facet}_ss:\"{escaped_facet_value}\""})
-    if not 'view_format' in params:
-        params.update({'view_format': 'list'})
-    if not 'rows' in params:
-        params.update({'rows': '48'})
-    if not 'sort' in params:
-        params.update({'sort': 'oldest-end'})
+    parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
+    escaped_cluster_value = solr_escape(parsed_cluster_value)
+    params.update({'fq': f"{cluster}_ss:\"{escaped_cluster_value}\""})
 
     context = searchDefaults(params)
 
@@ -338,27 +332,37 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    # context['facets'] = facetQuery(facet_filter_types, params, solr_search,
-    #                               extra_filter)
+    context['facets'] = facetQuery(facet_filter_types, params, solr_search,
+                                  extra_filter)
+
+    context['filters'] = {}
+    for filter_type in facet_filter_types:
+        param_name = filter_type['facet']
+        display_name = filter_type['filter']
+        filter_transform = filter_type['filter_display']
+
+        if len(params.getlist(param_name)) > 0:
+            context['filters'][display_name] = list(
+                map(filter_transform, params.getlist(param_name)))
 
     collection_name = collection_details.get('name')
-    context.update({'facet': facet,})
-    context.update({'facet_value': parsed_facet_value,})
+    context.update({'cluster': cluster,})
+    context.update({'cluster_value': parsed_cluster_value,})
     context.update({
         'meta_robots': "noindex,nofollow",
         'totalNumItems': total_items.numFound,
         'FACET_FILTER_TYPES': facet_filter_types,
         'collection': collection_details,
         'collection_id': collection_id,
-        'title': f"{facet}: {parsed_facet_value} ({solr_search.numFound} items) from: {collection_name}",
+        'title': f"{cluster}: {parsed_cluster_value} ({solr_search.numFound} items) from: {collection_name}",
         'description': None,
         'solrParams': solrParams,
         'form_action': reverse(
             'calisphere:collectionFacetValue',
             kwargs={
               'collection_id': collection_id,
-              'facet': facet,
-              'facet_value': facet_value,
+              'cluster': cluster,
+              'cluster_value': cluster_value,
             }),
     })
 

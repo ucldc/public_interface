@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^collections/(?P<collection_id>\d*)/$',
         collection_views.collectionView,
         name='collectionView'),
-    url(r'^collections/(?P<collection_id>\d*)/(?P<facet>[^/].*)/(?P<facet_value>.*)/$',
+    url(r'^collections/(?P<collection_id>\d*)/(?P<cluster>[^/].*)/(?P<cluster_value>.*)/$',
         collection_views.collectionFacetValue,
         name='collectionFacetValue'),
     url(r'^collections/(?P<collection_id>\d*)/(?P<facet>.*)/$',

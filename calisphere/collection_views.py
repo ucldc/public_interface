@@ -404,6 +404,19 @@ def collectionMetadata(request, collection_id):
 
     return render(request, 'calisphere/collectionMetadata.html', context)
 
+def getClusterThumbnails(collection_url, facet, facetValue):
+    escaped_cluster_value = solr_escape(facetValue)
+    thumbParams = {
+        'facet': 'false',
+        'rows': 4,
+        'fl': 'reference_image_md5',
+        'fq':
+            [f'collection_url: "{collection_url}"', f'{facet}_ss: "{escaped_cluster_value}"']
+        }
+    solr_thumbs = SOLR_select(**thumbParams)
+    thumbnails = [result.get('reference_image_md5') for result in solr_thumbs.results]
+    return thumbnails
+
 
 def getClusters(collection_url, facet):
     solrParams = {
@@ -426,7 +439,15 @@ def getClusters(collection_url, facet):
 
     values = [{'label': k, 'count': v} for k,v in values.items()]
 
-    return {'facet': facet, 'records': records, 'unique': unique, 'values': values[0:3]}
+    thumbnails = getClusterThumbnails(collection_url, facet, values[0]['label'])
+
+    return {
+        'facet': facet,
+        'records': records,
+        'unique': unique,
+        'values': values[0:3],
+        'thumbnails': thumbnails
+    }
 
 
 def collectionBrowse(request, collection_id):

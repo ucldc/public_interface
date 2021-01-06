@@ -1,4 +1,4 @@
-{% extends "calisphere/base.html" %}
+{% extends "calisphere/searchResults.html" %}
 {% load calisphere-extras %}
 {% load staticfiles %}
 {% load humanize %}
@@ -8,7 +8,9 @@
 {% include "calisphere/microdata.html" with title=collection.name description=collection.description %}
 {% endblock %}
 
-{% block content %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block pageTitle %}
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
     <ul>
       <li>
@@ -20,8 +22,9 @@
   <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ collection.name }}">
     {{ collection.name }}
   </h1>
+{% endblock %}
 
-
+{% block additionalInfo %}
 <div class="collection-intro" data-ga-dim1="{{ collection.local_id }}{{ collection.slug }}">
   <div class="col-md-3">
     <div class="collection-intro__institution">
@@ -70,33 +73,87 @@
   </div>
 
 </div>
+{% endblock %}
 
+{% block sidebar %}
 <div class="row">
-  <div class="col-md-3">
-    <div class="snapshot" style="border: 1px solid black; padding: 10px; margin-right: 10px;">
+  <div class="col-sm-6 col-md-12">
+    <div class="button__institution-tabs-container">
+      <a class="button__institution-tab-collections--selected"
+      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+        Browse collection
+      </a>
+      <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+        Search this collection
+      </a>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-12">
+    <div class="snapshot">
       <h3>Collection Snapshot</h3>
-        {{ item_count|intcomma }} total items in this collection<br/><br/>
+        <h4><span class="collection_browse-item_count">{{ item_count|intcomma }}</span> total items in this collection</h4>
         {% for cluster in clusters %}
-          {{ cluster.unique }} unique {{ cluster.facet }}s<br/>
+          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet }}{% if cluster.facet != 'rights' %}s{% endif %}</h5>
         {% endfor %}
     </div>
   </div>
+  <div class="col-sm-6 col-md-12">
 
-  <div class="col-md-9">
-    {% for cluster in clusters %}
-    <div class="explore-clusters" style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
-      <h3>Explore {{ cluster.facet|title }}s Used in this Collection</h3>
-      <h4>Three Sample {{ cluster.facet|title }}s</h4>
-      <ol>
-        {% for value in cluster.values %}
-          <li><a href="{% url 'calisphere:collectionFacetValue' collection_id cluster.facet value.label|qencode %}?view_format=list">{{ value.label }} ({{ value.count|intcomma }} items)</a></li>
-        {% endfor %}
-      </ol>
-      <a href="{{ form_action }}{{ cluster.facet }}/">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet }}s</a>
-    </div>
-    {% endfor %}
+      <!-- Begin Search Within Field -->
+      <!-- End Search Within Field -->
+
   </div>
 </div>
+{% endblock %}
 
+{% block filters %}{% endblock %}
 
+{% block mainContent %}
+  {% for cluster in clusters %}
+  <div class="row explore-clusters">
+    <div class="col-md-5">
+      <h3>Explore {{ cluster.facet|title }}{% if cluster.facet != 'rights' %}s{% endif %} Used in this Collection</h3>
+      <h4>Three Sample {{ cluster.facet|title }}{% if cluster.facet != 'rights' %}s{% endif %}</h4>
+      <ol>
+        {% for value in cluster.values %}
+          <li>
+            {% if forloop.counter0 == 0 %}<strong>{% endif %}
+              <a href="{% url 'calisphere:collectionFacetValue' collection_id cluster.facet value.label|qencode %}?view_format=list">{{ value.label }} ({{ value.count|intcomma }} items)</a></li>
+            {% if forloop.counter0 == 0 %}</strong>{% endif %}
+        {% endfor %}
+      </ol>
+      <a href="{{ form_action }}{{ cluster.facet }}/">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet }}{% if cluster.facet != 'rights' %}s{% endif %}</a>
+    </div>
+    <div class="col-md-7">
+      <div class="cluster-thumbnail__container">
+        {% for thumb in cluster.thumbnails %}
+          {% if forloop.counter0 <= 0 %}
+          <div class="cluster-thumbnail__{{forloop.counter0}}"
+            style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb }})">
+  <!--               <img class="thumbnail__image"
+              src="{{ thumbnailUrl }}crop/210x210/{{ thumb }}"
+                  srcset="{{ thumbnailUrl }}crop/210x210/{{ thumb }} 60w, {{ thumbnailUrl }}crop/310x310/{{ thumb }} 50w"
+                  sizes="100vw"
+                  alt=""> -->
+          </div>
+          {% endif %}
+        {% endfor %}
+        <div class="cluster-thumbnail__container2">
+          {% for thumb in cluster.thumbnails %}
+            {% if forloop.counter0 > 0 %}
+            <div class="cluster-thumbnail__{{forloop.counter0}}" style="
+              background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb }})">
+  <!--                 <img class="thumbnail__image"
+                src="{{ thumbnailUrl }}crop/210x210/{{ thumb }}"
+                    srcset="{{ thumbnailUrl }}crop/210x210/{{ thumb }} 60w, {{ thumbnailUrl }}crop/310x310/{{ thumb }} 50w"
+                    sizes="100vw"
+                    alt=""> -->
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 {% endblock %}

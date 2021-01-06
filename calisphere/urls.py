@@ -4,6 +4,7 @@ from django.views.generic.base import RedirectView
 from django.conf import settings
 from calisphere.home import HomeView
 from . import views
+from . import collection_views
 
 app_name = 'calisphere'
 
@@ -12,22 +13,22 @@ urlpatterns = [
     url(r'^search/$', views.search, name='search'),
     url(r'^item/(?P<item_id>.*)/$', views.itemView, name='itemView'),
     url(r'^collections/$',
-        views.collectionsDirectory,
+        collection_views.collectionsDirectory,
         name='collectionsDirectory'),
     url(r'^collections/(?P<collection_letter>[a-zA-Z]{1})/$',
-        views.collectionsAZ,
+        collection_views.collectionsAZ,
         name='collectionsAZ'),
     url(r'^collections/(?P<collection_letter>num)/$',
-        views.collectionsAZ,
+        collection_views.collectionsAZ,
         name='collectionsAZ'),
     url(r'^collections/(?P<collection_id>\d*)/$',
-        views.collectionView,
+        collection_views.collectionView,
         name='collectionView'),
     url(r'^collections/(?P<collection_id>\d*)/(?P<facet>[^/].*)/(?P<facet_value>.*)/$',
-        views.collectionFacetValue,
+        collection_views.collectionFacetValue,
         name='collectionFacetValue'),
     url(r'^collections/(?P<collection_id>\d*)/(?P<facet>.*)/$',
-        views.collectionFacet,
+        collection_views.collectionFacet,
         name='collectionFacet'),
 
     # Redirects to new 'exhibitions'
@@ -41,10 +42,10 @@ urlpatterns = [
         RedirectView.as_view(url='/exhibitions/t11/jarda/'),
         name='jarda'),
     url(r'^collections/titleSearch/$',
-        views.collectionsSearch,
+        collection_views.collectionsSearch,
         name='collectionsTitleSearch'),
     url(r'^collections/titles.json$',
-        views.collectionsTitles,
+        collection_views.collectionsTitles,
         name='collectionsTitleData'),
     url(r'^institution/(?P<repository_id>\d*)(?:/(?P<subnav>items|collections))?/',
         views.repositoryView,
@@ -95,6 +96,6 @@ urlpatterns = [
 if settings.UCLDC_METADATA_SUMMARY:
     urlpatterns.insert(0,
         url(r'^collections/(?P<collection_id>\d*)/metadata/$',
-            views.collectionMetadata,
+            collection_views.collectionMetadata,
             name='collectionMetadata'),
     )

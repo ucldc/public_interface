@@ -99,3 +99,7 @@ if settings.UCLDC_METADATA_SUMMARY:
             collection_views.collectionMetadata,
             name='collectionMetadata'),
     )
+    urlpatterns.insert(0,
+        url(r'^collections/(?P<collection_id>\d*)/browse/$',
+            collection_views.collectionBrowse,
+            name='collectionBrowse'),)

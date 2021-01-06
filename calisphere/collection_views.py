@@ -403,3 +403,87 @@ def collectionMetadata(request, collection_id):
     }
 
     return render(request, 'calisphere/collectionMetadata.html', context)
+
+
+def getClusters(collection_url, facet):
+    solrParams = {
+        'facet': 'true',
+        'rows': 0,
+        'facet_field': '{}_ss'.format(facet),
+        'fq': 'collection_url:"{}"'.format(collection_url),
+        'facet_limit': '-1',
+        'facet_mincount': 1,
+        'facet_sort': 'count',
+    }
+    solr_search = SOLR_select(**solrParams)
+
+    values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
+    if not values:
+        raise Http404("{0} has no values".format(facet))
+
+    unique = len(values)
+    records = sum(values.values())
+
+    values = [{'label': k, 'count': v} for k,v in values.items()]
+
+    return {'facet': facet, 'records': records, 'unique': unique, 'values': values[0:3]}
+
+
+def collectionBrowse(request, collection_id):
+    summary_url = os.path.join(
+    settings.UCLDC_METADATA_SUMMARY,
+        '{}.json'.format(collection_id),
+    )
+    summary_data = json_loads_url(summary_url)
+    if not summary_data:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    item_count = summary_data.pop('item_count')
+    collection_url = summary_data.pop('collection_url')
+    del summary_data['description']
+    del summary_data['transcription']
+
+    filtered = [ dict({'field': k}, **v) for k,v in summary_data.items() if (v['percent'] != 0 and v['uniq_percent'] != 100) ]
+    filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
+
+    clusters = [getClusters(collection_url, field['field']) for field in filtered]
+    filtered_clusters = [cluster for cluster in clusters if len(cluster['values']) > 1]
+    clusters = filtered_clusters
+
+    collection_details = json_loads_url(collection_url + '?format=json')
+    if not collection_details:
+        raise Http404("{0} does not exist".format(collection_id))
+
+    for repository in collection_details.get('repository'):
+        repository['resource_id'] = repository.get('resource_uri').split(
+            '/')[-2]
+
+    context = {
+        'title': f"Metadata report for {collection_details['name']}",
+        'meta_robots': "noindex,nofollow",
+        'description': None,
+        'collection': collection_details,
+        'collection_id': collection_id,
+        'UCLDC_SCHEMA_FACETS': UCLDC_SCHEMA_FACETS,
+        'clusters': clusters,
+        'form_action': reverse(
+            'calisphere:collectionView',
+            kwargs={'collection_id': collection_id}),
+    }
+
+    context.update({
+        'meta_robots': None,
+        'item_count':
+        item_count,
+        'collection':
+        collection_details,
+        'collection_id':
+        collection_id,
+        'form_action':
+        reverse(
+            'calisphere:collectionView',
+            kwargs={'collection_id': collection_id}),
+    })
+
+    return render(request, 'calisphere/collectionBrowse.html', context)
+

@@ -1,0 +1,79 @@
+.explore-clusters {
+  padding: 7px 15px 7px 40px;
+  border: 1px solid $design-dark-gray-color;
+  margin: 1px 0 $layout-container-margin-md 0;
+}
+
+.snapshot {
+  padding: 15px 15px 15px 15px;
+  border: 1px solid $design-dark-gray-color;
+  margin: 1px 0 $layout-container-margin-md 0;  
+}
+
+.collection-cluster-form {
+  border: 1px solid $design-dark-gray-color; 
+  padding: 10px 15px; 
+  margin: 0 0 $layout-container-margin-md 0; 
+  display: inline-block;
+}
+.collection-cluster-form__sort-selector {
+  margin: 0 12px;
+}
+
+.collection_browse-item_count {
+  display: block;
+  width: 100%;
+  font-size: calc(10vw - 30px);
+}
+.snapshot h4 { margin-bottom: 20px; }
+.snapshot h5 { font-size: 16px; margin: 0 0 7px 0; }
+
+%cluster-thumbnail {
+  background-size: cover;
+  background-position: center;  
+}
+
+.explore-clusters .cluster-thumbnail__container {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	width: initial;
+	height: 25vh;
+	margin-bottom: 0px;
+}
+.explore-clusters .cluster-thumbnail__0 { @extend %cluster-thumbnail; 
+  width: calc(50% - 5px); height: 100%; margin: 0 5px 0 0; }
+.explore-clusters .cluster-thumbnail__container2 { width: 50%; height: 100%; 
+	display: flex; flex-direction: row; flex-wrap: wrap;}
+.explore-clusters .cluster-thumbnail__1 { @extend %cluster-thumbnail; 
+  width: 100%; height: calc(50% - 5px); margin: 0 0 5px 0; }
+.explore-clusters .cluster-thumbnail__2 { @extend %cluster-thumbnail;
+  width: calc(50% - 5px); height: 50%; margin: 0 5px 0 0; }
+.explore-clusters .cluster-thumbnail__3 { @extend %cluster-thumbnail;
+  width: 50%; height: 50%; }
+
+.cluster-container {
+  padding: 10px;
+  height: calc(50vh + 80px);
+}
+
+.cluster-thumbnail__container {
+  position:relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 50vh;
+  margin-bottom: 10px;
+}
+
+.cluster-thumbnail__0 { @extend %cluster-thumbnail; 
+  width: 100%; height: 50%; margin-bottom: 5px; }
+.cluster-thumbnail__1 { @extend %cluster-thumbnail; 
+  width: calc(50% - 5px); height: 50%; margin-right: 5px; }
+.cluster-thumbnail__container2 { width: 50%; }
+.cluster-thumbnail__2 { @extend %cluster-thumbnail;
+  width: 100%; height: calc(50% - 5px); margin-bottom: 5px; }
+.cluster-thumbnail__3 { @extend %cluster-thumbnail;
+  width: 100%; height: 50%; }

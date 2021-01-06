@@ -5,38 +5,149 @@
 
 {% block content %}
 
-<h2 class="collection-intro__institution-heading">Collection:
-	<a href="{% url 'calisphere:collectionView' collection_id %}"
-	   data-pjax="js-pageContent">
-		{{ collection.name }}
-	</a>
-</h2>
-<h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
-{% for repository in collection.repository %}
-  {% if 'campus' in repository and repository.campus.0.name %}
-    <a
-      href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
-      class="collection-intro__institution-heading-link"
-      data-pjax="js-pageContent"
-    >{{ repository.campus.0.name }}</a>,
-  {% endif %}
-  <a
-    href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
-    class="collection-intro__institution-heading-link"
-    data-pjax="js-pageContent"
-  >
-    {{ repository.name }}
-  </a>
-{% endfor %}
-</h2>
+  <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
+    <ul>
+      <li>
+        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+      </li>
+      <li>
+        <a href="{% url 'calisphere:collectionView' collection_id %}"
+           data-pjax="js-pageContent">
+          {{ collection.name }}
+        </a>
+      </li>
+      <li>
+        {{ title }}
+      </li>
+    </ul>
+  </nav>
 
-<p><b>Unique / Total:</b> {{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }}
-<h3>{{ title }}</h3>
-{% for label, count in values.items %}
+  <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ collection.name }}">
+    {{ title }}
+  </h1>
+  <h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}: 
+  {% for repository in collection.repository %}
+    {% if 'campus' in repository and repository.campus.0.name %}
+      <a
+        href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+        class="collection-intro__institution-heading-link"
+        data-pjax="js-pageContent">{{ repository.campus.0.name }}</a>,
+    {% endif %}
+    <a
+      href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+      class="collection-intro__institution-heading-link"
+      data-pjax="js-pageContent">
+      {{ repository.name }}
+    </a>
+  {% endfor %}
+  </h2>
+
+
+
+<p>There are {{ unique|intcomma }} unique {{facet}}{{ unique|pluralize }} used in this collection of {{ records|intcomma }} items. For each {{facet}} cluster, the number in parentheses shows how many items share that {{facet}}. ({{ unique|intcomma }} / {{ records|intcomma }} = {{ ratio }})</p>
+
+<div class="row">
+  <div style="border: 1px solid black; padding: 5px 10px; margin: 0 0 10px 0; display: inline-block">
+  <form action="#">
+    {% if view_format == 'grid' %}
+    <button id="grid" class="btn btn-link js-view_format-toggle">
+      <span class="fa fa-th-large"></span> Grid
+    </button>
+    <button id="list" class="btn btn-link thumblist-toggle__list js-view_format-toggle">
+      <span class="fa fa-th-list"></span> List
+    </button>
+    {% else %}
+    <button id="grid" class="btn btn-link thumblist-toggle__thumbnails js-view_format-toggle">
+      <span class="fa fa-th-large"></span> Grid
+    </button>
+    <button id="list" class="btn btn-link js-view_format-toggle">
+      <span class="fa fa-th-list"></span> List
+    </button>
+    {% endif %}
+    <input type="hidden" name="view_format" value="{{ view_format }}">
+
+    <select name="sort">
+      <option {% if sort == "largestFirst" %}selected{% endif %} value="largestFirst">
+        Largest item count first
+      </option>
+      <option {% if sort == "smallestFirst" %}selected{% endif %} value="smallestFirst">
+        Smallest item count first
+      </option>
+      <option {% if sort == "az" %}selected{% endif %} value="az">
+        A-Z
+      </option>
+      <option {% if sort == "za" %}selected{% endif %} value="za">
+        Z-A
+      </option>
+    </select>
+    {% if view_format == 'grid' %}
+      Viewing 25 of {{ unique|intcomma }}
+    {% endif %}
+    <input type="submit"/>
+  </form>
+</div>
+</div>
+
+{% if view_format == 'grid' %}
+<div class="row">
+  {% for value in values %}
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
+      <a href="./{{ value.label|qencode }}/?view_format=list">
+      <div class="cluster-container">
+        <div class="cluster-thumbnail__container">
+          {% for thumb in value.thumbnails %}
+            {% if forloop.counter0 <= 1 %}
+            <div class="cluster-thumbnail__{{forloop.counter0}}"
+              style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb }})">
+<!--               <img class="thumbnail__image"
+                src="{{ thumbnailUrl }}crop/210x210/{{ thumb }}"
+                    srcset="{{ thumbnailUrl }}crop/210x210/{{ thumb }} 60w, {{ thumbnailUrl }}crop/310x310/{{ thumb }} 50w"
+                    sizes="100vw"
+                    alt=""> -->
+            </div>
+            {% endif %}
+          {% endfor %}
+          <div class="cluster-thumbnail__container2">
+            {% for thumb in value.thumbnails %}
+              {% if forloop.counter0 > 1 %}
+              <div class="cluster-thumbnail__{{forloop.counter0}}" style="
+                background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb }})">
+<!--                 <img class="thumbnail__image"
+                  src="{{ thumbnailUrl }}crop/210x210/{{ thumb }}"
+                      srcset="{{ thumbnailUrl }}crop/210x210/{{ thumb }} 60w, {{ thumbnailUrl }}crop/310x310/{{ thumb }} 50w"
+                      sizes="100vw"
+                      alt=""> -->
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <a href="./{{ value.label|qencode }}/?view_format=list">{{ value.label }}</a> ({{value.count|intcomma}})
+      </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+{% for value in values %}
 <div>
-  <a href="./{{ label|qencode }}/"> {{ label }}</a>
-  ({{ count|intcomma }})
+  <a href="./{{ value.label|qencode }}/?view_format=list"> {{ value.label }}</a>
+  ({{ value.count|intcomma }})
 </div>
 {% endfor %}
+{% endif %}
 
+{% endblock %}
+
+{% block footerScripts %}
+<script>
+  $(document).ready(function() {
+    $('.js-view_format-toggle').click(function(e) {
+      console.log(e.currentTarget);
+      e.preventDefault();
+      $('input[name=view_format]').val('grid');
+      $('form').submit();
+    });
+  });
+</script>
 {% endblock %}

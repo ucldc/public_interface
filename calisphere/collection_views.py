@@ -221,6 +221,9 @@ def collectionFacet(request, collection_id, facet):
 
     params = request.GET.copy()
     context = searchDefaults(params)
+    if not params.get('view_format'):
+        context['view_format'] = 'list'
+
     context.update({'facet': facet,})
     # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
     solrParams = {
@@ -237,13 +240,38 @@ def collectionFacet(request, collection_id, facet):
     values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
     if not values:
         raise Http404("{0} has no values".format(facet))
+
     unique = len(values)
     records = sum(values.values())
+
+    values = [{'label': k, 'count': v} for k,v in values.items()]
+
+    if params.get('sort') == 'smallestFirst':
+        values.reverse()
+    if params.get('sort') == 'az':
+        values.sort(key=lambda v: v['label'])
+    if params.get('sort') == 'za':
+        values.sort(key=lambda v: v['label'], reverse=True)
+
+    if context.get('view_format') == 'grid':
+        values = values[0:25]
+        for value in values:
+            escaped_cluster_value = solr_escape(value['label'])
+            thumbParams = {
+                'facet': 'false',
+                'rows': 4,
+                'fl': 'reference_image_md5',
+                'fq':
+                    [f'collection_url: "{collection_url}"', f'{facet}_ss: "{escaped_cluster_value}"']
+            }
+            solr_thumbs = SOLR_select(**thumbParams)
+            value['thumbnails'] = [result['reference_image_md5'] for result in solr_thumbs.results]
+
     ratio = unique / records
     context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
 
     context.update({
-        'title': f"{facet} values from {collection_details['name']}",
+        'title': f"{facet.capitalize()}{pluralize(values)} Used in {collection_details['name']}",
         'meta_robots': "noindex,nofollow",
         'description': None,
         'collection': collection_details,

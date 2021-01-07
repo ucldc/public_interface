@@ -30,6 +30,9 @@ urlpatterns = [
     url(r'^collections/(?P<collection_id>\d*)/(?P<facet>.*)/$',
         collection_views.collectionFacet,
         name='collectionFacet'),
+    url(r'^collections/(?P<collection_id>\d*)/(?P<facet>.*).json$',
+        collection_views.collectionFacetJson,
+        name='collectionFacetJson'),
 
     # Redirects to new 'exhibitions'
     url(r'^collections/themed/$',

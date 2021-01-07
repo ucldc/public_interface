@@ -305,6 +305,37 @@ def collectionFacet(request, collection_id, facet):
 
     return render(request, 'calisphere/collectionFacet.html', context )
 
+def collectionFacetJson(request, collection_id, facet):
+    if not facet in UCLDC_SCHEMA_FACETS:
+        raise Http404("{} does not exist".format(facet))
+    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
+
+    # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
+    solrParams = {
+        'facet': 'true',
+        'rows': 0,
+        'facet_field': '{}_ss'.format(facet),
+        'fq': 'collection_url:"{}"'.format(collection_url),
+        'facet_limit': '-1',
+        'facet_mincount': 1,
+        'facet_sort': 'count',
+    }
+    solr_search = SOLR_select(**solrParams)
+
+    values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
+    if not values:
+        raise Http404("{0} has no values".format(facet))
+
+    values = [{'label': k, 'count': v, 'uri': reverse(
+            'calisphere:collectionFacetValue',
+            kwargs={
+              'collection_id': collection_id,
+              'cluster': facet,
+              'cluster_value': urllib.parse.quote_plus(k),
+            })} for k,v in values.items()]
+
+    return JsonResponse(values, safe=False)
+
 
 def collectionFacetValue(request, collection_id, cluster, cluster_value):
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
@@ -454,7 +485,7 @@ def getClusters(collection_url, facet):
 
     values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
     if not values:
-        raise Http404("{0} has no values".format(facet))
+        return None
 
     unique = len(values)
     records = sum(values.values())
@@ -467,10 +498,18 @@ def getClusters(collection_url, facet):
         'facet': facet,
         'records': records,
         'unique': unique,
-        'values': values[0:3],
+        'values': values,
         'thumbnails': thumbnails
     }
 
+# average 'best case': http://127.0.0.1:8000/collections/27433/browse/
+# long rights statement: http://127.0.0.1:8000/collections/26241/browse/
+# questioning grid usefulness: http://127.0.0.1:8000/collections/26935/browse/
+# grid is helpful for ireland, building, ruin, stone: http://127.0.0.1:8000/collections/12378/subject/?view_format=grid&sort=largestFirst
+# failed browse page: http://127.0.0.1:8000/collections/10318/browse/
+# failed browse page: http://127.0.0.1:8000/collections/26666/browse/
+# known issue, no thumbnails: http://127.0.0.1:8000/collections/26666/browse/
+# less useful thumbnails: http://127.0.0.1:8000/collections/26241/browse/
 
 def collectionBrowse(request, collection_id):
     summary_url = os.path.join(
@@ -490,7 +529,7 @@ def collectionBrowse(request, collection_id):
     filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
 
     clusters = [getClusters(collection_url, field['field']) for field in filtered]
-    filtered_clusters = [cluster for cluster in clusters if len(cluster['values']) > 1]
+    filtered_clusters = [cluster for cluster in clusters if (cluster and len(cluster['values']) > 1)]
     clusters = filtered_clusters
 
     collection_details = json_loads_url(collection_url + '?format=json')

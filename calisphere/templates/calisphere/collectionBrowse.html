@@ -218,8 +218,8 @@
     {% endfor %}
   }
 
-  $(document).on('pjax:end', init_cluster_typeahead);
-  $(document).on('ready', init_cluster_typeahead);
+  $(document).on('pjax:end', init_cluster_typeahead());
+  $(document).on('ready', init_cluster_typeahead());
 
 </script>
 {% endblock %}

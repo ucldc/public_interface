@@ -84,7 +84,7 @@
 
 {% block sidebar %}
 <div class="row">
-  <div class="col-sm-6 col-md-12">
+<!--   <div class="col-sm-6 col-md-12">
     <div class="button__institution-tabs-container">
       <a class="button__institution-tab-collections"
       href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
@@ -94,23 +94,12 @@
         Search this collection
       </a>
     </div>
-  </div>
+  </div> -->
   <div class="col-sm-6 col-md-12">
-    {% if collection.repository|length > 1 %}
-    {% for repository in collection.repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
-        <span class="fa fa-angle-left fa-lg fa-fw"></span>
-        Go to {{ repository.name }} Page
-      </a>
-    {% endfor %}
-    {% else %}
-    {% with collection.repository.0 as repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
-        <span class="fa fa-angle-left fa-lg fa-fw"></span>
-        Go to Institution Page
-      </a>
-    {% endwith %}
-    {% endif %}
+    <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+      <span class="fa fa-angle-left fa-lg fa-fw"></span>
+      Browse Collection
+    </a>
   </div>
   <div class="col-sm-6 col-md-12">
     <div class="snapshot">

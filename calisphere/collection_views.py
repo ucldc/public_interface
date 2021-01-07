@@ -298,7 +298,7 @@ def collectionFacet(request, collection_id, facet):
     filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
 
     clusters = [getClusters(collection_url, field['field']) for field in filtered]
-    filtered_clusters = [cluster for cluster in clusters if len(cluster['values']) > 1]
+    filtered_clusters = [cluster for cluster in clusters if (cluster and len(cluster['values']) > 1)]
     clusters = filtered_clusters
 
     context.update({'item_count': item_count, 'clusters': clusters})

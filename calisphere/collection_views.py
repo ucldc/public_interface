@@ -127,6 +127,23 @@ class Collection(object):
         for repo in self.details.get('repository'):
             repo['resource_id'] = repo.get('resource_uri').split('/')[-2]
 
+    def get_custom_facets(self):
+        if hasattr(self, 'custom_facets')
+            return self.custom_facets
+        else:
+            self.custom_facets = []
+            if self.details.get('custom_facet'):
+                for custom_facet in self.details.get('custom_facet'):
+                    self.custom_facets.append(
+                        FacetFilterType(
+                            custom_facet['facet_field'],
+                            custom_facet['label'],
+                            custom_facet['facet_field'],
+                            custom_facet.get('sort_by', 'count')
+                        )
+                    )
+            return self.custom_facets
+
 
 def collectionView(request, collection_id):
     collection = Collection(collection_id)
@@ -141,17 +158,10 @@ def collectionView(request, collection_id):
         and facet_filter_type['facet'] != 'repository_data'
     ]
     # Add Custom Facet Filter Types
-    if collection.details.get('custom_facet'):
-        for custom_facet in collection.details.get('custom_facet'):
-            facet_filter_types.append(
-                FacetFilterType(
-                    custom_facet['facet_field'],
-                    custom_facet['label'],
-                    custom_facet['facet_field'],
-                    custom_facet.get('sort_by', 'count')
-                )
-            )
-    else:
+    facet_filter_types = facet_filter_types + collection.get_custom_facets()
+    # If relation_ss is not already defined as a custom facet, and is included 
+    # in search parameters, add the relation_ss facet implicitly
+    if not collection.get_custom_facets():
         if params.get('relation_ss'):
             facet_filter_types.append(
                 FacetFilterType(

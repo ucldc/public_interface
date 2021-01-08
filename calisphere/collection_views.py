@@ -144,6 +144,27 @@ class Collection(object):
                     )
             return self.custom_facets
 
+    def get_summary_data(self):
+        if hasattr(self, 'summary'):
+            return self.summary
+
+        summary_url = os.path.join(
+            settings.UCLDC_METADATA_SUMMARY,
+            '{}.json'.format(self.id),
+        )
+        self.summary = json_loads_url(summary_url)
+        if not self.summary:
+            raise Http404(f"{self.id} does not exist")
+
+        self.item_count = self.summary['item_count']
+        return self.summary
+
+    def get_item_count(self):
+        if hasattr(self, 'item_count'):
+            return self.item_count
+
+        self.get_summary_data()
+        return self.item_count
 
 def collectionView(request, collection_id):
     collection = Collection(collection_id)
@@ -422,15 +443,8 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
 
 
 def collectionMetadata(request, collection_id):
-    summary_url = os.path.join(
-        settings.UCLDC_METADATA_SUMMARY,
-        '{}.json'.format(collection_id),
-    )
-    summary_data = json_loads_url(summary_url)
-    if not summary_data:
-        raise Http404("{0} does not exist".format(collection_id))
-
     collection = Collection(collection_id)
+    summary_data = collection.get_summary_data()
 
     params = request.GET.copy()
     context = searchDefaults(params)

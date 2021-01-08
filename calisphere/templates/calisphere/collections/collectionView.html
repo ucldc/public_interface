@@ -80,6 +80,7 @@
 {% block refineSearch %}
 <div class="row">
 
+  {% if browse %}
   <div class="col-sm-6 col-md-12">
     <div class="button__institution-tabs-container">
       <a class="button__institution-tab-collections"
@@ -91,6 +92,7 @@
       </a>
     </div>
   </div>
+  {% endif %}
 
   <div class="col-sm-6 col-md-12">
     {% if collection.repository|length > 1 %}

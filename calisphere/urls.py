@@ -22,7 +22,7 @@ urlpatterns = [
         collection_views.collectionsAZ,
         name='collectionsAZ'),
     url(r'^collections/(?P<collection_id>\d*)/$',
-        collection_views.collectionView,
+        collection_views.collectionSearch,
         name='collectionView'),
     url(r'^collections/(?P<collection_id>\d*)/(?P<cluster>[^/].*)/(?P<cluster_value>.*)/$',
         collection_views.collectionFacetValue,

@@ -192,6 +192,8 @@ class Collection(object):
             for field in non_unique_fields]
 
         # double check non-uniqueness based on solr data, rather than summary_data
+        # here's an example of why this is necessary:
+        # http://calisphere-test.cdlib.org/collections/10318/metadata/ look at 'type' and 'rights'
         non_unique_facet_sets = [facet_set for facet_set in facet_sets 
             if (facet_set and len(facet_set['values']) > 1)]
         facet_sets = non_unique_facet_sets
@@ -234,7 +236,7 @@ class Collection(object):
         }
 
 
-def collectionView(request, collection_id):
+def collectionSearch(request, collection_id):
     collection = Collection(collection_id)
 
     params = request.GET.copy()
@@ -294,6 +296,7 @@ def collectionView(request, collection_id):
                 map(filter_transform, params.getlist(param_name)))
 
     context.update({
+        'browse': collection.get_facet_sets(),
         'meta_robots': None,
         'totalNumItems':
         total_items.numFound,
@@ -508,6 +511,9 @@ def getClusterThumbnails(collection_url, facet, facetValue):
 def collectionBrowse(request, collection_id):
     collection = Collection(collection_id)
     facet_sets = collection.get_facet_sets()
+
+    if len(facet_sets) == 0:
+        return redirect('calisphere:collectionView', collection_id)
 
     for facet_set in facet_sets:
         facet_set['thumbnails'] = getClusterThumbnails(

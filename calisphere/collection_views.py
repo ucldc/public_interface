@@ -53,7 +53,7 @@ def collectionsDirectory(request):
     if page - 1 > 0:
         context['prev_page'] = page - 1
 
-    return render(request, 'calisphere/collectionsRandomExplore.html', context)
+    return render(request, 'calisphere/collections/collectionsRandomExplore.html', context)
 
 
 def collectionsAZ(request, collection_letter):
@@ -86,7 +86,7 @@ def collectionsAZ(request, collection_letter):
     if page - 1 > 0:
         context['prev_page'] = page - 1
 
-    return render(request, 'calisphere/collectionsAZ.html', context)
+    return render(request, 'calisphere/collections/collectionsAZ.html', context)
 
 
 def collectionsTitles(request):
@@ -109,7 +109,7 @@ def collectionsTitles(request):
 
 
 def collectionsSearch(request):
-    return render(request, 'calisphere/collectionsTitleSearch.html', {
+    return render(request, 'calisphere/collections/collectionsTitleSearch.html', {
         'collections': [],
         'collection_q': True
     })
@@ -204,7 +204,7 @@ def collectionView(request, collection_id):
             kwargs={'collection_id': collection_id}),
     })
 
-    return render(request, 'calisphere/collectionView.html', context)
+    return render(request, 'calisphere/collections/collectionView.html', context)
 
 
 def collectionFacet(request, collection_id, facet):
@@ -303,7 +303,7 @@ def collectionFacet(request, collection_id, facet):
 
     context.update({'item_count': item_count, 'clusters': clusters})
 
-    return render(request, 'calisphere/collectionFacet.html', context )
+    return render(request, 'calisphere/collections/collectionFacet.html', context )
 
 def collectionFacetJson(request, collection_id, facet):
     if not facet in UCLDC_SCHEMA_FACETS:
@@ -419,7 +419,7 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
             }),
     })
 
-    return render(request, 'calisphere/collectionFacetValue.html', context )
+    return render(request, 'calisphere/collections/collectionFacetValue.html', context )
 
 
 def collectionMetadata(request, collection_id):
@@ -455,7 +455,7 @@ def collectionMetadata(request, collection_id):
             kwargs={'collection_id': collection_id}),
     }
 
-    return render(request, 'calisphere/collectionMetadata.html', context)
+    return render(request, 'calisphere/collections/collectionMetadata.html', context)
 
 def getClusterThumbnails(collection_url, facet, facetValue):
     escaped_cluster_value = solr_escape(facetValue)
@@ -567,5 +567,5 @@ def collectionBrowse(request, collection_id):
             kwargs={'collection_id': collection_id}),
     })
 
-    return render(request, 'calisphere/collectionBrowse.html', context)
+    return render(request, 'calisphere/collections/collectionBrowse.html', context)
 

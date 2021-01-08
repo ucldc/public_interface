@@ -1,4 +1,4 @@
-{% extends "calisphere/collectionsDirectory.html,calisphere/pjaxTemplates/collectionsDirectory.html"|pjax:request %}
+{% extends "calisphere/collections/collectionsDirectory.html,calisphere/pjaxTemplates/collectionsDirectory.html"|pjax:request %}
 {% load calisphere-extras %}
 {% load staticfiles %}
 
@@ -38,7 +38,7 @@
     <div id="js-mosaicContainer">
     {% if collections %}
   		{% for collection in collections %}
-  		  {% include "calisphere/collectionPreview.html" %}
+  		  {% include "calisphere/collections/collectionPreview.html" %}
   		{% endfor %}
     {% else %}
       <h3>Sorry, we don't have any collections starting with {{ collection_letter|upper }} yet.</h3>

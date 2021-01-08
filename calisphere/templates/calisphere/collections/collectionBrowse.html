@@ -110,7 +110,7 @@
       <h3>Collection Snapshot</h3>
         <h4><span class="collection_browse-item_count">{{ item_count|intcomma }}</span> total items in this collection</h4>
         {% for cluster in clusters %}
-          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet }}{% if cluster.facet != 'rights' %}s{% endif %}</h5>
+          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet_field }}{% if cluster.facet_field != 'rights' %}s{% endif %}</h5>
         {% endfor %}
     </div>
   </div>
@@ -129,26 +129,26 @@
   {% for cluster in clusters %}
   <div class="row explore-clusters">
     <div class="col-md-5 cluster-listing">
-      <h3>Explore {{ cluster.facet|title }}{% if cluster.facet != 'rights' %}s{% endif %} Used in this Collection</h3>
-      <h4>Three Sample {{ cluster.facet|title }}{% if cluster.facet != 'rights' %}s{% endif %}</h4>
+      <h3>Explore {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %} Used in this Collection</h3>
+      <h4>Three Sample {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %}</h4>
       <ol>
         {% for value in cluster.values %}
           {% if forloop.counter0 < 3 %}
           <li>
             {% if forloop.counter0 == 0 %}<strong>{% endif %}
-              <a href="{% url 'calisphere:collectionFacetValue' collection_id cluster.facet value.label|qencode %}?view_format=list" data-pjax="js-pageContent">{{ value.label }} ({{ value.count|intcomma }} items)</a>
+              <a href="{% url 'calisphere:collectionFacetValue' collection_id cluster.facet_field value.label|qencode %}?view_format=list" data-pjax="js-pageContent">{{ value.label }} ({{ value.count|intcomma }} items)</a>
             {% if forloop.counter0 == 0 %}</strong>{% endif %}
           </li>
           {% endif %}
         {% endfor %}
       </ol>
-      <h4>Search for a {{cluster.facet}}</h4>
-      <form class="clustersearch__form-{{cluster.facet}}" role="search" onsubmit="false()">
-        <label for="clustersearch__field-{{cluster.facet}}" class="sr-only">
-          Search for a {{cluster.facet}}
+      <h4>Search for a {{cluster.facet_field}}</h4>
+      <form class="clustersearch__form-{{cluster.facet_field}}" role="search" onsubmit="false()">
+        <label for="clustersearch__field-{{cluster.facet_field}}" class="sr-only">
+          Search for a {{cluster.facet_field}}
         </label>
         <div class="input-group">
-          <input id="clustersearch__field-{{cluster.facet}}" type="search" placeholder="Search for a {{cluster.facet}}" class="form-control">
+          <input id="clustersearch__field-{{cluster.facet_field}}" type="search" placeholder="Search for a {{cluster.facet_field}}" class="form-control">
             <span class="input-group-btn">
               <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
               </button>
@@ -157,7 +157,7 @@
         </div>
       </form>
 
-      <h4><a href="{{ form_action }}{{ cluster.facet }}/" data-pjax="js-pageContent">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet }}{% if cluster.facet != 'rights' %}s{% endif %}</a></h4>
+      <h4><a href="{{ form_action }}{{ cluster.facet_field }}/" data-pjax="js-pageContent">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet_field }}{% if cluster.facet_field != 'rights' %}s{% endif %}</a></h4>
     </div>
     <div class="col-md-7">
       <div class="cluster-thumbnail__container">
@@ -197,16 +197,16 @@
 <script>
   var init_cluster_typeahead = function() {
     {% for cluster in clusters %}
-    var {{ cluster.facet }}Clusters = new Bloodhound({
+    var {{ cluster.facet_field }}Clusters = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: '/collections/{{collection_id}}/{{ cluster.facet }}.json'
+        prefetch: '/collections/{{collection_id}}/{{ cluster.facet_field }}.json'
     });
-    $('#clustersearch__field-{{ cluster.facet }}').typeahead(null, {
-      name: '{{ cluster.facet }}Clusters',
+    $('#clustersearch__field-{{ cluster.facet_field }}').typeahead(null, {
+      name: '{{ cluster.facet_field }}Clusters',
       display: 'label',
       limit: 10,
-      source: {{ cluster.facet }}Clusters
+      source: {{ cluster.facet_field }}Clusters
     }).on('keydown', function(event) {
       var x = event.which;
       if (x === 13) {

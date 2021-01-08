@@ -166,6 +166,74 @@ class Collection(object):
         self.get_summary_data()
         return self.item_count
 
+    def _field_non_unique(self, k,v):
+        if k == 'item_count' or k == 'collection_url':
+            return False
+        if k == 'description' or k == 'transcription':
+            return False
+        if v['percent'] == 0:
+            return False
+        if v['uniq_percent'] == 100:
+            return False
+        return True
+
+    def get_facet_sets(self):
+        if hasattr(self, 'summary'):
+            summary_data = self.summary
+        else:
+            summary_data = self.get_summary_data()
+
+        non_unique_fields = [ dict({'field': k}, **v) 
+            for k,v in summary_data.items() 
+            if self._field_non_unique(k,v) ]
+        non_unique_fields.sort(key=lambda x: x['uniq_percent'], reverse=True)
+
+        facet_sets = [self.get_facets(field['field']) 
+            for field in non_unique_fields]
+
+        # double check non-uniqueness based on solr data, rather than summary_data
+        non_unique_facet_sets = [facet_set for facet_set in facet_sets 
+            if (facet_set and len(facet_set['values']) > 1)]
+        facet_sets = non_unique_facet_sets
+
+        return facet_sets
+
+    def get_facets(self, facet_field):
+        # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
+        solrParams = {
+            'facet': 'true',
+            'rows': 0,
+            'facet_field': '{}_ss'.format(facet_field),
+            'fq': 'collection_url:"{}"'.format(self.url),
+            'facet_limit': '-1',
+            'facet_mincount': 1,
+            'facet_sort': 'count',
+        }
+        solr_search = SOLR_select(**solrParams)
+
+        values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet_field))
+        if not values:
+            return None
+
+        unique = len(values)
+        records = sum(values.values())
+
+        values = [{'label': k, 'count': v, 'uri': reverse(
+            'calisphere:collectionFacetValue',
+            kwargs={
+                'collection_id': self.id,
+                'cluster': facet_field,
+                'cluster_value': urllib.parse.quote_plus(k),
+            })} for k,v in values.items()]
+
+        return {
+            'facet_field': facet_field,
+            'records': records,
+            'unique': unique,
+            'values': values
+        }
+
+
 def collectionView(request, collection_id):
     collection = Collection(collection_id)
 
@@ -245,9 +313,9 @@ def collectionView(request, collection_id):
 
 
 def collectionFacet(request, collection_id, facet):
+    collection = Collection(collection_id)
     if not facet in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(facet))
-    collection = Collection(collection_id)
 
     params = request.GET.copy()
     context = searchDefaults(params)
@@ -255,26 +323,10 @@ def collectionFacet(request, collection_id, facet):
         context['view_format'] = 'list'
 
     context.update({'facet': facet,})
-    # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
-    solrParams = {
-        'facet': 'true',
-        'rows': 0,
-        'facet_field': '{}_ss'.format(facet),
-        'fq': 'collection_url:"{}"'.format(collection.url),
-        'facet_limit': '-1',
-        'facet_mincount': 1,
-        'facet_sort': 'count',
-    }
-    solr_search = SOLR_select(**solrParams)
-
-    values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
+    facets = collection.get_facets(facet)
+    values = facets['values']
     if not values:
         raise Http404("{0} has no values".format(facet))
-
-    unique = len(values)
-    records = sum(values.values())
-
-    values = [{'label': k, 'count': v} for k,v in values.items()]
 
     if params.get('sort') == 'smallestFirst':
         values.reverse()
@@ -297,8 +349,12 @@ def collectionFacet(request, collection_id, facet):
             solr_thumbs = SOLR_select(**thumbParams)
             value['thumbnails'] = [result['reference_image_md5'] for result in solr_thumbs.results]
 
-    ratio = round((unique / records) * 100, 2)
-    context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
+    context.update({
+        'values': values, 
+        'unique': facets['unique'], 
+        'records': facets['records'], 
+        'ratio': round((facets['unique'] / facets['records']) * 100, 2)
+    })
 
     context.update({
         'title': f"{facet.capitalize()}{pluralize(values)} Used in {collection.details['name']}",
@@ -311,64 +367,28 @@ def collectionFacet(request, collection_id, facet):
             kwargs={'collection_id': collection_id, 'facet': facet}),
     })
 
-    summary_url = os.path.join(
-    settings.UCLDC_METADATA_SUMMARY,
-        '{}.json'.format(collection_id),
-    )
-    summary_data = json_loads_url(summary_url)
-    if not summary_data:
-        raise Http404("{0} does not exist".format(collection_id))
-
-    item_count = summary_data.pop('item_count')
-    del summary_data['collection_url']
-    del summary_data['description']
-    del summary_data['transcription']
-
-    filtered = [ dict({'field': k}, **v) for k,v in summary_data.items() if (v['percent'] != 0 and v['uniq_percent'] != 100) ]
-    filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
-
-    clusters = [getClusters(collection.url, field['field']) for field in filtered]
-    filtered_clusters = [cluster for cluster in clusters if (cluster and len(cluster['values']) > 1)]
-    clusters = filtered_clusters
-
-    context.update({'item_count': item_count, 'clusters': clusters})
+    context.update({
+        'item_count': collection.get_item_count(), 
+        'clusters': collection.get_facet_sets()
+    })
 
     return render(request, 'calisphere/collections/collectionFacet.html', context )
 
 def collectionFacetJson(request, collection_id, facet):
     if not facet in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(facet))
+
     collection = Collection(collection_id)
-
-    # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
-    solrParams = {
-        'facet': 'true',
-        'rows': 0,
-        'facet_field': '{}_ss'.format(facet),
-        'fq': 'collection_url:"{}"'.format(collection.url),
-        'facet_limit': '-1',
-        'facet_mincount': 1,
-        'facet_sort': 'count',
-    }
-    solr_search = SOLR_select(**solrParams)
-
-    values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
-    if not values:
+    facets = collection.get_facets(facet)
+    if not facets:
         raise Http404("{0} has no values".format(facet))
 
-    values = [{'label': k, 'count': v, 'uri': reverse(
-            'calisphere:collectionFacetValue',
-            kwargs={
-              'collection_id': collection_id,
-              'cluster': facet,
-              'cluster_value': urllib.parse.quote_plus(k),
-            })} for k,v in values.items()]
-
-    return JsonResponse(values, safe=False)
+    return JsonResponse(facets['values'], safe=False)
 
 
 def collectionFacetValue(request, collection_id, cluster, cluster_value):
     collection = Collection(collection_id)
+
     if not cluster in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(cluster))
 
@@ -476,38 +496,6 @@ def getClusterThumbnails(collection_url, facet, facetValue):
     thumbnails = [result.get('reference_image_md5') for result in solr_thumbs.results]
     return thumbnails
 
-
-def getClusters(collection_url, facet):
-    solrParams = {
-        'facet': 'true',
-        'rows': 0,
-        'facet_field': '{}_ss'.format(facet),
-        'fq': 'collection_url:"{}"'.format(collection_url),
-        'facet_limit': '-1',
-        'facet_mincount': 1,
-        'facet_sort': 'count',
-    }
-    solr_search = SOLR_select(**solrParams)
-
-    values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet))
-    if not values:
-        return None
-
-    unique = len(values)
-    records = sum(values.values())
-
-    values = [{'label': k, 'count': v} for k,v in values.items()]
-
-    thumbnails = getClusterThumbnails(collection_url, facet, values[0]['label'])
-
-    return {
-        'facet': facet,
-        'records': records,
-        'unique': unique,
-        'values': values,
-        'thumbnails': thumbnails
-    }
-
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/
 # long rights statement: http://127.0.0.1:8000/collections/26241/browse/
 # questioning grid usefulness: http://127.0.0.1:8000/collections/26935/browse/
@@ -518,54 +506,27 @@ def getClusters(collection_url, facet):
 # less useful thumbnails: http://127.0.0.1:8000/collections/26241/browse/
 
 def collectionBrowse(request, collection_id):
-    summary_url = os.path.join(
-    settings.UCLDC_METADATA_SUMMARY,
-        '{}.json'.format(collection_id),
-    )
-    summary_data = json_loads_url(summary_url)
-    if not summary_data:
-        raise Http404("{0} does not exist".format(collection_id))
-
     collection = Collection(collection_id)
+    facet_sets = collection.get_facet_sets()
 
-    item_count = summary_data.pop('item_count')
-    del summary_data['collection_url']
-    del summary_data['description']
-    del summary_data['transcription']
-
-    filtered = [ dict({'field': k}, **v) for k,v in summary_data.items() if (v['percent'] != 0 and v['uniq_percent'] != 100) ]
-    filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
-
-    clusters = [getClusters(collection.url, field['field']) for field in filtered]
-    filtered_clusters = [cluster for cluster in clusters if (cluster and len(cluster['values']) > 1)]
-    clusters = filtered_clusters
+    for facet_set in facet_sets:
+        facet_set['thumbnails'] = getClusterThumbnails(
+            collection.url, 
+            facet_set['facet_field'], 
+            facet_set['values'][0]['label']
+        )
 
     context = {
-        'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
-        'description': None,
         'collection': collection.details,
         'collection_id': collection_id,
         'UCLDC_SCHEMA_FACETS': UCLDC_SCHEMA_FACETS,
-        'clusters': clusters,
+        'item_count': collection.get_item_count(),
+        'clusters': facet_sets,
         'form_action': reverse(
             'calisphere:collectionView',
             kwargs={'collection_id': collection_id}),
     }
-
-    context.update({
-        'meta_robots': None,
-        'item_count':
-        item_count,
-        'collection':
-        collection.details,
-        'collection_id':
-        collection_id,
-        'form_action':
-        reverse(
-            'calisphere:collectionView',
-            kwargs={'collection_id': collection_id}),
-    })
 
     return render(request, 'calisphere/collections/collectionBrowse.html', context)
 

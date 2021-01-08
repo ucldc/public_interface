@@ -106,7 +106,7 @@
       <h3>Collection Snapshot</h3>
         <h4><span class="collection_browse-item_count">{{ item_count|intcomma }}</span> total items in this collection</h4>
         {% for cluster in clusters %}
-          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet }}{% if cluster.facet != 'rights' %}s{% endif %}</h5>
+          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet_field }}{% if cluster.facet_field != 'rights' %}s{% endif %}</h5>
         {% endfor %}
     </div>
   </div>

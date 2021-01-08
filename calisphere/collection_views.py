@@ -115,15 +115,21 @@ def collectionsSearch(request):
     })
 
 
-def collectionView(request, collection_id):
-    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
-    collection_details = json_loads_url(collection_url + '?format=json')
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
+class Collection(object):
 
-    for repository in collection_details.get('repository'):
-        repository['resource_id'] = repository.get('resource_uri').split(
-            '/')[-2]
+    def __init__(self, collection_id):
+        self.id = collection_id
+        self.url = f"https://registry.cdlib.org/api/v1/collection/{collection_id}/"
+        self.details = json_loads_url(f"{self.url}?format=json")
+        if not self.details:
+            raise Http404(f"{collection_id} does not exist.")
+
+        for repo in self.details.get('repository'):
+            repo['resource_id'] = repo.get('resource_uri').split('/')[-2]
+
+
+def collectionView(request, collection_id):
+    collection = Collection(collection_id)
 
     params = request.GET.copy()
     context = searchDefaults(params)
@@ -135,8 +141,8 @@ def collectionView(request, collection_id):
         and facet_filter_type['facet'] != 'repository_data'
     ]
     # Add Custom Facet Filter Types
-    if collection_details.get('custom_facet'):
-        for custom_facet in collection_details.get('custom_facet'):
+    if collection.details.get('custom_facet'):
+        for custom_facet in collection.details.get('custom_facet'):
             facet_filter_types.append(
                 FacetFilterType(
                     custom_facet['facet_field'],
@@ -157,7 +163,7 @@ def collectionView(request, collection_id):
                 )
             )
 
-    extra_filter = 'collection_url: "' + collection_url + '"'
+    extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
     solrParams = solrEncode(params, facet_filter_types)
@@ -195,7 +201,7 @@ def collectionView(request, collection_id):
         'FACET_FILTER_TYPES':
         facet_filter_types,
         'collection':
-        collection_details,
+        collection.details,
         'collection_id':
         collection_id,
         'form_action':
@@ -210,14 +216,7 @@ def collectionView(request, collection_id):
 def collectionFacet(request, collection_id, facet):
     if not facet in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(facet))
-    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
-    collection_details = json_loads_url(collection_url + '?format=json')
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
-
-    for repository in collection_details.get('repository'):
-        repository['resource_id'] = repository.get('resource_uri').split(
-            '/')[-2]
+    collection = Collection(collection_id)
 
     params = request.GET.copy()
     context = searchDefaults(params)
@@ -230,7 +229,7 @@ def collectionFacet(request, collection_id, facet):
         'facet': 'true',
         'rows': 0,
         'facet_field': '{}_ss'.format(facet),
-        'fq': 'collection_url:"{}"'.format(collection_url),
+        'fq': 'collection_url:"{}"'.format(collection.url),
         'facet_limit': '-1',
         'facet_mincount': 1,
         'facet_sort': 'count',
@@ -262,7 +261,7 @@ def collectionFacet(request, collection_id, facet):
                 'rows': 4,
                 'fl': 'reference_image_md5',
                 'fq':
-                    [f'collection_url: "{collection_url}"', f'{facet}_ss: "{escaped_cluster_value}"']
+                    [f'collection_url: "{collection.url}"', f'{facet}_ss: "{escaped_cluster_value}"']
             }
             solr_thumbs = SOLR_select(**thumbParams)
             value['thumbnails'] = [result['reference_image_md5'] for result in solr_thumbs.results]
@@ -271,10 +270,10 @@ def collectionFacet(request, collection_id, facet):
     context.update({'values': values, 'unique': unique, 'records': records, 'ratio': ratio})
 
     context.update({
-        'title': f"{facet.capitalize()}{pluralize(values)} Used in {collection_details['name']}",
+        'title': f"{facet.capitalize()}{pluralize(values)} Used in {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
         'description': None,
-        'collection': collection_details,
+        'collection': collection.details,
         'collection_id': collection_id,
         'form_action': reverse(
             'calisphere:collectionFacet',
@@ -290,14 +289,14 @@ def collectionFacet(request, collection_id, facet):
         raise Http404("{0} does not exist".format(collection_id))
 
     item_count = summary_data.pop('item_count')
-    collection_url = summary_data.pop('collection_url')
+    del summary_data['collection_url']
     del summary_data['description']
     del summary_data['transcription']
 
     filtered = [ dict({'field': k}, **v) for k,v in summary_data.items() if (v['percent'] != 0 and v['uniq_percent'] != 100) ]
     filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
 
-    clusters = [getClusters(collection_url, field['field']) for field in filtered]
+    clusters = [getClusters(collection.url, field['field']) for field in filtered]
     filtered_clusters = [cluster for cluster in clusters if (cluster and len(cluster['values']) > 1)]
     clusters = filtered_clusters
 
@@ -308,14 +307,14 @@ def collectionFacet(request, collection_id, facet):
 def collectionFacetJson(request, collection_id, facet):
     if not facet in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(facet))
-    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
+    collection = Collection(collection_id)
 
     # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
     solrParams = {
         'facet': 'true',
         'rows': 0,
         'facet_field': '{}_ss'.format(facet),
-        'fq': 'collection_url:"{}"'.format(collection_url),
+        'fq': 'collection_url:"{}"'.format(collection.url),
         'facet_limit': '-1',
         'facet_mincount': 1,
         'facet_sort': 'count',
@@ -338,19 +337,9 @@ def collectionFacetJson(request, collection_id, facet):
 
 
 def collectionFacetValue(request, collection_id, cluster, cluster_value):
-    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
-    collection_details = json_loads_url(collection_url + '?format=json')
-
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
+    collection = Collection(collection_id)
     if not cluster in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(cluster))
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
-
-    for repository in collection_details.get('repository'):
-        repository['resource_id'] = repository.get('resource_uri').split(
-            '/')[-2]
 
     params = request.GET.copy()
 
@@ -367,7 +356,7 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
         and facet_filter_type['facet'] != 'repository_data'
     ]
 
-    extra_filter = 'collection_url: "' + collection_url + '"'
+    extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
     solrParams = solrEncode(params, facet_filter_types)
@@ -398,14 +387,14 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
             context['filters'][display_name] = list(
                 map(filter_transform, params.getlist(param_name)))
 
-    collection_name = collection_details.get('name')
+    collection_name = collection.details.get('name')
     context.update({'cluster': cluster,})
     context.update({'cluster_value': parsed_cluster_value,})
     context.update({
         'meta_robots': "noindex,nofollow",
         'totalNumItems': total_items.numFound,
         'FACET_FILTER_TYPES': facet_filter_types,
-        'collection': collection_details,
+        'collection': collection.details,
         'collection_id': collection_id,
         'title': f"{cluster}: {parsed_cluster_value} ({solr_search.numFound} items) from: {collection_name}",
         'description': None,
@@ -431,22 +420,15 @@ def collectionMetadata(request, collection_id):
     if not summary_data:
         raise Http404("{0} does not exist".format(collection_id))
 
-    collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
-    collection_details = json_loads_url(collection_url + '?format=json')
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
-
-    for repository in collection_details.get('repository'):
-        repository['resource_id'] = repository.get('resource_uri').split(
-            '/')[-2]
+    collection = Collection(collection_id)
 
     params = request.GET.copy()
     context = searchDefaults(params)
     context = {
-        'title': f"Metadata report for {collection_details['name']}",
+        'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
         'description': None,
-        'collection': collection_details,
+        'collection': collection.details,
         'collection_id': collection_id,
         'summary_data': summary_data,
         'UCLDC_SCHEMA_FACETS': UCLDC_SCHEMA_FACETS,
@@ -520,31 +502,25 @@ def collectionBrowse(request, collection_id):
     if not summary_data:
         raise Http404("{0} does not exist".format(collection_id))
 
+    collection = Collection(collection_id)
+
     item_count = summary_data.pop('item_count')
-    collection_url = summary_data.pop('collection_url')
+    del summary_data['collection_url']
     del summary_data['description']
     del summary_data['transcription']
 
     filtered = [ dict({'field': k}, **v) for k,v in summary_data.items() if (v['percent'] != 0 and v['uniq_percent'] != 100) ]
     filtered.sort(key=lambda x: x['uniq_percent'], reverse=True)
 
-    clusters = [getClusters(collection_url, field['field']) for field in filtered]
+    clusters = [getClusters(collection.url, field['field']) for field in filtered]
     filtered_clusters = [cluster for cluster in clusters if (cluster and len(cluster['values']) > 1)]
     clusters = filtered_clusters
 
-    collection_details = json_loads_url(collection_url + '?format=json')
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
-
-    for repository in collection_details.get('repository'):
-        repository['resource_id'] = repository.get('resource_uri').split(
-            '/')[-2]
-
     context = {
-        'title': f"Metadata report for {collection_details['name']}",
+        'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
         'description': None,
-        'collection': collection_details,
+        'collection': collection.details,
         'collection_id': collection_id,
         'UCLDC_SCHEMA_FACETS': UCLDC_SCHEMA_FACETS,
         'clusters': clusters,
@@ -558,7 +534,7 @@ def collectionBrowse(request, collection_id):
         'item_count':
         item_count,
         'collection':
-        collection_details,
+        collection.details,
         'collection_id':
         collection_id,
         'form_action':

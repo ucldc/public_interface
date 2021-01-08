@@ -128,7 +128,7 @@ class Collection(object):
             repo['resource_id'] = repo.get('resource_uri').split('/')[-2]
 
     def get_custom_facets(self):
-        if hasattr(self, 'custom_facets')
+        if hasattr(self, 'custom_facets'):
             return self.custom_facets
         else:
             self.custom_facets = []

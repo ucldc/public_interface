@@ -166,7 +166,7 @@
 <div class="row">
   {% for value in values %}
     <div class="col-xs-6 col-sm-6 col-md-3">
-      <a href="./{{ value.label|qencode }}/?view_format=list" data-pjax="js-pageContent">
+      <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">
       <div class="cluster-container">
         <div class="cluster-thumbnail__container">
           {% for thumb in value.thumbnails %}
@@ -196,7 +196,7 @@
             {% endfor %}
           </div>
         </div>
-        <a href="./{{ value.label|qencode }}/?view_format=list" data-pjax="js-pageContent">{{ value.label }}</a> ({{value.count|intcomma}})
+        <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }}</a> ({{value.count|intcomma}})
       </div>
       </a>
     </div>

@@ -418,6 +418,9 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
     solr_search = SOLR_select(**solrParams)
     context['search_results'] = solr_search.results
     context['numFound'] = solr_search.numFound
+    if context['numFound'] == 1:
+        return redirect('calisphere:itemView',
+            solr_search.results[0]['id'])
     total_items = SOLR_select(**{**solrParams, **{
         'q': '',
         'fq': [extra_filter],

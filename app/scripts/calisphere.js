@@ -1,4 +1,4 @@
-/* global QueryManager, GlobalSearchFormView, setupComponents */
+/* global QueryManager, GlobalSearchFormView, setupComponents, clusters */
 /* exported get_cali_ga_dimensions, get_inst_ga_dimensions */
 
 /* globals Modernizr: false */
@@ -224,6 +224,26 @@ $(document).ready(function() {
   }
 });
 
+var cluster_search = function(col_id, facet_field) {
+  var clusterSearch = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: '/collections/' + col_id + '/' + facet_field + '.json'
+  });
+  $('#clustersearch__field-' + facet_field).typeahead(null, {
+    name: facet_field + 'Clusters',
+    display: 'label',
+    limit: 10,
+    source: clusterSearch
+  }).on('keydown', function(event) {
+    var x = event.which;
+    if (x === 13) {
+      event.preventDefault();
+    }
+  }).bind('typeahead:selected', function(obj, datum) {
+    window.location = datum.uri;
+  });
+};
 
 var on_ready_pjax_end_handler = function() {
   // send google analytics on pjax pages 
@@ -272,6 +292,12 @@ var on_ready_pjax_end_handler = function() {
       window.location = datum.uri;
     });
   } // end title search
+
+  if ($('.cluster-listing').length) {
+    for (var i=0; i<clusters.clusters.length; i++) {
+      cluster_search(clusters.collection_id, clusters.clusters[i]);
+    }
+  }
 };
 $(document).on('pjax:end', on_ready_pjax_end_handler);
 

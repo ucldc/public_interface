@@ -191,35 +191,16 @@
     </div>
   </div>
   {% endfor %}
-{% endblock %}
 
-{% block footerScripts %}
-<script>
-  var init_cluster_typeahead = function() {
-    {% for cluster in clusters %}
-    var {{ cluster.facet_field }}Clusters = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: '/collections/{{collection_id}}/{{ cluster.facet_field }}.json'
-    });
-    $('#clustersearch__field-{{ cluster.facet_field }}').typeahead(null, {
-      name: '{{ cluster.facet_field }}Clusters',
-      display: 'label',
-      limit: 10,
-      source: {{ cluster.facet_field }}Clusters
-    }).on('keydown', function(event) {
-      var x = event.which;
-      if (x === 13) {
-        event.preventDefault();
-      }
-    }).bind('typeahead:selected', function(obj, datum) {
-      window.location = datum.uri;
-    });
-    {% endfor %}
-  }
+  <script>
+  var cluster_fields = [];
+  {% for cluster in clusters %}
+  cluster_fields.push('{{ cluster.facet_field }}');
+  {% endfor %}
 
-  $(document).on('pjax:end', init_cluster_typeahead());
-  $(document).on('ready', init_cluster_typeahead());
-
-</script>
+  var clusters = {
+    'collection_id': {{collection_id}},
+    'clusters': cluster_fields
+  };
+  </script>
 {% endblock %}

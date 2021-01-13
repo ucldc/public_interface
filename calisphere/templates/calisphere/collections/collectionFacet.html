@@ -212,23 +212,3 @@
 {% endif %}
 
 {% endblock %}
-
-{% block footerScripts %}
-<script>
-  $(document).ready(function() {
-    $('.js-view_format-toggle').click(function(e) {
-      e.preventDefault();
-      if ($(e.currentTarget).attr('id') === 'list') {
-        $('input[name=view_format]').val('list');
-      } else if ($(e.currentTarget).attr('id') === 'grid') {
-        $('input[name=view_format]').val('grid');
-      }
-      $('#js-collectionFacetForm').submit();
-    });
-
-    $('#js-sort-selector').change(function(e) {
-      $('#js-collectionFacetForm').submit();
-    });
-  });
-</script>
-{% endblock %}

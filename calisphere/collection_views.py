@@ -188,8 +188,7 @@ class Collection(object):
             if self._field_non_unique(k,v) ]
         non_unique_fields.sort(key=lambda x: x['uniq_percent'], reverse=True)
 
-        facet_sets = [self.get_facets(field['field']) 
-            for field in non_unique_fields]
+        facet_sets = self.get_facets([f['field'] for f in non_unique_fields])
 
         # double check non-uniqueness based on solr data, rather than summary_data
         # here's an example of why this is necessary:
@@ -200,12 +199,12 @@ class Collection(object):
 
         return facet_sets
 
-    def get_facets(self, facet_field):
+    def get_facets(self, facet_fields):
         # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
         solrParams = {
             'facet': 'true',
             'rows': 0,
-            'facet_field': '{}_ss'.format(facet_field),
+            'facet_field': [f'{ff}_ss' for ff in facet_fields],
             'fq': 'collection_url:"{}"'.format(self.url),
             'facet_limit': '-1',
             'facet_mincount': 1,
@@ -213,27 +212,31 @@ class Collection(object):
         }
         solr_search = SOLR_select(**solrParams)
 
-        values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet_field))
-        if not values:
-            return None
+        facets = []
+        for facet_field in facet_fields:
+            values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet_field))
+            if not values:
+                return None
 
-        unique = len(values)
-        records = sum(values.values())
+            unique = len(values)
+            records = sum(values.values())
 
-        values = [{'label': k, 'count': v, 'uri': reverse(
-            'calisphere:collectionFacetValue',
-            kwargs={
-                'collection_id': self.id,
-                'cluster': facet_field,
-                'cluster_value': urllib.parse.quote_plus(k),
-            })} for k,v in values.items()]
+            values = [{'label': k, 'count': v, 'uri': reverse(
+                'calisphere:collectionFacetValue',
+                kwargs={
+                    'collection_id': self.id,
+                    'cluster': facet_field,
+                    'cluster_value': urllib.parse.quote_plus(k),
+                })} for k,v in values.items()]
 
-        return {
-            'facet_field': facet_field,
-            'records': records,
-            'unique': unique,
-            'values': values
-        }
+            facets.append({
+                'facet_field': facet_field,
+                'records': records,
+                'unique': unique,
+                'values': values
+            })
+
+        return facets 
 
 
 def collectionSearch(request, collection_id):
@@ -326,7 +329,7 @@ def collectionFacet(request, collection_id, facet):
         context['view_format'] = 'list'
 
     context.update({'facet': facet,})
-    facets = collection.get_facets(facet)
+    facets = collection.get_facets([facet])[0]
     values = facets['values']
     if not values:
         raise Http404("{0} has no values".format(facet))
@@ -382,7 +385,7 @@ def collectionFacetJson(request, collection_id, facet):
         raise Http404("{} does not exist".format(facet))
 
     collection = Collection(collection_id)
-    facets = collection.get_facets(facet)
+    facets = collection.get_facets([facet])[0]
     if not facets:
         raise Http404("{0} has no values".format(facet))
 

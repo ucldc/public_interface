@@ -298,6 +298,22 @@ var on_ready_pjax_end_handler = function() {
       cluster_search(clusters.collection_id, clusters.clusters[i]);
     }
   }
+
+  if ($('#js-collectionFacetForm').length) {
+    $('.js-view_format-toggle').click(function(e) {
+      e.preventDefault();
+      if ($(e.currentTarget).attr('id') === 'list') {
+        $('input[name=view_format]').val('list');
+      } else if ($(e.currentTarget).attr('id') === 'grid') {
+        $('input[name=view_format]').val('grid');
+      }
+      $('#js-collectionFacetForm').submit();
+    });
+
+    $('#js-sort-selector').change(function() {
+      $('#js-collectionFacetForm').submit();
+    });
+  }
 };
 $(document).on('pjax:end', on_ready_pjax_end_handler);
 

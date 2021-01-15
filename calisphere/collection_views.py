@@ -299,7 +299,8 @@ def collectionSearch(request, collection_id):
                 map(filter_transform, params.getlist(param_name)))
 
     context.update({
-        'browse': collection.get_facet_sets(),
+        # 'browse': collection.get_facet_sets(),
+        'browse': True,
         'meta_robots': None,
         'totalNumItems':
         total_items.numFound,

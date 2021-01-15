@@ -130,7 +130,11 @@
   <div class="row explore-clusters">
     <div class="col-md-5 cluster-listing">
       <h3>Explore {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %} Used in this Collection</h3>
+      {% if cluster.unique >= 3 %}
       <h4>Three Sample {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %}</h4>
+      {% else %}
+      <h4>{{ cluster.unique|apnumber|title }} Unique {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %}
+      {% endif %}</h4>
       <ol>
         {% for value in cluster.values %}
           {% if forloop.counter0 < 3 %}

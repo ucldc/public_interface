@@ -154,7 +154,7 @@ class Collection(object):
         )
         self.summary = json_loads_url(summary_url)
         if not self.summary:
-            raise Http404(f"{self.id} does not exist")
+            raise Http404(f"{self.id} does not have summary data")
 
         self.item_count = self.summary['item_count']
         return self.summary
@@ -163,38 +163,71 @@ class Collection(object):
         if hasattr(self, 'item_count'):
             return self.item_count
 
-        self.get_summary_data()
+        solrParams = {
+            'facet': 'false',
+            'rows': 0,
+            'fq': 'collection_url:"{}"'.format(self.url),
+        }
+        solr_search = SOLR_select(**solrParams)
+        self.item_count = solr_search.numFound
         return self.item_count
 
-    def _field_non_unique(self, k,v):
-        if k == 'item_count' or k == 'collection_url':
+    # def _summary_field_non_unique(self, k,v):
+    #     # this is used to filter the list of fields given to us by summary_data
+    #     # in order to determine which fields to list on the collection browse page
+
+    #     if k == 'item_count' or k == 'collection_url':
+    #         return False
+    #     if k == 'description' or k == 'transcription':
+    #         return False
+    #     if v['percent'] == 0:
+    #         return False
+    #     if v['uniq_percent'] == 100:
+    #         return False
+    #     return True
+
+    def _check_non_unique(self, facet_set):
+        if not facet_set:
             return False
-        if k == 'description' or k == 'transcription':
+        if len(facet_set['values']) < 1:
             return False
-        if v['percent'] == 0:
+
+        # exclude homogenous facet values; ie: all 10 records have type: image
+        if len(facet_set['values']) == 1 and facet_set['values'][0]['count'] == self.item_count:
+            # although technically, this could mean that
+            # 8 records have type: [image]
+            # 1 record has type: [image, image]
+            # 1 record has type: None
             return False
-        if v['uniq_percent'] == 100:
+
+        # exclude completely unique facet values
+        if facet_set['values'][0]['count'] == 1:
             return False
+
         return True
 
     def get_facet_sets(self):
-        if hasattr(self, 'summary'):
-            summary_data = self.summary
-        else:
-            summary_data = self.get_summary_data()
+        # # original - uses the summary data to hone in on non-unique fields
 
-        non_unique_fields = [ dict({'field': k}, **v) 
-            for k,v in summary_data.items() 
-            if self._field_non_unique(k,v) ]
-        non_unique_fields.sort(key=lambda x: x['uniq_percent'], reverse=True)
+        # if hasattr(self, 'summary'):
+        #     summary_data = self.summary
+        # else:
+        #     summary_data = self.get_summary_data()
 
-        facet_sets = self.get_facets([f['field'] for f in non_unique_fields])
+        # non_unique_fields = [ dict({'field': k}, **v) 
+        #     for k,v in summary_data.items() 
+        #     if self._summary_field_non_unique(k,v) ]
+        # non_unique_fields.sort(key=lambda x: x['uniq_percent'], reverse=True)
+
+        # facet_sets = self.get_facets([f['field'] for f in non_unique_fields])
+
+        facet_sets = self.get_facets(UCLDC_SCHEMA_FACETS)
 
         # double check non-uniqueness based on solr data, rather than summary_data
         # here's an example of why this is necessary:
         # http://calisphere-test.cdlib.org/collections/10318/metadata/ look at 'type' and 'rights'
         non_unique_facet_sets = [facet_set for facet_set in facet_sets 
-            if (facet_set and len(facet_set['values']) > 1)]
+            if self._check_non_unique(facet_set)]
         facet_sets = non_unique_facet_sets
 
         return facet_sets
@@ -211,12 +244,13 @@ class Collection(object):
             'facet_sort': 'count',
         }
         solr_search = SOLR_select(**solrParams)
+        self.item_count = solr_search.numFound
 
         facets = []
         for facet_field in facet_fields:
             values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet_field))
             if not values:
-                return None
+                facets.append(None)
 
             unique = len(values)
             records = sum(values.values())
@@ -299,8 +333,8 @@ def collectionSearch(request, collection_id):
                 map(filter_transform, params.getlist(param_name)))
 
     context.update({
-        # 'browse': collection.get_facet_sets(),
-        'browse': True,
+        'browse': collection.get_facet_sets(),
+        # 'browse': True,
         'meta_robots': None,
         'totalNumItems':
         total_items.numFound,
@@ -322,7 +356,7 @@ def collectionSearch(request, collection_id):
 def collectionFacet(request, collection_id, facet):
     collection = Collection(collection_id)
     if not facet in UCLDC_SCHEMA_FACETS:
-        raise Http404("{} does not exist".format(facet))
+        raise Http404("{} is not a valid facet".format(facet))
 
     params = request.GET.copy()
     context = searchDefaults(params)
@@ -331,9 +365,12 @@ def collectionFacet(request, collection_id, facet):
 
     context.update({'facet': facet,})
     facets = collection.get_facets([facet])[0]
+    if not facets:
+        raise Http404("{0} has no facet values".format(facet))
+
     values = facets['values']
     if not values:
-        raise Http404("{0} has no values".format(facet))
+        raise Http404("{0} has no facet values".format(facet))
 
     if params.get('sort') == 'smallestFirst':
         values.reverse()
@@ -383,12 +420,12 @@ def collectionFacet(request, collection_id, facet):
 
 def collectionFacetJson(request, collection_id, facet):
     if not facet in UCLDC_SCHEMA_FACETS:
-        raise Http404("{} does not exist".format(facet))
+        raise Http404("{} is not a valid facet".format(facet))
 
     collection = Collection(collection_id)
     facets = collection.get_facets([facet])[0]
     if not facets:
-        raise Http404("{0} has no values".format(facet))
+        raise Http404("{0} has no facet values".format(facet))
 
     return JsonResponse(facets['values'], safe=False)
 
@@ -397,7 +434,7 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
     collection = Collection(collection_id)
 
     if not cluster in UCLDC_SCHEMA_FACETS:
-        raise Http404("{} does not exist".format(cluster))
+        raise Http404("{} is not a valid facet".format(cluster))
 
     params = request.GET.copy()
 

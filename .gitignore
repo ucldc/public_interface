@@ -29,3 +29,4 @@ media_root/
 ucldc-*.zip
 exhibits
 .pa11yci/screencaptures/
+app/scripts/ThreeDViewer/GLTFLoader1.js

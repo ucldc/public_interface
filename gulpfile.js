@@ -51,7 +51,7 @@ gulp.task('minifyCss', function() {
 });
 
 gulp.task('js-build', function() {
-  return gulp.src('app/scripts/{,**/}*.js')
+  return gulp.src(['app/scripts/{,**/}*.js', '!app/scripts/ThreeDViewer/**'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish))
     .pipe(uglify())
@@ -92,7 +92,7 @@ gulp.task('modernizr-serve', function() {
 });
 
 gulp.task('js-serve', function() {
-	return gulp.src('app/scripts/{,**/}*.js')
+	return gulp.src(['app/scripts/{,**/}*.js', '!app/scripts/ThreeDViewer/**'])
   .pipe(jshint())
   .pipe(jshint.reporter(stylish))
   .pipe(gulp.dest('.tmp/scripts'));
@@ -194,6 +194,13 @@ gulp.task('publish', function(cb) {
   });
 });
 
+gulp.task('threedviewer-build', function() {
+  return spawn('npm run build-threedviewer', {
+    stdio: 'inherit',
+    shell: true,
+  });
+});
+
 // we should have tests
 gulp.task('test', gulp.series('clean'));
 
@@ -206,7 +213,7 @@ gulp.task('build', gulp.series('clean', gulp.parallel(
   'image-build',
   'copy-ico-png-txt-webp-htaccss',
   'copy-openseadragon-files'
-  ), 'modernizr', 'html-build', 'fonts-build', 'minifyCss', 'minifyJS'));
+  ), 'modernizr', 'html-build', 'fonts-build', 'minifyCss', 'minifyJS', 'threedviewer-build'));
 
 gulp.task('default', gulp.series('build'));
 

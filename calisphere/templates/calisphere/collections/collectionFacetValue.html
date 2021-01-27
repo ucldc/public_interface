@@ -62,8 +62,6 @@
 
   <div class="col-md-9">
     <div class="collection-intro__about">
-      <p>These items from the <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a> all share the same {{ cluster }}: {{ cluster_value }}.</p>
-
       {% if 'description' in collection %}
       <h3 class="collection-intro__about-heading">About this Collection</h3>
         <span class="collection-intro__about-description">
@@ -117,8 +115,9 @@
 
 
 {% block objectsFound %}
-{{ numFound|intcomma }} item{{ numFound|pluralize }} found in this cluster
+{{ numFound|intcomma }} item{{ numFound|pluralize }} from this collection all share the same {{cluster}}: {{cluster_value}}
 
+<!-- <p>These items from the <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a> all share the same {{ cluster }}: {{ cluster_value }}.</p> -->
 {% endblock %}
 
 {% block relatedCollections %}

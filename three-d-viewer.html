@@ -3,7 +3,7 @@
 <html class="no-js no-jquery">
   <head>
     <meta charset="utf-8">
-    <title>Shapes</title>
+    <title>3D Viewer Component</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="apple-touch-icon-precomposed" href="/favicon-152x152.png?v=2">
@@ -14,7 +14,7 @@
     <script src="scripts/vendor/modernizr.js"></script>
 
   </head>
-  <body class="column-test shapes-test">
+  <body class="">
     <!--[if lt IE 10]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -22,72 +22,32 @@
     <div class="container-fluid">
 
 
-      <h1>Calisphere UI Library</h1>
+<h1>Calisphere UI Library</h1>
 
-      <h2>Shapes</h2>
+<h2>3D Viewer</h2>
 
-      <!-- Begin Component -->
+<div class="threedviewer">
+  <div id="js-threedviewer__container" class="threedviewer__container">
+    <div id="js-threedviewer__loadstatus" class="threedviewer__loadstatus">
+      <div id="js-threedviewer__loadstatus-label" class="threedviewer__loadstatus-label"></div>
+      <progress id="js-threedviewer__progressbar" class="threedviewer__progressbar" value="0" max="100"></progress>
+    </div>
+  </div>
+  <div class="threedviewer__controls">
+    <button id="js-threedviewer__fullscreen">Fullscreen</button>
+    <label id="js-threedviewer__intensitylabel" class="threedviewer__intensitylabel" for="js-threedviewer__intensityrange">Light Intensity:</label>
+    <input id="js-threedviewer__intensityrange" class="threedviewer__intensityrange" type="range" name="intensity" min="15" max="35" step="0.1" value="25">
+    <button id="js-threedviewer__resetcamera">Reset</button>
+    <input id="js-threedviewer__directions-toggle" type="checkbox">
+    <label for="js-threedviewer__directions-toggle">Show how to move object</label>
+    <ul id="js-threedviewer__directions-panel" class="threedviewer__directions" hidden>
+      <li><strong>Mouse:</strong> drag left button to rotate, scroll wheel to zoom, drag left button and hold ctrl key to pan</li>
+      <li><strong>Keyboard:</strong> arrow keys to rotate, W, A, S, D keys to pan and zoom</li>
+      <li><strong>Touch:</strong> drag one finger to rotate, pinch or spread two fingers to zoom, drag two fingers to pan</li>
+    </ul>
+  </div>
+</div>
 
-      <h3>Test from <a href="http://css-tricks.com/examples/ShapesOfCSS/">http://css-tricks.com/examples/ShapesOfCSS/</a></h3>
-
-      <div id="callout-test">
-        Here is some text.
-      </div>
-
-      <h3>Callout with Right Arrow</h3>
-      
-      <div id="callout-rt">
-        Here is some text.
-      </div>
-
-      <h3>Callout with Arrow Overlapping Fixed Container</h3>
-
-      <div id="call">
-      
-        <div id="call-object">
-          Here is some text.
-        </div>
-
-      </div>
-
-      <div id="call-object-aside">
-        Here is some text.
-      </div>
-
-      <h3>Callout within Bootstrap Grid</h3>
-
-      <div class="container-fluid">
-
-        <div class="row">
-          <div class="col-xs-12 col-sm-3">
-            <div id="call-object">
-              Here is some text.
-            </div>
-          </div>
-          <div class="col-xs-12 col-sm-3">
-              Here is some text.
-          </div>
-          <div class="col-xs-12 col-sm-3">
-              Here is some text.
-          </div>
-          <div class="col-xs-12 col-sm-3">
-              Here is some text.
-          </div>
-        </div>
-
-        <h3>Left Arrow Bubble in Fixed Container</h3>
-
-        <div id="arrow-bubble">
-
-          <div id="arrow-bubble__object">
-            Here is some text.
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- End Component -->
 
 
   </div> <!-- end of .container-fluid -->

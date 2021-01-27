@@ -83,7 +83,7 @@
   </div>
   
   <div class="exhibit__items">
-    <h2 class="exhibit__items-header">22 exhibition items</h2><a href="#">View all</a>
+    <h2 class="exhibit__items-header">22 exhibition items</h2><a class="exhibit__view-all" href="#">View all</a>
     
     <div class="row thumbnail">
 
@@ -185,7 +185,7 @@
       
     </div>
     
-    <div class="row text-right"><a href="#">View all</a></div>
+    <div class="row text-right"><a class="exhibit__view-all" href="#">View all</a></div>
   </div>
   
   <div class="row">
@@ -445,6 +445,9 @@
   <script src="scripts/calisphere.js"></script>
 
   <script src="scripts/calisphere-home.js"></script>
+
+  <!-- JS files in scripts/ThreeDViewer are bundled by scripts in package.json, not by Gulp tasks: -->
+  <script src="scripts/ThreeDViewer/main.js"></script>
 
 </body>
 </html>

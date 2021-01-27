@@ -22,6 +22,9 @@
     <div class="container-fluid">
 
 
+  <a href="#js-pageContent" class="skipnav">Skip to main content</a>
+
+
   <header class="header">
   <button class="header__mobile-nav-button" aria-label="navigation">
     <i class="fa fa-bars"></i>
@@ -64,9 +67,11 @@
 </header>
 
 
-  <h1>About Calisphere</h1>
+  <main id="js-pageContent">
 
-  
+    <h1>About Calisphere</h1>
+
+    
 <!-- Begin Static About Component -->
 
 <div class="static">
@@ -108,11 +113,13 @@
 <!-- End Static About Component -->
 
 
-  <aside class="col-sm-4 sidebar">
+	<aside class="col-sm-4 sidebar">
   <h2>Share your story</h2>
   <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it. Stories like yours help us obtain additional funding so we can continue to grow and improve the site.</p><p>Please <a href="/contact/" data-pjax="js-pageContent">send us a message</a>.</p>
 </aside>
 
+
+  </main>
 
   <footer class="footer">
   <a class="footer__logo" href="/">
@@ -193,6 +200,9 @@
   <script src="scripts/calisphere.js"></script>
 
   <script src="scripts/calisphere-home.js"></script>
+
+  <!-- JS files in scripts/ThreeDViewer are bundled by scripts in package.json, not by Gulp tasks: -->
+  <script src="scripts/ThreeDViewer/main.js"></script>
 
 </body>
 </html>

@@ -171,31 +171,45 @@
       <div class="cluster-container">
         <div class="cluster-thumbnail__container">
           {% for thumb in value.thumbnails %}
-            {% if forloop.counter0 <= 1 %}
-            <div class="cluster-thumbnail__{{forloop.counter0}}"
-              style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb }})">
-<!--               <img class="thumbnail__image"
-                src="{{ thumbnailUrl }}crop/210x210/{{ thumb }}"
-                    srcset="{{ thumbnailUrl }}crop/210x210/{{ thumb }} 60w, {{ thumbnailUrl }}crop/310x310/{{ thumb }} 50w"
-                    sizes="100vw"
-                    alt=""> -->
-            </div>
+            {% if forloop.counter0 == 1 %}
+            <div class="cluster-thumbnail__container2">
             {% endif %}
-          {% endfor %}
-          <div class="cluster-thumbnail__container2">
-            {% for thumb in value.thumbnails %}
-              {% if forloop.counter0 > 1 %}
-              <div class="cluster-thumbnail__{{forloop.counter0}}" style="
-                background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb }})">
-<!--                 <img class="thumbnail__image"
-                  src="{{ thumbnailUrl }}crop/210x210/{{ thumb }}"
-                      srcset="{{ thumbnailUrl }}crop/210x210/{{ thumb }} 60w, {{ thumbnailUrl }}crop/310x310/{{ thumb }} 50w"
-                      sizes="100vw"
-                      alt=""> -->
-              </div>
+
+            <div class="cluster-thumbnail__{{forloop.counter0}}"
+              style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
+
+              {% if 'reference_image_md5' in thumb %}
+                {% if thumb.type_ss.0|lower == "moving image" %}
+                <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
+                {% elif thumb.type_ss.0|lower == "sound"%}
+                <div class="thumbnail__overlay-icon fa-volume-up"></div>
+                {# elif thumb.type_ss.0|lower == "text" #}
+                <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
+                {% elif thumb.type_ss.0|lower == "dataset" %}
+                <div class="thumbnail__overlay-icon fa-bar-chart"></div>
+                {% endif %}
+
+              {% else %}
+                {% if thumb.type_ss.0|lower == "moving image" %}
+                <div class="thumbnail__tile-icon fa-play-circle-o"></div>
+                {% elif thumb.type_ss.0|lower == "sound"%}
+                <div class="thumbnail__tile-icon fa-volume-up"></div>
+                {% elif thumb.type_ss.0|lower == "text"%}
+                <div class="thumbnail__tile-icon fa-file-text-o"></div>
+                {% elif thumb.type_ss.0|lower == "dataset" %}
+                <div class="thumbnail__tile-icon fa-bar-chart"></div>
+                {% elif thumb.type_ss.0|lower == "image" %}
+                <div class="thumbnail__tile-icon fa-picture-o"></div>
+                {% endif %}
               {% endif %}
-            {% endfor %}
+              
+            </div>
+          {% endfor %}
+
+          {% if value.thumbnails|length > 1 %}
           </div>
+          {% endif %}
+
         </div>
         <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }}</a> ({{value.count|intcomma}})
       </div>

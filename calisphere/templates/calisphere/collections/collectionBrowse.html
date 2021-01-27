@@ -167,78 +167,54 @@
     </div>
     <a href="{{cluster.values.0.uri}}" data-pjax="js-pageContent">
     <div class="col-md-7">
-      <div class="cluster-thumbnail__container">
+      <div class="browse-cluster-thumbnail__container">
         {% for thumb in cluster.thumbnails %}
-          {% if forloop.counter0 <= 0 %}
-          <div class="cluster-thumbnail__{{forloop.counter0}}"
+          {% if forloop.counter0 == 1 %}
+          <div class="browse-cluster-thumbnail__container2">
+          {% endif %}
+          {% if forloop.counter0 == 2 %}
+          <div class="browse-cluster-thumbnail__container3">
+          {% endif %}
+
+          <div class="browse-cluster-thumbnail__{{forloop.counter0}}"
             style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
 
-          {% if 'reference_image_md5' in thumb %}
-            {% if thumb.type_ss.0|lower == "moving image" %}
-            <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
-            {% elif thumb.type_ss.0|lower == "sound"%}
-            <div class="thumbnail__overlay-icon fa-volume-up"></div>
-            {# elif thumb.type_ss.0|lower == "text" #}
-            <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
-            {% elif thumb.type_ss.0|lower == "dataset" %}
-            <div class="thumbnail__overlay-icon fa-bar-chart"></div>
-            {% endif %}
+              {% if 'reference_image_md5' in thumb %}
+                {% if thumb.type_ss.0|lower == "moving image" %}
+                <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
+                {% elif thumb.type_ss.0|lower == "sound"%}
+                <div class="thumbnail__overlay-icon fa-volume-up"></div>
+                {# elif thumb.type_ss.0|lower == "text" #}
+                <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
+                {% elif thumb.type_ss.0|lower == "dataset" %}
+                <div class="thumbnail__overlay-icon fa-bar-chart"></div>
+                {% endif %}
 
-          {% else %}
-            {% if thumb.type_ss.0|lower == "moving image" %}
-            <div class="thumbnail__tile-icon fa-play-circle-o"></div>
-            {% elif thumb.type_ss.0|lower == "sound"%}
-            <div class="thumbnail__tile-icon fa-volume-up"></div>
-            {% elif thumb.type_ss.0|lower == "text"%}
-            <div class="thumbnail__tile-icon fa-file-text-o"></div>
-            {% elif thumb.type_ss.0|lower == "dataset" %}
-            <div class="thumbnail__tile-icon fa-bar-chart"></div>
-            {% elif thumb.type_ss.0|lower == "image" %}
-            <div class="thumbnail__tile-icon fa-picture-o"></div>
-            {% endif %}
-          {% endif %}
+              {% else %}
+                {% if thumb.type_ss.0|lower == "moving image" %}
+                <div class="thumbnail__tile-icon fa-play-circle-o"></div>
+                {% elif thumb.type_ss.0|lower == "sound"%}
+                <div class="thumbnail__tile-icon fa-volume-up"></div>
+                {% elif thumb.type_ss.0|lower == "text"%}
+                <div class="thumbnail__tile-icon fa-file-text-o"></div>
+                {% elif thumb.type_ss.0|lower == "dataset" %}
+                <div class="thumbnail__tile-icon fa-bar-chart"></div>
+                {% elif thumb.type_ss.0|lower == "image" %}
+                <div class="thumbnail__tile-icon fa-picture-o"></div>
+                {% endif %}
+              {% endif %}
 
           </div>
-          {% endif %}
         {% endfor %}
-        <div class="cluster-thumbnail__container2">
-          {% for thumb in cluster.thumbnails %}
-            {% if forloop.counter0 > 0 %}
-            <div class="cluster-thumbnail__{{forloop.counter0}}" style="
-              background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
-
-            {% if 'reference_image_md5' in thumb %}
-              {% if thumb.type_ss.0|lower == "moving image" %}
-              <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
-              {% elif thumb.type_ss.0|lower == "sound"%}
-              <div class="thumbnail__overlay-icon fa-volume-up"></div>
-              {# elif thumb.type_ss.0|lower == "text" #}
-              <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
-              {% elif thumb.type_ss.0|lower == "dataset" %}
-              <div class="thumbnail__overlay-icon fa-bar-chart"></div>
-              {% endif %}
-
-            {% else %}
-              {% if thumb.type_ss.0|lower == "moving image" %}
-              <div class="thumbnail__tile-icon fa-play-circle-o"></div>
-              {% elif thumb.type_ss.0|lower == "sound"%}
-              <div class="thumbnail__tile-icon fa-volume-up"></div>
-              {% elif thumb.type_ss.0|lower == "text"%}
-              <div class="thumbnail__tile-icon fa-file-text-o"></div>
-              {% elif thumb.type_ss.0|lower == "dataset" %}
-              <div class="thumbnail__tile-icon fa-bar-chart"></div>
-              {% elif thumb.type_ss.0|lower == "image" %}
-              <div class="thumbnail__tile-icon fa-picture-o"></div>
-              {% endif %}
-            {% endif %}
-
-            </div>
-            {% endif %}
-          {% endfor %}
-          <div class="cluster-thumbnail__{{cluster.thumbnails|length}} cluster-thumbnail__description">
+          {% if cluster.thumbnails|length == 2 %}
+          <div class="browse-cluster-thumbnail__container3">
+          {% endif %}
+          <div class="browse-cluster-thumbnail__{{cluster.thumbnails|length}} browse-cluster-thumbnail__description">
             View all items with {{ cluster.facet_field }} "{{cluster.values.0.label|truncatewords:4}}" in this collection.
           </div>
-        </div>
+        {% if cluster.thumbnails|length >= 2 %}
+        </div></div>
+        {% endif %}
       </div>
     </div>
     </a>

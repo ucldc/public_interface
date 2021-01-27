@@ -385,13 +385,13 @@ def collectionFacet(request, collection_id, facet):
             escaped_cluster_value = solr_escape(value['label'])
             thumbParams = {
                 'facet': 'false',
-                'rows': 4,
-                'fl': 'reference_image_md5',
+                'rows': 3,
+                'fl': 'reference_image_md5, type_ss',
                 'fq':
                     [f'collection_url: "{collection.url}"', f'{facet}_ss: "{escaped_cluster_value}"']
             }
             solr_thumbs = SOLR_select(**thumbParams)
-            value['thumbnails'] = [result['reference_image_md5'] for result in solr_thumbs.results]
+            value['thumbnails'] = solr_thumbs.results
 
     context.update({
         'values': values, 

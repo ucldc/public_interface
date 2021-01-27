@@ -18,11 +18,10 @@
 
     "http://127.0.0.1:8000/collections/",
     "http://127.0.0.1:8000/collections/num/",
-    {
-      "url": "http://127.0.0.1:8000/collections/titleSearch/",
-      "threshold": 2
-    },
+    "http://127.0.0.1:8000/collections/titleSearch/",
     "http://127.0.0.1:8000/collections/26599/",
+    "http://127.0.0.1:8000/collections/11068/browse/",
+    "http://127.0.0.1:8000/collections/10318/browse/",
 
     "http://127.0.0.1:8000/exhibitions/",
     "http://127.0.0.1:8000/exhibitions/browse/all/",

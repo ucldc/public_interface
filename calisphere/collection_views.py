@@ -192,17 +192,17 @@ class Collection(object):
         if len(facet_set['values']) < 1:
             return False
 
-        # exclude homogenous facet values; ie: all 10 records have type: image
-        if len(facet_set['values']) == 1 and facet_set['values'][0]['count'] == self.item_count:
-            # although technically, this could mean that
-            # 8 records have type: [image]
-            # 1 record has type: [image, image]
-            # 1 record has type: None
-            return False
+        # # exclude homogenous facet values; ie: all 10 records have type: image
+        # if len(facet_set['values']) == 1 and facet_set['values'][0]['count'] == self.item_count:
+        #     # although technically, this could mean that
+        #     # 8 records have type: [image]
+        #     # 1 record has type: [image, image]
+        #     # 1 record has type: None
+        #     return False
 
-        # exclude completely unique facet values
-        if facet_set['values'][0]['count'] == 1:
-            return False
+        # # exclude completely unique facet values
+        # if facet_set['values'][0]['count'] == 1:
+        #     return False
 
         return True
 
@@ -534,14 +534,16 @@ def getClusterThumbnails(collection_url, facet, facetValue):
     escaped_cluster_value = solr_escape(facetValue)
     thumbParams = {
         'facet': 'false',
-        'rows': 4,
-        'fl': 'reference_image_md5',
+        'rows': 3,
+        'fl': 'reference_image_md5, type_ss',
         'fq':
             [f'collection_url: "{collection_url}"', f'{facet}_ss: "{escaped_cluster_value}"']
         }
     solr_thumbs = SOLR_select(**thumbParams)
-    thumbnails = [result.get('reference_image_md5') for result in solr_thumbs.results]
-    return thumbnails
+    # print(solr_thumbs.results)
+    # thumbnails = [result.get('reference_image_md5') for result in solr_thumbs.results]
+    # return thumbnails
+    return solr_thumbs.results
 
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/
 # long rights statement: http://127.0.0.1:8000/collections/26241/browse/

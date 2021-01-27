@@ -34,6 +34,7 @@
 %cluster-thumbnail {
   background-size: cover;
   background-position: center;  
+  position: relative;
 }
 
 .explore-clusters .cluster-thumbnail__container {
@@ -55,6 +56,16 @@
   width: calc(50% - 5px); height: 50%; margin: 0 5px 0 0; }
 .explore-clusters .cluster-thumbnail__3 { @extend %cluster-thumbnail;
   width: 50%; height: 50%; }
+.explore-clusters .cluster-thumbnail__3:hover { text-decoration: none; }
+
+.cluster-thumbnail__description {
+  border: 1px solid $design-primary-color;
+  color: $design-primary-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
 
 .cluster-container {
   padding: 10px;

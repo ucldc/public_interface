@@ -110,7 +110,7 @@
       <h3>Collection Snapshot</h3>
         <h4><span class="collection_browse-item_count">{{ item_count|intcomma }}</span> total items in this collection</h4>
         {% for cluster in clusters %}
-          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet_field }}{% if cluster.facet_field != 'rights' %}s{% endif %}</h5>
+          <h5>{{ cluster.unique|intcomma }} unique {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</h5>
         {% endfor %}
     </div>
   </div>
@@ -131,30 +131,30 @@
   {% for cluster in clusters %}
   <div class="row explore-clusters">
     <div class="col-md-5 cluster-listing">
-      <h3>Browse {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %} in this Collection</h3>
+      <h3>Browse {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %} in this Collection</h3>
       {% if cluster.unique >= 3 %}
-      <h4>Three Sample {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' %}s{% endif %}</h4>
+      <h4>Three Sample {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</h4>
       {% else %}
-      <h4>{{ cluster.unique|apnumber|title }} Unique {{ cluster.facet_field|title }}{% if cluster.facet_field != 'rights' and cluster.unique > 1 %}s{% endif %}
+      <h4>{{ cluster.unique|apnumber|title }} Unique {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' and cluster.unique > 1 %}s{% endif %}
       {% endif %}</h4>
       <ol>
         {% for value in cluster.values %}
           {% if forloop.counter0 < 3 %}
           <li>
             {% if forloop.counter0 == 0 %}<strong>{% endif %}
-              <a href="{% url 'calisphere:collectionFacetValue' collection_id cluster.facet_field value.label|qencode %}?view_format=list" data-pjax="js-pageContent">{{ value.label }} ({{ value.count|intcomma }} items)</a>
+              <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }} ({{ value.count|intcomma }} items)</a>
             {% if forloop.counter0 == 0 %}</strong>{% endif %}
           </li>
           {% endif %}
         {% endfor %}
       </ol>
-      <h4>Search for a {{cluster.facet_field}}</h4>
-      <form class="clustersearch__form-{{cluster.facet_field}}" role="search" onsubmit="false()">
-        <label for="clustersearch__field-{{cluster.facet_field}}" class="sr-only">
-          Search for a {{cluster.facet_field}}
+      <h4>Search for a {{cluster.facet_field.display}}</h4>
+      <form class="clustersearch__form-{{cluster.facet_field.facet}}" role="search" onsubmit="false()">
+        <label for="clustersearch__field-{{cluster.facet_field.facet}}" class="sr-only">
+          Search for a {{cluster.facet_field.display}}
         </label>
         <div class="input-group">
-          <input id="clustersearch__field-{{cluster.facet_field}}" type="search" placeholder="Search for a {{cluster.facet_field}}" class="form-control">
+          <input id="clustersearch__field-{{cluster.facet_field.facet}}" type="search" placeholder="Search for a {{cluster.facet_field.display}}" class="form-control">
             <span class="input-group-btn">
               <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
               </button>
@@ -163,7 +163,7 @@
         </div>
       </form>
 
-      <h4><a href="{{ form_action }}{{ cluster.facet_field }}/" data-pjax="js-pageContent">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet_field }}{% if cluster.facet_field != 'rights' %}s{% endif %}</a></h4>
+      <h4><a href="{{ form_action }}{{ cluster.facet_field.facet }}/" data-pjax="js-pageContent">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</a></h4>
     </div>
     <a href="{{cluster.values.0.uri}}" data-pjax="js-pageContent">
     <div class="col-md-7">
@@ -210,7 +210,7 @@
           <div class="browse-cluster-thumbnail__container3">
           {% endif %}
           <div class="browse-cluster-thumbnail__{{cluster.thumbnails|length}} browse-cluster-thumbnail__description">
-            View all items with {{ cluster.facet_field }} "{{cluster.values.0.label|truncatewords:4}}" in this collection.
+            View all items with {{ cluster.facet_field.display }} "{{cluster.values.0.label|truncatewords:4}}" in this collection.
           </div>
         {% if cluster.thumbnails|length >= 2 %}
         </div></div>
@@ -224,7 +224,7 @@
   <script>
   var cluster_fields = [];
   {% for cluster in clusters %}
-  cluster_fields.push('{{ cluster.facet_field }}');
+  cluster_fields.push('{{ cluster.facet_field.facet }}');
   {% endfor %}
 
   var clusters = {

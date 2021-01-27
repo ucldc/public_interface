@@ -21,7 +21,7 @@
   </nav>
 
   <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ collection.name }}">
-    {{ title }}
+    {{ facet.display|title }}{{ unique|pluralize }} in {{ collection.name }}
   </h1>
 {% endblock %}
 
@@ -106,7 +106,7 @@
       <h3>Collection Snapshot</h3>
         <h4><span class="collection_browse-item_count">{{ item_count|intcomma }}</span> total items in this collection</h4>
         {% for cluster in clusters %}
-          <h5>{% if cluster.facet_field == facet %}<strong>{% endif %}{{ cluster.unique|intcomma }} unique {{ cluster.facet_field }}{% if cluster.facet_field != 'rights' %}s{% endif %}{% if cluster.facet_field == facet %}</strong>{% endif %}</h5>
+          <h5>{% if cluster.facet_field.facet == facet.facet %}<strong>{% endif %}{{ cluster.unique|intcomma }} unique {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}{% if cluster.facet_field.facet == facet.facet %}</strong>{% endif %}</h5>
         {% endfor %}
     </div>
   </div>
@@ -122,7 +122,7 @@
 {% block filters %}{% endblock %}
 
 {% block mainContent %}
-<h2 class="text__institution-heading2">{{ unique|intcomma }} unique {{ facet }}{{ unique|pluralize }} in this collection</h2>
+<h2 class="text__institution-heading2">{{ unique|intcomma }} unique {{ facet.display|lower }}{{ unique|pluralize }} in this collection</h2>
 <!-- <p>There are {{ unique|intcomma }} unique {{facet}}{{ unique|pluralize }} used in this collection of {{ records|intcomma }} items. For each {{facet}} cluster, the number in parentheses shows how many items share that {{facet}}. <strong>{{ facet|title }} Uniqueness Rating: {{ ratio }}%</strong></p> -->
 <div class="collection-cluster-form">
   <form id="js-collectionFacetForm" action="{{ form_action }}">
@@ -202,7 +202,7 @@
                 <div class="thumbnail__tile-icon fa-picture-o"></div>
                 {% endif %}
               {% endif %}
-              
+
             </div>
           {% endfor %}
 

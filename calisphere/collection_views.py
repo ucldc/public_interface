@@ -127,22 +127,32 @@ class Collection(object):
         for repo in self.details.get('repository'):
             repo['resource_id'] = repo.get('resource_uri').split('/')[-2]
 
-    def get_custom_facets(self):
-        if hasattr(self, 'custom_facets'):
-            return self.custom_facets
-        else:
-            self.custom_facets = []
-            if self.details.get('custom_facet'):
-                for custom_facet in self.details.get('custom_facet'):
-                    self.custom_facets.append(
-                        FacetFilterType(
-                            custom_facet['facet_field'],
-                            custom_facet['label'],
-                            custom_facet['facet_field'],
-                            custom_facet.get('sort_by', 'count')
-                        )
+        self.custom_facets = self._parse_custom_facets()
+        self.custom_schema_facets = self._generate_custom_schema_facets()
+
+    def _parse_custom_facets(self):
+        custom_facets = []
+        if self.details.get('custom_facet'):
+            for custom_facet in self.details.get('custom_facet'):
+                custom_facets.append(
+                    FacetFilterType(
+                        custom_facet['facet_field'],
+                        custom_facet['label'],
+                        custom_facet['facet_field'],
+                        custom_facet.get('sort_by', 'count')
                     )
-            return self.custom_facets
+                )
+        return custom_facets
+
+    def _generate_custom_schema_facets(self):
+        custom_schema_facets = UCLDC_SCHEMA_FACETS.copy()
+        if self.custom_facets:
+            for custom in self.custom_facets:
+                for i, facet in enumerate(custom_schema_facets):
+                    if custom.facet == f"{facet.facet}_ss":
+                        custom_schema_facets[i] = FacetDisplay(
+                            facet.facet, custom.display_name)
+        return custom_schema_facets
 
     def get_summary_data(self):
         if hasattr(self, 'summary'):
@@ -172,21 +182,7 @@ class Collection(object):
         self.item_count = solr_search.numFound
         return self.item_count
 
-    # def _summary_field_non_unique(self, k,v):
-    #     # this is used to filter the list of fields given to us by summary_data
-    #     # in order to determine which fields to list on the collection browse page
-
-    #     if k == 'item_count' or k == 'collection_url':
-    #         return False
-    #     if k == 'description' or k == 'transcription':
-    #         return False
-    #     if v['percent'] == 0:
-    #         return False
-    #     if v['uniq_percent'] == 100:
-    #         return False
-    #     return True
-
-    def _check_non_unique(self, facet_set):
+    def _choose_facet_sets(self, facet_set):
         if not facet_set:
             return False
         if len(facet_set['values']) < 1:
@@ -207,28 +203,12 @@ class Collection(object):
         return True
 
     def get_facet_sets(self):
-        # # original - uses the summary data to hone in on non-unique fields
+        facet_sets = self.get_facets(self.custom_schema_facets)
 
-        # if hasattr(self, 'summary'):
-        #     summary_data = self.summary
-        # else:
-        #     summary_data = self.get_summary_data()
-
-        # non_unique_fields = [ dict({'field': k}, **v) 
-        #     for k,v in summary_data.items() 
-        #     if self._summary_field_non_unique(k,v) ]
-        # non_unique_fields.sort(key=lambda x: x['uniq_percent'], reverse=True)
-
-        # facet_sets = self.get_facets([f['field'] for f in non_unique_fields])
-
-        facet_sets = self.get_facets(UCLDC_SCHEMA_FACETS)
-
-        # double check non-uniqueness based on solr data, rather than summary_data
-        # here's an example of why this is necessary:
-        # http://calisphere-test.cdlib.org/collections/10318/metadata/ look at 'type' and 'rights'
-        non_unique_facet_sets = [facet_set for facet_set in facet_sets 
-            if self._check_non_unique(facet_set)]
-        facet_sets = non_unique_facet_sets
+        # choose facet sets to show
+        chosen_facet_sets = [facet_set for facet_set in facet_sets
+            if self._choose_facet_sets(facet_set)]
+        facet_sets = chosen_facet_sets
 
         return facet_sets
 
@@ -237,7 +217,7 @@ class Collection(object):
         solrParams = {
             'facet': 'true',
             'rows': 0,
-            'facet_field': [f'{ff}_ss' for ff in facet_fields],
+            'facet_field': [f"{ff.facet}_ss" for ff in facet_fields],
             'fq': 'collection_url:"{}"'.format(self.url),
             'facet_limit': '-1',
             'facet_mincount': 1,
@@ -248,7 +228,7 @@ class Collection(object):
 
         facets = []
         for facet_field in facet_fields:
-            values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet_field))
+            values = solr_search.facet_counts.get('facet_fields').get('{}_ss'.format(facet_field.facet))
             if not values:
                 facets.append(None)
 
@@ -259,7 +239,7 @@ class Collection(object):
                 'calisphere:collectionFacetValue',
                 kwargs={
                     'collection_id': self.id,
-                    'cluster': facet_field,
+                    'cluster': facet_field.facet,
                     'cluster_value': urllib.parse.quote_plus(k),
                 })} for k,v in values.items()]
 
@@ -286,10 +266,10 @@ def collectionSearch(request, collection_id):
         and facet_filter_type['facet'] != 'repository_data'
     ]
     # Add Custom Facet Filter Types
-    facet_filter_types = facet_filter_types + collection.get_custom_facets()
-    # If relation_ss is not already defined as a custom facet, and is included 
+    facet_filter_types = facet_filter_types + collection.custom_facets
+    # If relation_ss is not already defined as a custom facet, and is included
     # in search parameters, add the relation_ss facet implicitly
-    if not collection.get_custom_facets():
+    if not collection.custom_facets:
         if params.get('relation_ss'):
             facet_filter_types.append(
                 FacetFilterType(
@@ -355,7 +335,7 @@ def collectionSearch(request, collection_id):
 
 def collectionFacet(request, collection_id, facet):
     collection = Collection(collection_id)
-    if not facet in UCLDC_SCHEMA_FACETS:
+    if not facet in [f.facet for f in UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
     params = request.GET.copy()
@@ -363,8 +343,10 @@ def collectionFacet(request, collection_id, facet):
     if not params.get('view_format'):
         context['view_format'] = 'list'
 
-    context.update({'facet': facet,})
-    facets = collection.get_facets([facet])[0]
+    context.update({'facet':
+        [tup for tup in collection.custom_schema_facets 
+            if tup.facet == facet][0]})
+    facets = collection.get_facets([context['facet']])[0]
     if not facets:
         raise Http404("{0} has no facet values".format(facet))
 
@@ -401,7 +383,7 @@ def collectionFacet(request, collection_id, facet):
     })
 
     context.update({
-        'title': f"{facet.capitalize()}{pluralize(values)} Used in {collection.details['name']}",
+        # 'title': f"{facet.capitalize()}{pluralize(values)} Used in {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
         'description': None,
         'collection': collection.details,
@@ -419,11 +401,11 @@ def collectionFacet(request, collection_id, facet):
     return render(request, 'calisphere/collections/collectionFacet.html', context )
 
 def collectionFacetJson(request, collection_id, facet):
-    if not facet in UCLDC_SCHEMA_FACETS:
+    if not facet in [f.facet for f in UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
     collection = Collection(collection_id)
-    facets = collection.get_facets([facet])[0]
+    facets = collection.get_facets([{'facet': facet}])[0]
     if not facets:
         raise Http404("{0} has no facet values".format(facet))
 
@@ -433,7 +415,7 @@ def collectionFacetJson(request, collection_id, facet):
 def collectionFacetValue(request, collection_id, cluster, cluster_value):
     collection = Collection(collection_id)
 
-    if not cluster in UCLDC_SCHEMA_FACETS:
+    if not cluster in [f.facet for f in UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(cluster))
 
     params = request.GET.copy()
@@ -450,6 +432,22 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
         if facet_filter_type['facet'] != 'collection_data'
         and facet_filter_type['facet'] != 'repository_data'
     ]
+
+    # Add Custom Facet Filter Types
+    facet_filter_types = facet_filter_types + collection.custom_facets
+    # If relation_ss is not already defined as a custom facet, and is included
+    # in search parameters, add the relation_ss facet implicitly
+    if not collection.custom_facets:
+        if params.get('relation_ss'):
+            facet_filter_types.append(
+                FacetFilterType(
+                    'relation_ss',
+                    'Relation',
+                    'relation_ss',
+                    'value',
+                    faceting_allowed = False
+                )
+            )
 
     extra_filter = 'collection_url: "' + collection.url + '"'
 
@@ -537,12 +535,9 @@ def getClusterThumbnails(collection_url, facet, facetValue):
         'rows': 3,
         'fl': 'reference_image_md5, type_ss',
         'fq':
-            [f'collection_url: "{collection_url}"', f'{facet}_ss: "{escaped_cluster_value}"']
+            [f'collection_url: "{collection_url}"', f'{facet.facet}_ss: "{escaped_cluster_value}"']
         }
     solr_thumbs = SOLR_select(**thumbParams)
-    # print(solr_thumbs.results)
-    # thumbnails = [result.get('reference_image_md5') for result in solr_thumbs.results]
-    # return thumbnails
     return solr_thumbs.results
 
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/

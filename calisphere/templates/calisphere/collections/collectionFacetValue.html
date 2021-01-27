@@ -89,7 +89,7 @@
   <div class="col-sm-6 col-md-12">
       <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionFacet' collection_id cluster %}" data-pjax="js-pageContent">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
-        View {{ cluster|title }}s List
+        View {{ cluster|title }}{% if cluster != 'rights'%}s{% endif %} List
       </a>
   </div>
 

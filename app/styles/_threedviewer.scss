@@ -42,6 +42,16 @@
 
 .threedviewer__controls {
   padding: 10px;
+  background-color: $design-dark-gray-color;
+}
+
+.threedviewer__intensityrange {
+  // These all align the slider vertically:
+  width: 20px !important;
+  height: 120px;
+  margin: 0 auto;
+  -webkit-appearance: slider-vertical;
+  writing-mode: vertical-rl; // Firefox
 }
 
 .threedviewer__directions-panel {

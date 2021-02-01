@@ -246,11 +246,9 @@ async function init () {
       render()
     }
 
-    const intensityLabel = document.querySelector('#js-threedviewer__intensitylabel')
     const intensityRange = document.querySelector('#js-threedviewer__intensityrange')
 
     if (isLegacyThree === false) {
-      intensityLabel.hidden = false
       intensityRange.hidden = false
       intensityRange.addEventListener('input', updateIntensity)
       updateIntensity()

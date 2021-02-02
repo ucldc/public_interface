@@ -1,6 +1,9 @@
 // ##### 3D Viewer Component ##### //
 
 .threedviewer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 1fr auto;
 
   [hidden] {
     display: none !important;
@@ -41,8 +44,25 @@
 }
 
 .threedviewer__controls {
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
   background-color: $design-dark-gray-color;
+
+  button {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    background-color: white;
+    border: 1px solid $design-dark-gray-color;
+    border-radius: 4px;
+    text-transform: uppercase;
+
+    &:focus,
+    &:hover {
+      border: 1px solid $design-light-gray-color;
+      background-color: $design-light-gray-color;
+    }
+  }
 }
 
 .threedviewer__intensityrange {
@@ -56,8 +76,10 @@
 
 .threedviewer__directions-panel {
   margin: 10px 0 0 0;
-  padding: 10px 0 0 0;
+  padding: 10px;
   border-top: 2px solid $design-primary-color;
+  grid-column: 1 / -1;
+  grid-row: 2;
 
   li {
     display: inline;

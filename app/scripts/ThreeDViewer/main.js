@@ -302,11 +302,9 @@ async function init () {
   directionsToggle.addEventListener('click', function () {
     if (directionsPanel.hidden === true) {
       directionsPanel.hidden = false
-      directionsToggle.innerText = 'Hide how to move object'
       directionsToggle.setAttribute('aria-expanded', true)
     } else {
       directionsPanel.hidden = true
-      directionsToggle.innerText = 'Show how to move object'
       directionsToggle.setAttribute('aria-expanded', false)
     }
     resizeContainer()

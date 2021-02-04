@@ -220,7 +220,7 @@
 {% else %}
 {% for value in values %}
 <div>
-  <a href="./{{ value.label|qencode }}/?view_format=list" data-pjax="js-pageContent"> {{ value.label }}</a>
+  <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent"> {{ value.label }}</a>
   ({{ value.count|intcomma }})
 </div>
 {% endfor %}

@@ -1,7 +1,7 @@
 .explore-clusters {
-  padding: 7px 15px 7px 40px;
-  border: 1px solid $design-dark-gray-color;
-  margin: 1px 0 $layout-container-margin-md 0;
+  padding: $layout-container-margin-md 15px 0px 40px;
+  border-top: 1px solid $design-dark-gray-color;
+  margin: $layout-container-margin-md 0 $layout-container-margin-md 0;
 }
 .cluster-listing {
   padding-right: 15px;

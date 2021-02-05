@@ -145,7 +145,7 @@ class Collection(object):
         return custom_facets
 
     def _generate_custom_schema_facets(self):
-        custom_schema_facets = UCLDC_SCHEMA_FACETS.copy()
+        custom_schema_facets = [fd for fd in UCLDC_SCHEMA_FACETS if fd.facet != 'spatial']
         if self.custom_facets:
             for custom in self.custom_facets:
                 for i, facet in enumerate(custom_schema_facets):

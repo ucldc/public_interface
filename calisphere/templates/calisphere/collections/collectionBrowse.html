@@ -148,6 +148,7 @@
           {% endif %}
         {% endfor %}
       </ol>
+      {% if cluster.unique > 3 %}
       <h4>Search for a {{cluster.facet_field.display}}</h4>
       <form class="clustersearch__form-{{cluster.facet_field.facet}}" role="search" onsubmit="false()">
         <label for="clustersearch__field-{{cluster.facet_field.facet}}" class="sr-only">
@@ -162,6 +163,7 @@
           </input>
         </div>
       </form>
+      {% endif %}
 
       <h4><a href="{{ form_action }}{{ cluster.facet_field.facet }}/" data-pjax="js-pageContent">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</a></h4>
     </div>

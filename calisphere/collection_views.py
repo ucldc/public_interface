@@ -362,7 +362,14 @@ def collectionFacet(request, collection_id, facet):
         values.sort(key=lambda v: v['label'], reverse=True)
 
     if context.get('view_format') == 'grid':
-        values = values[0:25]
+        if params.get('page') and params.get('page') != 'None':
+            page = int(params.get('page'))
+        else:
+            page = 1
+        end = page * 24
+        start = end - 24
+
+        values = values[start:end]
         for value in values:
             escaped_cluster_value = solr_escape(value['label'])
             thumbParams = {
@@ -374,6 +381,14 @@ def collectionFacet(request, collection_id, facet):
             }
             solr_thumbs = SOLR_select(**thumbParams)
             value['thumbnails'] = solr_thumbs.results
+
+        context.update({'page_info':
+            {
+                'page': page,
+                'start': start+1,
+                'end': end
+            }
+        })
 
     context.update({
         'values': values, 

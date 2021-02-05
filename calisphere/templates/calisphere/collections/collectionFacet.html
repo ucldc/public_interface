@@ -157,8 +157,35 @@
         Z-A
       </option>
     </select>
+
     {% if view_format == 'grid' %}
-      Viewing 25 of {{ unique|intcomma }}
+      Viewing {{ page_info.start }} - {% if page_info.end < unique %}{{ page_info.end }}{% else %}{{ unique }}{% endif %} of {{ unique|intcomma }}
+      {% if page_info.start > 1 %}
+        <a class="btn btn-link pag-dropdown__arrow-icon"
+          aria-label="previous set"
+          href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|subtract:1 }}" data-pjax="js-pageContent">
+            <span class="fa fa-caret-left fa-lg">
+        </a>
+      {% else %}
+        <button class="btn btn-link pag-dropdown__arrow-icon"
+          type="button" aria-label="previous set" disabled>
+            <span class="fa fa-caret-left fa-lg"></span>
+        </button>
+      {% endif %}
+      {% if page_info.end < unique %}
+        <a class="btn btn-link pag-dropdown__arrow-icon"
+          aria-label="next set"
+          href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|add:1 }}" data-pjax="js-pageContent">
+            <span class="fa fa-caret-right fa-lg">
+        </a>
+      {% else %}
+        <button class="btn btn-link pag-dropdown__arrow-icon"
+          type="button" aria-label="next set" disabled>
+            <span class="fa fa-caret-right fa-lg"></span>
+        </button>
+      {% endif %}
+
+
     {% endif %}
   </form>
 </div>

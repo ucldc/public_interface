@@ -405,7 +405,7 @@ def collectionFacetJson(request, collection_id, facet):
         raise Http404("{} is not a valid facet".format(facet))
 
     collection = Collection(collection_id)
-    facets = collection.get_facets([{'facet': facet}])[0]
+    facets = collection.get_facets([FacetDisplay(facet, 'json')])[0]
     if not facets:
         raise Http404("{0} has no facet values".format(facet))
 

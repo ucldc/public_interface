@@ -8,8 +8,8 @@ const loadingStatusLabel = document.querySelector('#js-threedviewer__loadstatus-
 const loadingProgress = document.querySelector('#js-threedviewer__progressbar')
 const loadingDownloadPercentLimit = 75
 
-// Example glTF v.1 model using Basket 019:
-const modelPath = 'https://dj5wl215uj1lm.cloudfront.net/video-test/Nuxeo/nxfile/default/f49e1cb8-0d9c-4dd8-8959-6eb7320a5a41/threed:transmissionFormats/4/content/transmissionformat-1404844697-50-1000000.gltf'
+// Example glTF v.1 model using Basket 038:
+const modelPath = 'https://dj5wl215uj1lm.cloudfront.net/video-test/Nuxeo/nxfile/default/da35050f-aad8-4c16-bb91-4f09c871c9ea/threed:transmissionFormats/0/content/transmissionformat-741753566-100-1000000.gltf'
 
 // Example glTF v.2 model using Space Shuttle Discovery:
 // const modelPath = 'https://dj5wl215uj1lm.cloudfront.net/video-test/tests/test-shuttle.gltf'

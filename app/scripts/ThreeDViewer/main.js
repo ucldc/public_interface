@@ -296,19 +296,26 @@ async function init () {
 
   /* Directions Panel */
 
+  function closeDirectionsPanel () {
+    directionsPanel.hidden = true
+    directionsToggle.setAttribute('aria-expanded', false)
+    resizeContainer()
+  }
+
   const directionsToggle = document.querySelector('#js-threedviewer__directions-toggle')
   const directionsPanel = document.querySelector('#js-threedviewer__directions-panel')
+  const directionsPanelClose = document.querySelector('#js-threedviewer__directions-panel-close')
 
   directionsToggle.addEventListener('click', function () {
     if (directionsPanel.hidden === true) {
       directionsPanel.hidden = false
       directionsToggle.setAttribute('aria-expanded', true)
     } else {
-      directionsPanel.hidden = true
-      directionsToggle.setAttribute('aria-expanded', false)
+      closeDirectionsPanel()
     }
-    resizeContainer()
   })
+
+  directionsPanelClose.addEventListener('click', closeDirectionsPanel)
 }
 
 if (container) {

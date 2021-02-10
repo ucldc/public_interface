@@ -585,6 +585,7 @@ def collectionBrowse(request, collection_id):
         'UCLDC_SCHEMA_FACETS': UCLDC_SCHEMA_FACETS,
         'item_count': collection.get_item_count(),
         'clusters': facet_sets,
+        'facet': None,
         'form_action': reverse(
             'calisphere:collectionView',
             kwargs={'collection_id': collection_id}),

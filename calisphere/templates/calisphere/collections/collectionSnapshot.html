@@ -1,0 +1,12 @@
+{% load humanize %}
+    <div class="snapshot">
+      <h3>Collection Snapshot</h3>
+        <h4><span class="collection_browse-item_count">{{ item_count|intcomma }}</span> total items in this collection</h4>
+        {% for cluster in clusters %}
+          <h5>
+          	{% if facet and cluster.facet_field.facet == facet.facet %}<strong>{% endif %}
+         	 	{{ cluster.unique|intcomma }} unique {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}
+          	{% if facet and cluster.facet_field.facet == facet.facet %}</strong>{% endif %}
+          </h5>
+        {% endfor %}
+    </div>

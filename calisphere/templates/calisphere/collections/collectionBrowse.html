@@ -30,12 +30,14 @@
     <div class="collection-intro__institution">
       <h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
         {% for repository in collection.repository %}
-          {% if 'campus' in repository and repository.campus.0.name %}
-            <a
-              href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
-              class="collection-intro__institution-heading-link"
-              data-pjax="js-pageContent"
-            >{{ repository.campus.0.name }}</a>,
+          {% if 'campus' in repository and repository.campus|length > 0 %}
+            {% if repository.campus.0.name %}
+              <a
+                href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+                class="collection-intro__institution-heading-link"
+                data-pjax="js-pageContent"
+              >{{ repository.campus.0.name }}</a>,
+            {% endif %}
           {% endif %}
           <a
             href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
@@ -114,17 +116,17 @@
 {% block filters %}{% endblock %}
 
 {% block mainContent %}
-  <h2 class="text__institution-heading2">Browse Collection</h2>
+  <h2 class="text__institution-heading2">Browse {{collection.name}}</h2>
 
   {% for cluster in clusters %}
   <div class="row explore-clusters">
     <div class="col-md-5 cluster-listing">
-      <h3>Browse {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %} in this Collection</h3>
+      <h3>{{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %} in this Collection</h3>
       {% if cluster.unique >= 3 %}
-      <h4>Three Sample {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</h4>
+      <h4 class="sr-only">Three Sample {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</h4>
       {% else %}
-      <h4>{{ cluster.unique|apnumber|title }} Unique {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' and cluster.unique > 1 %}s{% endif %}
-      {% endif %}</h4>
+      <h4 class="sr-only">{{ cluster.unique|apnumber|title }} {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}{{ cluster.unique|pluralize }}{% endif %}</h4>
+      {% endif %}
       <ol>
         {% for value in cluster.values %}
           {% if forloop.counter0 < 3 %}
@@ -136,14 +138,17 @@
           {% endif %}
         {% endfor %}
       </ol>
+
+      <a href="{{ form_action }}{{ cluster.facet_field.facet }}/" data-pjax="js-pageContent" class="btn-default btn btn button__cluster-values">See all {{ cluster.unique|intcomma }} {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}{{ cluster.unique|pluralize }}{% endif %}</a>
+
       {% if cluster.unique > 3 %}
-      <h4>Search for a {{cluster.facet_field.display}}</h4>
+      <h4 class="sr-only">Search for a {{cluster.facet_field.display}}</h4>
       <form class="clustersearch__form-{{cluster.facet_field.facet}}" role="search" onsubmit="false()">
         <label for="clustersearch__field-{{cluster.facet_field.facet}}" class="sr-only">
           Search for a {{cluster.facet_field.display}}
         </label>
         <div class="input-group">
-          <input id="clustersearch__field-{{cluster.facet_field.facet}}" type="search" placeholder="Search for a {{cluster.facet_field.display}}" class="form-control">
+          <input id="clustersearch__field-{{cluster.facet_field.facet}}" type="search" placeholder="Search for a {{cluster.facet_field.display}}" class="form-control search__cluster-values">
             <span class="input-group-btn">
               <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
               </button>
@@ -153,7 +158,6 @@
       </form>
       {% endif %}
 
-      <h4><a href="{{ form_action }}{{ cluster.facet_field.facet }}/" data-pjax="js-pageContent">See all {{ cluster.unique|intcomma }} unique {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</a></h4>
     </div>
     <a href="{{cluster.values.0.uri}}" data-pjax="js-pageContent">
     <div class="col-md-7">

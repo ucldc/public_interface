@@ -6,6 +6,17 @@
 .cluster-listing {
   padding-right: 15px;
 }
+.cluster-listing ol {
+  list-style-type: disc;
+  padding-inline-start: $layout-container-margin-md;
+}
+.button__cluster-values {
+  @extend .button__secondary;
+  margin: 0 0 $layout-component-margin 10px;
+}
+.search__cluster-values {
+  border-radius: 4px 0 0 4px !important;
+}
 
 .snapshot {
   padding: 15px 15px 15px 15px;

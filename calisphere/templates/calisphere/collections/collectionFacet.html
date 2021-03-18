@@ -110,7 +110,7 @@
 {% block filters %}{% endblock %}
 
 {% block mainContent %}
-<h2 class="text__institution-heading2">{{ unique|intcomma }} unique {{ facet.display|lower }}{{ unique|pluralize }} in this collection</h2>
+<h2 class="text__institution-heading2">{{ unique|intcomma }} {{ facet.display|title }}{{ unique|pluralize }} in this Collection</h2>
 <!-- <p>There are {{ unique|intcomma }} unique {{facet}}{{ unique|pluralize }} used in this collection of {{ records|intcomma }} items. For each {{facet}} cluster, the number in parentheses shows how many items share that {{facet}}. <strong>{{ facet|title }} Uniqueness Rating: {{ ratio }}%</strong></p> -->
 <div class="collection-cluster-form">
   <form id="js-collectionFacetForm" action="{{ form_action }}">

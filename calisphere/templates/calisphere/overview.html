@@ -1,12 +1,12 @@
 {% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
 
 {% block page-metadata %}
-{% include "calisphere/microdata.html" with title='About' %}
+{% include "calisphere/microdata.html" with title='About the Collections in Calisphere' %}
 {% endblock %}
 
 {% block content %}
 
-<h1>Heading</h1>
+<h1>About the Collections in Calisphere</h1>
 
 <!-- Begin Static About Component -->
 
@@ -14,45 +14,90 @@
 
   <div class="col-sm-8 static__main">
 
-		<p>Paragraph</p>
-
-		<p>The collections on Calisphere have been digitized and contributed by <a href="/institutions/" data-pjax="js-pageContent">all ten campuses of the University of California</a> and other important <a href="/institutions/statewide-partners/" data-pjax="js-pageContent">libraries, archives, and museums throughout the state</a>.</p>
+		<p>Thank you for visiting Calisphere, a gateway to digital collections containing photographs, documents, letters, artwork, diaries, oral histories, films, advertisements, musical recordings, and more. Calisphere provides free access to unique and historically important artifacts for research, teaching, and curious exploration.</p>
     
-    <h2>Using Calisphere</h2>
-		<p>For more information about how to use Calisphere and the materials you find here, please consult the <a href="/help/" data-pjax="js-pageContent">help page</a> and <a href="/terms/" data-pjax="js-pageContent">terms of use</a>. Special information about using Calisphere in the classroom can be found on our <a href="/for-educators" data-pjax="js-pageContent">For Educators page</a>.</p>
-
-		<h2>Add your collections</h2>
-
-  	<p>Calisphere aggregates digital collections from libraries, archives, museums, historical societies, and other cultural heritage organizations in California. If you represent such an organization and are interested in contributing digital content to Calisphere, <a href="/contribute/" data-pjax="js-pageContent">click here to learn more</a>.</p>
-
-		<h2>Subscribe to our newsletter</h2>
-
-  	<p>Be the first to hear about new collections and exhibitions, posters, and online research tips and resources! <a href="http://eepurl.com/cTM_Cb">Subscribe</a> if you'd like the latest news from Calisphere delivered right to your inbox.</p> 
+    <p>Explore early <a href="/collections/13850/">maps</a> of the world; <a href="/collections/27357/">photographs</a> from historic newspapers; <a href="/collections/22148/">paintings</a> created during periods of cultural injustice; new frontiers through <a href="/collections/26319/">personal journals and diaries</a>; <a href="/collections/27440/">political posters</a> calling for decades of social and political change; first-hand accounts through <a href="/collections/36/">interviews and oral histories</a> -- Calisphere brings together digital collections contributed by <a href="/institutions/" data-pjax="js-pageContent">the ten campuses of the University of California</a> and a wide range of <a href="/statewide-partners/" data-pjax="js-pageContent">statewide</a> organizations. The items in Calisphere are primary sources that record evidence of the past, and preserve valuable historical material for interpretation and analysis. We are committed to providing broad public access to primary sources for historical research.</p>
     
-    <h2>Free posters!</h2>
+    <p>Featuring nearly two million historical records, Calisphere provides access to more than 2,000 collections contributed by more than 300 cultural heritage organizations (libraries, archives, museums, and historical societies) in California. Each of these organizations has specific collection emphases, which may be informed by local history, activities, research interests, or other topics significant to its communities.</p>
+    
+    <p>Calisphere is a service of the <a href="http://libraries.universityofcalifornia.edu/">University of California Libraries</a>, developed and maintained by the <a href="https://cdlib.org/">California Digital Library</a>. <em>Learn more about <a href="/contribute/" data-pjax="js-pageContent">becoming a contributing partner</a>.</em></p>
+    
+    <h2>Providing access to primary source records for documentary evidence of past events</h2>
 
-  	<p>We offer free posters for students, teachers, and librarians. Visit the <a href="/posters/" data-pjax="js-pageContent">poster order page</a> for more details.</p>
+  	<p>Many of the materials in Calisphere are digitized original records, or <a href="https://dictionary.archivists.org/entry/primary-source.html">primary sources</a>, which offer historical evidence. As defined by the <a href="https://www2.archivists.org/statements/saa-core-values-statement-and-code-of-ethics">Society of American Archivists</a>, primary sources are materials that include firsthand accounts of an event or topic. They are often created at the time of the event (such as photographs), but also may be recalled later by an eyewitness (such as oral histories). Primary sources have enduring cultural and historical significance, and are considered permanently valuable records, offering documentary evidence that we use to interpret and understand history.</p>
 
- 		<h2>Spread the word</h2>
+    <p>Contributors digitize and share primary sources on their own websites, and also more broadly through large aggregations such as Calisphere. These items are commonly referred to as "digital primary sources."</p>
 
-  	<p>Love Calisphere? Help us spread the word! Check out our <a href="/outreach/" data-pjax="js-pageContent">outreach tips and tools</a> for sharing Calisphere with others.</p>
+    <p>In addition to sharing these digital primary sources, contributors also include descriptions of identifiable features -- dates, names, event or topic, location, subject, etc. -- of the primary source records to help users discover and interpret these materials. On this page, we’ll refer to this information as "<a href="https://dictionary.archivists.org/entry/descriptive-metadata.html">metadata</a>."</p>
+    
+		<h2>Understanding metadata, its use, and its challenges</h2>
 
- 		<h2>Our organization</h2>
+    <p>Our partner organizations -- libraries, archives, museums, historical societies, etc. -- describe digital primary sources with metadata to help researchers discover, situate, and interpret these materials in the context in which they were created. They generally follow established descriptive and cataloging best practices, and actively work to ensure that the metadata is accurate, uses inclusive language, and provides essential historical context to help with interpretation of digital primary sources. For example, many of our partner organizations consult <a href="https://saa-ts-dacs.github.io/">Describing Archives: A Content Standard</a> (DACS), which provides a set of rules and standards for description to assist users in the discovery of these primary source records.</p>
 
-		<p>Calisphere is a project of the <a href="http://libraries.universityofcalifornia.edu">University of California Libraries</a>, developed and maintained by the <a href="http://www.cdlib.org">California Digital Library</a>.</p>
-    <p>Information about Calisphere's technical framework can be found on our <a href="/help/#11" data-pjax="js-pageContent">help page</a>.</p>
+    <p>Historical circumstances, however, present several challenges with using and interpreting metadata:</p> 
+    
+    <ul>
+      <li><strong>Some information about the primary sources may be incomplete or unknown.</strong> Cultural heritage organizations often have limited documentation and resources available to further investigate individual items beyond the identifiable features in the sources themselves. For this reason, even significant details such as the item’s title, exact age, creator, or copyright status may not be present in the metadata record.</li>
+      <li><strong>Metadata can also reflect biases and may include culturally insensitive terminology because of the way an item was originally sourced, created, described, or cataloged.</strong> For example, when following cataloging and descriptive practices, catalogers and collection processing staff may transcribe original information associated with a source item, such as a caption written on the back of a photograph, and supply that as metadata. Additionally, the work of catalogers and collection processing staff may reflect implicit or explicit biases in describing materials.</li>
+      <li><strong>Metadata may lack context for why culturally insensitive terminology is present.</strong> Original information supplied by the creator or collector preserves the evidential value of the item for historical research; it may also reflect the original perspective of the author/creator or the attitudes of the specific historical period in which the source item was created or described. Emerging recommendations from the <a href="https://archivesforblacklives.files.wordpress.com/2019/10/ardr_final.pdf">Anti-Racist Description Resources</a>, prepared by the <a href="https://archivesforblacklives.wordpress.com/">Archives for Black Lives in Philadelphia</a> Anti-Racist Description Working Group, suggest notating the source of the original description, such as information transcribed from a creator’s handwritten note, to provide clear context in the item record. Much material, however, still lacks this information.</li>
+    </ul>
+    
+    <p>The California Digital Library acknowledges the necessity of efforts to evaluate and contextualize metadata, including how it is sourced, created, described, or catalogued so that there is historical context as you explore these primary sources. We are <a href="https://trello.com/c/l8UPzXMd/57-develop-an-engagement-plan-for-working-with-contributors-on-improving-source-metadata">engaging with contributing partners and colleagues to identify and implement reparative cataloging and descriptive practices</a> that not only address existing metadata records, but also inform the creation of new records.</p>
+    
+    <h2>Supporting best practices and community values regarding access to historical materials</h2>
 
+  	<p>Calisphere partners with cultural heritage organizations in California to promote and provide wide access to their materials as much -- and as responsibly -- as possible. Libraries, archives, and museums share professional standards and values, such as those promoted by the <a href="https://www2.archivists.org/statements/saa-core-values-statement-and-code-of-ethics">Society of American Archivists</a>, <a href="http://www.ala.org/tools/ethics">American Library Association</a>, and the <a href="https://www.aam-us.org/programs/ethics-standards-and-professional-practices/">American Alliance of Museums</a>.</p>
+
+    <p>For example, archivists are guided by the Society of American Archivists’ <a href="https://www2.archivists.org/statements/saa-core-values-statement-and-code-of-ethics">Core Values Statement and Code of Ethics</a> and other professional statements that inform how they share digital primary sources. Approaches to access for both physical and digital primary sources typically address considerations related to copyright, licenses, donor agreements, privacy rights, and ethical responsibilities.</p>
+    
+    <p>Cultural heritage organizations can consult established and continually evolving best practices to mitigate the potential risk of exposing sensitive content that should not be made publicly available. Such considerations include:</p>
+ 		
+    <ul>
+      <li>Respecting conditions set by the original creators or source of the materials.</li>
+      <li>Protecting the privacy rights of those documented in collections (subjects who may or may not be the record creators or donors), including restricting access to identified personally identifiable information, complying with the <a href="https://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html">Family Educational Rights and Privacy Act</a> (FERPA), and following the <a href="https://www.hhs.gov/hipaa/for-professionals/privacy/index.html">HIPAA Privacy Rule</a>.</li>
+      <li>Adhering to ethical guidelines related to culturally sensitive materials, such as in the <a href="http://www2.nau.edu/libnap-p/protocols.html">Protocols for Native American Archival Materials</a>.</li>
+    </ul>
+    
+    <h2>Recognizing historic and ongoing biases in primary sources</h2>
+
+  	<p>Some digital primary sources found in Calisphere may include terms or depict actions that are dated, biased, or offensive. These records do not represent the views of the California Digital Library or the contributing organizations. The intent is not to propagate or legitimize historical or ongoing biases; rather, we firmly believe that these materials provide significant historical evidence to help inform a more complete historical record. The context of the source item -- the circumstances in which these materials were created or compiled -- is critical to fully understand and assess its historical value or purpose as documentary evidence.</p>
+
+    <p>An individual primary source record is unlikely to provide all the evidence or perspectives required to fully understand the significance of a topic, theme, event, or period; some information may be unknown or the perspective may favor historic and/or continued biases. The American Historical Association’s <a href="https://www.historians.org/jobs-and-professional-development/statements-standards-and-guidelines-of-the-discipline/statement-on-standards-of-professional-conduct">Statement on Standards of Professional Conduct</a> states that "multiple, conflicting perspectives are among the truths of history." As a researcher analyzing a primary source record, it is important to ask rigorous questions, verify facts, and critically evaluate a variety of sources and perspectives to gain a fuller understanding.</p>
+
+    <p>The California Digital Library recognizes our responsibility to indicate when item records lack important context required to support meaningful historical interpretation. We are committed to identifying and addressing these gaps in historical understanding, and are <a href="https://trello.com/c/fUvLVlH8/81-update-the-calisphere-object-view-to-provide-a-richer-set-context-to-help-end-users-with-interpreting-and-using-content">working on improving the Calisphere item record views to provide additional context</a>, as well as developing guidelines to consider in preparing to share digital collections generally. We are also <a href="https://trello.com/c/3dlmSO3q/80-assess-the-scope-of-calisphere-contributors-and-collections-and-metadata-in-order-to-ensure-a-more-inclusive-and-representative">conducting an analysis of the scope of collections and contributors</a> in Calisphere in order to identify where experiences, voices, and perspectives might be absent and in need of representation.</p>
+    
+    <h2>Our commitment to providing responsible access to digital primary sources--and how you can help!</h2>
+
+    <p>As a project of the <a href="http://libraries.universityofcalifornia.edu/">University of California Libraries</a>, developed and maintained by the <a href="http://www.cdlib.org/">California Digital Library</a> (CDL), Calisphere advances CDL’s <a href="https://cdlib.org/about/mission-vision-and-values/">mission, vision, and values</a> "by recognizing the value of openness in all aspects of the scholarly enterprise... [and responding] to society’s need for unfettered information access to confront the critical problems of today and tomorrow."</p>
+
+    <p>Calisphere also supports the missions and values that guide our contributing partner organizations--to share and provide free access to digital primary sources that provide enduring cultural, historical, or evidentiary value. Together, we are committed to providing broad public access to these resources in a responsible manner. And, we strive to provide as much accurate contextual information as is feasible, respect ethical guidelines, and adhere to legal specifications as new information about these items is made available.</p>
+
+    <p><strong>We welcome additional information about the digital primary sources in Calisphere.</strong> The California Digital Library and contributing partner organizations invite users and researchers to share any relevant information that will help us better understand and describe the primary sources and historical records in Calisphere. As you explore the collections in Calisphere, please <a href="/contact/" data-pjax="js-pageContent">contact us</a> if you are able to:</p>
+
+    <ul>
+      <li>provide information that surfaces or clarifies the historical context of the item;</li>
+      <li>report an error in the metadata;</li>
+      <li>identify an item that should not be online due to legal, ethical, or other considerations;</li>
+      <li>share information on an item's copyright status; or</li>
+      <li>provide any additional information that will help us better understand and interpret these items.</li>
+    </ul>
+
+    <p>Upon receipt of such feedback, we will review and address any issues raised or new information provided in consultation with the contributing organization and respond to your feedback accordingly.</p>
+ 
+        <p><b>About the information on this page:</b> In an effort to share information that reflects the current practices and commitments of our partners -- archivists, librarians, curators, etc. -- we have consulted workflows and guidelines made publicly available by peer organizations, including the <a href="https://escholarship.org/uc/item/4mq1461d">Statement on Inclusion and Equity in Special Collections, Archives, and Distinctive Collections in the University of California Libraries</a>. Many thanks to <a href="https://www.lib.berkeley.edu/">UC Berkeley Library</a> for developing and sharing their <a href="https://news.lib.berkeley.edu/responsible-access">responsible access workflows</a>, made available as a resource to help guide digital access decisions. We have also consulted the work of national aggregators, including the <a href="https://dp.la/">Digital Public Library of America</a>, <a href="https://digitalnz.org/">DigitalNZ</a>, <a href="https://www.europeana.eu/en">Europeana</a>, and the <a href="https://www.nla.gov.au/">National Library of Australia</a>. Finally, we thank our colleagues at the <a href="https://libraries.universityofcalifornia.edu/">University of California Libraries</a> for their engagement in developing the information on this page.</p>
+    
   </div>
 
   <div class="col-sm-4">
 
     <div class="sidebar">
       <h2>Share your story</h2>
-      <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it. Stories like yours help us obtain additional funding so we can continue to grow and improve the site.</p><p>Please <a href="/contact/" data-pjax="js-pageContent">send us a message</a>.</p>
+      <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it. Stories like yours can help us obtain additional funding to grow and improve the site.</p><p>Please <a href="/contact/" data-pjax="js-pageContent">send us a message</a>.</p>
     </div>
     <div class="sidebar">
-      <h2>Second box</h2>
-      <p>more text</p>
+      <h2>Know something we don’t?</h2>
+      <p>We welcome additional information about the digital primary sources in Calisphere. The California Digital Library and contributing partner organizations invite users and researchers to share any relevant  information that will help us better understand and describe the primary sources and historical records in Calisphere.</p><p>Learn more about our commitment to providing responsible access to digital primary sources--and how you can help--below!</p>
+    
     </div>
 
   </div>

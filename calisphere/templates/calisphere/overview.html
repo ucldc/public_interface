@@ -1,0 +1,64 @@
+{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title='About' %}
+{% endblock %}
+
+{% block content %}
+
+<h1>Heading</h1>
+
+<!-- Begin Static About Component -->
+
+<div class="static">
+
+  <div class="col-sm-8 static__main">
+
+		<p>Paragraph</p>
+
+		<p>The collections on Calisphere have been digitized and contributed by <a href="/institutions/" data-pjax="js-pageContent">all ten campuses of the University of California</a> and other important <a href="/institutions/statewide-partners/" data-pjax="js-pageContent">libraries, archives, and museums throughout the state</a>.</p>
+    
+    <h2>Using Calisphere</h2>
+		<p>For more information about how to use Calisphere and the materials you find here, please consult the <a href="/help/" data-pjax="js-pageContent">help page</a> and <a href="/terms/" data-pjax="js-pageContent">terms of use</a>. Special information about using Calisphere in the classroom can be found on our <a href="/for-educators" data-pjax="js-pageContent">For Educators page</a>.</p>
+
+		<h2>Add your collections</h2>
+
+  	<p>Calisphere aggregates digital collections from libraries, archives, museums, historical societies, and other cultural heritage organizations in California. If you represent such an organization and are interested in contributing digital content to Calisphere, <a href="/contribute/" data-pjax="js-pageContent">click here to learn more</a>.</p>
+
+		<h2>Subscribe to our newsletter</h2>
+
+  	<p>Be the first to hear about new collections and exhibitions, posters, and online research tips and resources! <a href="http://eepurl.com/cTM_Cb">Subscribe</a> if you'd like the latest news from Calisphere delivered right to your inbox.</p> 
+    
+    <h2>Free posters!</h2>
+
+  	<p>We offer free posters for students, teachers, and librarians. Visit the <a href="/posters/" data-pjax="js-pageContent">poster order page</a> for more details.</p>
+
+ 		<h2>Spread the word</h2>
+
+  	<p>Love Calisphere? Help us spread the word! Check out our <a href="/outreach/" data-pjax="js-pageContent">outreach tips and tools</a> for sharing Calisphere with others.</p>
+
+ 		<h2>Our organization</h2>
+
+		<p>Calisphere is a project of the <a href="http://libraries.universityofcalifornia.edu">University of California Libraries</a>, developed and maintained by the <a href="http://www.cdlib.org">California Digital Library</a>.</p>
+    <p>Information about Calisphere's technical framework can be found on our <a href="/help/#11" data-pjax="js-pageContent">help page</a>.</p>
+
+  </div>
+
+  <div class="col-sm-4">
+
+    <div class="sidebar">
+      <h2>Share your story</h2>
+      <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it. Stories like yours help us obtain additional funding so we can continue to grow and improve the site.</p><p>Please <a href="/contact/" data-pjax="js-pageContent">send us a message</a>.</p>
+    </div>
+    <div class="sidebar">
+      <h2>Second box</h2>
+      <p>more text</p>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- End Static About Component -->
+{{ q }}
+{% endblock %}

@@ -953,7 +953,7 @@ def collectionView(request, collection_id):
     return render(request, 'calisphere/collectionView.html', context)
 
 
-def collectionFacet(request, collection_id, facet):
+def reportCollectionFacet(request, collection_id, facet):
     if not facet in UCLDC_SCHEMA_FACETS:
         raise Http404("{} does not exist".format(facet))
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
@@ -999,10 +999,10 @@ def collectionFacet(request, collection_id, facet):
             kwargs={'collection_id': collection_id}),
     })
 
-    return render(request, 'calisphere/collectionFacet.html', context )
+    return render(request, 'calisphere/reportCollectionFacet.html', context )
 
 
-def collectionFacetValue(request, collection_id, facet, facet_value):
+def reportCollectionFacetValue(request, collection_id, facet, facet_value):
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')
 
@@ -1072,7 +1072,7 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
         'description': None,
         'solrParams': solrParams,
         'form_action': reverse(
-            'calisphere:collectionFacetValue',
+            'calisphere:reportCollectionFacetValue',
             kwargs={
               'collection_id': collection_id,
               'facet': facet,
@@ -1080,7 +1080,7 @@ def collectionFacetValue(request, collection_id, facet, facet_value):
             }),
     })
 
-    return render(request, 'calisphere/collectionFacetValue.html', context )
+    return render(request, 'calisphere/reportCollectionFacetValue.html', context )
 
 
 def collectionMetadata(request, collection_id):

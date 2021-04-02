@@ -23,12 +23,12 @@ urlpatterns = [
     url(r'^collections/(?P<collection_id>\d*)/$',
         views.collectionView,
         name='collectionView'),
-    url(r'^collections/(?P<collection_id>\d*)/(?P<facet>[^/].*)/(?P<facet_value>.*)/$',
-        views.collectionFacetValue,
-        name='collectionFacetValue'),
-    url(r'^collections/(?P<collection_id>\d*)/(?P<facet>.*)/$',
-        views.collectionFacet,
-        name='collectionFacet'),
+    url(r'^collections/(?P<collection_id>\d*)/reports/(?P<facet>[^/].*)/(?P<facet_value>.*)/$',
+        views.reportCollectionFacetValue,
+        name='reportCollectionFacetValue'),
+    url(r'^collections/(?P<collection_id>\d*)/reports/(?P<facet>.*)/$',
+        views.reportCollectionFacet,
+        name='reportCollectionFacet'),
 
     # Redirects to new 'exhibitions'
     url(r'^collections/themed/$',

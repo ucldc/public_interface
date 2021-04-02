@@ -1,4 +1,4 @@
-{% extends "calisphere/collectionsDirectory.html,calisphere/pjaxTemplates/collectionsDirectory.html"|pjax:request %}
+{% extends "calisphere/collections/collectionsDirectory.html,calisphere/pjaxTemplates/collectionsDirectory.html"|pjax:request %}
 {% load calisphere-extras %}
 {% load staticfiles %}
 
@@ -10,7 +10,7 @@
 
   <div id="js-mosaicContainer">
   {% for collection in collections %}
-    {% include "calisphere/collectionPreview.html" %}
+    {% include "calisphere/collections/collectionPreview.html" %}
   {% endfor %}
   </div>
 

@@ -43,31 +43,35 @@ FACET_FILTER_TYPES = [
 # Make a copy of FACET_FILTER_TYPES to reset to original.
 DEFAULT_FACET_FILTER_TYPES = FACET_FILTER_TYPES[:]
 
+from collections import namedtuple
+FacetDisplay = namedtuple(
+    'FacetDisplay', 'facet, display')
+
 # solr schema fields that have a `_ss` varient for facets
 UCLDC_SCHEMA_FACETS = [
-  "title",
-  "alternative_title",
-  "contributor",
-  "coverage",
-  "creator",
-  "date",
-  "extent",
-  "format",
-  "genre",
-  "identifier",
-  "language",
-  "location",
-  "publisher",
-  "relation",
-  "rights",
-  "rights_holder",
-  "rights_note",
-  "rights_date",
-  "source",
-  "spatial",
-  "subject",
-  "temporal",
-  "type",
+  FacetDisplay("title", "title"),
+  FacetDisplay("alternative_title", "alternative title"),
+  FacetDisplay("creator", "creator"),
+  FacetDisplay("contributor", "contributor"),
+  FacetDisplay("date", "date"),
+  FacetDisplay("publisher", "publisher"),
+  FacetDisplay("rights", "rights"),
+  FacetDisplay("rights_holder", "rights holder"),
+  FacetDisplay("rights_note", "rights note"),
+  FacetDisplay("rights_date", "copyright date"),
+  FacetDisplay("type", "type"),
+  FacetDisplay("format", "format"),
+  FacetDisplay("genre", "form/genre"),
+  FacetDisplay("extent", "extent"),
+  FacetDisplay("identifier", "identifier"),
+  FacetDisplay("language", "language"),
+  FacetDisplay("subject", "subject"),
+  FacetDisplay("temporal", "time period"),
+  FacetDisplay("coverage", "place"),
+  FacetDisplay("source", "source"),
+  FacetDisplay("relation", "relation"),
+  FacetDisplay("location", "location"),
+  FacetDisplay("spatial", "spatial"),
 ]
 
 CAMPUS_LIST = [

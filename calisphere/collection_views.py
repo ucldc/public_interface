@@ -312,9 +312,13 @@ def collectionSearch(request, collection_id):
             context['filters'][display_name] = list(
                 map(filter_transform, params.getlist(param_name)))
 
+    if settings.UCLDC_FRONT == 'https://calisphere.org/':
+        browse = False
+    else:
+        browse = collection.get_facet_sets()
+
     context.update({
-        'browse': collection.get_facet_sets(),
-        # 'browse': True,
+        'browse': browse,
         'meta_robots': None,
         'totalNumItems':
         total_items.numFound,

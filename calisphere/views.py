@@ -773,8 +773,10 @@ def relatedExhibitions(request):
 
     return render(request, 'calisphere/related-exhibitions.html',
                   {'exhibits': exhibits})
+
+
 def reportCollectionFacet(request, collection_id, facet):
-    if not facet in UCLDC_SCHEMA_FACETS:
+    if not facet in [f.facet for f in UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
     collection_url = 'https://registry.cdlib.org/api/v1/collection/' + collection_id + '/'
     collection_details = json_loads_url(collection_url + '?format=json')
@@ -828,7 +830,7 @@ def reportCollectionFacetValue(request, collection_id, facet, facet_value):
 
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
-    if not facet in UCLDC_SCHEMA_FACETS:
+    if not facet in [f.facet for f in UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))

@@ -45,7 +45,7 @@
       {% if info.uniq_percent == None or facet == 'description' or facet == 'transcription' %}
     <td>{{ facet }}</td>
       {% else %}
-    <td><a href="{{ form_action }}{{ facet }}/">{{ facet }}</a></td>
+    <td><a href="{% url 'calisphere:reportCollectionFacet' collection_id facet %}">{{ facet }}</a></td>
       {% endif %}
     <td>{{ info.percent }}</td>
       {% if facet != 'rights_uri' and facet != 'transcription' %}

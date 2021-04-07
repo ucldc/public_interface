@@ -67,6 +67,8 @@
       {% if collection.url_oac|length > 0 %}
         <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View collection guide.</a>
       {% endif %}
+      <p>View our <a href="/overview/" data-pjax="js-pageContent">statement</a> on digitized primary resources and historical description.</p>
+      
       <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
       <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">
 

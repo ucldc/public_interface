@@ -68,11 +68,29 @@
   {% endif %}
 </h2>
 
-{% if 'selected' in item and item.selected == False %}
-  {% include "calisphere/component-metadata.html" %}
-{% else %}
-  {% include "calisphere/item-metadata.html" %}
-{% endif %}
+<div class="row">
+  <div class="col-md-8">
+    {% if 'selected' in item and item.selected == False %}
+      {% include "calisphere/component-metadata.html" %}
+    {% else %}
+      {% include "calisphere/item-metadata.html" %}
+    {% endif %}
+  </div>
+  <div class="col-md-4 meta-sidebar">
+    <div class="meta-sidebar__block">
+      <h3>About the collections in Calisphere</h3>
+      <p>Learn more about the <a href="/overview/" data-pjax="js-pageContent">collections in Calisphere</a>. View our statement on digitized primary resources.</p>
+    </div>
+    <div class="meta-sidebar__block">
+      <h3>Use, copyright, and permissions</h3>
+      <p>If you're wondering about permissions and what you can do with this item, a good starting point is the "rights information" on this page. See our <a href="/terms/" data-pjax="js-pageContent">terms of use</a> for more tips.</p>
+    </div>
+    <div class="meta-sidebar__block">
+      <h3>Share your story</h3>
+      <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it; please <a href="/contact/" data-pjax="js-pageContent">send us a message</a>.</p>
+    </div>
+  </div>
+</div>
 
 {% if item.parsed_collection_data.0.disqus_shortname %}
 <div class="comment">

@@ -102,3 +102,18 @@
 .header__nav.is-open {
   display: block;
 }
+
+.header__right-announcement { float: right; }
+.header__video-lockup { display: flex; }
+.header__video-text { 
+  flex:1 1 auto; 
+  text-align: center; 
+  font-size: 1.2em; 
+  width: 135px;
+}
+.header__video-icon {
+  flex:1 1 auto; 
+  padding: 5px 0 5px 5px; 
+  font-size: 1.4em;
+}
+

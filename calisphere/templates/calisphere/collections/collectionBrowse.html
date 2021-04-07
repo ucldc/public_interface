@@ -1,0 +1,229 @@
+{% extends "calisphere/searchResults.html" %}
+{% load calisphere-extras %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block title %}: {{ collection.name }}{% endblock %}
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title=collection.name description=collection.description %}
+{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block pageTitle %}
+  <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
+    <ul>
+      <li>
+        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+      </li>
+    </ul>
+  </nav>
+
+  <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ collection.name }}">
+    {{ collection.name }}
+  </h1>
+{% endblock %}
+
+{% block additionalInfo %}
+<div class="collection-intro" data-ga-dim1="{{ collection.local_id }}{{ collection.slug }}">
+  <div class="col-md-3">
+    <div class="collection-intro__institution">
+      <h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
+        {% for repository in collection.repository %}
+          {% if 'campus' in repository and repository.campus|length > 0 %}
+            {% if repository.campus.0.name %}
+              <a
+                href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+                class="collection-intro__institution-heading-link"
+                data-pjax="js-pageContent"
+              >{{ repository.campus.0.name }}</a>,
+            {% endif %}
+          {% endif %}
+          <a
+            href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+            class="collection-intro__institution-heading-link"
+            data-pjax="js-pageContent"
+            data-ga-code="{{ repository.google_analytics_tracking_code }}"
+            data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
+          >
+            {{ repository.name }}
+          </a>
+          {% if forloop.counter < collection.repository|length %} and {% endif %}
+        {% endfor %}
+      </h2>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <div class="collection-intro__about">
+      {% if 'description' in collection %}
+      <h3 class="collection-intro__about-heading">About this Collection</h3>
+        <span class="collection-intro__about-description">
+          {{ collection.description|urlize }}
+        </span>
+      {% endif %}
+      {% if collection.url_local|length > 0 %}
+        <a class="collection-intro__about-link" href="{{ collection.url_local }}" target="_blank">View this collection on the contributor's website.</a><br/>
+      {% endif %}
+      {% if collection.url_oac|length > 0 %}
+        <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View collection guide.</a>
+      {% endif %}
+      <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
+      <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="row">
+  <div class="col-sm-6 col-md-12">
+    <div class="button__institution-tabs-container">
+      <a class="button__institution-tab-collections--selected"
+      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+        Browse collection
+      </a>
+      <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+        Search this collection
+      </a>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-12">
+    {% if collection.repository|length > 1 %}
+    {% for repository in collection.repository %}
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
+        <span class="fa fa-angle-left fa-lg fa-fw"></span>
+        Go to {{ repository.name }} Page
+      </a>
+    {% endfor %}
+    {% else %}
+    {% with collection.repository.0 as repository %}
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
+        <span class="fa fa-angle-left fa-lg fa-fw"></span>
+        Go to Institution Page
+      </a>
+    {% endwith %}
+    {% endif %}
+  </div>
+  <div class="col-sm-6 col-md-12">
+    {% include "calisphere/collections/collectionSnapshot.html" %}
+  </div>
+</div>
+{% endblock %}
+
+{% block filters %}{% endblock %}
+
+{% block mainContent %}
+  <h2 class="text__institution-heading2">Browse {{collection.name}}</h2>
+
+  {% for cluster in clusters %}
+  <div class="row explore-clusters">
+    <div class="col-md-5 cluster-listing">
+      <h3>{{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %} in this Collection</h3>
+      {% if cluster.unique >= 3 %}
+      <h4 class="sr-only">Three Sample {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}s{% endif %}</h4>
+      {% else %}
+      <h4 class="sr-only">{{ cluster.unique|apnumber|title }} {{ cluster.facet_field.display|title }}{% if cluster.facet_field.display != 'rights' %}{{ cluster.unique|pluralize }}{% endif %}</h4>
+      {% endif %}
+      <ol>
+        {% for value in cluster.values %}
+          {% if forloop.counter0 < 3 %}
+          <li>
+            {% if forloop.counter0 == 0 %}<strong>{% endif %}
+              <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }} ({{ value.count|intcomma }} items)</a>
+            {% if forloop.counter0 == 0 %}</strong>{% endif %}
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+
+      <a href="{{ form_action }}{{ cluster.facet_field.facet }}/" data-pjax="js-pageContent" class="btn-default btn btn button__cluster-values">See all {{ cluster.unique|intcomma }} {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}{{ cluster.unique|pluralize }}{% endif %}</a>
+
+      {% if cluster.unique > 3 %}
+      <h4 class="sr-only">Search for a {{cluster.facet_field.display}}</h4>
+      <form class="clustersearch__form-{{cluster.facet_field.facet}}" role="search" onsubmit="false()">
+        <label for="clustersearch__field-{{cluster.facet_field.facet}}" class="sr-only">
+          Search for a {{cluster.facet_field.display}}
+        </label>
+        <div class="input-group">
+          <input id="clustersearch__field-{{cluster.facet_field.facet}}" type="search" placeholder="Search for a {{cluster.facet_field.display}}" class="form-control search__cluster-values">
+            <span class="input-group-btn">
+              <button class="btn btn-default global-search__button" type="submit" aria-label="search"><span class="fa fa-search"></span>
+              </button>
+            </span>
+          </input>
+        </div>
+      </form>
+      {% endif %}
+
+    </div>
+    <a href="{{cluster.values.0.uri}}" data-pjax="js-pageContent">
+    <div class="col-md-7">
+      <div class="browse-cluster-thumbnail__container">
+        {% for thumb in cluster.thumbnails %}
+          {% if forloop.counter0 == 1 %}
+          <div class="browse-cluster-thumbnail__container2">
+          {% endif %}
+          {% if forloop.counter0 == 2 %}
+          <div class="browse-cluster-thumbnail__container3">
+          {% endif %}
+
+          <div class="browse-cluster-thumbnail__{{forloop.counter0}}"
+            style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
+
+              {% if 'reference_image_md5' in thumb %}
+                {% if thumb.type_ss.0|lower == "moving image" %}
+                <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
+                {% elif thumb.type_ss.0|lower == "sound"%}
+                <div class="thumbnail__overlay-icon fa-volume-up"></div>
+                {# elif thumb.type_ss.0|lower == "text" #}
+                <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
+                {% elif thumb.type_ss.0|lower == "dataset" %}
+                <div class="thumbnail__overlay-icon fa-bar-chart"></div>
+                {% endif %}
+
+              {% else %}
+                {% if thumb.type_ss.0|lower == "moving image" %}
+                <div class="thumbnail__tile-icon fa-play-circle-o"></div>
+                {% elif thumb.type_ss.0|lower == "sound"%}
+                <div class="thumbnail__tile-icon fa-volume-up"></div>
+                {% elif thumb.type_ss.0|lower == "text"%}
+                <div class="thumbnail__tile-icon fa-file-text-o"></div>
+                {% elif thumb.type_ss.0|lower == "dataset" %}
+                <div class="thumbnail__tile-icon fa-bar-chart"></div>
+                {% elif thumb.type_ss.0|lower == "image" %}
+                <div class="thumbnail__tile-icon fa-picture-o"></div>
+                {% endif %}
+              {% endif %}
+
+          </div>
+        {% endfor %}
+          {% if cluster.thumbnails|length == 2 %}
+          <div class="browse-cluster-thumbnail__container3">
+          {% endif %}
+          <div class="browse-cluster-thumbnail__{{cluster.thumbnails|length}} browse-cluster-thumbnail__description">
+            View all items with {{ cluster.facet_field.display }} "{{cluster.values.0.label|truncatewords:4}}" in this collection.
+          </div>
+        {% if cluster.thumbnails|length >= 2 %}
+        </div></div>
+        {% endif %}
+      </div>
+    </div>
+    </a>
+  </div>
+  {% endfor %}
+
+  <script>
+  var cluster_fields = [];
+  {% for cluster in clusters %}
+  cluster_fields.push('{{ cluster.facet_field.facet }}');
+  {% endfor %}
+
+  var clusters = {
+    'collection_id': {{collection_id}},
+    'clusters': cluster_fields
+  };
+  </script>
+{% endblock %}

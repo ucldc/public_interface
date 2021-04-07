@@ -1,9 +1,14 @@
-{% extends "calisphere/facetValues.html" %}
+{% extends "calisphere/searchResults.html" %}
 {% load calisphere-extras %}
 {% load staticfiles %}
 {% load humanize %}
 
 {% block breadcrumbs %}{% endblock %}
+
+{% block title %}: {{ collection.name }}{% endblock %}
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title=collection.name description=collection.description %}
+{% endblock %}
 
 {% block pageTitle %}
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
@@ -11,14 +16,11 @@
       <li>
         <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
       </li>
-      <li>
-        items from <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a>
-        with the same {{ facet }}
-      </li>
     </ul>
   </nav>
-  <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ facet_value }}">
-    {{ facet_value }}
+
+  <h1 id="js-collection" data-collection="{{ collection_id }}" data-referralName="{{ collection.name }}">
+    {{ collection.name }}
   </h1>
 {% endblock %}
 
@@ -75,27 +77,63 @@
 
 {% endblock %}
 
-{% block sidebar %}
-<form id="js-facet" action="{{ form_action }}" method="get">
 {% block refineSearch %}
 <div class="row">
+
+  {% if browse %}
   <div class="col-sm-6 col-md-12">
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
-        <span class="fa fa-angle-left fa-lg fa-fw"></span>
-        Go to Collection Page
+    <div class="button__institution-tabs-container">
+      <a class="button__institution-tab-collections"
+      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+        Browse collection
       </a>
+      <a class="button__institution-tab-search--selected" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+        Search this collection
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="col-sm-6 col-md-12">
+    {% if collection.repository|length > 1 %}
+    {% for repository in collection.repository %}
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
+        <span class="fa fa-angle-left fa-lg fa-fw"></span>
+        Go to {{ repository.name }} Page
+      </a>
+    {% endfor %}
+    {% else %}
+    {% with collection.repository.0 as repository %}
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
+        <span class="fa fa-angle-left fa-lg fa-fw"></span>
+        Go to Institution Page
+      </a>
+    {% endwith %}
+    {% endif %}
+  </div>
+
+  <div class="col-sm-6 col-md-12">
+    <!-- Begin Search Collection Field -->
+
+    <div class="search-collection">
+      <label for="search-collection__field" class="search-collection__label">Search within collection</label>
+      <div class="input-group">
+        <input id="search-collection__field" type="search" name="rq" class="form-control search-collection__field" form="js-facet">
+        <span class="input-group-btn">
+          <button class="btn btn-default search-collection__button" type="submit" form="js-facet">Refine
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <!-- End Search Collection Field -->
   </div>
 
 </div>
- {% endblock %}
- </form>
 {% endblock %}
 
 {% block objectsFound %}
-{{ numFound|intcomma }} item{{ numFound|pluralize }} in this collection have a
-  <em>{{ facet }}</em> of
-  »{{ facet_value }}«</b>
-
+{{ numFound|intcomma }} item{{ numFound|pluralize }} found in this collection {% if numFound != totalNumItems %} of <a class="js-clear-filters">{{ totalNumItems }} items</a>{% endif %}
 {% endblock %}
 
 {% block relatedCollections %}

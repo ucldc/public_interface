@@ -104,7 +104,15 @@
 }
 
 .header__right-announcement { float: right; }
-.header__video-lockup { display: flex; }
+.header__video-lockup {
+  display: flex;
+  margin-top: 3px;
+
+  @include bp(md-screen) {
+    margin-top: 7px;
+  }
+}
+
 .header__video-text { 
   flex:1 1 auto; 
   text-align: center; 

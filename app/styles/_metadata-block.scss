@@ -11,15 +11,19 @@
 }
 
 .meta-sidebar {
-  background-color: $design-light-gray-color;
-  padding: 10px;
-  margin-bottom: $layout-component-margin;
+  background-color: #f0f0f0;
+  margin: 0 $object-leftright-margin $layout-component-margin 0;
+  padding: 20px 20px 20px 20px;
 }
 
 .meta-sidebar__block {
   background-color: white;
-  margin: $layout-component-margin;
+  margin-bottom: $layout-component-margin;
   padding: $layout-component-margin;
+}
+
+.meta-sidebar__block:last-child {
+  margin-bottom: 0;
 }
 
 .meta-sidebar h3 {

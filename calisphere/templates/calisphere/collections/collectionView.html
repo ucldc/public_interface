@@ -62,12 +62,12 @@
         </span>
       {% endif %}
       {% if collection.url_local|length > 0 %}
-        View this collection on the <a class="collection-intro__about-link" href="{{ collection.url_local }}" target="_blank">contributor's website</a>.<br/>
+        <span class="collection-intro__about-link">View this collection on the <a href="{{ collection.url_local }}" target="_blank">contributor's website</a>.</span><br/>
       {% endif %}
       {% if collection.url_oac|length > 0 %}
-        View <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">collection guide</a>.<br/>
+        <span class="collection-intro__about-link">View <a href="{{ collection.url_oac }}" target="_blank">collection guide</a>.</span><br/>
       {% endif %}
-      <p>View our <a href="/overview/" data-pjax="js-pageContent">statement on digitized primary resources and historical description</a>.</p>
+        <p>View our <a href="/overview/" data-pjax="js-pageContent">statement on digitized primary resources and historical description</a>.</p>
 
       <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
       <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">

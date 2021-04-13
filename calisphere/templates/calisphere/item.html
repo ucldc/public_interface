@@ -48,7 +48,7 @@
 
 <h2 class="meta-heading">
   {% if item.harvest_type == 'harvested' %}
-    Item Information.
+    Item information.
     <a class="meta-heading__preview-link" href="{{ item.url_item }}">
       View source record on
       {% if item.oac == True %}
@@ -59,11 +59,11 @@
     </a>
   {% elif item.harvest_type == 'hosted' %}
     {% if 'structMap' in item and 'selected' in item and item.selected == True %}
-      Summary Information.
+      Summary information.
     {% elif 'structMap' in item %}
       Item information. <a href="{% url 'calisphere:itemView' item.id %}" class="js-set-link">Go to summary information.</a>
     {% else %}
-      Item Information.
+      Item information.
     {% endif %}
   {% endif %}
 </h2>
@@ -80,10 +80,10 @@
     <div class="meta-sidebar">
       <div class="meta-sidebar__block">
         <h3>About the collections in Calisphere</h3>
-        <p>Learn more about the <a href="/overview/" data-pjax="js-pageContent">collections in Calisphere</a>. View our statement on digitized primary resources.</p>
+        <p>Learn more about the collections in Calisphere. View our <a href="/overview/" data-pjax="js-pageContent">statement on digitized primary resources</a>.</p>
       </div>
       <div class="meta-sidebar__block">
-        <h3>Use, copyright, and permissions</h3>
+        <h3>Copyright, permissions, and use</h3>
         <p>If you're wondering about permissions and what you can do with this item, a good starting point is the "rights information" on this page. See our <a href="/terms/" data-pjax="js-pageContent">terms of use</a> for more tips.</p>
       </div>
       <div class="meta-sidebar__block">

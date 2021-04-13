@@ -384,7 +384,10 @@ $home__img3-v4-md: "#{$home-aws-image-path}maria-felix_465w.jpg";
   @include bp(md-screen) {
   	background-image: url($home__img2-v1-md);
   }
-
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
 }
 
 html.no-background-blend-mode .home__img2-v1-text {
@@ -407,7 +410,10 @@ html.no-background-blend-mode .home__img2-v1-text {
   @include bp(md-screen) {
   	background-image: url($home__img2-v2-md);
   }
-
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
 }
 
 html.no-background-blend-mode .home__img2-v2-text {
@@ -428,7 +434,10 @@ html.no-background-blend-mode .home__img2-v2-text {
   @include bp(md-screen) {
   	// empty
   }
-
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
 }
 
 .home__img2-v4-text {
@@ -442,7 +451,10 @@ html.no-background-blend-mode .home__img2-v2-text {
   @include bp(md-screen) {
   	// empty
   }
-
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
 }
 
 // ***** Image 3 Versions ***** //

@@ -5,9 +5,30 @@
   margin: $layout-component-margin 0 0 0;
 
   @include bp(md-screen) {
-    margin: $layout-component-margin $object-leftright-margin 0 $object-leftright-margin;
+    margin: $layout-component-margin 0 0 $object-leftright-margin;
   }
 
+}
+
+.meta-sidebar {
+  background-color: #f0f0f0;
+  margin: 0 $object-leftright-margin $layout-component-margin 0;
+  padding: 20px 20px 20px 20px;
+}
+
+.meta-sidebar__block {
+  background-color: white;
+  margin-bottom: $layout-component-margin;
+  padding: $layout-component-margin;
+}
+
+.meta-sidebar__block:last-child {
+  margin-bottom: 0;
+}
+
+.meta-sidebar h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.4em;
 }
 
 .meta-block__list {

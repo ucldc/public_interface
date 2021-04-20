@@ -37,6 +37,18 @@
         <a class="header__logo js-global-header-logo" href="{% url 'calisphere:home' %}">
           <img src="{% static 'images/logo-calisphere.svg' %}" alt="Calisphere">
         </a>
+        <div>
+          <div class="header__right-announcement">
+            <div class="header__video-lockup">
+              <div class="header__video-text">
+                Watch a brief <strong><a href="/about/">introductory video</a></strong>
+              </div>
+              <div class="header__video-icon">
+                <a href="/about/"><i class="fa fa-play-circle"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="header__nav js-global-header__mobile-links is-closed" aria-expanded="false">
           <nav class="header-nav mobile-nav" aria-label="main navigation">
@@ -86,7 +98,7 @@
             <div class="row home__img-main-row">
 
               <div class="col-xs-12 col-sm-8">
-                <p class="home__{{ lock_up.img2.class }}-text">Calisphere is a gateway to digital collections from California's great libraries, archives, and museums. Discover over {{ total_objects }} images, texts, and recordings&#8212;and counting.</p>
+                <p class="home__{{ lock_up.img2.class }}-text">Calisphere is your gateway to digital collections from California's great libraries, archives, and museums. Discover over {{ total_objects }} images, texts, and recordings. Watch an <a href="/about/">introductory video</a> to learn more.</p>
               </div>
 
               <div class="col-xs-8">

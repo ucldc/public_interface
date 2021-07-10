@@ -313,6 +313,8 @@ def itemView(request, item_id=''):
             item['harvest_type'] = 'hosted'
             structmap_url = item['structmap_url'].replace(
                 's3://static', 'https://s3.amazonaws.com/static')
+            if settings.UCLDC_STRUCTMAP2:
+                structmap_url = structmap_url.replace('/media_json/','/media_json_2/')
             structmap_data = json_loads_url(structmap_url)
 
             if 'structMap' in structmap_data:
@@ -326,16 +328,24 @@ def itemView(request, item_id=''):
                     component['selected'] = True
                     if 'format' in component:
                         item['contentFile'] = getHostedContentFile(component)
+
+                    #if 'metadata' in component and component.get('version') == '2.0':
+                    #if settings.UCLDC_STRUCTMAP2:
+                    if not('metadata' in component):
+                        metadata = component
+                    else:
+                        metadata = component["metadata"]
                     # remove emptry strings from list
-                    for k, v in list(component.items()):
+                    for k, v in list(metadata.items()):
                         if isinstance(v, list):
                             if isinstance(v[0], str):
-                                component[k] = [
+                                metadata[k] = [
                                     name for name in v if name and name.strip()
                                 ]
                     # remove empty lists and empty strings from dict
                     item['selectedComponent'] = dict(
-                        (k, v) for k, v in list(component.items()) if v)
+                        (k, v) for k, v in list(metadata.items()) if v)
+                # simple object
                 else:
                     item['selected'] = True
                     # if parent content file, get it
@@ -346,6 +356,7 @@ def itemView(request, item_id=''):
                     else:
                         component = structmap_data['structMap'][0]
                         item['contentFile'] = getHostedContentFile(component)
+
                 item['structMap'] = structmap_data['structMap']
 
                 # single or multi-format object
@@ -437,6 +448,7 @@ def itemView(request, item_id=''):
         return render(
             request, 'calisphere/itemViewer.html', {
                 'q': '',
+                'facet': {},
                 'item': item_solr_search.results[0],
                 'item_solr_search': item_solr_search,
                 'meta_image': meta_image,

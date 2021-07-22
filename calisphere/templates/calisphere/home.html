@@ -79,9 +79,9 @@
               <h1 class="home__{{ lock_up.img1.class }}-heading">The deeper you look, the more you discover.</h1>
               <form role="search" id="js-homeForm" action="{% url 'calisphere:search' %}" method="get">
               <div class="home__search">
-                <label for="home__search-field" class="sr-only">Search over one million items</label>
+                <label for="home__search-field" class="sr-only">Search over two million items</label>
                 <div class="input-group">
-                  <input id="home__search-field" form="js-homeForm" type="search" class="form-control input-lg" placeholder="Search over one million items" name="q" label="Search field">
+                  <input id="home__search-field" form="js-homeForm" type="search" class="form-control input-lg" placeholder="Search over two million items" name="q" label="Search field">
                   <span class="input-group-btn">
                     <button class="btn btn-default btn-lg home__search-button" type="submit" aria-label="search">
                     </button>
@@ -181,7 +181,7 @@
 
         <div class="footer__search mobile-nav__item">
           <form class="global-search" role="search" id="js-footerSearch" action="{% url 'calisphere:search' %}" method="get">
-            <label for="footer__search-field" class="global-search__label">Search over one million items</label>
+            <label for="footer__search-field" class="global-search__label">Search over two million items</label>
             <div class="input-group">
               <input id="footer__search-field" form="js-footerSearch" name="q" value="{{ q }}" type="search" class="form-control global-search__field js-globalSearch">
               <span class="input-group-btn">

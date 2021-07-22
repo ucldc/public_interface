@@ -151,12 +151,12 @@ def institution_view(request,
         elif institution_type == 'campus':
             extra_filter = 'campus_url: "' + institution_url + '"'
 
-        solr_params = views.solrEncode(params, facet_filter_types)
+        solr_params = views.solr_encode(params, facet_filter_types)
         if extra_filter:
             solr_params['fq'].append(extra_filter)
         solr_search = SOLR_select(**solr_params)
 
-        facets = views.facetQuery(facet_filter_types, params, solr_search,
+        facets = views.facet_query(facet_filter_types, params, solr_search,
                                   extra_filter)
 
         filter_display = {}
@@ -169,7 +169,7 @@ def institution_view(request,
                 filter_display[display_name] = list(
                     map(filter_transform, params.getlist(param_name)))
 
-        context = views.searchDefaults(params)
+        context = views.search_defaults(params)
         context.update({
             'filters':
             filter_display,
@@ -207,7 +207,7 @@ def institution_view(request,
                 'campus_slug':
                 institution_details.get('slug'),
                 'related_collections':
-                views.getRelatedCollections(
+                views.get_related_collections(
                     params, slug=institution_details.get('slug'))[0],
                 'form_action':
                 reverse(
@@ -229,7 +229,7 @@ def institution_view(request,
                 'uc_institution':
                 uc_institution,
                 'related_collections':
-                views.getRelatedCollections(params,
+                views.get_related_collections(params,
                                             repository_id=institution_id)[0],
                 'form_action':
                 reverse(
@@ -322,7 +322,7 @@ def institution_view(request,
                     collection_parts[2],
                     collection_parts[1],
                 ))
-            collection_mosaic = views.getCollectionMosaic(
+            collection_mosaic = views.get_collection_mosaic(
                 collection_data.get('url'))
             if collection_mosaic:
                 related_collections.append(collection_mosaic)

@@ -12,7 +12,7 @@ app_name = 'calisphere'
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^search/$', views.search, name='search'),
-    url(r'^item/(?P<item_id>.*)/$', views.itemView, name='itemView'),
+    url(r'^item/(?P<item_id>.*)/$', views.item_view, name='itemView'),
     url(r'^collections/$',
         collection_views.collectionsDirectory,
         name='collectionsDirectory'),
@@ -26,10 +26,10 @@ urlpatterns = [
         collection_views.collectionSearch,
         name='collectionView'),
     url(r'^collections/(?P<collection_id>\d*)/reports/(?P<facet>[^/].*)/(?P<facet_value>.*)/$',
-        views.reportCollectionFacetValue,
+        views.report_collection_facet_value,
         name='reportCollectionFacetValue'),
     url(r'^collections/(?P<collection_id>\d*)/reports/(?P<facet>.*)/$',
-        views.reportCollectionFacet,
+        views.report_collection_facet,
         name='reportCollectionFacet'),
     url(r'^collections/(?P<collection_id>\d*)/(?P<cluster>[^/].*)/(?P<cluster_value>.*)/$',
         collection_views.collectionFacetValue,
@@ -92,18 +92,18 @@ urlpatterns = [
         TemplateView.as_view(template_name='calisphere/overview.html'),
         name='overview'),
     url(r'posters/$', views.posters, name='posters'),
-    url(r'sitemap-(?P<section>.*).xml$', views.sitemapSection),
-    url(r'sitemap-(?P<section>.*).xml.gz$', views.sitemapSectionZipped),
+    url(r'sitemap-(?P<section>.*).xml$', views.sitemap_section),
+    url(r'sitemap-(?P<section>.*).xml.gz$', views.sitemap_section_zipped),
 
     # AJAX HELPERS
     url(r'^relatedCollections/',
-        views.relatedCollections,
+        views.related_collections,
         name='relatedCollections'),
     url(r'^relatedExhibitions',
-        views.relatedExhibitions,
+        views.related_exhibitions,
         name='relatedExhibitions'),
-    url(r'^carousel/', views.itemViewCarousel, name='carousel'),
-    url(r'^contactOwner/', views.contactOwner, name='contactOwner'),
+    url(r'^carousel/', views.item_view_carousel, name='carousel'),
+    url(r'^contactOwner/', views.contact_owner, name='contactOwner'),
 ]
 
 if settings.UCLDC_METADATA_SUMMARY:

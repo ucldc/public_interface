@@ -17,7 +17,7 @@ from requests.exceptions import HTTPError
 from django.core.exceptions import ObjectDoesNotExist
 from exhibits.models import ExhibitItem, Exhibit
 from django.template.defaultfilters import pluralize
-from .views import solr_escape, searchDefaults, solrEncode, facetQuery, getCollectionMosaic
+from .views import solr_escape, search_defaults, solr_encode, facet_query, get_collection_mosaic
 
 
 import os
@@ -38,7 +38,7 @@ def collectionsDirectory(request):
 
     for collection_link in solr_collections.shuffled[(page - 1) * 10:page *
                                                      10]:
-        collections.append(getCollectionMosaic(collection_link.url))
+        collections.append(get_collection_mosaic(collection_link.url))
 
     context = {
         'meta_robots': None,
@@ -66,7 +66,7 @@ def collectionsAZ(request, collection_letter):
 
     collections = []
     for collection_link in collections_list[(page - 1) * 10:page * 10]:
-        collections.append(getCollectionMosaic(collection_link.url))
+        collections.append(get_collection_mosaic(collection_link.url))
 
     alphabet = list((character, True if character.lower() not in
                      solr_collections.no_collections else False)
@@ -257,7 +257,7 @@ def collectionSearch(request, collection_id):
     collection = Collection(collection_id)
 
     params = request.GET.copy()
-    context = searchDefaults(params)
+    context = search_defaults(params)
 
     # Collection Views don't allow filtering or faceting by collection_data or repository_data
     facet_filter_types = [
@@ -284,7 +284,7 @@ def collectionSearch(request, collection_id):
     extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
-    solrParams = solrEncode(params, facet_filter_types)
+    solrParams = solr_encode(params, facet_filter_types)
     solrParams['fq'].append(extra_filter)
     solr_search = SOLR_select(**solrParams)
     context['search_results'] = solr_search.results
@@ -299,7 +299,7 @@ def collectionSearch(request, collection_id):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    context['facets'] = facetQuery(facet_filter_types, params, solr_search,
+    context['facets'] = facet_query(facet_filter_types, params, solr_search,
                                    extra_filter)
 
     context['filters'] = {}
@@ -343,7 +343,7 @@ def collectionFacet(request, collection_id, facet):
         raise Http404("{} is not a valid facet".format(facet))
 
     params = request.GET.copy()
-    context = searchDefaults(params)
+    context = search_defaults(params)
     if not params.get('view_format'):
         context['view_format'] = 'list'
 
@@ -443,7 +443,7 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
     escaped_cluster_value = solr_escape(parsed_cluster_value)
     params.update({'fq': f"{cluster}_ss:\"{escaped_cluster_value}\""})
 
-    context = searchDefaults(params)
+    context = search_defaults(params)
 
     # Collection Views don't allow filtering or faceting by collection_data or repository_data
     facet_filter_types = [
@@ -471,7 +471,7 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
     extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
-    solrParams = solrEncode(params, facet_filter_types)
+    solrParams = solr_encode(params, facet_filter_types)
     solrParams['fq'].append(extra_filter)
     solr_search = SOLR_select(**solrParams)
     context['search_results'] = solr_search.results
@@ -489,7 +489,7 @@ def collectionFacetValue(request, collection_id, cluster, cluster_value):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    context['facets'] = facetQuery(facet_filter_types, params, solr_search,
+    context['facets'] = facet_query(facet_filter_types, params, solr_search,
                                   extra_filter)
 
     context['filters'] = {}
@@ -531,7 +531,7 @@ def collectionMetadata(request, collection_id):
     summary_data = collection.get_summary_data()
 
     params = request.GET.copy()
-    context = searchDefaults(params)
+    context = search_defaults(params)
     context = {
         'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",

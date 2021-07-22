@@ -5,6 +5,7 @@ from django.conf import settings
 from calisphere.home import HomeView
 from . import views
 from . import collection_views
+from . import institution_views
 
 app_name = 'calisphere'
 
@@ -57,14 +58,14 @@ urlpatterns = [
         collection_views.collectionsTitles,
         name='collectionsTitleData'),
     url(r'^institution/(?P<repository_id>\d*)(?:/(?P<subnav>items|collections))?/',
-        views.repositoryView,
+        institution_views.repository_view,
         name='repositoryView'),
     url(r'^(?P<campus_slug>UC\w{1,2})(?:/(?P<subnav>items|collections|institutions))?/',
-        views.campusView,
+        institution_views.campus_view,
         name='campusView'),
-    url(r'^institutions/$', views.campusDirectory, name='campusDirectory'),
+    url(r'^institutions/$', institution_views.campus_directory, name='campusDirectory'),
     url(r'^institutions/statewide-partners/$',
-        views.statewideDirectory,
+        institution_views.statewide_directory,
         name='statewideDirectory'),
     url(r'about/$',
         TemplateView.as_view(template_name='calisphere/about.html'),

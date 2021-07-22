@@ -157,7 +157,7 @@ def institution_view(request,
         solr_search = SOLR_select(**solr_params)
 
         facets = views.facet_query(facet_filter_types, params, solr_search,
-                                  extra_filter)
+                                   extra_filter)
 
         filter_display = {}
         for filter_type in facet_filter_types:
@@ -218,7 +218,7 @@ def institution_view(request,
                     })
             })
             for campus in constants.CAMPUS_LIST:
-                if (institution_id == campus['id'] 
+                if (institution_id == campus['id']
                         and 'featuredImage' in campus):
                     context['featuredImage'] = campus['featuredImage']
 
@@ -230,7 +230,7 @@ def institution_view(request,
                 uc_institution,
                 'related_collections':
                 views.get_related_collections(params,
-                                            repository_id=institution_id)[0],
+                                              repository_id=institution_id)[0],
                 'form_action':
                 reverse(
                     'calisphere:repositoryView',
@@ -302,10 +302,10 @@ def institution_view(request,
         collections_solr_search = SOLR_select(**collections_params)
 
         # solrpy gives us a dict == unsorted (!)
-        # use the `facet_decade` mode of process_facets to do a 
+        # use the `facet_decade` mode of process_facets to do a
         # lexical sort by value ....
         solr_related_collections = list(
-            collection[0] for collection in 
+            collection[0] for collection in
             constants.DEFAULT_FACET_FILTER_TYPES[3].process_facets(
                 collections_solr_search.facet_counts['facet_fields']
                 ['sort_collection_data'],
@@ -421,7 +421,7 @@ def campus_view(request, campus_slug, subnav=False):
             facet_field=['repository_data'])
 
         related_institutions = list(
-            institution[0] for institution in 
+            institution[0] for institution in
             constants.DEFAULT_FACET_FILTER_TYPES[2].process_facets(
                 institutions_solr_search.facet_counts['facet_fields']
                 ['repository_data'], []))

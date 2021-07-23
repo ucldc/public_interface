@@ -22,18 +22,6 @@ import urllib.parse
 standard_library.install_aliases()
 
 
-def process_sort_collection_data(string):
-    '''temporary; should parse sort_collection_data
-       with either `:` or `::` dlimiter style
-    '''
-    if '::' in string:
-        return string.split('::', 2)
-    else:
-        part1, remainder = string.split(':', 1)
-        part2, part3 = remainder.rsplit(':https:')
-        return [part1, part2, 'https:{}'.format(part3)]
-
-
 def get_more_collection_data(collection_data):
     collection = facet_module.getCollectionData(
         collection_data=collection_data,

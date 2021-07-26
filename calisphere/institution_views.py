@@ -327,7 +327,7 @@ def institution_view(request,
 
         related_collections = []
         for i, related_collection in enumerate(solr_related_collections):
-            collection_parts = views.process_sort_collection_data(
+            collection_parts = process_sort_collection_data(
                 related_collection)
             collection_data = getCollectionData(
                 collection_data='{0}::{1}'.format(

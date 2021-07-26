@@ -9,7 +9,7 @@
     {% if 'description' in collection %}
       <p>{{ collection.description|truncatewords:100 }}</p>
     {% endif %}
-    <p>{% if 'institutions' in collection %}Institution: {% for institution in collection.institutions %}{{ institution }}{% endfor %}{% endif %}</p>
+    <p>{% if 'institutions' in collection %}Institution: {% for institution in collection.institutions %}{{ institution }}{% if collection.institutions|length > 1 and forloop.counter != collection.institutions|length %}, {% endif %}{% endfor %}{% endif %}</p>
   </div>
 
   <p class="collect-row__item-number"><strong>{{ collection.numFound|intcomma }} Item{{ collection.numFound|pluralize }}</strong></p>

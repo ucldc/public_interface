@@ -7,6 +7,7 @@ from django.http import Http404, HttpResponse, QueryDict
 from . import constants
 from . import facet_filter_type as facet_module
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
+from .search_form import SearchForm
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
@@ -140,17 +141,17 @@ def facet_query(facet_filter_types, params, solr_search, extra_filter=None):
     return facets
 
 
-def search_defaults(params):
-    context = {
-        'q': params.get('q', ''),
-        'rq': params.getlist('rq'),
-        'rows': params.get('rows', '24'),
-        'start': params.get('start', 0),
-        'sort': params.get('sort', 'relevance'),
-        'view_format': params.get('view_format', 'thumbnails'),
-        'rc_page': params.get('rc_page', 0)
-    }
-    return context
+# def search_defaults(params):
+#     context = {
+#         'q': params.get('q', ''),
+#         'rq': params.getlist('rq'),
+#         'rows': params.get('rows', '24'),
+#         'start': params.get('start', 0),
+#         'sort': params.get('sort', 'relevance'),
+#         'view_format': params.get('view_format', 'thumbnails'),
+#         'rc_page': params.get('rc_page', 0)
+#     }
+#     return context
 
 
 def solr_escape(text):
@@ -468,7 +469,7 @@ def item_view(request, item_id=''):
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         params = request.GET.copy()
-        context = search_defaults(params)
+        context = SearchForm(params).context
         solr_query = solr_encode(params, constants.FACET_FILTER_TYPES)
         solr_search = SOLR_select(**solr_query)
 
@@ -614,7 +615,7 @@ def item_view_carousel(request):
         num_found = carousel_solr_search.numFound
 
     if 'init' in params:
-        context = search_defaults(params)
+        context = SearchForm(params).context
         context['start'] = solr_params[
             'start'] if solr_params['start'] != 'NaN' else 0
 
@@ -805,7 +806,7 @@ def report_collection_facet(request, collection_id, facet):
             '/')[-2]
 
     params = request.GET.copy()
-    context = search_defaults(params)
+    context = SearchForm(params).context
     context.update({'facet': facet})
     # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
     solr_params = {
@@ -875,7 +876,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     if 'sort' not in params:
         params.update({'sort': 'oldest-end'})
 
-    context = search_defaults(params)
+    context = SearchForm(params).context
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data

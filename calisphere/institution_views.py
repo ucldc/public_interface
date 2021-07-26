@@ -6,6 +6,7 @@ from . import constants
 from . import views
 from .facet_filter_type import getCollectionData, getRepositoryData
 from .cache_retry import SOLR_select, json_loads_url
+from .search_form import SearchForm
 
 import math
 import re
@@ -181,7 +182,7 @@ def institution_view(request,
                 filter_display[display_name] = list(
                     map(filter_transform, params.getlist(param_name)))
 
-        context = views.search_defaults(params)
+        context = SearchForm(params).context
         context.update({
             'filters':
             filter_display,

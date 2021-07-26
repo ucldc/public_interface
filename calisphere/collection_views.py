@@ -8,6 +8,7 @@ from . import constants
 from .facet_filter_type import FacetFilterType
 from .cache_retry import SOLR_select, json_loads_url
 from . import views
+from .search_form import SearchForm
 
 
 import os
@@ -262,7 +263,7 @@ def collection_search(request, collection_id):
     collection = Collection(collection_id)
 
     params = request.GET.copy()
-    context = views.search_defaults(params)
+    context = SearchForm(params).context
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data
@@ -350,7 +351,7 @@ def collection_facet(request, collection_id, facet):
         raise Http404("{} is not a valid facet".format(facet))
 
     params = request.GET.copy()
-    context = views.search_defaults(params)
+    context = SearchForm(params).context
     if not params.get('view_format'):
         context['view_format'] = 'list'
 
@@ -456,7 +457,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     escaped_cluster_value = views.solr_escape(parsed_cluster_value)
     params.update({'fq': f"{cluster}_ss:\"{escaped_cluster_value}\""})
 
-    context = views.search_defaults(params)
+    context = SearchForm(params).context
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data
@@ -549,7 +550,7 @@ def collection_metadata(request, collection_id):
     summary_data = collection.get_summary_data()
 
     params = request.GET.copy()
-    context = views.search_defaults(params)
+    context = SearchForm(params).context
     context = {
         'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",

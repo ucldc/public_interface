@@ -8,7 +8,7 @@ from . import constants
 from .facet_filter_type import FacetFilterType
 from .cache_retry import SOLR_select, json_loads_url
 from . import search_form
-
+from builtins import range
 
 import os
 import math
@@ -19,7 +19,7 @@ import re
 standard_library.install_aliases()
 
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
-             r'(?P<collection_id>\d*)/?')
+             r'(?P<id>\d*)/?')
 
 
 def collections_directory(request):
@@ -31,8 +31,7 @@ def collections_directory(request):
 
     for collection_link in solr_collections.shuffled[(page - 1) * 10:page *
                                                      10]:
-        col_id = re.match(col_regex, collection_link.url).group(
-            'collection_id')
+        col_id = re.match(col_regex, collection_link.url).group('id')
         try:
             collections.append(Collection(col_id).get_mosaic())
         except Http404:
@@ -68,8 +67,7 @@ def collections_az(request, collection_letter):
 
     collections = []
     for collection_link in collections_list[(page - 1) * 10:page * 10]:
-        col_id = re.match(col_regex, collection_link.url).group(
-            'collection_id')
+        col_id = re.match(col_regex, collection_link.url).group('id')
         try:
             collections.append(Collection(col_id).get_mosaic())
         except Http404:
@@ -283,8 +281,9 @@ class Collection(object):
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
             'q': '*:*',
-            'fields':
-            'reference_image_md5, url_item, id, title, collection_url, type_ss',
+            'fields': (
+                'reference_image_md5, url_item, id, '
+                'title, collection_url, type_ss'),
             'sort': 'sort_title asc',
             'rows': 6,
             'start': 0,
@@ -311,6 +310,29 @@ class Collection(object):
             'institutions': repositories,
             'numFound': display_items.numFound + ugly_display_items.numFound,
             'display_items': items
+        }
+
+    def item_view(self):
+        production_disqus = (
+            settings.UCLDC_FRONT == 'https://calisphere.org/' or
+            settings.UCLDC_DISQUS == 'prod'
+        )
+        if production_disqus:
+            disqus_shortname = self.details.get(
+                'disqus_shortname_prod')
+        else:
+            disqus_shortname = self.details.get(
+                'disqus_shortname_test')
+
+        return {
+            "url": self.url,
+            "name": self.details.get('name'),
+            "id": self.id,
+            "local_id": self.details.get('local_id'),
+            "slug": self.details.get('slug'),
+            "harvest_type": self.details.get('harvest_type'),
+            "custom_facet": self.details.get('custom_facet'),
+            "disqus_shortname": disqus_shortname
         }
 
 
@@ -675,3 +697,93 @@ def collection_browse(request, collection_id):
 
     return render(
         request, 'calisphere/collections/collectionBrowse.html', context)
+
+
+def get_related_collections(params, slug=None, repository_id=None):
+    solr_params = search_form.solr_encode(
+        params, constants.FACET_FILTER_TYPES, [{'facet': 'collection_data'}])
+    solr_params['rows'] = 0
+
+    slug = params.get('campus_slug') if params.get('campus_slug') else slug
+
+    if slug:
+        campus = [c for c in constants.CAMPUS_LIST if c['slug'] == slug]
+        extra_filter = (
+            'campus_url: "https://registry.cdlib.org/api/v1/'
+            'campus/' + campus[0]['id'] + '/"'
+        )
+        solr_params['fq'].append(extra_filter)
+    if repository_id:
+        extra_filter = (
+            f'repository_url: "https://registry.cdlib.org/api/v1/'
+            f'repository/{repository_id}/"'
+        )
+        solr_params['fq'].append(extra_filter)
+
+    # mlt search
+    if len(solr_params['q']) == 0 and len(solr_params['fq']) == 0:
+        if params.get('itemId'):
+            solr_params['q'] = 'id:' + params.get('itemId', '')
+
+    related_collections = SOLR_select(**solr_params)
+    related_collections = related_collections.facet_counts['facet_fields'][
+        'collection_data']
+
+    field = constants.DEFAULT_FACET_FILTER_TYPES[3]
+    # remove collections with a count of 0 and sort by count
+    related_collections = field.process_facets(
+        related_collections, params.getlist('collection_data'))
+    # remove 'count'
+    related_collections = list(facet for facet, count in related_collections)
+
+    # get three items for each related collection
+    three_related_collections = []
+    rc_page = int(params.get('rc_page', 0))
+    for i in range(rc_page * 3, rc_page * 3 + 3):
+        if len(related_collections) <= i or not related_collections[i]:
+            break
+
+        col_id = (re.match(
+            col_regex, related_collections[i].split('::')[0]).group('id'))
+        collection = Collection(col_id)
+
+        rc_solr_params = {
+            'q': solr_params['q'],
+            'rows': '3',
+            'fq': [f"collection_url: \"{ collection.url }\""],
+            'fields': (
+                'collection_data, reference_image_md5, '
+                'url_item, id, title, type_ss'
+            )
+        }
+        collection_items = SOLR_select(**rc_solr_params)
+        collection_items = collection_items.results
+
+        if len(collection_items) < 3:
+            # redo the query without any search terms
+            rc_solr_params['q'] = ''
+            collection_items_no_query = SOLR_select(**rc_solr_params)
+            collection_items = (
+                collection_items + collection_items_no_query.results)
+
+        if len(collection_items) <= 0:
+            break
+
+        lockup_data = {
+            'image_urls': collection_items,
+            'name': collection.details['name'],
+            'collection_id': collection.id
+        }
+
+        repositories = []
+        for repository in collection.details.get('repository'):
+            if 'campus' in repository and len(repository['campus']) > 0:
+                repositories.append(repository['campus'][0]['name'] +
+                                    ", " + repository['name'])
+            else:
+                repositories.append(repository['name'])
+        lockup_data['institution'] = (', ').join(repositories)
+
+        three_related_collections.append(lockup_data)
+
+    return three_related_collections, len(related_collections)

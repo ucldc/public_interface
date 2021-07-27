@@ -1,8 +1,6 @@
-from .cache_retry import SOLR_select, json_loads_url
+from .cache_retry import SOLR_select
 from . import constants
 from django.http import Http404
-from . import facet_filter_type as facet_module
-from builtins import range
 
 
 def facet_query(facet_filter_types, params, solr_search, extra_filter=None):
@@ -133,99 +131,3 @@ def solr_encode(params, filter_types, facet_types=[]):
         query_value.update({'qf': query_fields})
 
     return query_value
-
-
-def get_related_collections(params, slug=None, repository_id=None):
-    solr_params = solr_encode(params, constants.FACET_FILTER_TYPES,
-                              [{
-                                'facet': 'collection_data'
-                              }])
-    solr_params['rows'] = 0
-
-    slug = params.get('campus_slug') if params.get('campus_slug') else slug
-
-    if slug:
-        campus = [c for c in constants.CAMPUS_LIST if c['slug'] == slug]
-        extra_filter = (
-            'campus_url: "https://registry.cdlib.org/api/v1/'
-            'campus/' + campus[0]['id'] + '/"'
-        )
-        solr_params['fq'].append(extra_filter)
-    if repository_id:
-        extra_filter = (
-            f'repository_url: "https://registry.cdlib.org/api/v1/'
-            f'repository/{repository_id}/"'
-        )
-        solr_params['fq'].append(extra_filter)
-
-    # mlt search
-    if len(solr_params['q']) == 0 and len(solr_params['fq']) == 0:
-        if params.get('itemId'):
-            solr_params['q'] = 'id:' + params.get('itemId', '')
-
-    related_collections = SOLR_select(**solr_params)
-    related_collections = related_collections.facet_counts['facet_fields'][
-        'collection_data']
-
-    field = constants.DEFAULT_FACET_FILTER_TYPES[3]
-    collection_urls = list(
-        map(field.filter_transform, params.getlist('collection_data')))
-    # remove collections with a count of 0 and sort by count
-    related_collections = field.process_facets(
-        related_collections, collection_urls)
-    # remove 'count'
-    related_collections = list(facet for facet, count in related_collections)
-
-    # get three items for each related collection
-    three_related_collections = []
-    rc_page = int(params.get('rc_page', 0))
-    for i in range(rc_page * 3, rc_page * 3 + 3):
-        if len(related_collections) > i:
-            collection = facet_module.get_collection_data(
-                related_collections[i])
-
-            rc_solr_params = {
-                'q': solr_params['q'],
-                'rows': '3',
-                'fq': ["collection_url: \"" + collection['url'] + "\""],
-                'fields': (
-                    'collection_data, reference_image_md5, '
-                    'url_item, id, title, type_ss'
-                )
-            }
-
-            collection_items = SOLR_select(**rc_solr_params)
-            collection_items = collection_items.results
-
-            if len(collection_items) < 3:
-                rc_solr_params['q'] = ''
-                collection_items_no_query = SOLR_select(**rc_solr_params)
-                collection_items = (
-                    collection_items + collection_items_no_query.results)
-
-            if len(collection_items) > 0:
-                collection_data = {
-                    'image_urls': collection_items,
-                    'name': collection['name'],
-                    'collection_id': collection['id']
-                }
-
-                # TODO: get this from repository_data in solr rather than
-                # from the registry API
-                collection_details = json_loads_url(collection['url'] +
-                                                    "?format=json")
-                if (collection_details.get('repository')
-                        and collection_details['repository'][0]['campus']):
-                    collection_data[
-                        'institution'] = collection_details['repository'][0][
-                            'campus'][0]['name'] + ', ' + collection_details[
-                                'repository'][0]['name']
-                elif collection_details.get('repository'):
-                    collection_data['institution'] = collection_details.get(
-                        'repository')[0]['name']
-                else:
-                    collection_data['institution'] = None
-
-                three_related_collections.append(collection_data)
-
-    return three_related_collections, len(related_collections)

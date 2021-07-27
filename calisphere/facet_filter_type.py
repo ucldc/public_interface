@@ -14,37 +14,10 @@ from calisphere.collection_data import CollectionManager
 # change in some of the robust data and a harvest hasn't been run
 # (ie - a collection name changes) the FILTER still works
 
-
-def get_collection_data(collection_data=None, collection_id=None):
-    collection = {}
-    if collection_data:
-        parts = collection_data.split('::')
-        collection['url'] = parts[0] if len(parts) >= 1 else ''
-        collection['name'] = parts[1] if len(parts) >= 2 else ''
-        collection_api_url = re.match(
-            r'^https://registry\.cdlib\.org/api/v1/collection/(?P<url>\d*)/?',
-            collection['url'])
-        if collection_api_url is None:
-            print('no collection api url:')
-            collection['id'] = ''
-        else:
-            collection['id'] = collection_api_url.group('url')
-    elif collection_id:
-        solr_collections = CollectionManager(settings.SOLR_URL,
-                                             settings.SOLR_API_KEY)
-        collection['url'] = (
-            "https://registry.cdlib.org/api/v1/collection/{collection_id}/")
-        collection['id'] = collection_id
-        collection_details = json_loads_url("{0}?format=json".format(
-            collection['url']))
-
-        collection['name'] = solr_collections.names.get(
-            collection['url']) or collection_details.get(
-                'name', '[no collection name]')
-
-        collection['local_id'] = collection_details.get('local_id')
-        collection['slug'] = collection_details.get('slug')
-    return collection
+col_regex = (
+    r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?')
+repo_regex = (
+    r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
 
 
 def get_repository_data(repository_data=None,
@@ -146,17 +119,12 @@ class FacetFilterType(object):
                 key=operator.itemgetter(1),
                 reverse=True)
 
-        col_regex = (
-            r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?')
-        repo_regex = (
-            r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
         # append selected filters even if they have a count of 0
         for f in filters:
             if not any(f in facet[0] for facet in display_facets):
                 if self.facet == 'collection_data':
                     api_url = re.match(col_regex, f)
-                    collection = get_collection_data(
-                        collection_id=api_url.group('id'))
+                    collection = self.filter_display(api_url.group('id'))
                     display_facets.append(("{}::{}".format(
                         collection.get('url'), collection.get('name')), 0))
                 elif self.facet == 'repository_data':
@@ -196,11 +164,39 @@ class CollectionFacetFilterType(FacetFilterType):
         template = "https://registry.cdlib.org/api/v1/collection/{0}/"
         return template.format(collection_id)
 
-    def facet_transform(self, facet_val):
-        return get_collection_data(collection_data=facet_val)
+    def facet_transform(self, collection_data):
+        parts = collection_data.split('::')
+        collection = {
+            'url': parts[0] if len(parts) >= 1 else '',
+            'name': parts[1] if len(parts) >= 2 else ''
+        }
+        collection_api_url = re.match(col_regex, collection['url'])
+        if collection_api_url is None:
+            print('no collection api url:')
+            collection['id'] = ''
+        else:
+            collection['id'] = collection_api_url.group('id')
 
-    def filter_display(self, filter_val):
-        collection = get_collection_data(collection_id=filter_val)
-        collection.pop('local_id', None)
-        collection.pop('slug', None)
+        return collection
+
+    def filter_display(self, collection_id):
+        solr_collections = CollectionManager(settings.SOLR_URL,
+                                             settings.SOLR_API_KEY)
+        collection = {
+            'url': (
+                f"https://registry.cdlib.org/api/v1/"
+                f"collection/{collection_id}/"
+            ),
+            'id': collection_id
+        }
+
+        collection['name'] = solr_collections.names.get(
+            collection['url'])
+
+        if not collection['name']:
+            collection_details = json_loads_url("{0}?format=json".format(
+                collection['url']))
+            collection['name'] = collection_details.get(
+                'name', '[no collection name]')
+
         return collection

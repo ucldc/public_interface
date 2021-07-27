@@ -3,10 +3,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .facet_filter_type import get_collection_data, get_repository_data
+from .facet_filter_type import get_repository_data
 from .cache_retry import SOLR_select, json_loads_url
 from . import search_form
-from .collection_views import Collection
+from .collection_views import Collection, get_related_collections
 
 import math
 import re
@@ -16,6 +16,8 @@ standard_library.install_aliases()
 
 repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<repository_id>\d*)/?')
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
 
 
 def process_sort_collection_data(string):
@@ -220,7 +222,7 @@ def institution_view(request,
                 'campus_slug':
                 institution_details.get('slug'),
                 'related_collections':
-                search_form.get_related_collections(
+                get_related_collections(
                     params, slug=institution_details.get('slug'))[0],
                 'form_action':
                 reverse(
@@ -242,7 +244,7 @@ def institution_view(request,
                 'uc_institution':
                 uc_institution,
                 'related_collections':
-                search_form.get_related_collections(
+                get_related_collections(
                     params, repository_id=institution_id)[0],
                 'form_action':
                 reverse(
@@ -330,14 +332,10 @@ def institution_view(request,
         for i, related_collection in enumerate(solr_related_collections):
             collection_parts = process_sort_collection_data(
                 related_collection)
-            collection_data = get_collection_data(
-                collection_data='{0}::{1}'.format(
-                    collection_parts[2],
-                    collection_parts[1],
-                ))
+            col_id = re.match(col_regex, collection_parts[2]).group('id')
             try:
                 related_collections.append(
-                    Collection(collection_data.get('id')).get_mosaic())
+                    Collection(col_id).get_mosaic())
             except Http404:
                 pass
 

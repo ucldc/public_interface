@@ -7,6 +7,7 @@ from . import constants
 from . import facet_filter_type as facet_module
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from . import search_form
+from .collection_views import Collection, get_related_collections
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
@@ -21,34 +22,8 @@ import urllib.parse
 
 standard_library.install_aliases()
 
-
-def get_more_collection_data(collection_data):
-    collection = facet_module.get_collection_data(
-        collection_data=collection_data,
-        collection_id=None,
-    )
-    collection_details = json_loads_url("{0}?format=json".format(
-        collection['url']))
-    if not collection_details:
-        return None
-
-    collection['local_id'] = collection_details['local_id']
-    collection['slug'] = collection_details['slug']
-    collection['harvest_type'] = collection_details['harvest_type']
-    collection['custom_facet'] = collection_details['custom_facet']
-
-    production_disqus = (
-        settings.UCLDC_FRONT == 'https://calisphere.org/' or
-        settings.UCLDC_DISQUS == 'prod'
-    )
-    if production_disqus:
-        collection['disqus_shortname'] = collection_details.get(
-            'disqus_shortname_prod')
-    else:
-        collection['disqus_shortname'] = collection_details.get(
-            'disqus_shortname_test')
-
-    return collection
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
 
 
 def get_hosted_content_file(structmap):
@@ -212,10 +187,15 @@ def item_view(request, item_id=''):
         item['parsed_repository_data'] = []
         item['institution_contact'] = []
         for collection_data in item.get('collection_data'):
-            parsed_collection_data = get_more_collection_data(collection_data)
-            if parsed_collection_data:
-                item['parsed_collection_data'].append(
-                    get_more_collection_data(collection_data))
+            col_id = (re.match(
+                col_regex, collection_data.split('::')[0]).group('id'))
+
+            try:
+                collection = Collection(col_id)
+            except Http404:
+                continue
+
+            item['parsed_collection_data'].append(collection.item_view())
         for repository_data in item.get('repository_data'):
             item['parsed_repository_data'].append(
                 facet_module.get_repository_data(
@@ -265,7 +245,7 @@ def item_view(request, item_id=''):
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
     related_collections, num_related_collections = (
-        search_form.get_related_collections(item_id_query))
+        get_related_collections(item_id_query))
     carousel_search_results, carousel_num_found = item_view_carousel_mlt(
         item_id)
     return render(
@@ -310,7 +290,7 @@ def search(request):
             int(math.ceil(
                     solr_search.numFound / int(context['rows']))),
             'related_collections':
-            search_form.get_related_collections(params)[0],
+            get_related_collections(params)[0],
             'num_related_collections':
             len(params.getlist('collection_data'))
             if len(params.getlist('collection_data')) > 0 else len(

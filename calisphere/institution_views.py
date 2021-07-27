@@ -127,274 +127,315 @@ def statewide_directory(request):
         })
 
 
-def institution_view(request,
-                     institution_id,
-                     subnav=False,
-                     institution_type='repository|campus'):
-    institution_url = (
-        f'https://registry.cdlib.org/api/v1/'
-        f'{institution_type}/{institution_id}/'
-    )
-    institution_details = json_loads_url(institution_url + "?format=json")
+class Institution(object):
+    def __init__(self, id, type):
+        if (type != 'repository' or type != 'campus'):
+            raise Http404('no institution type provided')
 
-    if not institution_details:
-        raise Http404("{0} does not exist".format(institution_id))
+        self.url = (
+            f'https://registry.cdlib.org/api/v1/'
+            f'{type}/{id}/'
+        )
+        self.details = json_loads_url(self.url + "?format=json")
 
-    if institution_details.get('ark'):
-        contact_information = json_loads_url(
-            "http://dsc.cdlib.org/institution-json/" +
-            institution_details.get('ark'))
-    else:
-        contact_information = ''
+        if not self.details:
+            raise Http404("{0} does not exist".format(id))
 
-    if institution_details.get('campus'):
-        uc_institution = institution_details.get('campus')
-    else:
-        uc_institution = False
-
-    if subnav == 'items':
-        params = request.GET.copy()
-
-        facet_filter_types = list(constants.FACET_FILTER_TYPES)
-        extra_filter = None
-        if institution_type == 'repository':
-            facet_filter_types = [
-                f for f in constants.FACET_FILTER_TYPES
-                if f['facet'] != 'repository_data'
-            ]
-            extra_filter = 'repository_url: "' + institution_url + '"'
-        elif institution_type == 'campus':
-            extra_filter = 'campus_url: "' + institution_url + '"'
-
-        solr_params = search_form.solr_encode(params, facet_filter_types)
-        if extra_filter:
-            solr_params['fq'].append(extra_filter)
-        solr_search = SOLR_select(**solr_params)
-
-        facets = search_form.facet_query(facet_filter_types, params,
-                                         solr_search, extra_filter)
-
-        filter_display = {}
-        for filter_type in facet_filter_types:
-            param_name = filter_type['facet']
-            display_name = filter_type['filter']
-            filter_transform = filter_type['filter_display']
-
-            if len(params.getlist(param_name)) > 0:
-                filter_display[display_name] = list(
-                    map(filter_transform, params.getlist(param_name)))
-
-        context = search_form.search_defaults(params)
-        context.update({
-            'filters':
-            filter_display,
-            'search_results':
-            solr_search.results,
-            'facets':
-            facets,
-            'numFound':
-            solr_search.numFound,
-            'pages':
-            int(math.ceil(
-                solr_search.numFound / int(context['rows']))),
-            'institution':
-            institution_details,
-            'contact_information':
-            contact_information,
-            'FACET_FILTER_TYPES':
-            facet_filter_types
-        })
-
-        page = (int(context['start']) // int(context['rows'])) + 1
-        if institution_type == 'campus':
-            if (page > 1):
-                title = (
-                    f"{institution_details.get('name')} Items - page {page}"
-                )
-            else:
-                title = f"{institution_details.get('name')} Items"
-
-            context.update({
-                'repository_id':
-                None,
-                'title':
-                title,
-                'campus_slug':
-                institution_details.get('slug'),
-                'related_collections':
-                get_related_collections(
-                    params, slug=institution_details.get('slug'))[0],
-                'form_action':
-                reverse(
-                    'calisphere:campusView',
-                    kwargs={
-                        'campus_slug': institution_details.get('slug'),
-                        'subnav': 'items'
-                    })
-            })
-            for campus in constants.CAMPUS_LIST:
-                if (institution_id == campus['id']
-                        and 'featuredImage' in campus):
-                    context['featuredImage'] = campus['featuredImage']
-
-        if institution_type == 'repository':
-            context.update({
-                'repository_id':
-                institution_id,
-                'uc_institution':
-                uc_institution,
-                'related_collections':
-                get_related_collections(
-                    params, repository_id=institution_id)[0],
-                'form_action':
-                reverse(
-                    'calisphere:repositoryView',
-                    kwargs={
-                        'repository_id': institution_id,
-                        'subnav': 'items'
-                    })
-            })
-
-            # title for UC institutions needs to show parent campus
-            if uc_institution and page > 1:
-                context['title'] = '{0} / {1} Items - page {2}'.format(
-                    uc_institution[0]['name'], institution_details.get('name'),
-                    page)
-            elif uc_institution:
-                context['title'] = '{0} / {1} Items'.format(
-                    uc_institution[0]['name'], institution_details.get('name'))
-            elif page > 1:
-                context['title'] = '{0} Items - page {1}'.format(
-                    institution_details.get('name'), page)
-            else:
-                context['title'] = '{0} Items'.format(
-                    institution_details.get('name'))
-
-            if uc_institution is False:
-                for unit in constants.FEATURED_UNITS:
-                    if unit['id'] == institution_id:
-                        context['featuredImage'] = unit['featuredImage']
-
-        if len(params.getlist('collection_data')):
-            context['num_related_collections'] = len(
-                params.getlist('collection_data'))
+        if self.details.get('ark'):
+            self.contact_info = json_loads_url(
+                "http://dsc.cdlib.org/institution-json/" +
+                self.details.get('ark'))
         else:
-            context['num_related_collections'] = len(facets['collection_data'])
+            self.contact_info = ''
 
-        return render(request, 'calisphere/institutionViewItems.html', context)
+        if self.details.get('campus'):
+            self.uc = self.details.get('campus')
+        else:
+            self.uc = False
 
+
+def institution_search(request,
+                       institution_id,
+                       institution_type='repository|campus'):
+    institution = Institution(institution_id, institution_type)
+    params = request.GET.copy()
+
+    facet_filter_types = list(constants.FACET_FILTER_TYPES)
+    extra_filter = None
+    if institution_type == 'repository':
+        facet_filter_types = [
+            f for f in constants.FACET_FILTER_TYPES
+            if f['facet'] != 'repository_data'
+        ]
+        extra_filter = 'repository_url: "' + institution.url + '"'
+    elif institution_type == 'campus':
+        extra_filter = 'campus_url: "' + institution.url + '"'
+
+    solr_params = search_form.solr_encode(params, facet_filter_types)
+    if extra_filter:
+        solr_params['fq'].append(extra_filter)
+    solr_search = SOLR_select(**solr_params)
+
+    facets = search_form.facet_query(facet_filter_types, params,
+                                     solr_search, extra_filter)
+
+    filter_display = {}
+    for filter_type in facet_filter_types:
+        param_name = filter_type['facet']
+        display_name = filter_type['filter']
+        filter_transform = filter_type['filter_display']
+
+        if len(params.getlist(param_name)) > 0:
+            filter_display[display_name] = list(
+                map(filter_transform, params.getlist(param_name)))
+
+    context = search_form.search_defaults(params)
+    context.update({
+        'filters':
+        filter_display,
+        'search_results':
+        solr_search.results,
+        'facets':
+        facets,
+        'numFound':
+        solr_search.numFound,
+        'pages':
+        int(math.ceil(
+            solr_search.numFound / int(context['rows']))),
+        'institution':
+        institution.details,
+        'contact_information':
+        institution.contact_info,
+        'FACET_FILTER_TYPES':
+        facet_filter_types
+    })
+
+    return institution, context, params, facets
+
+
+def campus_search(request, institution_id):
+    institution, context, params, facets = institution_search(
+        request, institution_id, 'campus')
+
+    page = (int(context['start']) // int(context['rows'])) + 1
+
+    if (page > 1):
+        title = (
+            f"{institution.details.get('name')} Items - page {page}"
+        )
     else:
-        page = int(request.GET['page']) if 'page' in request.GET else 1
+        title = f"{institution.details.get('name')} Items"
 
-        if institution_type == 'repository':
-            institutions_fq = ['repository_url: "' + institution_url + '"']
-        if institution_type == 'campus':
-            institutions_fq = ['campus_url: "' + institution_url + '"']
+    context.update({
+        'repository_id':
+        None,
+        'title':
+        title,
+        'campus_slug':
+        institution.details.get('slug'),
+        'related_collections':
+        get_related_collections(
+            params, slug=institution.details.get('slug'))[0],
+        'form_action':
+        reverse(
+            'calisphere:campusView',
+            kwargs={
+                'campus_slug': institution.details.get('slug'),
+                'subnav': 'items'
+            })
+    })
+    for campus in constants.CAMPUS_LIST:
+        if (institution_id == campus['id']
+                and 'featuredImage' in campus):
+            context['featuredImage'] = campus['featuredImage']
 
-        collections_params = {
-            'q': '',
-            'rows': 0,
-            'start': 0,
-            'fq': institutions_fq,
-            'facet': 'true',
-            'facet_mincount': 1,
-            'facet_limit': '-1',
-            'facet_field': ['sort_collection_data'],
-            'facet_sort': 'index'
-        }
+    if len(params.getlist('collection_data')):
+        context['num_related_collections'] = len(
+            params.getlist('collection_data'))
+    else:
+        context['num_related_collections'] = len(facets['collection_data'])
 
-        collections_solr_search = SOLR_select(**collections_params)
+    return render(request, 'calisphere/institutionViewItems.html', context)
 
-        pages = int(
-            math.ceil(
-                len(collections_solr_search.facet_counts[
-                    'facet_fields']['sort_collection_data']) / 10))
-        # doing the search again;
-        # could we slice this from the results above?
-        collections_params['facet_offset'] = (page - 1) * 10
-        collections_params['facet_limit'] = 10
-        collections_params['facet_sort'] = 'index'
-        collections_solr_search = SOLR_select(**collections_params)
 
-        # solrpy gives us a dict == unsorted (!)
-        # use the `facet_decade` mode of process_facets to do a
-        # lexical sort by value ....
-        solr_related_collections = list(
-            collection[0] for collection in
-            constants.DEFAULT_FACET_FILTER_TYPES[3].process_facets(
-                collections_solr_search.facet_counts['facet_fields']
-                ['sort_collection_data'],
-                [],
-                'value',
-            ))
+def repository_search(request, institution_id):
+    institution, context, params, facets = institution_search(
+        request, institution_id, 'repository')
 
-        related_collections = []
-        for i, related_collection in enumerate(solr_related_collections):
-            collection_parts = process_sort_collection_data(
-                related_collection)
-            col_id = re.match(col_regex, collection_parts[2]).group('id')
-            try:
-                related_collections.append(
-                    Collection(col_id).get_mosaic())
-            except Http404:
-                pass
+    page = (int(context['start']) // int(context['rows'])) + 1
+    context.update({
+        'repository_id':
+        institution_id,
+        'uc_institution':
+        institution.uc,
+        'related_collections':
+        get_related_collections(
+            params, repository_id=institution_id)[0],
+        'form_action':
+        reverse(
+            'calisphere:repositoryView',
+            kwargs={
+                'repository_id': institution_id,
+                'subnav': 'items'
+            })
+    })
 
-        context = {
-            'page': page,
-            'pages': pages,
-            'collections': related_collections,
-            'contact_information': contact_information,
-            'institution': institution_details,
-        }
+    # title for UC institutions needs to show parent campus
+    if institution.uc and page > 1:
+        context['title'] = '{0} / {1} Items - page {2}'.format(
+            institution.uc[0]['name'], institution.details.get('name'),
+            page)
+    elif institution.uc:
+        context['title'] = '{0} / {1} Items'.format(
+            institution.uc[0]['name'], institution.details.get('name'))
+    elif page > 1:
+        context['title'] = '{0} Items - page {1}'.format(
+            institution.details.get('name'), page)
+    else:
+        context['title'] = '{0} Items'.format(
+            institution.details.get('name'))
 
-        if page + 1 <= pages:
-            context['next_page'] = page + 1
-        if page - 1 > 0:
-            context['prev_page'] = page - 1
+    if institution.uc is False:
+        for unit in constants.FEATURED_UNITS:
+            if unit['id'] == institution_id:
+                context['featuredImage'] = unit['featuredImage']
 
-        if institution_type == 'campus':
-            context['campus_slug'] = institution_details.get('slug')
-            if page > 1:
-                context['title'] = '{0} Collections - page {1}'.format(
-                    institution_details.get('name'), page)
-            else:
-                context['title'] = institution_details.get('name')
+    if len(params.getlist('collection_data')):
+        context['num_related_collections'] = len(
+            params.getlist('collection_data'))
+    else:
+        context['num_related_collections'] = len(facets['collection_data'])
 
-            for campus in constants.CAMPUS_LIST:
-                if institution_id == campus.get(
-                        'id') and 'featuredImage' in campus:
-                    context['featuredImage'] = campus.get('featuredImage')
-            context['repository_id'] = None
-            context['institution']['campus'] = None
+    return render(request, 'calisphere/institutionViewItems.html', context)
 
-        if institution_type == 'repository':
-            context['repository_id'] = institution_id
-            context['uc_institution'] = uc_institution
-            # title for UC institutions needs to show parent campus
-            # refactor, as this is copy/pasted in this commit
-            if uc_institution and page > 1:
-                context['title'] = '{0} / {1} Collections - page {2}'.format(
-                    uc_institution[0]['name'], institution_details.get('name'),
-                    page)
-            elif uc_institution:
-                context['title'] = '{0} / {1}'.format(
-                    uc_institution[0]['name'], institution_details.get('name'))
-            elif page > 1:
-                context['title'] = '{0} Collections - page {1}'.format(
-                    institution_details.get('name'), page)
-            else:
-                context['title'] = institution_details.get('name')
 
-            if uc_institution is False:
-                for unit in constants.FEATURED_UNITS:
-                    if unit.get('id') == institution_id:
-                        context['featuredImage'] = unit.get('featuredImage')
+def institution_collections(request,
+                            institution_id,
+                            institution_type='repository|campus'):
+    institution = Institution(institution_id, institution_type)
 
-            if 'featuredImage' not in context:
-                context['featuredImage'] = None
+    page = int(request.GET['page']) if 'page' in request.GET else 1
 
-        return render(request, 'calisphere/institutionViewCollections.html',
-                      context)
+    if institution_type == 'repository':
+        institutions_fq = ['repository_url: "' + institution.url + '"']
+    if institution_type == 'campus':
+        institutions_fq = ['campus_url: "' + institution.url + '"']
+
+    collections_params = {
+        'q': '',
+        'rows': 0,
+        'start': 0,
+        'fq': institutions_fq,
+        'facet': 'true',
+        'facet_mincount': 1,
+        'facet_limit': '-1',
+        'facet_field': ['sort_collection_data'],
+        'facet_sort': 'index'
+    }
+
+    collections_solr_search = SOLR_select(**collections_params)
+
+    pages = int(
+        math.ceil(
+            len(collections_solr_search.facet_counts[
+                'facet_fields']['sort_collection_data']) / 10))
+    # doing the search again;
+    # could we slice this from the results above?
+    collections_params['facet_offset'] = (page - 1) * 10
+    collections_params['facet_limit'] = 10
+    collections_params['facet_sort'] = 'index'
+    collections_solr_search = SOLR_select(**collections_params)
+
+    # solrpy gives us a dict == unsorted (!)
+    # use the `facet_decade` mode of process_facets to do a
+    # lexical sort by value ....
+    solr_related_collections = list(
+        collection[0] for collection in
+        constants.DEFAULT_FACET_FILTER_TYPES[3].process_facets(
+            collections_solr_search.facet_counts['facet_fields']
+            ['sort_collection_data'],
+            [],
+            'value',
+        ))
+
+    related_collections = []
+    for i, related_collection in enumerate(solr_related_collections):
+        collection_parts = process_sort_collection_data(
+            related_collection)
+        col_id = re.match(col_regex, collection_parts[2]).group('id')
+        try:
+            related_collections.append(
+                Collection(col_id).get_mosaic())
+        except Http404:
+            pass
+
+    context = {
+        'page': page,
+        'pages': pages,
+        'collections': related_collections,
+        'contact_information': institution.contact_info,
+        'institution': institution.details,
+    }
+
+    if page + 1 <= pages:
+        context['next_page'] = page + 1
+    if page - 1 > 0:
+        context['prev_page'] = page - 1
+
+    return institution, context, page
+
+
+def repository_collections(request, institution_id):
+    institution, context, page = institution_collections(
+        request, institution_id, 'repository')
+    context['repository_id'] = institution_id
+    context['uc_institution'] = institution.uc
+    # title for UC institutions needs to show parent campus
+    # refactor, as this is copy/pasted in this commit
+    if institution.uc and page > 1:
+        context['title'] = '{0} / {1} Collections - page {2}'.format(
+            institution.uc[0]['name'], institution.details.get('name'),
+            page)
+    elif institution.uc:
+        context['title'] = '{0} / {1}'.format(
+            institution.uc[0]['name'], institution.details.get('name'))
+    elif page > 1:
+        context['title'] = '{0} Collections - page {1}'.format(
+            institution.details.get('name'), page)
+    else:
+        context['title'] = institution.details.get('name')
+
+    if institution.uc is False:
+        for unit in constants.FEATURED_UNITS:
+            if unit.get('id') == institution_id:
+                context['featuredImage'] = unit.get('featuredImage')
+
+    if 'featuredImage' not in context:
+        context['featuredImage'] = None
+
+    return render(request, 'calisphere/institutionViewCollections.html',
+                  context)
+
+
+def campus_collections(request, institution_id):
+    institution, context, page = institution_collections(
+        request, institution_id, 'campus')
+
+    context['campus_slug'] = institution.details.get('slug')
+    if page > 1:
+        context['title'] = '{0} Collections - page {1}'.format(
+            institution.details.get('name'), page)
+    else:
+        context['title'] = institution.details.get('name')
+
+    for campus in constants.CAMPUS_LIST:
+        if institution_id == campus.get(
+                'id') and 'featuredImage' in campus:
+            context['featuredImage'] = campus.get('featuredImage')
+    context['repository_id'] = None
+    context['institution']['campus'] = None
+    return render(request, 'calisphere/institutionViewCollections.html',
+                  context)
 
 
 def campus_view(request, campus_slug, subnav=False):
@@ -459,9 +500,14 @@ def campus_view(request, campus_slug, subnav=False):
                 'repository_id': None,
             })
 
+    elif subnav == 'items':
+        return campus_search(request, campus_id)
     else:
-        return institution_view(request, campus_id, subnav, 'campus')
+        return campus_collections(request, campus_id)
 
 
 def repository_view(request, repository_id, subnav=False):
-    return institution_view(request, repository_id, subnav, 'repository')
+    if subnav == 'items':
+        return repository_search(request, repository_id)
+    else:
+        return repository_collections(request, repository_id)

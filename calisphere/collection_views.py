@@ -7,16 +7,19 @@ from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType
 from .cache_retry import SOLR_select, json_loads_url
-from . import views
-from .search_form import SearchForm
+from . import search_form
 
 
 import os
 import math
 import string
 import urllib.parse
+import re
 
 standard_library.install_aliases()
+
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<collection_id>\d*)/?')
 
 
 def collections_directory(request):
@@ -28,7 +31,12 @@ def collections_directory(request):
 
     for collection_link in solr_collections.shuffled[(page - 1) * 10:page *
                                                      10]:
-        collections.append(views.get_collection_mosaic(collection_link.url))
+        col_id = re.match(col_regex, collection_link.url).group(
+            'collection_id')
+        try:
+            collections.append(Collection(col_id).get_mosaic())
+        except Http404:
+            continue
 
     context = {
         'meta_robots': None,
@@ -60,7 +68,12 @@ def collections_az(request, collection_letter):
 
     collections = []
     for collection_link in collections_list[(page - 1) * 10:page * 10]:
-        collections.append(views.get_collection_mosaic(collection_link.url))
+        col_id = re.match(col_regex, collection_link.url).group(
+            'collection_id')
+        try:
+            collections.append(Collection(col_id).get_mosaic())
+        except Http404:
+            continue
 
     alphabet = list((character, True if character.lower() not in
                      solr_collections.no_collections else False)
@@ -258,12 +271,54 @@ class Collection(object):
 
         return facets
 
+    def get_mosaic(self):
+        repositories = []
+        for repository in self.details.get('repository'):
+            if 'campus' in repository and len(repository['campus']) > 0:
+                repositories.append(repository['campus'][0]['name'] +
+                                    ", " + repository['name'])
+            else:
+                repositories.append(repository['name'])
+
+        # get 6 image items from the collection for the mosaic preview
+        search_terms = {
+            'q': '*:*',
+            'fields':
+            'reference_image_md5, url_item, id, title, collection_url, type_ss',
+            'sort': 'sort_title asc',
+            'rows': 6,
+            'start': 0,
+            'fq':
+            [f'collection_url: \"{ self.url }\"', 'type_ss: \"image\"']
+        }
+        display_items = SOLR_select(**search_terms)
+        items = display_items.results
+
+        search_terms['fq'] = [
+            f'collection_url: \"{ self.url }\"',
+            '(*:* AND -type_ss:\"image\")'
+        ]
+        ugly_display_items = SOLR_select(**search_terms)
+        # if there's not enough image items, get some non-image
+        # items for the mosaic preview
+        if len(items) < 6:
+            items = items + ugly_display_items.results
+
+        return {
+            'name': self.details['name'],
+            'description': self.details['description'],
+            'collection_id': self.id,
+            'institutions': repositories,
+            'numFound': display_items.numFound + ugly_display_items.numFound,
+            'display_items': items
+        }
+
 
 def collection_search(request, collection_id):
     collection = Collection(collection_id)
 
     params = request.GET.copy()
-    context = SearchForm(params).context
+    context = search_form.search_defaults(params)
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data
@@ -291,7 +346,7 @@ def collection_search(request, collection_id):
     extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
-    solr_params = views.solr_encode(params, facet_filter_types)
+    solr_params = search_form.solr_encode(params, facet_filter_types)
     solr_params['fq'].append(extra_filter)
     solr_search = SOLR_select(**solr_params)
     context['search_results'] = solr_search.results
@@ -306,8 +361,8 @@ def collection_search(request, collection_id):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    context['facets'] = views.facet_query(facet_filter_types, params,
-                                          solr_search, extra_filter)
+    context['facets'] = search_form.facet_query(facet_filter_types, params,
+                                                solr_search, extra_filter)
 
     context['filters'] = {}
     for filter_type in facet_filter_types:
@@ -351,7 +406,7 @@ def collection_facet(request, collection_id, facet):
         raise Http404("{} is not a valid facet".format(facet))
 
     params = request.GET.copy()
-    context = SearchForm(params).context
+    context = search_form.search_defaults(params)
     if not params.get('view_format'):
         context['view_format'] = 'list'
 
@@ -384,7 +439,7 @@ def collection_facet(request, collection_id, facet):
 
         values = values[start:end]
         for value in values:
-            escaped_cluster_value = views.solr_escape(value['label'])
+            escaped_cluster_value = search_form.solr_escape(value['label'])
             thumb_params = {
                 'facet': 'false',
                 'rows': 3,
@@ -454,10 +509,10 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     params = request.GET.copy()
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
-    escaped_cluster_value = views.solr_escape(parsed_cluster_value)
+    escaped_cluster_value = search_form.solr_escape(parsed_cluster_value)
     params.update({'fq': f"{cluster}_ss:\"{escaped_cluster_value}\""})
 
-    context = SearchForm(params).context
+    context = search_form.search_defaults(params)
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data
@@ -486,7 +541,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
-    solr_params = views.solr_encode(params, facet_filter_types)
+    solr_params = search_form.solr_encode(params, facet_filter_types)
     solr_params['fq'].append(extra_filter)
     solr_search = SOLR_select(**solr_params)
     context['search_results'] = solr_search.results
@@ -504,8 +559,8 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    context['facets'] = views.facet_query(facet_filter_types, params,
-                                          solr_search, extra_filter)
+    context['facets'] = search_form.facet_query(facet_filter_types, params,
+                                                solr_search, extra_filter)
 
     context['filters'] = {}
     for filter_type in facet_filter_types:
@@ -550,7 +605,7 @@ def collection_metadata(request, collection_id):
     summary_data = collection.get_summary_data()
 
     params = request.GET.copy()
-    context = SearchForm(params).context
+    context = search_form.search_defaults(params)
     context = {
         'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
@@ -569,7 +624,7 @@ def collection_metadata(request, collection_id):
 
 
 def get_cluster_thumbnails(collection_url, facet, facet_value):
-    escaped_cluster_value = views.solr_escape(facet_value)
+    escaped_cluster_value = search_form.solr_escape(facet_value)
     thumb_params = {
         'facet': 'false',
         'rows': 3,

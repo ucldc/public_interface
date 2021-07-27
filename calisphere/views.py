@@ -23,7 +23,7 @@ standard_library.install_aliases()
 
 
 def get_more_collection_data(collection_data):
-    collection = facet_module.getCollectionData(
+    collection = facet_module.get_collection_data(
         collection_data=collection_data,
         collection_id=None,
     )
@@ -218,7 +218,7 @@ def item_view(request, item_id=''):
                     get_more_collection_data(collection_data))
         for repository_data in item.get('repository_data'):
             item['parsed_repository_data'].append(
-                facet_module.getRepositoryData(
+                facet_module.get_repository_data(
                     repository_data=repository_data))
 
             institution_url = item['parsed_repository_data'][0]['url']
@@ -264,8 +264,8 @@ def item_view(request, item_id=''):
             })
     search_results = {'reference_image_md5': None}
     search_results.update(item_solr_search.results[0])
-    related_collections, num_related_collections = search_form.get_related_collections(
-        item_id_query)
+    related_collections, num_related_collections = (
+        search_form.get_related_collections(item_id_query))
     carousel_search_results, carousel_num_found = item_view_carousel_mlt(
         item_id)
     return render(
@@ -630,8 +630,8 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    # context['facets'] = search_form.facet_query(facet_filter_types, params, solr_search,
-    #                               extra_filter)
+    # context['facets'] = search_form.facet_query(
+    #    facet_filter_types, params, solr_search, extra_filter)
 
     collection_name = collection_details.get('name')
     context.update({'facet': facet})

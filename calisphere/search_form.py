@@ -181,7 +181,8 @@ def get_related_collections(params, slug=None, repository_id=None):
     rc_page = int(params.get('rc_page', 0))
     for i in range(rc_page * 3, rc_page * 3 + 3):
         if len(related_collections) > i:
-            collection = facet_module.getCollectionData(related_collections[i])
+            collection = facet_module.get_collection_data(
+                related_collections[i])
 
             rc_solr_params = {
                 'q': solr_params['q'],

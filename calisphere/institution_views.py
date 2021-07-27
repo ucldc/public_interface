@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .facet_filter_type import getCollectionData, getRepositoryData
+from .facet_filter_type import get_collection_data, get_repository_data
 from .cache_retry import SOLR_select, json_loads_url
 from . import search_form
 from .collection_views import Collection
@@ -44,7 +44,7 @@ def campus_directory(request):
 
     repositories = []
     for repository_url in solr_repositories:
-        repository = getRepositoryData(repository_url=repository_url)
+        repository = get_repository_data(repository_url=repository_url)
         if repository['campus']:
             repositories.append({
                 'name':
@@ -86,7 +86,7 @@ def statewide_directory(request):
         'repository_url']
     repositories = []
     for repository_url in solr_repositories:
-        repository = getRepositoryData(repository_url=repository_url)
+        repository = get_repository_data(repository_url=repository_url)
         if repository['campus'] == '':
             repositories.append({
                 'name':
@@ -169,7 +169,7 @@ def institution_view(request,
             solr_params['fq'].append(extra_filter)
         solr_search = SOLR_select(**solr_params)
 
-        facets = search_form.facet_query(facet_filter_types, params, 
+        facets = search_form.facet_query(facet_filter_types, params,
                                          solr_search, extra_filter)
 
         filter_display = {}
@@ -242,8 +242,8 @@ def institution_view(request,
                 'uc_institution':
                 uc_institution,
                 'related_collections':
-                search_form.get_related_collections(params,
-                                        repository_id=institution_id)[0],
+                search_form.get_related_collections(
+                    params, repository_id=institution_id)[0],
                 'form_action':
                 reverse(
                     'calisphere:repositoryView',
@@ -330,7 +330,7 @@ def institution_view(request,
         for i, related_collection in enumerate(solr_related_collections):
             collection_parts = process_sort_collection_data(
                 related_collection)
-            collection_data = getCollectionData(
+            collection_data = get_collection_data(
                 collection_data='{0}::{1}'.format(
                     collection_parts[2],
                     collection_parts[1],
@@ -441,7 +441,7 @@ def campus_view(request, campus_slug, subnav=False):
                 ['repository_data'], []))
 
         for i, related_institution in enumerate(related_institutions):
-            related_institutions[i] = getRepositoryData(
+            related_institutions[i] = get_repository_data(
                 repository_data=related_institution)
         related_institutions = sorted(
             related_institutions,

@@ -46,7 +46,7 @@
             >{{ repository.campus.0.name }}</a>,
           {% endif %}
           <a
-            href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+            href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
             class="collection-intro__institution-heading-link"
             data-pjax="js-pageContent"
             data-ga-code="{{ repository.google_analytics_tracking_code }}"

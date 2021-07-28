@@ -42,7 +42,7 @@ class InstitutionSitemap(HttpsSitemap):
 
     def location(self, item):
         return reverse(
-            'calisphere:repositoryView',
+            'calisphere:repositoryCollections',
             kwargs={
                 'repository_id': item,
             })

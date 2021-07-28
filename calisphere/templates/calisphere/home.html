@@ -152,7 +152,7 @@
 
           {% for feature in statewide_partners %}
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-              <a href="{% url 'calisphere:repositoryView' feature.id 'collections' %}" class="home__thumbnail-link" style="background-image: url('{{ ucldcImages }}/{{ feature.thumb }}');">
+              <a href="{% url 'calisphere:repositoryCollections' feature.id %}" class="home__thumbnail-link" style="background-image: url('{{ ucldcImages }}/{{ feature.thumb }}');">
                 <div class="home__thumbnail-caption--inst">
           {{ feature.name }}
                 </div>

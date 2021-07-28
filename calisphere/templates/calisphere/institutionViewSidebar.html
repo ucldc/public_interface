@@ -3,7 +3,7 @@
   <div class="button__institution-tabs-container">
     {% if repository_id %}
     <a class="button__institution-tab-collections{% if mode == "collections" %}--selected{% endif %}"
-      href="{% url 'calisphere:repositoryView' repository_id 'collections' %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:repositoryCollections' repository_id %}" data-pjax="js-pageContent">
       Collections at this institution
     </a>
     {% elif campus_slug %}
@@ -22,7 +22,7 @@
 
     {% if repository_id %}
     <a class="button__institution-tab-search{% if mode == "items" %}--selected{% endif %}"
-      href="{% url 'calisphere:repositoryView' repository_id 'items' %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:repositorySearch' repository_id %}" data-pjax="js-pageContent">
       Search this institution
     </a>
     {% elif campus_slug %}

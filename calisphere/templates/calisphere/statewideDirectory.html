@@ -19,7 +19,7 @@
       {% for repository in repos %}
           <li class="inst-textboxes__list-item">
             <a class="inst-textboxes__link"
-            href="{% url 'calisphere:repositoryView' repository.repository_id 'collections' %}"
+            href="{% url 'calisphere:repositoryCollections' repository.repository_id %}"
             data-pjax="js-pageContent">
               {{ repository.name }}
             </a>

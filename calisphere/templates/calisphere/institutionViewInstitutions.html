@@ -49,7 +49,7 @@
 
     <ul class="inst-contrib__list">
       {% for institution in institutions %}
-          <li class="inst-contrib__list-item"><a href="{% url 'calisphere:repositoryView' institution.id 'collections' %}" data-pjax="js-pageContent">{{ institution.name }}</a></li>
+          <li class="inst-contrib__list-item"><a href="{% url 'calisphere:repositoryCollections' institution.id %}" data-pjax="js-pageContent">{{ institution.name }}</a></li>
       {% endfor %}
     </ul>
 

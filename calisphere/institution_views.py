@@ -231,52 +231,6 @@ def institution_search(request, institution):
     return context, params, facets
 
 
-def campus_search(request, institution_id):
-    institution = Campus(institution_id)
-    context, params, facets = institution_search(
-        request, institution)
-
-    page = (int(context['start']) // int(context['rows'])) + 1
-
-    if (page > 1):
-        title = (
-            f"{institution.details.get('name')} Items - page {page}"
-        )
-    else:
-        title = f"{institution.details.get('name')} Items"
-
-    context.update({
-        'repository_id':
-        None,
-        'title':
-        title,
-        'campus_slug':
-        institution.details.get('slug'),
-        'related_collections':
-        get_related_collections(
-            params, slug=institution.details.get('slug'))[0],
-        'form_action':
-        reverse(
-            'calisphere:campusView',
-            kwargs={
-                'campus_slug': institution.details.get('slug'),
-                'subnav': 'items'
-            })
-    })
-    for campus in constants.CAMPUS_LIST:
-        if (institution_id == campus['id']
-                and 'featuredImage' in campus):
-            context['featuredImage'] = campus['featuredImage']
-
-    if len(params.getlist('collection_data')):
-        context['num_related_collections'] = len(
-            params.getlist('collection_data'))
-    else:
-        context['num_related_collections'] = len(facets['collection_data'])
-
-    return render(request, 'calisphere/institutionViewItems.html', context)
-
-
 def repository_search(request, repository_id):
     institution = Repository(repository_id)
     context, params, facets = institution_search(
@@ -435,7 +389,74 @@ def repository_collections(request, repository_id):
                   context)
 
 
-def campus_collections(request, institution_id):
+def campus_search(request, campus_slug):
+    institution_id = ''
+    featured_image = ''
+    for campus in constants.CAMPUS_LIST:
+        if campus_slug == campus['slug']:
+            institution_id = campus['id']
+            campus_name = campus['name']
+            if 'featuredImage' in campus:
+                featured_image = campus['featuredImage']
+    if institution_id == '':
+        print('Campus registry ID not found')
+
+    institution = Campus(institution_id)
+    context, params, facets = institution_search(
+        request, institution)
+
+    page = (int(context['start']) // int(context['rows'])) + 1
+
+    if (page > 1):
+        title = (
+            f"{institution.details.get('name')} Items - page {page}"
+        )
+    else:
+        title = f"{institution.details.get('name')} Items"
+
+    context.update({
+        'repository_id':
+        None,
+        'title':
+        title,
+        'campus_slug':
+        institution.details.get('slug'),
+        'related_collections':
+        get_related_collections(
+            params, slug=institution.details.get('slug'))[0],
+        'form_action':
+        reverse(
+            'calisphere:campusSearch',
+            kwargs={
+                'campus_slug': institution.details.get('slug'),
+            })
+    })
+    for campus in constants.CAMPUS_LIST:
+        if (institution_id == campus['id']
+                and 'featuredImage' in campus):
+            context['featuredImage'] = campus['featuredImage']
+
+    if len(params.getlist('collection_data')):
+        context['num_related_collections'] = len(
+            params.getlist('collection_data'))
+    else:
+        context['num_related_collections'] = len(facets['collection_data'])
+
+    return render(request, 'calisphere/institutionViewItems.html', context)
+
+
+def campus_collections(request, campus_slug):
+    institution_id = ''
+    featured_image = ''
+    for campus in constants.CAMPUS_LIST:
+        if campus_slug == campus['slug']:
+            institution_id = campus['id']
+            campus_name = campus['name']
+            if 'featuredImage' in campus:
+                featured_image = campus['featuredImage']
+    if institution_id == '':
+        print('Campus registry ID not found')
+
     institution = Campus(institution_id)
 
     context, page = institution_collections(request, institution)
@@ -457,69 +478,63 @@ def campus_collections(request, institution_id):
                   context)
 
 
-def campus_view(request, campus_slug, subnav=False):
-    campus_id = ''
+def campus_institutions(request, campus_slug):
+    institution_id = ''
     featured_image = ''
     for campus in constants.CAMPUS_LIST:
         if campus_slug == campus['slug']:
-            campus_id = campus['id']
+            institution_id = campus['id']
             campus_name = campus['name']
             if 'featuredImage' in campus:
                 featured_image = campus['featuredImage']
-    if campus_id == '':
+    if institution_id == '':
         print('Campus registry ID not found')
 
-    if subnav == 'institutions':
-        campus_url = f'https://registry.cdlib.org/api/v1/campus/{campus_id}/'
-        campus_details = json_loads_url(campus_url + "?format=json")
+    campus_url = f'https://registry.cdlib.org/api/v1/campus/{institution_id}/'
+    campus_details = json_loads_url(campus_url + "?format=json")
 
-        if 'ark' in campus_details and campus_details['ark'] != '':
-            contact_information = json_loads_url(
-                "http://dsc.cdlib.org/institution-json/" +
-                campus_details['ark'])
-        else:
-            contact_information = ''
-
-        campus_fq = ['campus_url: "' + campus_url + '"']
-
-        institutions_solr_search = SOLR_select(
-            q='',
-            rows=0,
-            start=0,
-            fq=campus_fq,
-            facet='true',
-            facet_mincount=1,
-            facet_limit='-1',
-            facet_field=['repository_data'])
-
-        related_institutions = list(
-            institution[0] for institution in
-            constants.DEFAULT_FACET_FILTER_TYPES[2].process_facets(
-                institutions_solr_search.facet_counts['facet_fields']
-                ['repository_data'], []))
-
-        for i, related_institution in enumerate(related_institutions):
-            related_institutions[i] = get_repository_data(
-                repository_data=related_institution)
-        related_institutions = sorted(
-            related_institutions,
-            key=lambda related_institution: related_institution['name'])
-
-        return render(
-            request,
-            'calisphere/institutionViewInstitutions.html',
-            {
-                # 'campus': campus_name,
-                'title': f'{campus_name} Contributors',
-                'featuredImage': featured_image,
-                'campus_slug': campus_slug,
-                'institutions': related_institutions,
-                'institution': campus_details,
-                'contact_information': contact_information,
-                'repository_id': None,
-            })
-
-    elif subnav == 'items':
-        return campus_search(request, campus_id)
+    if 'ark' in campus_details and campus_details['ark'] != '':
+        contact_information = json_loads_url(
+            "http://dsc.cdlib.org/institution-json/" +
+            campus_details['ark'])
     else:
-        return campus_collections(request, campus_id)
+        contact_information = ''
+
+    campus_fq = ['campus_url: "' + campus_url + '"']
+
+    institutions_solr_search = SOLR_select(
+        q='',
+        rows=0,
+        start=0,
+        fq=campus_fq,
+        facet='true',
+        facet_mincount=1,
+        facet_limit='-1',
+        facet_field=['repository_data'])
+
+    related_institutions = list(
+        institution[0] for institution in
+        constants.DEFAULT_FACET_FILTER_TYPES[2].process_facets(
+            institutions_solr_search.facet_counts['facet_fields']
+            ['repository_data'], []))
+
+    for i, related_institution in enumerate(related_institutions):
+        related_institutions[i] = get_repository_data(
+            repository_data=related_institution)
+    related_institutions = sorted(
+        related_institutions,
+        key=lambda related_institution: related_institution['name'])
+
+    return render(
+        request,
+        'calisphere/institutionViewInstitutions.html',
+        {
+            # 'campus': campus_name,
+            'title': f'{campus_name} Contributors',
+            'featuredImage': featured_image,
+            'campus_slug': campus_slug,
+            'institutions': related_institutions,
+            'institution': campus_details,
+            'contact_information': contact_information,
+            'repository_id': None,
+        })

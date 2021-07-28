@@ -40,7 +40,7 @@
         {% for repository in collection.repository %}
           {% if 'campus' in repository and repository.campus.0.name %}
             <a
-              href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+              href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
               class="collection-intro__institution-heading-link"
               data-pjax="js-pageContent"
             >{{ repository.campus.0.name }}</a>,

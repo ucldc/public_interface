@@ -456,7 +456,7 @@ def related_collections(request, slug=None, repository_id=None):
     if not params:
         raise Http404("No parameters to provide related collections")
 
-    three_rcs, num_related_collections = search_form.get_related_collections(
+    three_rcs, num_related_collections = get_related_collections(
         params, slug, repository_id)
 
     context = {

@@ -83,9 +83,28 @@ def get_hosted_content_file(structmap):
     return content_file
 
 
+def get_component(media_json, order):
+    component = media_json['structMap'][order]
+    component['selected'] = True
+    if 'format' in component:
+        media_data = component
+
+    # remove emptry strings from list
+    for k, v in list(component.items()):
+        if isinstance(v, list) and isinstance(v[0], str):
+            component[k] = [
+                name for name in v if name and name.strip()
+            ]
+    component = dict((k, v) for k, v in list(component.items()) if v)
+
+    return component, media_data
+
+
 def item_view(request, item_id=''):
     item_id_search_term = 'id:"{0}"'.format(item_id)
     item_solr_search = SOLR_select(q=item_id_search_term)
+    order = request.GET.get('order')
+
     if not item_solr_search.numFound:
         # second level search
         def _fixid(id):
@@ -107,73 +126,57 @@ def item_view(request, item_id=''):
         item['harvest_type'] = 'hosted'
         structmap_url = item['structmap_url'].replace(
             's3://static', 'https://s3.amazonaws.com/static')
-        structmap_data = json_loads_url(structmap_url)
+        media_json = json_loads_url(structmap_url)
 
-        if 'structMap' in structmap_data:
+        media_data = None
+
+        # simple object
+        if 'structMap' not in media_json:
+            if 'format' in media_json:
+                media_data = media_json
+
+        # complex object
+        if 'structMap' in media_json:
             # complex object
-            if 'order' in request.GET and 'structMap' in structmap_data:
+            if order and 'structMap' in media_json:
                 # fetch component object
                 item['selected'] = False
-                order = int(request.GET['order'])
-                item['selectedComponentIndex'] = order
-                component = structmap_data['structMap'][order]
-                component['selected'] = True
-                if 'format' in component:
-                    item['contentFile'] = get_hosted_content_file(
-                        component)
-                # remove emptry strings from list
-                for k, v in list(component.items()):
-                    if isinstance(v, list):
-                        if isinstance(v[0], str):
-                            component[k] = [
-                                name for name in v if name and name.strip()
-                            ]
-                # remove empty lists and empty strings from dict
-                item['selectedComponent'] = dict(
-                    (k, v) for k, v in list(component.items()) if v)
+                item['selectedComponentIndex'] = int(order)
+                component, media_data = get_component(media_json, int(order))
+                item['selectedComponent'] = component
             else:
                 item['selected'] = True
-                # if parent content file, get it
-                if 'format' in structmap_data:
-                    item['contentFile'] = get_hosted_content_file(
-                        structmap_data)
-                # otherwise get first component file
+                if 'format' in media_json:
+                    media_data = media_json
                 else:
-                    component = structmap_data['structMap'][0]
-                    item['contentFile'] = get_hosted_content_file(
-                        component)
-            item['structMap'] = structmap_data['structMap']
+                    media_data = media_json['structMap'][0]
+            item['contentFile'] = get_hosted_content_file(media_data)
+            item['structMap'] = media_json['structMap']
 
             # single or multi-format object
             formats = [
                 component['format']
-                for component in structmap_data['structMap']
+                for component in media_json['structMap']
                 if 'format' in component
             ]
+            item['multiFormat'] = False
             if len(set(formats)) > 1:
                 item['multiFormat'] = True
-            else:
-                item['multiFormat'] = False
 
             # carousel has captions or not
+            item['hasComponentCaptions'] = True
             if all(f == 'image' for f in formats):
                 item['hasComponentCaptions'] = False
-            else:
-                item['hasComponentCaptions'] = True
 
             # number of components
-            item['componentCount'] = len(structmap_data['structMap'])
+            item['componentCount'] = len(media_json['structMap'])
 
             # has fixed item thumbnail image
+            item['has_fixed_thumb'] = False
             if 'reference_image_md5' in item:
                 item['has_fixed_thumb'] = True
-            else:
-                item['has_fixed_thumb'] = False
-        else:
-            # simple object
-            if 'format' in structmap_data:
-                item['contentFile'] = get_hosted_content_file(
-                    structmap_data)
+
+        item['contentFile'] = get_hosted_content_file(media_data)
     else:
         item['harvest_type'] = 'harvested'
         if 'url_item' in item:
@@ -193,16 +196,12 @@ def item_view(request, item_id=''):
     for collection_data in item.get('collection_data'):
         col_id = (re.match(
             col_regex, collection_data.split('::')[0]).group('id'))
-
-        try:
-            collection = Collection(col_id)
-        except Http404:
-            continue
-
+        collection = Collection(col_id)
         item['parsed_collection_data'].append(collection.item_view())
+
     for repository_data in item.get('repository_data'):
-        repo_url = repository_data.split('::')[0]
-        repo_id = re.match(repo_regex, repo_url).group('id')
+        repo_id = re.match(
+            repo_regex, repository_data.split('::')[0]).group('id')
         repo = Repository(repo_id)
         item['parsed_repository_data'].append(repo.get_repo_data())
         item['institution_contact'].append(repo.get_contact_info())

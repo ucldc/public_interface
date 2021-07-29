@@ -25,8 +25,9 @@ standard_library.install_aliases()
 
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
              r'(?P<id>\d*)/?')
+col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
-             r'(?P<id>\d*)/?')
+              r'(?P<id>\d*)/?')
 
 
 def get_hosted_content_file(structmap):
@@ -189,7 +190,7 @@ def item_view(request, item_id=''):
         item['parsed_collection_data'] = []
         item['parsed_repository_data'] = []
         item['institution_contact'] = []
-        for collection_data in item.get('collection_data'):
+        for collection_data in item_solr_search[0].get('collection_data'):
             col_id = (re.match(
                 col_regex, collection_data.split('::')[0]).group('id'))
 
@@ -202,20 +203,9 @@ def item_view(request, item_id=''):
         for repository_data in item.get('repository_data'):
             repo_url = repository_data.split('::')[0]
             repo_id = re.match(repo_regex, repo_url).group('id')
-            item['parsed_repository_data'].append(Repository(repo_id).get_repo_data())
-
-            institution_url = item['parsed_repository_data'][0]['url']
-            institution_details = json_loads_url(institution_url +
-                                                 "?format=json")
-            if 'ark' in institution_details and institution_details[
-                    'ark'] != '':
-                contact_information = json_loads_url(
-                    "http://dsc.cdlib.org/institution-json/" +
-                    institution_details['ark'])
-            else:
-                contact_information = ''
-
-            item['institution_contact'].append(contact_information)
+            repo = Repository(repo_id)
+            item['parsed_repository_data'].append(repo.get_repo_data())
+            item['institution_contact'].append(repo.get_contact_info())
 
     meta_image = False
     if item_solr_search.results[0].get('reference_image_md5', False):
@@ -357,19 +347,8 @@ def item_view_carousel(request):
     elif referral == 'collection':
         link_back_id = params.get('collection_data', None)
         # get any collection-specific facets
-        collection_url = (
-            f'https://registry.cdlib.org/api/v1/collection/{link_back_id}/')
-        collection_details = json_loads_url(collection_url + '?format=json')
-        custom_facets = collection_details.get('custom_facet', [])
-        for custom_facet in custom_facets:
-            facet_filter_types.append(
-                facet_module.FacetFilterType(
-                    custom_facet['facet_field'],
-                    custom_facet['label'],
-                    custom_facet['facet_field'],
-                    custom_facet.get('sort_by', 'count')
-                )
-            )
+        custom_facets = Collection(link_back_id).custom_facets
+        facet_filter_types.extend(custom_facets)
         # Add Custom Facet Filter Types
         if params.get('relation_ss') and len(custom_facets) == 0:
             facet_filter_types.append(
@@ -504,8 +483,7 @@ def related_exhibitions(request):
 def report_collection_facet(request, collection_id, facet):
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
-    collection_url = (
-        f'https://registry.cdlib.org/api/v1/collection/{collection_id}/')
+    collection_url = col_template.format(collection_id)
     collection_details = json_loads_url(collection_url + '?format=json')
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
@@ -558,8 +536,7 @@ def report_collection_facet(request, collection_id, facet):
 
 
 def report_collection_facet_value(request, collection_id, facet, facet_value):
-    collection_url = (
-        f'https://registry.cdlib.org/api/v1/collection/{collection_id}/')
+    collection_url = col_template.format(collection_id)
     collection_details = json_loads_url(collection_url + '?format=json')
 
     if not collection_details:

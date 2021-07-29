@@ -18,6 +18,9 @@ standard_library.install_aliases()
 
 repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<repository_id>\d*)/?')
+repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
+campus_template = "https://registry.cdlib.org/api/v1/campus/{0}/"
+
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
              r'(?P<id>\d*)/?')
 
@@ -135,8 +138,7 @@ class Campus(object):
         self.slug = slug
         self.id = campus.get('id')
         self.featured_image = campus.get('featuredImage')
-        self.url = (
-            f'https://registry.cdlib.org/api/v1/campus/{self.id}/')
+        self.url = campus_template.format(self.id)
 
         self.details = json_loads_url(self.url + "?format=json")
         if not self.details:
@@ -156,13 +158,31 @@ class Campus(object):
 class Repository(object):
     def __init__(self, id):
         self.id = id
-        self.url = (
-            f'https://registry.cdlib.org/api/v1/repository/{id}/'
-        )
+        self.url = repo_template.format(id)
 
         app = apps.get_app_config('calisphere')
         self.details = app.registry.repository_data.get(
             int(self.id), None)
+
+        if not self.details:
+            self.details = json_loads_url(self.url + "?format=json")
+
+        if not self.details:
+            raise Http404("{0} does not exist".format(id))
+
+        self.name = self.full_name = self.details.get('name')
+        if self.details.get('campus'):
+            self.full_name = (
+                f"{self.details.get('campus')[0]['name']} / {self.name}")
+            self.campus = self.details.get('campus')[0]['name']
+
+        self.featured_image = None
+        if not self.details.get('campus'):
+            feat = [u for u in constants.FEATURED_UNITS if u['id'] == self.id]
+            if feat:
+                self.featured_image = feat.get('featuredImage')
+
+        self.solr_filter = 'repository_url: "' + self.url + '"'
 
     def get_repo_data(self):
         repository = {
@@ -192,29 +212,8 @@ class Repository(object):
         repository['slug'] = pslug + self.details.get('slug', None)
         return repository
 
-    def full_init(self):
-        if not self.details:
-            self.details = json_loads_url(self.url + "?format=json")
-
-        if not self.details:
-            raise Http404("{0} does not exist".format(id))
-
-        self.name = self.full_name = self.details.get('name')
-        if self.details.get('campus'):
-            self.full_name = (
-                f"{self.details.get('campus')[0]['name']} / {self.name}")
-            self.campus = self.details.get('campus')[0]['name']
-
-        self.featured_image = None
-        if not self.details.get('campus'):
-            feat = [u for u in constants.FEATURED_UNITS if u['id'] == self.id]
-            if feat:
-                self.featured_image = feat.get('featuredImage')
-
-        self.solr_filter = 'repository_url: "' + self.url + '"'
-
     def get_contact_info(self):
-        if self.contact_info:
+        if hasattr(self, 'contact_info'):
             return self.contact_info
 
         self.contact_info = ''
@@ -329,7 +328,7 @@ def institution_collections(request, institution):
 
 
 def repository_search(request, repository_id):
-    institution = Repository(repository_id).full_init()
+    institution = Repository(repository_id)
     params = request.GET.copy()
 
     context = institution_search(params, institution)
@@ -367,7 +366,7 @@ def repository_search(request, repository_id):
 
 
 def repository_collections(request, repository_id):
-    institution = Repository(repository_id).full_init()
+    institution = Repository(repository_id)
 
     context = institution_collections(request, institution)
 

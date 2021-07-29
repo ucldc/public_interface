@@ -20,7 +20,7 @@ standard_library.install_aliases()
 
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
              r'(?P<id>\d*)/?')
-
+col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 def collections_directory(request):
     solr_collections = CollectionManager(settings.SOLR_URL,
@@ -129,10 +129,7 @@ class Collection(object):
 
     def __init__(self, collection_id):
         self.id = collection_id
-        self.url = (
-            f"https://registry.cdlib.org/api/v1/"
-            f"collection/{collection_id}/"
-        )
+        self.url = col_template.format(collection_id)
         self.details = json_loads_url(f"{self.url}?format=json")
         if not self.details:
             raise Http404(f"{collection_id} does not exist.")

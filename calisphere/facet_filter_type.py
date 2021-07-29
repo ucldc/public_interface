@@ -16,14 +16,16 @@ from calisphere.collection_data import CollectionManager
 
 col_regex = (
     r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?')
+col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 repo_regex = (
     r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
+repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
 def repo_from_id(repo_id):
     app = apps.get_app_config('calisphere')
     repo = {
-        'url': f"https://registry.cdlib.org/api/v1/repository/{repo_id}/",
+        'url': repo_template.format(repo_id),
         'id': repo_id
     }
     repo_details = app.registry.repository_data.get(int(repo['id']), {})
@@ -112,8 +114,7 @@ class FacetFilterType(object):
 
 class RepositoryFacetFilterType(FacetFilterType):
     def filter_transform(self, repository_id):
-        template = "https://registry.cdlib.org/api/v1/repository/{0}/"
-        return template.format(repository_id)
+        return repo_template.format(repository_id)
 
     def facet_transform(self, facet_val):
         url = facet_val.split('::')[0]
@@ -128,8 +129,7 @@ class RepositoryFacetFilterType(FacetFilterType):
 
 class CollectionFacetFilterType(FacetFilterType):
     def filter_transform(self, collection_id):
-        template = "https://registry.cdlib.org/api/v1/collection/{0}/"
-        return template.format(collection_id)
+        return col_template.format(collection_id)
 
     def facet_transform(self, collection_data):
         parts = collection_data.split('::')
@@ -150,10 +150,7 @@ class CollectionFacetFilterType(FacetFilterType):
         solr_collections = CollectionManager(settings.SOLR_URL,
                                              settings.SOLR_API_KEY)
         collection = {
-            'url': (
-                f"https://registry.cdlib.org/api/v1/"
-                f"collection/{collection_id}/"
-            ),
+            'url': col_template.format(collection_id),
             'id': collection_id
         }
 

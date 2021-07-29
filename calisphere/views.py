@@ -99,125 +99,125 @@ def item_view(request, item_id=''):
         else:
             raise Http404("{0} does not exist".format(item_id))
 
-    for item in item_solr_search.results:
-        if 'reference_image_dimensions' in item:
-            split_ref = item['reference_image_dimensions'].split(':')
-            item['reference_image_dimensions'] = split_ref
-        if 'structmap_url' in item and len(item['structmap_url']) >= 1:
-            item['harvest_type'] = 'hosted'
-            structmap_url = item['structmap_url'].replace(
-                's3://static', 'https://s3.amazonaws.com/static')
-            structmap_data = json_loads_url(structmap_url)
+    item = item_solr_search.results[0]
+    if 'reference_image_dimensions' in item:
+        split_ref = item['reference_image_dimensions'].split(':')
+        item['reference_image_dimensions'] = split_ref
+    if 'structmap_url' in item and len(item['structmap_url']) >= 1:
+        item['harvest_type'] = 'hosted'
+        structmap_url = item['structmap_url'].replace(
+            's3://static', 'https://s3.amazonaws.com/static')
+        structmap_data = json_loads_url(structmap_url)
 
-            if 'structMap' in structmap_data:
-                # complex object
-                if 'order' in request.GET and 'structMap' in structmap_data:
-                    # fetch component object
-                    item['selected'] = False
-                    order = int(request.GET['order'])
-                    item['selectedComponentIndex'] = order
-                    component = structmap_data['structMap'][order]
-                    component['selected'] = True
-                    if 'format' in component:
-                        item['contentFile'] = get_hosted_content_file(
-                            component)
-                    # remove emptry strings from list
-                    for k, v in list(component.items()):
-                        if isinstance(v, list):
-                            if isinstance(v[0], str):
-                                component[k] = [
-                                    name for name in v if name and name.strip()
-                                ]
-                    # remove empty lists and empty strings from dict
-                    item['selectedComponent'] = dict(
-                        (k, v) for k, v in list(component.items()) if v)
-                else:
-                    item['selected'] = True
-                    # if parent content file, get it
-                    if 'format' in structmap_data:
-                        item['contentFile'] = get_hosted_content_file(
-                            structmap_data)
-                    # otherwise get first component file
-                    else:
-                        component = structmap_data['structMap'][0]
-                        item['contentFile'] = get_hosted_content_file(
-                            component)
-                item['structMap'] = structmap_data['structMap']
-
-                # single or multi-format object
-                formats = [
-                    component['format']
-                    for component in structmap_data['structMap']
-                    if 'format' in component
-                ]
-                if len(set(formats)) > 1:
-                    item['multiFormat'] = True
-                else:
-                    item['multiFormat'] = False
-
-                # carousel has captions or not
-                if all(f == 'image' for f in formats):
-                    item['hasComponentCaptions'] = False
-                else:
-                    item['hasComponentCaptions'] = True
-
-                # number of components
-                item['componentCount'] = len(structmap_data['structMap'])
-
-                # has fixed item thumbnail image
-                if 'reference_image_md5' in item:
-                    item['has_fixed_thumb'] = True
-                else:
-                    item['has_fixed_thumb'] = False
+        if 'structMap' in structmap_data:
+            # complex object
+            if 'order' in request.GET and 'structMap' in structmap_data:
+                # fetch component object
+                item['selected'] = False
+                order = int(request.GET['order'])
+                item['selectedComponentIndex'] = order
+                component = structmap_data['structMap'][order]
+                component['selected'] = True
+                if 'format' in component:
+                    item['contentFile'] = get_hosted_content_file(
+                        component)
+                # remove emptry strings from list
+                for k, v in list(component.items()):
+                    if isinstance(v, list):
+                        if isinstance(v[0], str):
+                            component[k] = [
+                                name for name in v if name and name.strip()
+                            ]
+                # remove empty lists and empty strings from dict
+                item['selectedComponent'] = dict(
+                    (k, v) for k, v in list(component.items()) if v)
             else:
-                # simple object
+                item['selected'] = True
+                # if parent content file, get it
                 if 'format' in structmap_data:
                     item['contentFile'] = get_hosted_content_file(
                         structmap_data)
-        else:
-            item['harvest_type'] = 'harvested'
-            if 'url_item' in item:
-                if item['url_item'].startswith('http://ark.cdlib.org/ark:'):
-                    item['oac'] = True
-                    item['url_item'] = item['url_item'].replace(
-                        'http://ark.cdlib.org/ark:',
-                        'http://oac.cdlib.org/ark:')
-                    item['url_item'] = item['url_item'] + '/?brand=oac4'
+                # otherwise get first component file
                 else:
-                    item['oac'] = False
-            # TODO: error handling 'else'
+                    component = structmap_data['structMap'][0]
+                    item['contentFile'] = get_hosted_content_file(
+                        component)
+            item['structMap'] = structmap_data['structMap']
 
-        item['parsed_collection_data'] = []
-        item['parsed_repository_data'] = []
-        item['institution_contact'] = []
-        for collection_data in item_solr_search[0].get('collection_data'):
-            col_id = (re.match(
-                col_regex, collection_data.split('::')[0]).group('id'))
+            # single or multi-format object
+            formats = [
+                component['format']
+                for component in structmap_data['structMap']
+                if 'format' in component
+            ]
+            if len(set(formats)) > 1:
+                item['multiFormat'] = True
+            else:
+                item['multiFormat'] = False
 
-            try:
-                collection = Collection(col_id)
-            except Http404:
-                continue
+            # carousel has captions or not
+            if all(f == 'image' for f in formats):
+                item['hasComponentCaptions'] = False
+            else:
+                item['hasComponentCaptions'] = True
 
-            item['parsed_collection_data'].append(collection.item_view())
-        for repository_data in item.get('repository_data'):
-            repo_url = repository_data.split('::')[0]
-            repo_id = re.match(repo_regex, repo_url).group('id')
-            repo = Repository(repo_id)
-            item['parsed_repository_data'].append(repo.get_repo_data())
-            item['institution_contact'].append(repo.get_contact_info())
+            # number of components
+            item['componentCount'] = len(structmap_data['structMap'])
+
+            # has fixed item thumbnail image
+            if 'reference_image_md5' in item:
+                item['has_fixed_thumb'] = True
+            else:
+                item['has_fixed_thumb'] = False
+        else:
+            # simple object
+            if 'format' in structmap_data:
+                item['contentFile'] = get_hosted_content_file(
+                    structmap_data)
+    else:
+        item['harvest_type'] = 'harvested'
+        if 'url_item' in item:
+            if item['url_item'].startswith('http://ark.cdlib.org/ark:'):
+                item['oac'] = True
+                item['url_item'] = item['url_item'].replace(
+                    'http://ark.cdlib.org/ark:',
+                    'http://oac.cdlib.org/ark:')
+                item['url_item'] = item['url_item'] + '/?brand=oac4'
+            else:
+                item['oac'] = False
+        # TODO: error handling 'else'
+
+    item['parsed_collection_data'] = []
+    item['parsed_repository_data'] = []
+    item['institution_contact'] = []
+    for collection_data in item.get('collection_data'):
+        col_id = (re.match(
+            col_regex, collection_data.split('::')[0]).group('id'))
+
+        try:
+            collection = Collection(col_id)
+        except Http404:
+            continue
+
+        item['parsed_collection_data'].append(collection.item_view())
+    for repository_data in item.get('repository_data'):
+        repo_url = repository_data.split('::')[0]
+        repo_id = re.match(repo_regex, repo_url).group('id')
+        repo = Repository(repo_id)
+        item['parsed_repository_data'].append(repo.get_repo_data())
+        item['institution_contact'].append(repo.get_contact_info())
 
     meta_image = False
-    if item_solr_search.results[0].get('reference_image_md5', False):
+    if item.get('reference_image_md5', False):
         meta_image = urllib.parse.urljoin(
             settings.UCLDC_FRONT,
             '/crop/999x999/{0}'.format(
-                item_solr_search.results[0]['reference_image_md5']),
+                item['reference_image_md5']),
         )
 
-    if item_solr_search.results[0].get('rights_uri'):
-        uri = item_solr_search.results[0].get('rights_uri')
-        item_solr_search.results[0]['rights_uri'] = {
+    if item.get('rights_uri'):
+        uri = item.get('rights_uri')
+        item['rights_uri'] = {
             'url': uri,
             'statement': constants.RIGHTS_STATEMENTS[uri]
         }
@@ -229,14 +229,14 @@ def item_view(request, item_id=''):
         return render(
             request, 'calisphere/itemViewer.html', {
                 'q': '',
-                'item': item_solr_search.results[0],
+                'item': item,
                 'item_solr_search': item_solr_search,
                 'meta_image': meta_image,
                 'repository_id': None,
                 'itemId': None,
             })
     search_results = {'reference_image_md5': None}
-    search_results.update(item_solr_search.results[0])
+    search_results.update(item)
     related_collections, num_related_collections = (
         get_related_collections(item_id_query))
     carousel_search_results, carousel_num_found = item_view_carousel_mlt(

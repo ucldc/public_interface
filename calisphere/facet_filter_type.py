@@ -22,30 +22,6 @@ repo_regex = (
 repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
-def repo_from_id(repo_id):
-    app = apps.get_app_config('calisphere')
-    repo = {
-        'url': repo_template.format(repo_id),
-        'id': repo_id
-    }
-    repo_details = app.registry.repository_data.get(int(repo['id']), {})
-    repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
-
-    prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
-    if prod_aeon:
-        repo['aeon_url'] = repo_details.get('aeon_prod', None)
-    else:
-        repo['aeon_url'] = repo_details.get('aeon_test', None)
-    
-    parent = repo_details['campus']
-    pslug = ''
-    if len(parent):
-        pslug = '{0}-'.format(parent[0].get('slug', None))
-    repo['slug'] = pslug + repo_details.get('slug', None)
-
-    return repo
-
-
 class FacetFilterType(object):
     def __init__(self,
                  facet_solr_name,
@@ -119,12 +95,35 @@ class RepositoryFacetFilterType(FacetFilterType):
     def facet_transform(self, facet_val):
         url = facet_val.split('::')[0]
         repo_id = re.match(repo_regex, url).group('id')
-        return repo_from_id(repo_id)
+        return self.repo_from_id(repo_id)
 
     def filter_display(self, filter_val):
-        repository = repo_from_id(filter_val)
+        repository = self.repo_from_id(filter_val)
         repository.pop('local_id', None)
         return repository
+
+    def repo_from_id(self, repo_id):
+        app = apps.get_app_config('calisphere')
+        repo = {
+            'url': repo_template.format(repo_id),
+            'id': repo_id
+        }
+        repo_details = app.registry.repository_data.get(int(repo['id']), {})
+        repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
+
+        prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+        if prod_aeon:
+            repo['aeon_url'] = repo_details.get('aeon_prod', None)
+        else:
+            repo['aeon_url'] = repo_details.get('aeon_test', None)
+
+        parent = repo_details['campus']
+        pslug = ''
+        if len(parent):
+            pslug = '{0}-'.format(parent[0].get('slug', None))
+        repo['slug'] = pslug + repo_details.get('slug', None)
+
+        return repo
 
 
 class CollectionFacetFilterType(FacetFilterType):

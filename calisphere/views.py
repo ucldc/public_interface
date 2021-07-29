@@ -8,6 +8,7 @@ from . import facet_filter_type as facet_module
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
 from . import search_form
 from .collection_views import Collection, get_related_collections
+from .institution_views import Repository
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
@@ -23,6 +24,8 @@ import urllib.parse
 standard_library.install_aliases()
 
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
+repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
              r'(?P<id>\d*)/?')
 
 
@@ -197,9 +200,9 @@ def item_view(request, item_id=''):
 
             item['parsed_collection_data'].append(collection.item_view())
         for repository_data in item.get('repository_data'):
-            item['parsed_repository_data'].append(
-                facet_module.get_repository_data(
-                    repository_data=repository_data))
+            repo_url = repository_data.split('::')[0]
+            repo_id = re.match(repo_regex, repo_url).group('id')
+            item['parsed_repository_data'].append(Repository(repo_id).get_repo_data())
 
             institution_url = item['parsed_repository_data'][0]['url']
             institution_details = json_loads_url(institution_url +

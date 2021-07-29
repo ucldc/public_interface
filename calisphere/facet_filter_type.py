@@ -20,62 +20,28 @@ repo_regex = (
     r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
 
 
-def get_repository_data(repository_data=None,
-                        repository_id=None,
-                        repository_url=None):
-    """ supply either `repository_data` from solr or the `repository_id`
-        or `repository_url` all the reset will be looked up and filled in
-    """
-    repo_regex = (
-        r'https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
+def repo_from_id(repo_id):
     app = apps.get_app_config('calisphere')
-    repository = {}
-    repository_details = {}
-    if not (repository_data) and not (repository_id) and repository_url:
-        repository_id = re.match(
-            repo_regex, repository_url).group('id')
-    if repository_data:
-        parts = repository_data.split('::')
-        repository['url'] = parts[0] if len(parts) >= 1 else ''
-        repository['name'] = parts[1] if len(parts) >= 2 else ''
-        repository['campus'] = parts[2] if len(parts) >= 3 else ''
+    repo = {
+        'url': f"https://registry.cdlib.org/api/v1/repository/{repo_id}/",
+        'id': repo_id
+    }
+    repo_details = app.registry.repository_data.get(int(repo['id']), {})
+    repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
 
-        repository_api_url = re.match(
-            r'^https://registry\.cdlib\.org/api/v1/repository/(?P<url>\d*)/',
-            repository['url'])
-        if repository_api_url is None:
-            print('no repository api url')
-            repository['id'] = ''
-        else:
-            repository['id'] = repository_api_url.group('url')
-            repository_details = app.registry.repository_data.get(
-                int(repository['id']), {})
-    elif repository_id:
-        repository['url'] = (
-            f"https://registry.cdlib.org/api/v1/repository/{repository_id}/")
-        repository['id'] = repository_id
-        repository_details = app.registry.repository_data.get(
-            int(repository_id), None)
-        repository['name'] = repository_details['name']
-        if repository_details['campus']:
-            repository['campus'] = repository_details['campus'][0]['name']
-        else:
-            repository['campus'] = ''
-    # details needed for stats
-    repository['ga_code'] = repository_details.get(
-        'google_analytics_tracking_code', None)
-
-    production_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
-    if production_aeon:
-        repository['aeon_url'] = repository_details.get('aeon_prod', None)
+    prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+    if prod_aeon:
+        repo['aeon_url'] = repo_details.get('aeon_prod', None)
     else:
-        repository['aeon_url'] = repository_details.get('aeon_test', None)
-    parent = repository_details['campus']
+        repo['aeon_url'] = repo_details.get('aeon_test', None)
+    
+    parent = repo_details['campus']
     pslug = ''
     if len(parent):
         pslug = '{0}-'.format(parent[0].get('slug', None))
-    repository['slug'] = pslug + repository_details.get('slug', None)
-    return repository
+    repo['slug'] = pslug + repo_details.get('slug', None)
+
+    return repo
 
 
 class FacetFilterType(object):
@@ -129,8 +95,7 @@ class FacetFilterType(object):
                         collection.get('url'), collection.get('name')), 0))
                 elif self.facet == 'repository_data':
                     api_url = re.match(repo_regex, f)
-                    repository = get_repository_data(
-                        repository_id=api_url.group('id'))
+                    repository = repo_from_id(api_url.group('id'))
                     display_facets.append(("{}::{}".format(
                         repository.get('url'), repository.get('name')), 0))
                 else:
@@ -151,10 +116,12 @@ class RepositoryFacetFilterType(FacetFilterType):
         return template.format(repository_id)
 
     def facet_transform(self, facet_val):
-        return get_repository_data(repository_data=facet_val)
+        url = facet_val.split('::')[0]
+        repo_id = re.match(repo_regex, url).group('id')
+        return repo_from_id(repo_id)
 
     def filter_display(self, filter_val):
-        repository = get_repository_data(repository_id=filter_val)
+        repository = repo_from_id(filter_val)
         repository.pop('local_id', None)
         return repository
 

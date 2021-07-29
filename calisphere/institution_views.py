@@ -3,10 +3,12 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .facet_filter_type import get_repository_data
 from .cache_retry import SOLR_select, json_loads_url
 from . import search_form
 from .collection_views import Collection, get_related_collections
+from django.apps import apps
+from django.conf import settings
+
 
 import math
 import re
@@ -46,17 +48,13 @@ def campus_directory(request):
 
     repositories = []
     for repository_url in solr_repositories:
-        repository = get_repository_data(repository_url=repository_url)
+        repo_id = re.match(repo_regex, repository_url).group('repository_id')
+        repository = Repository(repo_id).get_repo_data()
         if repository['campus']:
             repositories.append({
-                'name':
-                repository['name'],
-                'campus':
-                repository['campus'],
-                'repository_id':
-                re.match(
-                    repo_regex,
-                    repository['url']).group('repository_id')
+                'name': repository['name'],
+                'campus': repository['campus'],
+                'repository_id': repo_id
             })
 
     repositories = sorted(
@@ -88,7 +86,8 @@ def statewide_directory(request):
         'repository_url']
     repositories = []
     for repository_url in solr_repositories:
-        repository = get_repository_data(repository_url=repository_url)
+        repo_id = re.match(repo_regex, repository_url).group('repository_id')
+        repository = Repository(repo_id).get_repo_data()
         if repository['campus'] == '':
             repositories.append({
                 'name':
@@ -160,7 +159,42 @@ class Repository(object):
         self.url = (
             f'https://registry.cdlib.org/api/v1/repository/{id}/'
         )
-        self.details = json_loads_url(self.url + "?format=json")
+
+        app = apps.get_app_config('calisphere')
+        self.details = app.registry.repository_data.get(
+            int(self.id), None)
+
+    def get_repo_data(self):
+        repository = {
+            'id': self.id,
+            'url': self.url,
+            'name': self.details['name'],
+        }
+
+        if self.details['campus']:
+            repository['campus'] = self.details['campus'][0]['name']
+        else:
+            repository['campus'] = ''
+
+        repository['ga_code'] = self.details.get(
+            'google_analytics_tracking_code', None)
+
+        production_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+        if production_aeon:
+            repository['aeon_url'] = self.details.get('aeon_prod', None)
+        else:
+            repository['aeon_url'] = self.details.get('aeon_test', None)
+        
+        parent = self.details['campus']
+        pslug = ''
+        if len(parent):
+            pslug = '{0}-'.format(parent[0].get('slug', None))
+        repository['slug'] = pslug + self.details.get('slug', None)
+        return repository
+
+    def full_init(self):
+        if not self.details:
+            self.details = json_loads_url(self.url + "?format=json")
 
         if not self.details:
             raise Http404("{0} does not exist".format(id))
@@ -295,7 +329,7 @@ def institution_collections(request, institution):
 
 
 def repository_search(request, repository_id):
-    institution = Repository(repository_id)
+    institution = Repository(repository_id).full_init()
     params = request.GET.copy()
 
     context = institution_search(params, institution)
@@ -333,7 +367,7 @@ def repository_search(request, repository_id):
 
 
 def repository_collections(request, repository_id):
-    institution = Repository(repository_id)
+    institution = Repository(repository_id).full_init()
 
     context = institution_collections(request, institution)
 
@@ -434,8 +468,9 @@ def campus_institutions(request, campus_slug):
             ['repository_data'], []))
 
     for i, related_institution in enumerate(related_institutions):
-        related_institutions[i] = get_repository_data(
-            repository_data=related_institution)
+        repo_url = related_institution.split('::')[0]
+        repo_id = re.match(repo_regex, repo_url).group('repository_id')
+        related_institutions[i] = Repository(repo_id).get_repo_data()
     related_institutions = sorted(
         related_institutions,
         key=lambda related_institution: related_institution['name'])

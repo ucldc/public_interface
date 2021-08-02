@@ -178,7 +178,8 @@ class Repository(object):
 
         self.featured_image = None
         if not self.details.get('campus'):
-            feat = [u for u in constants.FEATURED_UNITS if u['id'] == self.id]
+            feat = [u for u in constants.FEATURED_UNITS
+                    if u['id'] == self.id][0]
             if feat:
                 self.featured_image = feat.get('featuredImage')
 

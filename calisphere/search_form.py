@@ -31,7 +31,8 @@ class SearchForm(object):
             'rc_page': self.rc_page
         }
 
-    def solr_encode(self, filter_types, facet_types=[]):
+    def solr_encode(self, facet_types=[]):
+        filter_types = self.facet_filter_types
         if len(facet_types) == 0:
             facet_types = filter_types
 
@@ -147,16 +148,23 @@ class SearchForm(object):
 class InstitutionForm(SearchForm):
     def __init__(self, request, institution):
         super().__init__(request)
+        self.institution = institution
         if institution.__class__.__name__ == 'Repository':
             self.facet_filter_types = [
                 f for f in constants.FACET_FILTER_TYPES
                 if f['facet'] != 'repository_data'
             ]
 
+    def solr_encode(self, facet_types=[]):
+        solr_query = super().solr_encode(facet_types)
+        solr_query['fq'].append(self.institution.solr_filter)
+        return solr_query
+
 
 class CollectionForm(SearchForm):
     def __init__(self, request, collection):
         super().__init__(request)
+        self.collection = collection
         # Collection Views don't allow filtering or faceting by
         # collection_data or repository_data
         facet_filter_types = [
@@ -180,6 +188,12 @@ class CollectionForm(SearchForm):
                     )
                 )
         self.facet_filter_types = facet_filter_types
+
+    def solr_encode(self, facet_types=[]):
+        solr_query = super().solr_encode(facet_types)
+        extra_filter = 'collection_url: "' + self.collection.url + '"'
+        solr_query['fq'].append(extra_filter)
+        return solr_query
 
 
 def facet_query(facet_filter_types, params, solr_search, extra_filter=None):

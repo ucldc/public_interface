@@ -335,14 +335,10 @@ class Collection(object):
 
 def collection_search(request, collection_id):
     collection = Collection(collection_id)
+
     form = search_form.CollectionForm(request, collection)
 
-    extra_filter = 'collection_url: "' + collection.url + '"'
-
-    # perform the search
-    solr_params = form.solr_encode(form.facet_filter_types)
-    solr_params['fq'].append(extra_filter)
-    solr_search = SOLR_select(**solr_params)
+    solr_search = SOLR_select(**form.solr_encode())
     context = {
         'search_form': form.context(),
         'search_results': solr_search.results,
@@ -350,6 +346,8 @@ def collection_search(request, collection_id):
         'pages': int(math.ceil(solr_search.numFound / int(form.rows)))
     }
 
+    extra_filter = 'collection_url: "' + collection.url + '"'
+    solr_params = form.solr_encode()
     total_items = SOLR_select(**{**solr_params, **{
         'q': '',
         'fq': [extra_filter],

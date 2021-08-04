@@ -230,10 +230,7 @@ class Repository(object):
 
 def institution_search(request, institution):
     form = search_form.InstitutionForm(request, institution)
-
-    solr_params = form.solr_encode(form.facet_filter_types)
-    solr_params['fq'].append(institution.solr_filter)
-    solr_search = SOLR_select(**solr_params)
+    solr_search = SOLR_select(**form.solr_encode())
 
     facets = form.facet_query(
         form.facet_filter_types, solr_search, institution.solr_filter)

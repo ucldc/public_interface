@@ -261,13 +261,13 @@ def item_view(request, item_id=''):
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = search_form.SearchForm(request)
-        solr_query = form.solr_encode(form.facet_filter_types)
-        solr_search = SOLR_select(**solr_query)
+        solr_search = SOLR_select(**form.solr_encode())
 
         if len(solr_search.results) == 0:
             print('no results found')
 
-        context = {'facets': form.facet_query(form.facet_filter_types, solr_search)}
+        context = {'facets': form.facet_query(
+            form.facet_filter_types, solr_search)}
 
         params = request.GET.copy()
 

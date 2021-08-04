@@ -335,35 +335,12 @@ class Collection(object):
 
 def collection_search(request, collection_id):
     collection = Collection(collection_id)
-    form = search_form.SearchForm(request)
-
-    # Collection Views don't allow filtering or faceting by
-    # collection_data or repository_data
-    facet_filter_types = [
-        facet_filter_type for facet_filter_type in constants.FACET_FILTER_TYPES
-        if facet_filter_type['facet'] != 'collection_data'
-        and facet_filter_type['facet'] != 'repository_data'
-    ]
-    # Add Custom Facet Filter Types
-    facet_filter_types = facet_filter_types + collection.custom_facets
-    # If relation_ss is not already defined as a custom facet, and is included
-    # in search parameters, add the relation_ss facet implicitly
-    if not collection.custom_facets:
-        if request.GET.get('relation_ss'):
-            facet_filter_types.append(
-                FacetFilterType(
-                    'relation_ss',
-                    'Relation',
-                    'relation_ss',
-                    'value',
-                    faceting_allowed=False
-                )
-            )
+    form = search_form.CollectionForm(request, collection)
 
     extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
-    solr_params = form.solr_encode(facet_filter_types)
+    solr_params = form.solr_encode(form.facet_filter_types)
     solr_params['fq'].append(extra_filter)
     solr_search = SOLR_select(**solr_params)
     context = {
@@ -381,11 +358,11 @@ def collection_search(request, collection_id):
     }})
 
     context['facets'] = form.facet_query(
-        facet_filter_types, solr_search, extra_filter)
+        form.facet_filter_types, solr_search, extra_filter)
 
     context['filters'] = {}
     params = request.GET.copy()
-    for filter_type in facet_filter_types:
+    for filter_type in form.facet_filter_types:
         param_name = filter_type['facet']
         display_name = filter_type['filter']
         filter_transform = filter_type['filter_display']
@@ -405,7 +382,7 @@ def collection_search(request, collection_id):
         'totalNumItems':
         total_items.numFound,
         'FACET_FILTER_TYPES':
-        facet_filter_types,
+        form.facet_filter_types,
         'collection':
         collection.details,
         'collection_id':

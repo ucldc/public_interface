@@ -229,25 +229,18 @@ class Repository(object):
 
 
 def institution_search(request, institution):
-    form = search_form.SearchForm(request)
+    form = search_form.InstitutionForm(request, institution)
 
-    facet_filter_types = list(constants.FACET_FILTER_TYPES)
-    if institution.__class__.__name__ == 'Repository':
-        facet_filter_types = [
-            f for f in constants.FACET_FILTER_TYPES
-            if f['facet'] != 'repository_data'
-        ]
-
-    solr_params = form.solr_encode(facet_filter_types)
+    solr_params = form.solr_encode(form.facet_filter_types)
     solr_params['fq'].append(institution.solr_filter)
     solr_search = SOLR_select(**solr_params)
 
     facets = form.facet_query(
-        facet_filter_types, solr_search, institution.solr_filter)
+        form.facet_filter_types, solr_search, institution.solr_filter)
 
     params = request.GET.copy()
     filter_display = {}
-    for filter_type in facet_filter_types:
+    for filter_type in form.facet_filter_types:
         param_name = filter_type['facet']
         display_name = filter_type['filter']
         filter_transform = filter_type['filter_display']
@@ -265,7 +258,7 @@ def institution_search(request, institution):
         'facets': facets,
         'numFound': solr_search.numFound,
         'pages': pages,
-        'FACET_FILTER_TYPES': facet_filter_types
+        'FACET_FILTER_TYPES': form.facet_filter_types
     })
 
     return context

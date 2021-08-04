@@ -261,14 +261,13 @@ def item_view(request, item_id=''):
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = search_form.SearchForm(request)
-        solr_query = form.solr_encode(constants.FACET_FILTER_TYPES)
+        solr_query = form.solr_encode(form.facet_filter_types)
         solr_search = SOLR_select(**solr_query)
 
         if len(solr_search.results) == 0:
             print('no results found')
 
-        context = {'facets': form.facet_query(
-            constants.FACET_FILTER_TYPES, solr_search)}
+        context = {'facets': form.facet_query(form.facet_filter_types, solr_search)}
 
         params = request.GET.copy()
 
@@ -284,13 +283,13 @@ def search(request):
             if len(params.getlist('collection_data')) > 0 else len(
                 context['facets']['collection_data']),
             'form_action': reverse('calisphere:search'),
-            'FACET_FILTER_TYPES': constants.FACET_FILTER_TYPES,
+            'FACET_FILTER_TYPES': form.facet_filter_types,
             'filters': {},
             'repository_id': None,
             'itemId': None,
         })
 
-        for filter_type in constants.FACET_FILTER_TYPES:
+        for filter_type in form.facet_filter_types:
             param_name = filter_type['facet']
             display_name = filter_type['filter']
             filter_transform = filter_type['filter_display']

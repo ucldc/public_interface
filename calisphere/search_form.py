@@ -10,6 +10,8 @@ def solr_escape(text):
 class SearchForm(object):
     def __init__(self, request):
         self.params = request.GET.copy()
+        self.facet_filter_types = constants.FACET_FILTER_TYPES
+
         self.q = request.GET.get('q', '')
         self.rq = request.GET.getlist('rq')
         self.rows = request.GET.get('rows', '24')
@@ -140,6 +142,44 @@ class SearchForm(object):
                     facet_item[0]), facet_item[1])
 
         return facets
+
+
+class InstitutionForm(SearchForm):
+    def __init__(self, request, institution):
+        super().__init__(request)
+        if institution.__class__.__name__ == 'Repository':
+            self.facet_filter_types = [
+                f for f in constants.FACET_FILTER_TYPES
+                if f['facet'] != 'repository_data'
+            ]
+
+
+class CollectionForm(SearchForm):
+    def __init__(self, request, collection):
+        super().__init__(request)
+        # Collection Views don't allow filtering or faceting by
+        # collection_data or repository_data
+        facet_filter_types = [
+            fft for fft in constants.FACET_FILTER_TYPES
+            if fft['facet'] != 'collection_data'
+            and fft['facet'] != 'repository_data'
+        ]
+        # Add Custom Facet Filter Types
+        facet_filter_types = facet_filter_types + collection.custom_facets
+        # If relation_ss is not already defined as a custom facet, and is included
+        # in search parameters, add the relation_ss facet implicitly
+        if not collection.custom_facets:
+            if request.GET.get('relation_ss'):
+                facet_filter_types.append(
+                    FacetFilterType(
+                        'relation_ss',
+                        'Relation',
+                        'relation_ss',
+                        'value',
+                        faceting_allowed=False
+                    )
+                )
+        self.facet_filter_types = facet_filter_types
 
 
 def facet_query(facet_filter_types, params, solr_search, extra_filter=None):

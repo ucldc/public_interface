@@ -73,7 +73,7 @@ class FacetFilterType(object):
                         collection.get('url'), collection.get('name')), 0))
                 elif self.facet == 'repository_data':
                     api_url = re.match(repo_regex, f)
-                    repository = repo_from_id(api_url.group('id'))
+                    repository = self.repo_from_id(api_url.group('id'))
                     display_facets.append(("{}::{}".format(
                         repository.get('url'), repository.get('name')), 0))
                 else:
@@ -109,6 +109,7 @@ class RepositoryFacetFilterType(FacetFilterType):
             'id': repo_id
         }
         repo_details = app.registry.repository_data.get(int(repo['id']), {})
+        repo['name'] = repo_details.get('name', None)
         repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
 
         prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'

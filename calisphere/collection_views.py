@@ -335,9 +335,7 @@ class Collection(object):
 
 def collection_search(request, collection_id):
     collection = Collection(collection_id)
-
-    params = request.GET.copy()
-    context = search_form.search_defaults(params)
+    form = search_form.SearchForm(request)
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data
@@ -351,7 +349,7 @@ def collection_search(request, collection_id):
     # If relation_ss is not already defined as a custom facet, and is included
     # in search parameters, add the relation_ss facet implicitly
     if not collection.custom_facets:
-        if params.get('relation_ss'):
+        if request.GET.get('relation_ss'):
             facet_filter_types.append(
                 FacetFilterType(
                     'relation_ss',
@@ -365,11 +363,16 @@ def collection_search(request, collection_id):
     extra_filter = 'collection_url: "' + collection.url + '"'
 
     # perform the search
-    solr_params = search_form.solr_encode(params, facet_filter_types)
+    solr_params = form.solr_encode(facet_filter_types)
     solr_params['fq'].append(extra_filter)
     solr_search = SOLR_select(**solr_params)
-    context['search_results'] = solr_search.results
-    context['numFound'] = solr_search.numFound
+    context = {
+        'search_form': form.context(),
+        'search_results': solr_search.results,
+        'numFound': solr_search.numFound,
+        'pages': int(math.ceil(solr_search.numFound / int(form.rows)))
+    }
+
     total_items = SOLR_select(**{**solr_params, **{
         'q': '',
         'fq': [extra_filter],
@@ -377,13 +380,11 @@ def collection_search(request, collection_id):
         'facet': 'false'
     }})
 
-    context['pages'] = int(
-        math.ceil(solr_search.numFound / int(context['rows'])))
-
-    context['facets'] = search_form.facet_query(facet_filter_types, params,
-                                                solr_search, extra_filter)
+    context['facets'] = form.facet_query(
+        facet_filter_types, solr_search, extra_filter)
 
     context['filters'] = {}
+    params = request.GET.copy()
     for filter_type in facet_filter_types:
         param_name = filter_type['facet']
         display_name = filter_type['filter']

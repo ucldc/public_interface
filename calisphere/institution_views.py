@@ -179,11 +179,14 @@ class Repository(object):
         self.featured_image = None
         if not self.details.get('campus'):
             feat = [u for u in constants.FEATURED_UNITS
-                    if u['id'] == self.id][0]
+                    if u['id'] == self.id]
             if feat:
-                self.featured_image = feat.get('featuredImage')
+                self.featured_image = feat[0].get('featuredImage')
 
         self.solr_filter = 'repository_url: "' + self.url + '"'
+
+    def __str__(self):
+        return f"{self.id}: {self.details.name}"
 
     def get_repo_data(self):
         repository = {
@@ -225,7 +228,9 @@ class Repository(object):
         return self.contact_info
 
 
-def institution_search(params, institution):
+def institution_search(request, institution):
+    form = search_form.SearchForm(request)
+
     facet_filter_types = list(constants.FACET_FILTER_TYPES)
     if institution.__class__.__name__ == 'Repository':
         facet_filter_types = [
@@ -233,13 +238,14 @@ def institution_search(params, institution):
             if f['facet'] != 'repository_data'
         ]
 
-    solr_params = search_form.solr_encode(params, facet_filter_types)
+    solr_params = form.solr_encode(facet_filter_types)
     solr_params['fq'].append(institution.solr_filter)
     solr_search = SOLR_select(**solr_params)
 
-    facets = search_form.facet_query(facet_filter_types, params,
-                                     solr_search, institution.solr_filter)
+    facets = form.facet_query(
+        facet_filter_types, solr_search, institution.solr_filter)
 
+    params = request.GET.copy()
     filter_display = {}
     for filter_type in facet_filter_types:
         param_name = filter_type['facet']
@@ -250,9 +256,9 @@ def institution_search(params, institution):
             filter_display[display_name] = list(
                 map(filter_transform, params.getlist(param_name)))
 
-    context = search_form.search_defaults(params)
+    context = {'search_form': form.context()}
     pages = int(math.ceil(
-        solr_search.numFound / int(context['rows'])))
+        solr_search.numFound / int(form.rows)))
     context.update({
         'filters': filter_display,
         'search_results': solr_search.results,
@@ -330,10 +336,10 @@ def institution_collections(request, institution):
 
 def repository_search(request, repository_id):
     institution = Repository(repository_id)
+
+    context = institution_search(request, institution)
+
     params = request.GET.copy()
-
-    context = institution_search(params, institution)
-
     related_collections = get_related_collections(
         params, repository_id=institution.id)[0]
 
@@ -349,7 +355,8 @@ def repository_search(request, repository_id):
         )
     })
 
-    page = (int(context['start']) // int(context['rows'])) + 1
+    page = (int(context['search_form']['start']) // int(
+        context['search_form']['rows'])) + 1
     context['title'] = f"{institution.full_name} Items"
     if page > 1:
         context['title'] = f"{institution.full_name} Items - page {page}"
@@ -392,14 +399,15 @@ def repository_collections(request, repository_id):
 
 def campus_search(request, campus_slug):
     institution = Campus(campus_slug)
-    params = request.GET.copy()
-    context = institution_search(params, institution)
+    context = institution_search(request, institution)
 
-    page = (int(context['start']) // int(context['rows'])) + 1
+    page = (int(context['search_form']['start']) // int(
+        context['search_form']['rows'])) + 1
     title = f"{institution.name} Items"
     if (page > 1):
         title = (f"{institution.name} Items - page {page}")
 
+    params = request.GET.copy()
     related_collections = get_related_collections(
         params, slug=institution.slug)[0]
 

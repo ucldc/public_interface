@@ -260,42 +260,34 @@ def item_view(request, item_id=''):
 
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
-        params = request.GET.copy()
-        context = search_form.search_defaults(params)
-        solr_query = search_form.solr_encode(
-            params, constants.FACET_FILTER_TYPES)
+        form = search_form.SearchForm(request)
+        solr_query = form.solr_encode(constants.FACET_FILTER_TYPES)
         solr_search = SOLR_select(**solr_query)
 
-        # TODO: create a no results found page
         if len(solr_search.results) == 0:
             print('no results found')
 
-        context['facets'] = search_form.facet_query(
-            constants.FACET_FILTER_TYPES, params, solr_search)
+        context = {'facets': form.facet_query(
+            constants.FACET_FILTER_TYPES, solr_search)}
+
+        params = request.GET.copy()
 
         context.update({
-            'search_results':
-            solr_search.results,
-            'numFound':
-            solr_search.numFound,
-            'pages':
-            int(math.ceil(
-                    solr_search.numFound / int(context['rows']))),
-            'related_collections':
-            get_related_collections(params)[0],
+            'q': form.q,
+            'search_form': form.context(),
+            'search_results': solr_search.results,
+            'numFound': solr_search.numFound,
+            'pages': int(math.ceil(solr_search.numFound / int(form.rows))),
+            'related_collections': get_related_collections(params)[0],
             'num_related_collections':
             len(params.getlist('collection_data'))
             if len(params.getlist('collection_data')) > 0 else len(
                 context['facets']['collection_data']),
-            'form_action':
-            reverse('calisphere:search'),
-            'FACET_FILTER_TYPES':
-            constants.FACET_FILTER_TYPES,
+            'form_action': reverse('calisphere:search'),
+            'FACET_FILTER_TYPES': constants.FACET_FILTER_TYPES,
             'filters': {},
-            'repository_id':
-            None,
-            'itemId':
-            None,
+            'repository_id': None,
+            'itemId': None,
         })
 
         for filter_type in constants.FACET_FILTER_TYPES:
@@ -491,8 +483,7 @@ def report_collection_facet(request, collection_id, facet):
         repository['resource_id'] = repository.get('resource_uri').split(
             '/')[-2]
 
-    params = request.GET.copy()
-    context = search_form.search_defaults(params)
+    context = search_form.SearchForm(request).context()
     context.update({'facet': facet})
     # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
     solr_params = {

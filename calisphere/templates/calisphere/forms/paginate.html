@@ -5,7 +5,7 @@
 	<label for="pag-dropdown__view" class="sr-only">View Per Page</label>
 
   <select id="pag-dropdown__view" class="pag-dropdown__select" name="rows" form="js-facet">
-  {% if rows == '48' %}
+  {% if search_form.rows == '48' %}
     <option id="view24" value="24">View 24</option>
     <option id="view48" value="48" selected>View 48</option>
   {% else %}
@@ -14,19 +14,19 @@
   {% endif %}
   </select>
   
-  <!-- <input form="js-facet" type="text" class="display-none" id="rows" name="rows" value="{{ rows }}"> -->
+  <!-- <input form="js-facet" type="text" class="display-none" id="rows" name="rows" value="{{ search_form.rows }}"> -->
 
   <label for="pag-dropdown__sort" class="sr-only">Sort</label>
   
   <select id="pag-dropdown__sort" class="pag-dropdown__select" name="sort" form="js-facet">
-    {% if sort == 'relevance' or sort == 'a' or sort == 'z' or sort == 'oldest-start' or sort == 'oldest-end' or sort == 'newest-start' or sort == 'newest-end' %}
-      <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>Relevance</option>
-      <option value="a" {% if sort == 'a' %}selected{% endif %}>A-Z</option>
-      <option value="z" {% if sort == 'z' %}selected{% endif %}>Z-A</option>
-      <option value="oldest-start" {% if sort == 'oldest-start' %}selected{% endif %}>Oldest First (Start Date)</option>
-      <option value="oldest-end" {% if sort == 'oldest-end' %}selected{% endif %}>Oldest First (End Date)
-      <option value="newest-start" {% if sort == 'newest-start' %}selected{% endif %}>Newest First (Start Date)</option>
-      <option value="newest-end" {% if sort == 'newest-end' %}selected{% endif %}>Newest First (End Date)</option>
+    {% if search_form.sort == 'relevance' or search_form.sort == 'a' or search_form.sort == 'z' or search_form.sort == 'oldest-start' or search_form.sort == 'oldest-end' or search_form.sort == 'newest-start' or search_form.sort == 'newest-end' %}
+      <option value="relevance" {% if search_form.sort == 'relevance' %}selected{% endif %}>Relevance</option>
+      <option value="a" {% if search_form.sort == 'a' %}selected{% endif %}>A-Z</option>
+      <option value="z" {% if search_form.sort == 'z' %}selected{% endif %}>Z-A</option>
+      <option value="oldest-start" {% if search_form.sort == 'oldest-start' %}selected{% endif %}>Oldest First (Start Date)</option>
+      <option value="oldest-end" {% if search_form.sort == 'oldest-end' %}selected{% endif %}>Oldest First (End Date)
+      <option value="newest-start" {% if search_form.sort == 'newest-start' %}selected{% endif %}>Newest First (Start Date)</option>
+      <option value="newest-end" {% if search_form.sort == 'newest-end' %}selected{% endif %}>Newest First (End Date)</option>
     {% else %}
       <option value="relevance" selected>Relevance</option>
       <option value="a">A-Z</option>
@@ -38,26 +38,30 @@
     {% endif %}
   </select>
 
-  {% if start|subtract:rows >= 0 %}
-	  <a class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><span class="fa fa-caret-left fa-lg"></span></a>
+  {% with search_form.start|subtract:search_form.rows as prev_page %}
+  {% if prev_page >= 0 %}
+	  <a class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" data-start="{{ prev_page }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ prev_page }}"><span class="fa fa-caret-left fa-lg"></span></a>
   {% else %}
   	<button type="button" class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" disabled><span class="fa fa-caret-left fa-lg"></span></button>
 	{% endif %}
+  {% endwith %}
 
   <label for="top-start-dropdown" class="sr-only">Current Set Number</label>
         
   <select class="pag-dropdown__select--unstyled" form="js-facet" id="top-start-dropdown">
     {% for page in pages|get_range %}
-    <option value="{% widthratio page 1 rows %}" {% if start|add:0 >= page|multiply:rows|add:0 and start|add:0 < page|add:1|multiply:rows|add:0 %}selected{% endif %}>{{ page|add:"1" }}</option>
+    <option value="{% widthratio page 1 search_form.rows %}" {% if search_form.start|add:0 >= page|multiply:search_form.rows|add:0 and search_form.start|add:0 < page|add:1|multiply:search_form.rows|add:0 %}selected{% endif %}>{{ page|add:"1" }}</option>
     {% endfor %}
   </select>
 
   <span class="pag-dropdown__total-number">of {{ pages }}</span>
 
-  {% if start|add:rows < numFound %}
-	  <a class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}"><span class="fa fa-caret-right fa-lg"></span></a>
+  {% with search_form.start|add:search_form.rows as next_page %}
+  {% if next_page < numFound %}
+	  <a class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" data-start="{{ next_page }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ next_page }}"><span class="fa fa-caret-right fa-lg"></span></a>
   {% else %}
     <button type="button" class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" disabled><span class="fa fa-caret-right fa-lg"></span></button>
   {% endif %}
+  {% endwith %}
 
 </div>

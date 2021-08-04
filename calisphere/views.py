@@ -266,8 +266,7 @@ def search(request):
         if len(solr_search.results) == 0:
             print('no results found')
 
-        context = {'facets': form.facet_query(
-            form.facet_filter_types, solr_search)}
+        context = {'facets': form.facet_query(solr_search)}
 
         params = request.GET.copy()
 

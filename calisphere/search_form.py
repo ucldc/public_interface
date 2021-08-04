@@ -105,7 +105,7 @@ class SearchForm(object):
 
         return query_value
 
-    def facet_query(self, facet_filter_types, solr_search, extra_filter=None):
+    def facet_query(self, solr_search, extra_filter=None):
         # get facet counts
         # if the user's selected some of the available facets (ie - there are
         # filters selected for this field type) perform a search as if those
@@ -116,14 +116,14 @@ class SearchForm(object):
         # of the same type)
 
         facets = {}
-        for facet_filter_type in facet_filter_types:
+        for facet_filter_type in self.facet_filter_types:
             facet_type = facet_filter_type['facet']
             if (len(self.params.getlist(facet_type)) > 0):
                 exclude_facets_of_type = self.params.copy()
                 exclude_facets_of_type.pop(facet_type)
 
                 solr_params = solr_encode(exclude_facets_of_type,
-                                          facet_filter_types,
+                                          self.facet_filter_types,
                                           [facet_filter_type])
                 if extra_filter:
                     solr_params['fq'].append(extra_filter)
@@ -191,8 +191,7 @@ class CollectionForm(SearchForm):
 
     def solr_encode(self, facet_types=[]):
         solr_query = super().solr_encode(facet_types)
-        extra_filter = 'collection_url: "' + self.collection.url + '"'
-        solr_query['fq'].append(extra_filter)
+        solr_query['fq'].append(self.collection.solr_filter)
         return solr_query
 
 

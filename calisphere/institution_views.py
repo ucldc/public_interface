@@ -232,8 +232,7 @@ def institution_search(request, institution):
     form = search_form.InstitutionForm(request, institution)
     solr_search = SOLR_select(**form.solr_encode())
 
-    facets = form.facet_query(
-        form.facet_filter_types, solr_search, institution.solr_filter)
+    facets = form.facet_query(solr_search, institution.solr_filter)
 
     params = request.GET.copy()
     filter_display = {}

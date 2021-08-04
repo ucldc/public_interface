@@ -140,6 +140,8 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
+        self.solr_filter = 'collection_url: "' + self.url + '"'
+
     def _parse_custom_facets(self):
         custom_facets = []
         if self.details.get('custom_facet'):
@@ -337,26 +339,25 @@ def collection_search(request, collection_id):
     collection = Collection(collection_id)
 
     form = search_form.CollectionForm(request, collection)
-
     solr_search = SOLR_select(**form.solr_encode())
+
+    facets = form.facet_query(solr_search, collection.solr_filter)
+
     context = {
         'search_form': form.context(),
         'search_results': solr_search.results,
         'numFound': solr_search.numFound,
-        'pages': int(math.ceil(solr_search.numFound / int(form.rows)))
+        'pages': int(math.ceil(solr_search.numFound / int(form.rows))),
+        'facets': facets
     }
 
-    extra_filter = 'collection_url: "' + collection.url + '"'
     solr_params = form.solr_encode()
     total_items = SOLR_select(**{**solr_params, **{
         'q': '',
-        'fq': [extra_filter],
+        'fq': [collection.solr_filter],
         'rows': 0,
         'facet': 'false'
     }})
-
-    context['facets'] = form.facet_query(
-        form.facet_filter_types, solr_search, extra_filter)
 
     context['filters'] = {}
     params = request.GET.copy()
@@ -533,11 +534,9 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
                 )
             )
 
-    extra_filter = 'collection_url: "' + collection.url + '"'
-
     # perform the search
     solr_params = search_form.solr_encode(params, facet_filter_types)
-    solr_params['fq'].append(extra_filter)
+    solr_params['fq'].append(collection.solr_filter)
     solr_search = SOLR_select(**solr_params)
     context['search_results'] = solr_search.results
     context['numFound'] = solr_search.numFound
@@ -546,7 +545,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
                         solr_search.results[0]['id'])
     total_items = SOLR_select(**{**solr_params, **{
         'q': '',
-        'fq': [extra_filter],
+        'fq': [collection.solr_filter],
         'rows': 0,
         'facet': 'false'
     }})
@@ -555,7 +554,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
         math.ceil(solr_search.numFound / int(context['rows'])))
 
     context['facets'] = search_form.facet_query(facet_filter_types, params,
-                                                solr_search, extra_filter)
+                                                solr_search, collection.solr_filter)
 
     context['filters'] = {}
     for filter_type in facet_filter_types:

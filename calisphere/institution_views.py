@@ -236,6 +236,7 @@ def institution_search(request, institution):
 
     context = {
         'search_form': form.context(),
+        'q': form.q,
         'filters': filter_display,
         'search_results': results.results,
         'facets': facets,

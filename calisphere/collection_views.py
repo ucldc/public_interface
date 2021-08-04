@@ -355,6 +355,7 @@ def collection_search(request, collection_id):
         'numFound': results.numFound,
         'search_results': results.results,
         'search_form': form.context(),
+        'q': form.q,
         'filters': filter_display,
         'browse': browse,
         'meta_robots': None,

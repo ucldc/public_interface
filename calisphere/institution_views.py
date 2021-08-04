@@ -230,32 +230,20 @@ class Repository(object):
 
 def institution_search(request, institution):
     form = search_form.InstitutionForm(request, institution)
-    solr_search = SOLR_select(**form.solr_encode())
+    results = form.search()
+    facets = form.facet_query(institution.solr_filter)
+    filter_display = form.filter_display()
 
-    facets = form.facet_query(solr_search, institution.solr_filter)
-
-    params = request.GET.copy()
-    filter_display = {}
-    for filter_type in form.facet_filter_types:
-        param_name = filter_type['facet']
-        display_name = filter_type['filter']
-        filter_transform = filter_type['filter_display']
-
-        if len(params.getlist(param_name)) > 0:
-            filter_display[display_name] = list(
-                map(filter_transform, params.getlist(param_name)))
-
-    context = {'search_form': form.context()}
-    pages = int(math.ceil(
-        solr_search.numFound / int(form.rows)))
-    context.update({
+    context = {
+        'search_form': form.context(),
         'filters': filter_display,
-        'search_results': solr_search.results,
+        'search_results': results.results,
         'facets': facets,
-        'numFound': solr_search.numFound,
-        'pages': pages,
+        'numFound': results.numFound,
+        'pages': int(math.ceil(
+            results.numFound / int(form.rows))),
         'FACET_FILTER_TYPES': form.facet_filter_types
-    })
+    }
 
     return context
 

@@ -339,17 +339,9 @@ def collection_search(request, collection_id):
     collection = Collection(collection_id)
 
     form = search_form.CollectionForm(request, collection)
-    solr_search = SOLR_select(**form.solr_encode())
-
-    facets = form.facet_query(solr_search, collection.solr_filter)
-
-    context = {
-        'search_form': form.context(),
-        'search_results': solr_search.results,
-        'numFound': solr_search.numFound,
-        'pages': int(math.ceil(solr_search.numFound / int(form.rows))),
-        'facets': facets
-    }
+    results = form.search()
+    facets = form.facet_query(collection.solr_filter)
+    filter_display = form.filter_display()
 
     solr_params = form.solr_encode()
     total_items = SOLR_select(**{**solr_params, **{
@@ -359,23 +351,18 @@ def collection_search(request, collection_id):
         'facet': 'false'
     }})
 
-    context['filters'] = {}
-    params = request.GET.copy()
-    for filter_type in form.facet_filter_types:
-        param_name = filter_type['facet']
-        display_name = filter_type['filter']
-        filter_transform = filter_type['filter_display']
-
-        if len(params.getlist(param_name)) > 0:
-            context['filters'][display_name] = list(
-                map(filter_transform, params.getlist(param_name)))
-
     if settings.UCLDC_FRONT == 'https://calisphere.org/':
         browse = False
     else:
         browse = collection.get_facet_sets()
 
-    context.update({
+    context = {
+        'facets': facets,
+        'pages': int(math.ceil(results.numFound / int(form.rows))),
+        'numFound': results.numFound,
+        'search_results': results.results,
+        'search_form': form.context(),
+        'filters': filter_display,
         'browse': browse,
         'meta_robots': None,
         'totalNumItems':
@@ -390,7 +377,7 @@ def collection_search(request, collection_id):
         reverse(
             'calisphere:collectionView',
             kwargs={'collection_id': collection_id}),
-    })
+    }
 
     return render(
         request, 'calisphere/collections/collectionView.html', context)

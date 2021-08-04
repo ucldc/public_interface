@@ -261,41 +261,29 @@ def item_view(request, item_id=''):
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = search_form.SearchForm(request)
-        solr_search = SOLR_select(**form.solr_encode())
-
-        if len(solr_search.results) == 0:
-            print('no results found')
-
-        context = {'facets': form.facet_query(solr_search)}
+        results = form.search()
+        facets = form.facet_query()
+        filter_display = form.filter_display
 
         params = request.GET.copy()
-
-        context.update({
+        context = {
+            'facets': facets,
             'q': form.q,
             'search_form': form.context(),
-            'search_results': solr_search.results,
-            'numFound': solr_search.numFound,
-            'pages': int(math.ceil(solr_search.numFound / int(form.rows))),
+            'search_results': results.results,
+            'numFound': results.numFound,
+            'pages': int(math.ceil(results.numFound / int(form.rows))),
             'related_collections': get_related_collections(params)[0],
             'num_related_collections':
             len(params.getlist('collection_data'))
             if len(params.getlist('collection_data')) > 0 else len(
-                context['facets']['collection_data']),
+                facets['collection_data']),
             'form_action': reverse('calisphere:search'),
             'FACET_FILTER_TYPES': form.facet_filter_types,
-            'filters': {},
+            'filters': filter_display,
             'repository_id': None,
             'itemId': None,
-        })
-
-        for filter_type in form.facet_filter_types:
-            param_name = filter_type['facet']
-            display_name = filter_type['filter']
-            filter_transform = filter_type['filter_display']
-
-            if len(params.getlist(param_name)) > 0:
-                context['filters'][display_name] = list(
-                    map(filter_transform, params.getlist(param_name)))
+        }
 
         return render(request, 'calisphere/searchResults.html', context)
 

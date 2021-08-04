@@ -1,10 +1,18 @@
 from .cache_retry import SOLR_select
 from . import constants
 from django.http import Http404
+from .facet_filter_type import FacetFilterType
 
 
 def solr_escape(text):
     return text.replace('?', '\\?').replace('"', '\\"')
+
+
+class SearchResults(object):
+    def __init__(self, solr_resp):
+        self.results = solr_resp.results
+        self.numFound = solr_resp.numFound
+        self.facet_counts = solr_resp.facet_counts
 
 
 class SearchForm(object):
@@ -105,7 +113,7 @@ class SearchForm(object):
 
         return query_value
 
-    def facet_query(self, solr_search, extra_filter=None):
+    def facet_query(self, extra_filter=None):
         # get facet counts
         # if the user's selected some of the available facets (ie - there are
         # filters selected for this field type) perform a search as if those
@@ -131,7 +139,7 @@ class SearchForm(object):
 
                 solr_facets = facet_search.facet_counts['facet_fields'][facet_type]
             else:
-                solr_facets = solr_search.facet_counts['facet_fields'][facet_type]
+                solr_facets = self.facet_counts['facet_fields'][facet_type]
 
             facets[facet_type] = facet_filter_type.process_facets(
                 solr_facets,
@@ -143,6 +151,23 @@ class SearchForm(object):
                     facet_item[0]), facet_item[1])
 
         return facets
+
+    def search(self):
+        results = SearchResults(SOLR_select(**self.solr_encode()))
+        self.facet_counts = results.facet_counts
+        return results
+
+    def filter_display(self):
+        filter_display = {}
+        for filter_type in self.facet_filter_types:
+            param_name = filter_type['facet']
+            display_name = filter_type['filter']
+            filter_transform = filter_type['filter_display']
+
+            if len(self.params.getlist(param_name)) > 0:
+                filter_display[display_name] = list(
+                    map(filter_transform, self.params.getlist(param_name)))
+        return filter_display
 
 
 class InstitutionForm(SearchForm):

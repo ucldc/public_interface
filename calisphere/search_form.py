@@ -152,8 +152,11 @@ class SearchForm(object):
 
         return facets
 
-    def search(self):
-        results = SearchResults(SOLR_select(**self.solr_encode()))
+    def search(self, extra_filter=None):
+        solr_query = self.solr_encode()
+        if extra_filter:
+            solr_query['fq'].append(extra_filter)
+        results = SearchResults(SOLR_select(**solr_query))
         return results
 
     def filter_display(self):

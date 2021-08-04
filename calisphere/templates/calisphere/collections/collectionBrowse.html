@@ -1,4 +1,4 @@
-{% extends "calisphere/searchResults.html" %}
+{% extends "calisphere/2col.html" %}
 {% load calisphere-extras %}
 {% load staticfiles %}
 {% load humanize %}
@@ -25,95 +25,92 @@
 {% endblock %}
 
 {% block additionalInfo %}
-<div class="collection-intro" data-ga-dim1="{{ collection.local_id }}{{ collection.slug }}">
-  <div class="col-md-3">
-    <div class="collection-intro__institution">
-      <h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
-        {% for repository in collection.repository %}
-          {% if 'campus' in repository and repository.campus|length > 0 %}
-            {% if repository.campus.0.name %}
-              <a
-                href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
-                class="collection-intro__institution-heading-link"
-                data-pjax="js-pageContent"
-              >{{ repository.campus.0.name }}</a>,
+  <div class="collection-intro" data-ga-dim1="{{ collection.local_id }}{{ collection.slug }}">
+    <div class="col-md-3">
+      <div class="collection-intro__institution">
+        <h2 class="collection-intro__institution-heading">Owning Institution{{ collection.repository|pluralize }}:
+          {% for repository in collection.repository %}
+            {% if 'campus' in repository and repository.campus|length > 0 %}
+              {% if repository.campus.0.name %}
+                <a
+                  href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
+                  class="collection-intro__institution-heading-link"
+                  data-pjax="js-pageContent"
+                >{{ repository.campus.0.name }}</a>,
+              {% endif %}
             {% endif %}
-          {% endif %}
-          <a
-            href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
-            class="collection-intro__institution-heading-link"
-            data-pjax="js-pageContent"
-            data-ga-code="{{ repository.google_analytics_tracking_code }}"
-            data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
-          >
-            {{ repository.name }}
-          </a>
-          {% if forloop.counter < collection.repository|length %} and {% endif %}
-        {% endfor %}
-      </h2>
+            <a
+              href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
+              class="collection-intro__institution-heading-link"
+              data-pjax="js-pageContent"
+              data-ga-code="{{ repository.google_analytics_tracking_code }}"
+              data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
+            >
+              {{ repository.name }}
+            </a>
+            {% if forloop.counter < collection.repository|length %} and {% endif %}
+          {% endfor %}
+        </h2>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="collection-intro__about">
+        {% if 'description' in collection %}
+        <h3 class="collection-intro__about-heading">About this Collection</h3>
+          <span class="collection-intro__about-description">
+            {{ collection.description|urlize }}
+          </span>
+        {% endif %}
+        {% if collection.url_local|length > 0 %}
+          <a class="collection-intro__about-link" href="{{ collection.url_local }}" target="_blank">View this collection on the contributor's website.</a><br/>
+        {% endif %}
+        {% if collection.url_oac|length > 0 %}
+          <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View collection guide.</a>
+        {% endif %}
+        <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
+        <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">
+
+      </div>
     </div>
   </div>
-
-  <div class="col-md-9">
-    <div class="collection-intro__about">
-      {% if 'description' in collection %}
-      <h3 class="collection-intro__about-heading">About this Collection</h3>
-        <span class="collection-intro__about-description">
-          {{ collection.description|urlize }}
-        </span>
-      {% endif %}
-      {% if collection.url_local|length > 0 %}
-        <a class="collection-intro__about-link" href="{{ collection.url_local }}" target="_blank">View this collection on the contributor's website.</a><br/>
-      {% endif %}
-      {% if collection.url_oac|length > 0 %}
-        <a class="collection-intro__about-link" href="{{ collection.url_oac }}" target="_blank">View collection guide.</a>
-      {% endif %}
-      <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
-      <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">
-
-    </div>
-  </div>
-
-</div>
 {% endblock %}
 
 {% block sidebar %}
-<div class="row">
-  <div class="col-sm-6 col-md-12">
-    <div class="button__institution-tabs-container">
-      <a class="button__institution-tab-collections--selected"
-      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
-        Browse collection
-      </a>
-      <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
-        Search this collection
-      </a>
+  <div class="row">
+    <div class="col-sm-6 col-md-12">
+      <div class="button__institution-tabs-container">
+        <a class="button__institution-tab-collections--selected"
+        href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+          Browse collection
+        </a>
+        <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+          Search this collection
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-12">
+      {% if collection.repository|length > 1 %}
+      {% for repository in collection.repository %}
+        <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
+          <span class="fa fa-angle-left fa-lg fa-fw"></span>
+          Go to {{ repository.name }} Page
+        </a>
+      {% endfor %}
+      {% else %}
+      {% with collection.repository.0 as repository %}
+        <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
+          <span class="fa fa-angle-left fa-lg fa-fw"></span>
+          Go to Institution Page
+        </a>
+      {% endwith %}
+      {% endif %}
+    </div>
+    <div class="col-sm-6 col-md-12">
+      {% include "calisphere/collections/collectionSnapshot.html" %}
     </div>
   </div>
-  <div class="col-sm-6 col-md-12">
-    {% if collection.repository|length > 1 %}
-    {% for repository in collection.repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
-        <span class="fa fa-angle-left fa-lg fa-fw"></span>
-        Go to {{ repository.name }} Page
-      </a>
-    {% endfor %}
-    {% else %}
-    {% with collection.repository.0 as repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
-        <span class="fa fa-angle-left fa-lg fa-fw"></span>
-        Go to Institution Page
-      </a>
-    {% endwith %}
-    {% endif %}
-  </div>
-  <div class="col-sm-6 col-md-12">
-    {% include "calisphere/collections/collectionSnapshot.html" %}
-  </div>
-</div>
 {% endblock %}
-
-{% block filters %}{% endblock %}
 
 {% block mainContent %}
   <h2 class="text__institution-heading2">Browse {{collection.name}}</h2>

@@ -350,12 +350,12 @@ def collection_search(request, collection_id):
         browse = collection.get_facet_sets()
 
     context = {
+        'q': form.q,
+        'search_form': form.context(),
         'facets': facets,
         'pages': int(math.ceil(results.numFound / int(form.rows))),
         'numFound': results.numFound,
         'search_results': results.results,
-        'search_form': form.context(),
-        'q': form.q,
         'filters': filter_display,
         'browse': browse,
         'meta_robots': None,
@@ -381,16 +381,10 @@ def collection_facet(request, collection_id, facet):
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
-    params = request.GET.copy()
-    context = search_form.search_defaults(params)
-    if not params.get('view_format'):
-        context['view_format'] = 'list'
+    facet_type = [tup for tup in collection.custom_schema_facets
+                  if tup.facet == facet][0]
 
-    context.update({
-        'facet':
-        [tup for tup in collection.custom_schema_facets
-            if tup.facet == facet][0]})
-    facets = collection.get_facets([context['facet']])[0]
+    facets = collection.get_facets([facet_type])[0]
     if not facets:
         raise Http404("{0} has no facet values".format(facet))
 
@@ -398,18 +392,18 @@ def collection_facet(request, collection_id, facet):
     if not values:
         raise Http404("{0} has no facet values".format(facet))
 
-    if params.get('sort') == 'smallestFirst':
+    sort = request.GET.get('sort', 'largestFirst')
+    if sort == 'smallestFirst':
         values.reverse()
-    if params.get('sort') == 'az':
+    if sort == 'az':
         values.sort(key=lambda v: v['label'])
-    if params.get('sort') == 'za':
+    if sort == 'za':
         values.sort(key=lambda v: v['label'], reverse=True)
 
-    if context.get('view_format') == 'grid':
-        if params.get('page') and params.get('page') != 'None':
-            page = int(params.get('page'))
-        else:
-            page = 1
+    view_format = request.GET.get('view_format', 'list')
+    context = {}
+    if view_format == 'grid':
+        page = int(request.GET.get('page', 1))
         end = page * 24
         start = end - 24
 
@@ -437,15 +431,14 @@ def collection_facet(request, collection_id, facet):
         })
 
     context.update({
+        'q': request.GET.get('q', ''),
+        'sort': sort,
+        'view_format': view_format,
+        'facet': facet_type,
         'values': values,
         'unique': facets['unique'],
         'records': facets['records'],
-        'ratio': round((facets['unique'] / facets['records']) * 100, 2)
-    })
-
-    context.update({
-        # 'title': f"{facet.capitalize()}{pluralize(values)}
-        # Used in {collection.details['name']}",
+        'ratio': round((facets['unique'] / facets['records']) * 100, 2),
         'meta_robots': "noindex,nofollow",
         'description': None,
         'collection': collection.details,
@@ -453,9 +446,6 @@ def collection_facet(request, collection_id, facet):
         'form_action': reverse(
             'calisphere:collectionFacet',
             kwargs={'collection_id': collection_id, 'facet': facet}),
-    })
-
-    context.update({
         'item_count': collection.get_item_count(),
         'clusters': collection.get_facet_sets()
     })
@@ -482,85 +472,37 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     if cluster not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(cluster))
 
-    params = request.GET.copy()
+    form = search_form.CollectionForm(request, collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
     escaped_cluster_value = search_form.solr_escape(parsed_cluster_value)
-    params.update({'fq': f"{cluster}_ss:\"{escaped_cluster_value}\""})
+    extra_filter = f"{cluster}_ss: \"{escaped_cluster_value}\""
 
-    context = search_form.search_defaults(params)
+    results = form.search(extra_filter)
 
-    # Collection Views don't allow filtering or faceting by
-    # collection_data or repository_data
-    facet_filter_types = [
-        facet_filter_type for facet_filter_type in constants.FACET_FILTER_TYPES
-        if facet_filter_type['facet'] != 'collection_data'
-        and facet_filter_type['facet'] != 'repository_data'
-    ]
-
-    # Add Custom Facet Filter Types
-    facet_filter_types = facet_filter_types + collection.custom_facets
-    # If relation_ss is not already defined as a custom facet, and is included
-    # in search parameters, add the relation_ss facet implicitly
-    if not collection.custom_facets:
-        if params.get('relation_ss'):
-            facet_filter_types.append(
-                FacetFilterType(
-                    'relation_ss',
-                    'Relation',
-                    'relation_ss',
-                    'value',
-                    faceting_allowed=False
-                )
-            )
-
-    # perform the search
-    solr_params = search_form.solr_encode(params, facet_filter_types)
-    solr_params['fq'].append(collection.solr_filter)
-    solr_search = SOLR_select(**solr_params)
-    context['search_results'] = solr_search.results
-    context['numFound'] = solr_search.numFound
-    if context['numFound'] == 1:
-        return redirect('calisphere:itemView',
-                        solr_search.results[0]['id'])
-    total_items = SOLR_select(**{**solr_params, **{
-        'q': '',
-        'fq': [collection.solr_filter],
-        'rows': 0,
-        'facet': 'false'
-    }})
-
-    context['pages'] = int(
-        math.ceil(solr_search.numFound / int(context['rows'])))
-
-    context['facets'] = search_form.facet_query(facet_filter_types, params,
-                                                solr_search, collection.solr_filter)
-
-    context['filters'] = {}
-    for filter_type in facet_filter_types:
-        param_name = filter_type['facet']
-        display_name = filter_type['filter']
-        filter_transform = filter_type['filter_display']
-
-        if len(params.getlist(param_name)) > 0:
-            context['filters'][display_name] = list(
-                map(filter_transform, params.getlist(param_name)))
+    if results.numFound == 1:
+        return redirect('calisphere:itemView', results.results[0]['id'])
 
     collection_name = collection.details.get('name')
-    context.update({'cluster': cluster})
-    context.update({'cluster_value': parsed_cluster_value})
-    context.update({
+    context = {
+        'search_form': form.context(),
+        'search_results': results.results,
+        'numFound': results.numFound,
+        'pages': int(math.ceil(results.numFound / int(form.rows))),
+        'facets': form.facet_query(
+            results.facet_counts, collection.solr_filter),
+        'filters': form.filter_display(),
+        'cluster': cluster,
+        'cluster_value': parsed_cluster_value,
         'meta_robots': "noindex,nofollow",
-        'totalNumItems': total_items.numFound,
-        'FACET_FILTER_TYPES': facet_filter_types,
+        'FACET_FILTER_TYPES': form.facet_filter_types,
         'collection': collection.details,
         'collection_id': collection_id,
         'title': (
             f"{cluster}: {parsed_cluster_value} "
-            f"({solr_search.numFound} items) from: {collection_name}"
+            f"({results.numFound} items) from: {collection_name}"
         ),
         'description': None,
-        'solrParams': solr_params,
         'form_action': reverse(
             'calisphere:collectionFacetValue',
             kwargs={
@@ -568,7 +510,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
               'cluster': cluster,
               'cluster_value': cluster_value,
             }),
-    })
+    }
 
     return render(
         request, 'calisphere/collections/collectionFacetValue.html', context)

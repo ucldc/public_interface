@@ -231,7 +231,7 @@ class Repository(object):
 def institution_search(request, institution):
     form = search_form.InstitutionForm(request, institution)
     results = form.search()
-    facets = form.facet_query(institution.solr_filter)
+    facets = form.facet_query(results.facet_counts, institution.solr_filter)
     filter_display = form.filter_display()
 
     context = {

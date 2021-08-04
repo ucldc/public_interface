@@ -22,6 +22,7 @@ col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
              r'(?P<id>\d*)/?')
 col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
+
 def collections_directory(request):
     solr_collections = CollectionManager(settings.SOLR_URL,
                                          settings.SOLR_API_KEY)
@@ -340,16 +341,8 @@ def collection_search(request, collection_id):
 
     form = search_form.CollectionForm(request, collection)
     results = form.search()
-    facets = form.facet_query(collection.solr_filter)
+    facets = form.facet_query(results.facet_counts, collection.solr_filter)
     filter_display = form.filter_display()
-
-    solr_params = form.solr_encode()
-    total_items = SOLR_select(**{**solr_params, **{
-        'q': '',
-        'fq': [collection.solr_filter],
-        'rows': 0,
-        'facet': 'false'
-    }})
 
     if settings.UCLDC_FRONT == 'https://calisphere.org/':
         browse = False
@@ -365,8 +358,7 @@ def collection_search(request, collection_id):
         'filters': filter_display,
         'browse': browse,
         'meta_robots': None,
-        'totalNumItems':
-        total_items.numFound,
+        'totalNumItems': collection.get_item_count(),
         'FACET_FILTER_TYPES':
         form.facet_filter_types,
         'collection':

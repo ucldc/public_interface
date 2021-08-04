@@ -113,7 +113,7 @@ class SearchForm(object):
 
         return query_value
 
-    def facet_query(self, extra_filter=None):
+    def facet_query(self, facet_counts, extra_filter=None):
         # get facet counts
         # if the user's selected some of the available facets (ie - there are
         # filters selected for this field type) perform a search as if those
@@ -139,7 +139,7 @@ class SearchForm(object):
 
                 solr_facets = facet_search.facet_counts['facet_fields'][facet_type]
             else:
-                solr_facets = self.facet_counts['facet_fields'][facet_type]
+                solr_facets = facet_counts['facet_fields'][facet_type]
 
             facets[facet_type] = facet_filter_type.process_facets(
                 solr_facets,
@@ -154,7 +154,6 @@ class SearchForm(object):
 
     def search(self):
         results = SearchResults(SOLR_select(**self.solr_encode()))
-        self.facet_counts = results.facet_counts
         return results
 
     def filter_display(self):

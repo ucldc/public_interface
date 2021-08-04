@@ -262,8 +262,8 @@ def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = search_form.SearchForm(request)
         results = form.search()
-        facets = form.facet_query()
-        filter_display = form.filter_display
+        facets = form.facet_query(results.facet_counts)
+        filter_display = form.filter_display()
 
         params = request.GET.copy()
         context = {

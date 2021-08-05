@@ -320,25 +320,26 @@ def item_view_carousel_mlt(item_id):
 
 
 def item_view_carousel(request):
-    params = request.GET.copy()
-    item_id = params.get('itemId')
+    item_id = request.GET.get('itemId')
     if item_id is None:
         raise Http404("No item id specified")
 
-    referral = params.get('referral')
+    referral = request.GET.get('referral')
     link_back_id = ''
-    extra_filter = ''
-    facet_filter_types = copy.deepcopy(constants.FACET_FILTER_TYPES)
+    extra_filter = None
+    form = search_form.SearchForm(request)
+
     if referral == 'institution':
-        link_back_id = params.get('repository_data', None)
-    elif referral == 'collection':
-        link_back_id = params.get('collection_data', None)
+        link_back_id = request.GET.get('repository_data', None)
+    if referral == 'collection':
+        link_back_id = request.GET.get('collection_data', None)
         # get any collection-specific facets
-        custom_facets = Collection(link_back_id).custom_facets
-        facet_filter_types.extend(custom_facets)
-        # Add Custom Facet Filter Types
-        if params.get('relation_ss') and len(custom_facets) == 0:
-            facet_filter_types.append(
+        collection = Collection(link_back_id)
+        custom_facets = collection.custom_facets
+        form.facet_filter_types = form.facet_filter_types + custom_facets
+        # # Add Custom Facet Filter Types
+        if request.GET.get('relation_ss') and len(custom_facets) == 0:
+            form.facet_filter_types.append(
                 facet_module.FacetFilterType(
                     'relation_ss',
                     'Relation',
@@ -347,20 +348,15 @@ def item_view_carousel(request):
                     faceting_allowed=False
                 )
             )
-    elif referral == 'campus':
-        link_back_id = params.get('campus_slug', None)
+    if referral == 'campus':
+        link_back_id = request.GET.get('campus_slug', None)
         if link_back_id:
             campus = [c for c in constants.CAMPUS_LIST
-                      if c['slug'] == link_back_id]
-            campus_id = campus[0]['id']
-            if not campus_id or campus_id == '':
-                raise Http404("Campus registry ID not found")
-            extra_filter = (
-                f'campus_url: "https://registry.cdlib.org/api/v1/'
-                f'campus/{campus_id}/"'
-            )
+                      if c['slug'] == link_back_id][0]
+            campus_url = campus_template.format(campus['id'])
+            extra_filter = f'campus_url: "{campus_url}"'
 
-    solr_params = search_form.solr_encode(params, facet_filter_types)
+    solr_params = form.solr_encode()
     if extra_filter:
         solr_params['fq'].append(extra_filter)
 
@@ -384,20 +380,20 @@ def item_view_carousel(request):
         search_results = carousel_solr_search.results
         num_found = carousel_solr_search.numFound
 
-    if 'init' in params:
-        context = search_form.search_defaults(params)
+    if request.GET.get('init'):
+        context = form.context()
         context['start'] = solr_params[
             'start'] if solr_params['start'] != 'NaN' else 0
 
         context['filters'] = {}
-        for filter_type in facet_filter_types:
+        for filter_type in form.facet_filter_types:
             param_name = filter_type['facet']
             display_name = filter_type['filter']
             filter_transform = filter_type['filter_display']
 
-            if len(params.getlist(param_name)) > 0:
+            if len(request.GET.getlist(param_name)) > 0:
                 context['filters'][display_name] = list(
-                    map(filter_transform, params.getlist(param_name)))
+                    map(filter_transform, request.GET.getlist(param_name)))
 
         context.update({
             'numFound': num_found,
@@ -408,15 +404,16 @@ def item_view_carousel(request):
             'campus_slug': request.GET.get('campus_slug'),
             'linkBackId': link_back_id
         })
+        template = 'calisphere/carouselContainer.html'
 
-        return render(request, 'calisphere/carouselContainer.html', context)
     else:
-        return render(
-            request, 'calisphere/carousel.html', {
-                'start': params.get('start', 0),
+        template = 'calisphere/carousel.html'
+        context = {
+                'start': request.GET.get('start', 0),
                 'search_results': search_results,
                 'item_id': item_id
-            })
+            }
+    return render(request, template, context)
 
 
 campus_template = "https://registry.cdlib.org/api/v1/campus/{0}/"

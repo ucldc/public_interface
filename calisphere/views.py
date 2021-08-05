@@ -101,6 +101,8 @@ def get_component(media_json, order):
 
 
 def item_view(request, item_id=''):
+    from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
+
     item_id_search_term = 'id:"{0}"'.format(item_id)
     item_solr_search = SOLR_select(q=item_id_search_term)
     order = request.GET.get('order')
@@ -198,8 +200,9 @@ def item_view(request, item_id=''):
         col_id = (re.match(col_regex, collection_url).group('id'))
         collection = Collection(col_id)
         item['parsed_collection_data'].append(collection.item_view())
-        lockup_data = collection.get_lockup(item_id_search_term)
-        related_collections.append(lockup_data)
+        if not from_item_page:
+            lockup_data = collection.get_lockup(item_id_search_term)
+            related_collections.append(lockup_data)
 
     for repository_url in item.get('repository_url'):
         repo_id = re.match(repo_regex, repository_url).group('id')
@@ -222,26 +225,27 @@ def item_view(request, item_id=''):
             'statement': constants.RIGHTS_STATEMENTS[uri]
         }
 
-    # do this w/o multiple returns?
-    from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
-    if from_item_page:
-        return render(
-            request, 'calisphere/itemViewer.html', {
-                'q': '',
-                'item': item,
-                'item_solr_search': item_solr_search,
-                'meta_image': meta_image,
-                'repository_id': None,
-                'itemId': None,
-            })
     search_results = {'reference_image_md5': None}
     search_results.update(item)
 
     num_related_collections = len(related_collections)
-    carousel_search_results, carousel_num_found = item_view_carousel_mlt(
-        item_id)
-    return render(
-        request, 'calisphere/itemView.html', {
+
+    template = "calisphere/itemViewer.html"
+    context = {
+        'q': '',
+        'item': search_results,
+        'item_solr_search': item_solr_search,
+        'meta_image': meta_image,
+        'repository_id': None,
+        'itemId': None,
+    }
+
+    if not from_item_page:
+        carousel_search_results, carousel_num_found = item_view_carousel_mlt(
+            item_id)
+
+        template = "calisphere/itemView.html"
+        context = {
             'q': '',
             'item': search_results,
             'item_solr_search': item_solr_search,
@@ -255,7 +259,9 @@ def item_view(request, item_id=''):
             'search_results': carousel_search_results,
             'numFound': carousel_num_found,
             'mlt': True
-        })
+        }
+
+    return render(request, template, context)
 
 
 def search(request):

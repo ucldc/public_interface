@@ -14,7 +14,7 @@
 
     <div class="row">
       
-      {% for facet_filter_type in FACET_FILTER_TYPES %}
+      {% for facet_filter_type in search_form.facet_filter_types %}
       {% with facet_type=facet_filter_type.facet facet_type_display=facet_filter_type.display_name filter_type=facet_filter_type.filter %}
             
       {% if facets|get_item:facet_type|length != 0 %}

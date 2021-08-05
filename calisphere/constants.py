@@ -1,4 +1,4 @@
-from .facet_filter_type import *
+from collections import namedtuple
 
 RIGHTS_STATEMENTS = {
     'http://rightsstatements.org/vocab/InC/1.0/': 'In Copyright',
@@ -33,17 +33,6 @@ SORT_OPTIONS = {
     'newest-end': 'sort_date_end desc'
 }
 
-FACET_FILTER_TYPES = [
-    FacetFilterType('type_ss', 'Type of Item', 'type_ss'),
-    FacetFilterType('facet_decade', 'Decade', 'facet_decade', 'value'),
-    RepositoryFacetFilterType('repository_data', 'Contributing Institution', 'repository_url'),
-    CollectionFacetFilterType('collection_data', 'Collection', 'collection_url')
-]
-
-# Make a copy of FACET_FILTER_TYPES to reset to original.
-DEFAULT_FACET_FILTER_TYPES = FACET_FILTER_TYPES[:]
-
-from collections import namedtuple
 FacetDisplay = namedtuple(
     'FacetDisplay', 'facet, display')
 

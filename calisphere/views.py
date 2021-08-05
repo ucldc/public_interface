@@ -6,9 +6,10 @@ from django.http import Http404, HttpResponse
 from . import constants
 from . import facet_filter_type as facet_module
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
-from .search_form import SearchForm, solr_escape, solr_encode
+from .search_form import SearchForm, solr_escape, CollectionFacetValueForm
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository
+from .facet_filter_type import CollectionFF
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
@@ -267,7 +268,7 @@ def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = SearchForm(request)
         results = form.search()
-        facets = form.facet_query(results.facet_counts)
+        facets = form.get_facets()
         filter_display = form.filter_display()
 
         rc_ids = [cd[0]['id'] for cd in facets['collection_data']]
@@ -288,7 +289,6 @@ def search(request):
             'related_collections': related_collections,
             'num_related_collections': num_related_collections,
             'form_action': reverse('calisphere:search'),
-            'FACET_FILTER_TYPES': form.facet_filter_types,
             'filters': filter_display,
             'repository_id': None,
             'itemId': None,
@@ -339,13 +339,7 @@ def item_view_carousel(request):
         # # Add Custom Facet Filter Types
         if request.GET.get('relation_ss') and len(custom_facets) == 0:
             form.facet_filter_types.append(
-                facet_module.FacetFilterType(
-                    'relation_ss',
-                    'Relation',
-                    'relation_ss',
-                    'value',
-                    faceting_allowed=False
-                )
+                facet_module.RelationFF(request)
             )
     if referral == 'campus':
         link_back_id = request.GET.get('campus_slug', None)
@@ -421,7 +415,9 @@ repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 def get_related_collections(request, slug=None, repository_id=None):
     form = SearchForm(request)
-    solr_params = form.solr_encode([{'facet': 'collection_data'}])
+    field = CollectionFF(request)
+
+    solr_params = form.solr_encode([field])
     solr_params['rows'] = 0
 
     if request.GET.get('campus_slug'):
@@ -444,10 +440,8 @@ def get_related_collections(request, slug=None, repository_id=None):
     related_collections = related_collections.facet_counts['facet_fields'][
         'collection_data']
 
-    field = constants.DEFAULT_FACET_FILTER_TYPES[3]
     # remove collections with a count of 0 and sort by count
-    related_collections = field.process_facets(
-        related_collections, request.GET.getlist('collection_data'))
+    related_collections = field.process_facets(related_collections)
     # remove 'count'
     related_collections = list(facet for facet, count in related_collections)
 
@@ -563,77 +557,34 @@ def report_collection_facet(request, collection_id, facet):
 
 
 def report_collection_facet_value(request, collection_id, facet, facet_value):
-    collection_url = col_template.format(collection_id)
-    collection_details = json_loads_url(collection_url + '?format=json')
+    collection = Collection(collection_id)
+    collection_details = collection.details
 
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
-    if not collection_details:
-        raise Http404("{0} does not exist".format(collection_id))
-
-    for repository in collection_details.get('repository'):
-        repository['resource_id'] = repository.get('resource_uri').split(
-            '/')[-2]
 
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
     escaped_facet_value = solr_escape(parsed_facet_value)
 
-    params = {
-        'view_format': 'list',
-        'rows': '48',
-        'sort': 'oldest-end',
-        'fq': f"{facet}_ss:\"{escaped_facet_value}\""
-    }
-    params.update(request.GET.copy())
+    form = CollectionFacetValueForm(request, collection)
+    solr_params = form.solr_encode()
+    if solr_params['q']:
+        solr_params['q'] += " AND "
+    solr_params['q'] += f"{facet}_ss:\"{escaped_facet_value}\""
 
-    context = {
-        'q': '',
-        'rq': None,
-        'rows': 24,
-        'start': 0,
-        'sort': 'relevance',
-        'view_format': 'thumbnails',
-        'rc_page': 0
-    }.update(params)
-
-    # Collection Views don't allow filtering or faceting by
-    # collection_data or repository_data
-    facet_filter_types = [
-        facet_filter_type for facet_filter_type in constants.FACET_FILTER_TYPES
-        if facet_filter_type['facet'] != 'collection_data'
-        and facet_filter_type['facet'] != 'repository_data'
-    ]
-
-    extra_filter = 'collection_url: "' + collection_url + '"'
-
-    # perform the search
-    solr_params = solr_encode(params, facet_filter_types)
-    solr_params['fq'].append(extra_filter)
     solr_search = SOLR_select(**solr_params)
-    context['search_results'] = solr_search.results
-    context['numFound'] = solr_search.numFound
-    total_items = SOLR_select(**{**solr_params, **{
-        'q': '',
-        'fq': [extra_filter],
-        'rows': 0,
-        'facet': 'false'
-    }})
-
-    context['pages'] = int(
-        math.ceil(solr_search.numFound / int(context['rows'])))
-
-    # context['facets'] = facet_query(
-    #    facet_filter_types, params, solr_search, extra_filter)
 
     collection_name = collection_details.get('name')
-    context.update({'facet': facet})
-    context.update({'facet_value': parsed_facet_value})
+
+    context = form.context()
     context.update({
+        'search_form': form.context(),
+        'search_results': solr_search.results,
+        'numFound': solr_search.numFound,
+        'pages': int(math.ceil(solr_search.numFound / int(form.rows))),
+        'facet': facet,
+        'facet_value': parsed_facet_value,
         'meta_robots': "noindex,nofollow",
-        'totalNumItems': total_items.numFound,
-        'FACET_FILTER_TYPES': facet_filter_types,
         'collection': collection_details,
         'collection_id': collection_id,
         'title': (

@@ -7,7 +7,7 @@ from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType
 from .cache_retry import SOLR_select, json_loads_url
-from . import search_form
+from .search_form import CollectionForm, solr_escape
 from builtins import range
 
 import os
@@ -378,7 +378,7 @@ class Collection(object):
 def collection_search(request, collection_id):
     collection = Collection(collection_id)
 
-    form = search_form.CollectionForm(request, collection)
+    form = CollectionForm(request, collection)
     results = form.search()
     facets = form.facet_query(results.facet_counts, collection.solr_filter)
     filter_display = form.filter_display()
@@ -448,7 +448,7 @@ def collection_facet(request, collection_id, facet):
 
         values = values[start:end]
         for value in values:
-            escaped_cluster_value = search_form.solr_escape(value['label'])
+            escaped_cluster_value = solr_escape(value['label'])
             thumb_params = {
                 'facet': 'false',
                 'rows': 3,
@@ -511,10 +511,10 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     if cluster not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(cluster))
 
-    form = search_form.CollectionForm(request, collection)
+    form = CollectionForm(request, collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
-    escaped_cluster_value = search_form.solr_escape(parsed_cluster_value)
+    escaped_cluster_value = solr_escape(parsed_cluster_value)
     extra_filter = f"{cluster}_ss: \"{escaped_cluster_value}\""
 
     results = form.search(extra_filter)
@@ -559,8 +559,6 @@ def collection_metadata(request, collection_id):
     collection = Collection(collection_id)
     summary_data = collection.get_summary_data()
 
-    params = request.GET.copy()
-    context = search_form.search_defaults(params)
     context = {
         'title': f"Metadata report for {collection.details['name']}",
         'meta_robots': "noindex,nofollow",
@@ -579,7 +577,7 @@ def collection_metadata(request, collection_id):
 
 
 def get_cluster_thumbnails(collection_url, facet, facet_value):
-    escaped_cluster_value = search_form.solr_escape(facet_value)
+    escaped_cluster_value = solr_escape(facet_value)
     thumb_params = {
         'facet': 'false',
         'rows': 3,

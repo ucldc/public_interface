@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.http import Http404
 from . import constants
 from .cache_retry import SOLR_select, json_loads_url
-from . import search_form
+from .search_form import InstitutionForm
 from .collection_views import Collection, get_rc_from_ids
 from django.apps import apps
 from django.conf import settings
@@ -229,7 +229,7 @@ class Repository(object):
 
 
 def institution_search(request, institution):
-    form = search_form.InstitutionForm(request, institution)
+    form = InstitutionForm(request, institution)
     results = form.search()
     facets = form.facet_query(results.facet_counts, institution.solr_filter)
     filter_display = form.filter_display()

@@ -6,7 +6,7 @@ from django.http import Http404, HttpResponse
 from . import constants
 from . import facet_filter_type as facet_module
 from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
-from . import search_form
+from .search_form import SearchForm, solr_escape, solr_encode
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository
 from static_sitemaps.util import _lazy_load
@@ -17,7 +17,6 @@ from exhibits.models import ExhibitItem, Exhibit
 import os
 import math
 import re
-import copy
 import simplejson as json
 import urllib.parse
 
@@ -266,7 +265,7 @@ def item_view(request, item_id=''):
 
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
-        form = search_form.SearchForm(request)
+        form = SearchForm(request)
         results = form.search()
         facets = form.facet_query(results.facet_counts)
         filter_display = form.filter_display()
@@ -327,7 +326,7 @@ def item_view_carousel(request):
     referral = request.GET.get('referral')
     link_back_id = ''
     extra_filter = None
-    form = search_form.SearchForm(request)
+    form = SearchForm(request)
 
     if referral == 'institution':
         link_back_id = request.GET.get('repository_data', None)
@@ -421,7 +420,7 @@ repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
 def get_related_collections(request, slug=None, repository_id=None):
-    form = search_form.SearchForm(request)
+    form = SearchForm(request)
     solr_params = form.solr_encode([{'facet': 'collection_data'}])
     solr_params['rows'] = 0
 
@@ -523,8 +522,6 @@ def report_collection_facet(request, collection_id, facet):
         repository['resource_id'] = repository.get('resource_uri').split(
             '/')[-2]
 
-    context = search_form.SearchForm(request).context()
-    context.update({'facet': facet})
     # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
     solr_params = {
         'facet': 'true',
@@ -544,14 +541,14 @@ def report_collection_facet(request, collection_id, facet):
     unique = len(values)
     records = sum(values.values())
     ratio = unique / records
-    context.update({
+
+    context = {
+        'q': '',
+        'facet': facet,
         'values': values,
         'unique': unique,
         'records': records,
-        'ratio': ratio
-    })
-
-    context.update({
+        'ratio': ratio,
         'title': f"{facet} values from {collection_details['name']}",
         'meta_robots': "noindex,nofollow",
         'description': None,
@@ -560,7 +557,7 @@ def report_collection_facet(request, collection_id, facet):
         'form_action': reverse(
             'calisphere:collectionView',
             kwargs={'collection_id': collection_id}),
-    })
+    }
 
     return render(request, 'calisphere/reportCollectionFacet.html', context)
 
@@ -580,19 +577,26 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
         repository['resource_id'] = repository.get('resource_uri').split(
             '/')[-2]
 
-    params = request.GET.copy()
-
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
-    escaped_facet_value = search_form.solr_escape(parsed_facet_value)
-    params.update({'fq': f"{facet}_ss:\"{escaped_facet_value}\""})
-    if 'view_format' not in params:
-        params.update({'view_format': 'list'})
-    if 'rows' not in params:
-        params.update({'rows': '48'})
-    if 'sort' not in params:
-        params.update({'sort': 'oldest-end'})
+    escaped_facet_value = solr_escape(parsed_facet_value)
 
-    context = search_form.search_defaults(params)
+    params = {
+        'view_format': 'list',
+        'rows': '48',
+        'sort': 'oldest-end',
+        'fq': f"{facet}_ss:\"{escaped_facet_value}\""
+    }
+    params.update(request.GET.copy())
+
+    context = {
+        'q': '',
+        'rq': None,
+        'rows': 24,
+        'start': 0,
+        'sort': 'relevance',
+        'view_format': 'thumbnails',
+        'rc_page': 0
+    }.update(params)
 
     # Collection Views don't allow filtering or faceting by
     # collection_data or repository_data
@@ -605,7 +609,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     extra_filter = 'collection_url: "' + collection_url + '"'
 
     # perform the search
-    solr_params = search_form.solr_encode(params, facet_filter_types)
+    solr_params = solr_encode(params, facet_filter_types)
     solr_params['fq'].append(extra_filter)
     solr_search = SOLR_select(**solr_params)
     context['search_results'] = solr_search.results
@@ -620,7 +624,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     context['pages'] = int(
         math.ceil(solr_search.numFound / int(context['rows'])))
 
-    # context['facets'] = search_form.facet_query(
+    # context['facets'] = facet_query(
     #    facet_filter_types, params, solr_search, extra_filter)
 
     collection_name = collection_details.get('name')

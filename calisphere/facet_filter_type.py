@@ -49,15 +49,19 @@ class FacetFilterType(object):
         if request:
             selected_filters = request.GET.getlist(self.form_name)
             self.form_context = selected_filters
-            if len(selected_filters) > 0:
-                selected_filters = list([
-                    '{0}: "{1}"'.format(self.solr_filter_field,
-                                        solr_escape(
-                                            self.filter_transform(val)))
-                    for val in selected_filters
-                ])
-                selected_filters = " OR ".join(selected_filters)
-            self.solr_query = selected_filters
+            self.set_solr_query()
+
+    def set_solr_query(self):
+        selected_filters = self.form_context
+        if len(selected_filters) > 0:
+            selected_filters = list([
+                '{0}: "{1}"'.format(self.solr_filter_field,
+                                    solr_escape(
+                                        self.filter_transform(val)))
+                for val in selected_filters
+            ])
+            selected_filters = " OR ".join(selected_filters)
+        self.solr_query = selected_filters
 
     def filter_transform(self, filter_val):
         return filter_val

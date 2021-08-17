@@ -54,6 +54,7 @@ class SearchForm(object):
                 })
 
         self.sort = self.sort_field(request).sort
+        self.solr_query = self.solr_encode()
 
     def context(self):
         fft = [{
@@ -150,14 +151,14 @@ class SearchForm(object):
 
             facets[fft.form_name] = fft.process_facets(solr_facets)
 
-            for j, facet_item in enumerate(facets[fft.form_name]):
-                facets[fft.form_name][j] = (fft.facet_transform(
+            for j, facet_item in enumerate(facets[fft.solr_facet_field]):
+                facets[fft.solr_facet_field][j] = (fft.facet_transform(
                     facet_item[0]), facet_item[1])
 
         return facets
 
     def search(self, extra_filter=None):
-        solr_query = self.solr_encode()
+        solr_query = self.solr_query
         if extra_filter:
             solr_query['fq'].append(extra_filter)
         results = SOLR_select(**solr_query)
@@ -167,7 +168,7 @@ class SearchForm(object):
     def filter_display(self):
         filter_display = {}
         for filter_type in self.facet_filter_types:
-            param_name = filter_type['solr_facet_field']
+            param_name = filter_type['form_name']
             display_name = filter_type['solr_filter_field']
             filter_transform = filter_type['filter_display']
 

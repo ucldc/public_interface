@@ -40,9 +40,9 @@ class FacetFilterType(object):
 
         if type:
             self.form_name = type['form_name']
-            self.solr_facet_field = type['facet_solr_name']
+            self.solr_facet_field = type['solr_facet_field']
             self.display_name = type['display_name']
-            self.solr_filter_field = type['filter_solr_name']
+            self.solr_filter_field = type['solr_filter_field']
             self.sort_by = type['sort_by']     # 'count' or 'value'
             self.faceting_allowed = type['faceting_allowed']
 
@@ -90,12 +90,12 @@ class FacetFilterType(object):
         # append selected filters even if they have a count of 0
         for f in filters:
             if not any(f in facet[0] for facet in display_facets):
-                if self.solr_facet_field == 'collection_data':
+                if self.form_name == 'collection_data':
                     api_url = re.match(col_regex, f)
                     collection = self.filter_display(api_url.group('id'))
                     display_facets.append(("{}::{}".format(
                         collection.get('url'), collection.get('name')), 0))
-                elif self.solr_facet_field == 'repository_data':
+                elif self.form_name == 'repository_data':
                     api_url = re.match(repo_regex, f)
                     repository = self.repo_from_id(api_url.group('id'))
                     display_facets.append(("{}::{}".format(

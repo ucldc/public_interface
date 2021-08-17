@@ -57,6 +57,7 @@ class SearchForm(object):
 
     def context(self):
         fft = [{
+            'form_name': f.form_name,
             'facet': f.solr_facet_field,
             'display_name': f.display_name,
             'filter': f.solr_filter_field,

@@ -31,14 +31,17 @@ class SearchForm(object):
         'rc_page': 0
     }
     sort_field = SortField
+    facet_filter_fields = [
+        ff.TypeFF,
+        ff.DecadeFF,
+        ff.RepositoryFF,
+        ff.CollectionFF
+    ]
 
     def __init__(self, request):
         self.request = request.GET.copy()
         self.facet_filter_types = [
-            ff.TypeFF(request),
-            ff.DecadeFF(request),
-            ff.RepositoryFF(request),
-            ff.CollectionFF(request)
+            ff_field(request) for ff_field in self.facet_filter_fields
         ]
         for field in self.simple_fields:
             if isinstance(self.simple_fields[field], list):
@@ -185,14 +188,14 @@ class CampusForm(SearchForm):
 
 
 class RepositoryForm(SearchForm):
+    facet_filter_fields = [
+        ff.TypeFF,
+        ff.DecadeFF,
+        ff.CollectionFF
+    ]
     def __init__(self, request, institution):
         super().__init__(request)
         self.institution = institution
-        self.facet_filter_types = [
-            ff.TypeFF(request),
-            ff.DecadeFF(request),
-            ff.CollectionFF(request)
-        ]
 
     def solr_encode(self, facet_types=[]):
         solr_query = super().solr_encode(facet_types)
@@ -201,19 +204,19 @@ class RepositoryForm(SearchForm):
 
 
 class CollectionForm(SearchForm):
+    facet_filter_fields = [
+        ff.TypeFF,
+        ff.DecadeFF,
+    ]
     def __init__(self, request, collection):
         super().__init__(request)
         self.collection = collection
-        # Collection Views don't allow filtering or faceting by
-        # collection_data or repository_data
-        facet_filter_types = self.facet_filter_types = [
-            ff.TypeFF(request),
-            ff.DecadeFF(request)
-        ]
-        # Add Custom Facet Filter Types
-        facet_filter_types = facet_filter_types + collection.custom_facets
+        facet_filter_types = self.facet_filter_types
+        facet_filter_types += collection.custom_facets
         # If relation_ss is not already defined as a custom facet, and is
         # included in search parameters, add the relation_ss facet implicitly
+        # this is a bit crude and assumes if any custom facets, relation_ss 
+        # is a custom facet
         if not collection.custom_facets:
             if request.GET.get('relation_ss'):
                 facet_filter_types.append(ff.RelationFF(request))

@@ -50,8 +50,7 @@ class InstitutionSitemap(HttpsSitemap):
 
 class CollectionSitemap(HttpsSitemap):
     def items(self):
-        return CollectionManager(settings.SOLR_URL,
-                                 settings.SOLR_API_KEY).parsed
+        return CollectionManager().parsed
 
     def location(self, item):
         col_id = re.match(

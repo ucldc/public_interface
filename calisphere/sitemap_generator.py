@@ -26,8 +26,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
             if issubclass(site, RegularDjangoSitemap):
                 parts.extend(self.write_data_regular(section, site))
             elif section == 'items':
-                collections = CollectionManager(settings.SOLR_URL,
-                                 settings.SOLR_API_KEY).parsed
+                collections = CollectionManager().parsed
                 for collection in collections:
                     col_id = re.match(
                         r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',

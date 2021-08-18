@@ -209,8 +209,7 @@ class CollectionFF(FacetFilterType):
         return collection
 
     def filter_display(self, collection_id):
-        solr_collections = CollectionManager(settings.SOLR_URL,
-                                             settings.SOLR_API_KEY)
+        solr_collections = CollectionManager()
         collection = {
             'url': col_template.format(collection_id),
             'id': collection_id

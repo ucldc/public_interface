@@ -277,7 +277,7 @@ def search(request):
 
         num_related_collections = len(rc_ids)
         related_collections = get_rc_from_ids(
-            rc_ids, form.rc_page, form.solr_encode().get('q'))
+            rc_ids, form.rc_page, form.query_encode().get('q'))
 
         context = {
             'facets': facets,
@@ -349,7 +349,7 @@ def item_view_carousel(request):
             campus_url = campus_template.format(campus['id'])
             extra_filter = f'campus_url: "{campus_url}"'
 
-    solr_params = form.solr_encode()
+    solr_params = form.query_encode()
     if extra_filter:
         solr_params['fq'].append(extra_filter)
 
@@ -417,7 +417,7 @@ def get_related_collections(request, slug=None, repository_id=None):
     form = SearchForm(request)
     field = CollectionFF(request)
 
-    solr_params = form.solr_encode([field])
+    solr_params = form.query_encode([field])
     solr_params['rows'] = 0
 
     if request.GET.get('campus_slug'):
@@ -567,7 +567,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     escaped_facet_value = solr_escape(parsed_facet_value)
 
     form = CollectionFacetValueForm(request, collection)
-    solr_params = form.solr_encode()
+    solr_params = form.query_encode()
     if solr_params['q']:
         solr_params['q'] += " AND "
     solr_params['q'] += f"{facet}_ss:\"{escaped_facet_value}\""

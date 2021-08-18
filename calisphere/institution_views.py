@@ -246,7 +246,7 @@ def institution_search(request, form, institution):
 
     num_related_collections = len(rc_ids)
     rcs = get_rc_from_ids(
-        rc_ids, form.rc_page, form.solr_encode().get('q'))
+        rc_ids, form.rc_page, form.query_string)
 
     context = {
         'title': title,

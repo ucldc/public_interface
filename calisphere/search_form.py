@@ -43,6 +43,7 @@ class SearchForm(object):
         self.facet_filter_types = [
             ff_field(request) for ff_field in self.facet_filter_fields
         ]
+
         for field in self.simple_fields:
             if isinstance(self.simple_fields[field], list):
                 self.__dict__.update({
@@ -54,7 +55,6 @@ class SearchForm(object):
                 })
 
         self.sort = self.sort_field(request).sort
-        self.solr_query = self.solr_encode()
 
     def context(self):
         fft = [{
@@ -77,7 +77,7 @@ class SearchForm(object):
         }
         return search_form
 
-    def solr_encode(self, facet_types=[]):
+    def query_encode(self, facet_types=[]):
         # concatenate query terms from refine query and query box
         terms = (
             [solr_escape(self.q)] +
@@ -85,7 +85,8 @@ class SearchForm(object):
             self.request.getlist('fq')
         )
         terms = [q for q in terms if q]
-        qt_string = terms[0] if len(terms) == 1 else " AND ".join(terms)
+        self.query_string = (
+            terms[0] if len(terms) == 1 else " AND ".join(terms))
         # qt_string = qt_string.replace('?', '')
 
         filters = [ft.query for ft in self.facet_filter_types
@@ -136,20 +137,20 @@ class SearchForm(object):
             if (len(fft.query) > 0):
                 exclude_filter = fft.query
                 fft.query = None
-                solr_params = self.solr_encode([fft])
+                facet_params = self.query_encode([fft])
                 fft.query = exclude_filter
 
                 if extra_filter:
-                    solr_params['fq'].append(extra_filter)
-                facet_search = SOLR_select(**solr_params)
+                    facet_params['fq'].append(extra_filter)
+                facet_search = SOLR_select(**facet_params)
 
                 self.facets[fft.facet_field] = (
                     facet_search.facet_counts['facet_fields']
                     [fft.facet_field])
 
-            solr_facets = self.facets[fft.facet_field]
+            facets_of_type = self.facets[fft.facet_field]
 
-            facets[fft.form_name] = fft.process_facets(solr_facets)
+            facets[fft.form_name] = fft.process_facets(facets_of_type)
 
             for j, facet_item in enumerate(facets[fft.facet_field]):
                 facets[fft.facet_field][j] = (fft.facet_transform(
@@ -158,10 +159,10 @@ class SearchForm(object):
         return facets
 
     def search(self, extra_filter=None):
-        solr_query = self.solr_query
+        query = self.query_encode()
         if extra_filter:
-            solr_query['fq'].append(extra_filter)
-        results = SOLR_select(**solr_query)
+            query['fq'].append(extra_filter)
+        results = SOLR_select(**query)
         self.facets = results.facet_counts['facet_fields']
         return results
 
@@ -183,8 +184,8 @@ class CampusForm(SearchForm):
         super().__init__(request)
         self.institution = campus
 
-    def solr_encode(self, facet_types=[]):
-        solr_query = super().solr_encode(facet_types)
+    def query_encode(self, facet_types=[]):
+        solr_query = super().query_encode(facet_types)
         solr_query['fq'].append(self.institution.filter)
         return solr_query
 
@@ -200,8 +201,8 @@ class RepositoryForm(SearchForm):
         super().__init__(request)
         self.institution = institution
 
-    def solr_encode(self, facet_types=[]):
-        solr_query = super().solr_encode(facet_types)
+    def query_encode(self, facet_types=[]):
+        solr_query = super().query_encode(facet_types)
         solr_query['fq'].append(self.institution.filter)
         return solr_query
 
@@ -226,8 +227,8 @@ class CollectionForm(SearchForm):
                 facet_filter_types.append(ff.RelationFF(request))
         self.facet_filter_types = facet_filter_types
 
-    def solr_encode(self, facet_types=[]):
-        solr_query = super().solr_encode(facet_types)
+    def query_encode(self, facet_types=[]):
+        solr_query = super().query_encode(facet_types)
         solr_query['fq'].append(self.collection.filter)
         return solr_query
 

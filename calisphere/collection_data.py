@@ -81,6 +81,11 @@ class CollectionManager(object):
                             split_collections[current_char] = []
                         split_collections[current_char].append(collection_link)
                     break
+
+        while(current_char <= 'z'):
+            current_char = chr(ord(current_char) + 1)
+            split_collections[current_char] = []
+
         self.split = split_collections
         self.names = names
 

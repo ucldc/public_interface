@@ -49,9 +49,9 @@ class FacetFilterType(object):
         if request:
             selected_filters = request.GET.getlist(self.form_name)
             self.form_context = selected_filters
-            self.set_solr_query()
+            self.set_query()
 
-    def set_solr_query(self):
+    def set_query(self):
         selected_filters = self.form_context
         if len(selected_filters) > 0:
             selected_filters = list([
@@ -61,7 +61,7 @@ class FacetFilterType(object):
                 for val in selected_filters
             ])
             selected_filters = " OR ".join(selected_filters)
-        self.solr_query = selected_filters
+        self.query = selected_filters
 
     def filter_transform(self, filter_val):
         return filter_val

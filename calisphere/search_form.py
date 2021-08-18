@@ -88,8 +88,8 @@ class SearchForm(object):
         qt_string = terms[0] if len(terms) == 1 else " AND ".join(terms)
         # qt_string = qt_string.replace('?', '')
 
-        filters = [ft.solr_query for ft in self.facet_filter_types
-                   if ft.solr_query]
+        filters = [ft.query for ft in self.facet_filter_types
+                   if ft.query]
 
         try:
             rows = int(self.rows)
@@ -133,11 +133,11 @@ class SearchForm(object):
 
         facets = {}
         for fft in self.facet_filter_types:
-            if (len(fft.solr_query) > 0):
-                exclude_filter = fft.solr_query
-                fft.solr_query = None
+            if (len(fft.query) > 0):
+                exclude_filter = fft.query
+                fft.query = None
                 solr_params = self.solr_encode([fft])
-                fft.solr_query = exclude_filter
+                fft.query = exclude_filter
 
                 if extra_filter:
                     solr_params['fq'].append(extra_filter)

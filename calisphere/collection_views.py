@@ -101,11 +101,11 @@ def collections_titles(request):
 
     def djangoize(uri):
         '''turn registry URI into URL on django site'''
-        collection_id = uri.split(
+        id = uri.split(
             'https://registry.cdlib.org/api/v1/collection/', 1)[1][:-1]
         return reverse(
             'calisphere:collectionView',
-            kwargs={'collection_id': collection_id})
+            kwargs={'collection_id': id})
 
     collections = CollectionManager(settings.SOLR_URL, settings.SOLR_API_KEY)
     data = [{
@@ -197,8 +197,8 @@ class Collection(object):
             'rows': 0,
             'fq': 'collection_url:"{}"'.format(self.url),
         }
-        solr_search = SOLR_select(**solr_params)
-        self.item_count = solr_search.numFound
+        item_count_search = SOLR_select(**solr_params)
+        self.item_count = item_count_search.numFound
         return self.item_count
 
     def _choose_facet_sets(self, facet_set):
@@ -244,12 +244,12 @@ class Collection(object):
             'facet_mincount': 1,
             'facet_sort': 'count',
         }
-        solr_search = SOLR_select(**solr_params)
-        self.item_count = solr_search.numFound
+        facet_search = SOLR_select(**solr_params)
+        self.item_count = facet_search.numFound
 
         facets = []
         for facet_field in facet_fields:
-            values = solr_search.facet_counts.get('facet_fields').get(
+            values = facet_search.facet_counts.get('facet_fields').get(
                 '{}_ss'.format(facet_field.facet))
             if not values:
                 facets.append(None)
@@ -334,8 +334,7 @@ class Collection(object):
             # redo the query without any search terms
             rc_solr_params['q'] = ''
             collection_items_no_query = SOLR_select(**rc_solr_params)
-            collection_items = (
-                collection_items + collection_items_no_query.results)
+            collection_items += collection_items_no_query.results
 
         if len(collection_items) <= 0:
             # throw error
@@ -459,8 +458,8 @@ def collection_facet(request, collection_id, facet):
                     [f'collection_url: "{collection.url}"',
                      f'{facet}_ss: "{escaped_cluster_value}"']
             }
-            solr_thumbs = SOLR_select(**thumb_params)
-            value['thumbnails'] = solr_thumbs.results
+            thumbs = SOLR_select(**thumb_params)
+            value['thumbnails'] = thumbs.results
 
         context.update({
             'page_info':
@@ -585,8 +584,8 @@ def get_cluster_thumbnails(collection_url, facet, facet_value):
         'fq': [f'collection_url: "{collection_url}"',
                f'{facet.facet}_ss: "{escaped_cluster_value}"']
         }
-    solr_thumbs = SOLR_select(**thumb_params)
-    return solr_thumbs.results
+    thumbs = SOLR_select(**thumb_params)
+    return thumbs.results
 
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/
 # long rights statement: http://127.0.0.1:8000/collections/26241/browse/

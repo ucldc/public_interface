@@ -560,7 +560,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
 
     form = CollectionFacetValueForm(request, collection)
     filter_params = form.query_encode()
-    if filter_params['q']:
+    if filter_params.query_string:
         filter_params['q'] += " AND "
     filter_params['q'] += f"{facet}_ss:\"{escaped_facet_value}\""
 
@@ -583,7 +583,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
             f"{facet}: {parsed_facet_value} ({filter_search.numFound} items)"
             f" from: {collection_name}"),
         'description': None,
-        'solrParams': filter_search,
+        'solrParams': filter_params,
         'form_action': reverse(
             'calisphere:reportCollectionFacetValue',
             kwargs={

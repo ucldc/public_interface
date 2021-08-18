@@ -40,7 +40,7 @@ def process_sort_collection_data(string):
 
 
 def campus_directory(request):
-    repositories_solr_query = SOLR_select(
+    repositories_query = SOLR_select(
         q='*:*',
         rows=0,
         start=0,
@@ -48,11 +48,11 @@ def campus_directory(request):
         facet_mincount=1,
         facet_field=['repository_url'],
         facet_limit='-1')
-    solr_repositories = repositories_solr_query.facet_counts['facet_fields'][
+    index_repositories = repositories_query.facet_counts['facet_fields'][
         'repository_url']
 
     repositories = []
-    for repository_url in solr_repositories:
+    for repository_url in index_repositories:
         repo_id = re.match(repo_regex, repository_url).group('repository_id')
         repository = Repository(repo_id).get_repo_data()
         if repository['campus']:
@@ -79,7 +79,7 @@ def campus_directory(request):
 
 
 def statewide_directory(request):
-    repositories_solr_query = SOLR_select(
+    repositories_query = SOLR_select(
         q='*:*',
         rows=0,
         start=0,
@@ -87,10 +87,10 @@ def statewide_directory(request):
         facet_mincount=1,
         facet_field=['repository_url'],
         facet_limit='-1')
-    solr_repositories = repositories_solr_query.facet_counts['facet_fields'][
+    index_repositories = repositories_query.facet_counts['facet_fields'][
         'repository_url']
     repositories = []
-    for repository_url in solr_repositories:
+    for repository_url in index_repositories:
         repo_id = re.match(repo_regex, repository_url).group('repository_id')
         repository = Repository(repo_id).get_repo_data()
         if repository['campus'] == '':
@@ -144,7 +144,7 @@ class Campus(object):
 
         self.details = json_loads_url(self.url + "?format=json")
         if not self.details:
-            raise Http404("{0} does not exist".format(id))
+            raise Http404("{0} does not exist".format(self.id))
 
         self.name = self.full_name = self.details.get('name')
         if self.details.get('ark'):
@@ -281,30 +281,25 @@ def institution_collections(request, institution):
         'facet_sort': 'index'
     }
 
-    collections_solr_search = SOLR_select(**collections_params)
+    collections_search = SOLR_select(**collections_params)
+    sort_collection_data = collections_search.facet_counts['facet_fields'][
+        'sort_collection_data']
 
-    pages = int(
-        math.ceil(
-            len(collections_solr_search.facet_counts[
-                'facet_fields']['sort_collection_data']) / 10))
+    pages = int(math.ceil(len(sort_collection_data) / 10))
 
     # solrpy gives us a dict == unsorted (!)
     # use the `facet_decade` mode of process_facets to do a
     # lexical sort by value ....
     col_fft = CollectionFF(request)
-    solr_related_collections = list(
+    related_collections = list(
         collection[0] for collection in
-        col_fft.process_facets(
-            collections_solr_search.facet_counts['facet_fields']
-            ['sort_collection_data'],
-            'value',
-        ))
+        col_fft.process_facets(sort_collection_data, 'value'))
     start = ((page-1) * 10)
     end = page * 10
-    solr_related_collections = solr_related_collections[start:end]
+    related_collections = related_collections[start:end]
 
     related_collections = []
-    for i, related_collection in enumerate(solr_related_collections):
+    for i, related_collection in enumerate(related_collections):
         collection_parts = process_sort_collection_data(
             related_collection)
         col_id = re.match(col_regex, collection_parts[2]).group('id')
@@ -417,7 +412,7 @@ def campus_collections(request, campus_slug):
 def campus_institutions(request, campus_slug):
     institution = Campus(campus_slug)
 
-    institutions_solr_search = SOLR_select(
+    institutions_search = SOLR_select(
         q='',
         rows=0,
         start=0,
@@ -426,14 +421,14 @@ def campus_institutions(request, campus_slug):
         facet_mincount=1,
         facet_limit='-1',
         facet_field=['repository_data'])
+    institutions = institutions_search.facet_counts['facet_fields'][
+        'repository_data']
 
     repo_fft = RepositoryFF(request)
 
     related_institutions = list(
         institution[0] for institution in
-        repo_fft.process_facets(
-            institutions_solr_search.facet_counts['facet_fields']
-            ['repository_data']))
+        repo_fft.process_facets(institutions))
 
     for i, related_institution in enumerate(related_institutions):
         repo_url = related_institution.split('::')[0]

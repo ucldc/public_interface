@@ -354,7 +354,7 @@ def item_view_carousel(request):
         carousel_params['fq'].append(extra_filter)
 
     # if no query string or filters, do a "more like this" search
-    if carousel_params['q'] == '' and len(carousel_params['fq']) == 0:
+    if form.query_string == '' and len(carousel_params['fq']) == 0:
         search_results, num_found = item_view_carousel_mlt(item_id)
     else:
         carousel_params.update({
@@ -365,28 +365,20 @@ def item_view_carousel(request):
             carousel_params['start'] = 0
 
         try:
-            carousel_solr_search = SOLR_select(**carousel_params)
+            carousel_search = SOLR_select(**carousel_params)
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
             print((request.get_full_path()))
             raise (e)
-        search_results = carousel_solr_search.results
-        num_found = carousel_solr_search.numFound
+        search_results = carousel_search.results
+        num_found = carousel_search.numFound
 
     if request.GET.get('init'):
         context = form.context()
         context['start'] = carousel_params[
             'start'] if carousel_params['start'] != 'NaN' else 0
 
-        context['filters'] = {}
-        for filter_type in form.facet_filter_types:
-            param_name = filter_type['facet']
-            display_name = filter_type['filter']
-            filter_transform = filter_type['filter_display']
-
-            if len(request.GET.getlist(param_name)) > 0:
-                context['filters'][display_name] = list(
-                    map(filter_transform, request.GET.getlist(param_name)))
+        context['filters'] = form.filter_display()
 
         context.update({
             'numFound': num_found,
@@ -417,8 +409,8 @@ def get_related_collections(request, slug=None, repository_id=None):
     form = SearchForm(request)
     field = CollectionFF(request)
 
-    solr_params = form.query_encode([field])
-    solr_params['rows'] = 0
+    rc_params = form.query_encode([field])
+    rc_params['rows'] = 0
 
     if request.GET.get('campus_slug'):
         slug = request.GET.get('campus_slug')
@@ -426,17 +418,17 @@ def get_related_collections(request, slug=None, repository_id=None):
     if slug:
         campus = [c for c in constants.CAMPUS_LIST if c['slug'] == slug][0]
         campus_url = campus_template.format(campus['id'])
-        solr_params['fq'].append('campus_url: "' + campus_url + '"')
+        rc_params['fq'].append('campus_url: "' + campus_url + '"')
     if repository_id:
         repo_url = repo_template.format(repository_id)
-        solr_params['fq'].append('repository_url: "' + repo_url + '"')
+        rc_params['fq'].append('repository_url: "' + repo_url + '"')
 
     # mlt search
-    if len(solr_params['q']) == 0 and len(solr_params['fq']) == 0:
+    if len(form.query_string) == 0 and len(rc_params['fq']) == 0:
         if request.GET.get('itemId'):
-            solr_params['q'] = 'id:' + request.GET.get('itemId', '')
+            rc_params['q'] = 'id:' + request.GET.get('itemId', '')
 
-    related_collections = SOLR_select(**solr_params)
+    related_collections = SOLR_select(**rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
         'collection_data']
 
@@ -455,7 +447,7 @@ def get_related_collections(request, slug=None, repository_id=None):
         col_id = (re.match(
             col_regex, related_collections[i].split('::')[0]).group('id'))
         collection = Collection(col_id)
-        lockup_data = collection.get_lockup(solr_params['q'])
+        lockup_data = collection.get_lockup(form.query_string)
         three_related_collections.append(lockup_data)
 
     return three_related_collections, len(related_collections)
@@ -517,7 +509,7 @@ def report_collection_facet(request, collection_id, facet):
             '/')[-2]
 
     # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
-    solr_params = {
+    facet_params = {
         'facet': 'true',
         'rows': 0,
         'facet_field': '{}_ss'.format(facet),
@@ -526,9 +518,9 @@ def report_collection_facet(request, collection_id, facet):
         'facet_mincount': 1,
         'facet_sort': 'count',
     }
-    solr_search = SOLR_select(**solr_params)
+    facet_search = SOLR_select(**facet_params)
 
-    values = solr_search.facet_counts.get(
+    values = facet_search.facet_counts.get(
         'facet_fields').get('{}_ss'.format(facet))
     if not values:
         raise Http404("{0} has no values".format(facet))
@@ -567,31 +559,31 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     escaped_facet_value = solr_escape(parsed_facet_value)
 
     form = CollectionFacetValueForm(request, collection)
-    solr_params = form.query_encode()
-    if solr_params['q']:
-        solr_params['q'] += " AND "
-    solr_params['q'] += f"{facet}_ss:\"{escaped_facet_value}\""
+    filter_params = form.query_encode()
+    if filter_params['q']:
+        filter_params['q'] += " AND "
+    filter_params['q'] += f"{facet}_ss:\"{escaped_facet_value}\""
 
-    solr_search = SOLR_select(**solr_params)
+    filter_search = SOLR_select(**filter_params)
 
     collection_name = collection_details.get('name')
 
     context = form.context()
     context.update({
         'search_form': form.context(),
-        'search_results': solr_search.results,
-        'numFound': solr_search.numFound,
-        'pages': int(math.ceil(solr_search.numFound / int(form.rows))),
+        'search_results': filter_search.results,
+        'numFound': filter_search.numFound,
+        'pages': int(math.ceil(filter_search.numFound / int(form.rows))),
         'facet': facet,
         'facet_value': parsed_facet_value,
         'meta_robots': "noindex,nofollow",
         'collection': collection_details,
         'collection_id': collection_id,
         'title': (
-            f"{facet}: {parsed_facet_value} ({solr_search.numFound} items)"
+            f"{facet}: {parsed_facet_value} ({filter_search.numFound} items)"
             f" from: {collection_name}"),
         'description': None,
-        'solrParams': solr_params,
+        'solrParams': filter_search,
         'form_action': reverse(
             'calisphere:reportCollectionFacetValue',
             kwargs={

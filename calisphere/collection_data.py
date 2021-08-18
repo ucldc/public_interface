@@ -12,14 +12,18 @@ from .cache_retry import json_loads_url
 from django.core.cache import cache
 from django.conf import settings
 import time
+import re
 
-CollectionLink = namedtuple('CollectionLink', 'url, label')
+CollectionLink = namedtuple('CollectionLink', 'url, label, id')
+
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
 
 
 class CollectionManager(object):
     """ manage collection information that is parsed from solr facets """
 
-    def __init__(self, solr_url, solr_key):
+    def __init__(self):
         cache_key = 'collection-manager'  # won't vary except on djano restart
         saved = cache.get(cache_key)
         if saved:
@@ -36,9 +40,9 @@ class CollectionManager(object):
             # look it up from solr
             url = (
                 '{0}/query?facet.field=collection_data&facet=on&rows=0&facet.limit=-1&facet.mincount=1'
-                .format(solr_url))
+                .format(settings.SOLR_URL))
             req = urllib.request.Request(url, None,
-                                         {'X-Authentication-Token': solr_key})
+                                         {'X-Authentication-Token': settings.SOLR_API_KEY})
             save = {}
             index_data = json_loads_url(req)
             save['data'] = self.data = index_data['facet_counts'][
@@ -59,8 +63,13 @@ class CollectionManager(object):
                 {ord(c): None
                  for c in string.punctuation}).upper()
 
-        self.parsed = sorted(
-            [CollectionLink(*x.rsplit('::')) for x in self.data], key=sort_key)
+        parsed = []
+        for x in self.data:
+            cd = x.rsplit('::')
+            cd.append(re.match(
+                col_regex, cd[0]).group('id'))
+            parsed.append(CollectionLink(*cd))
+        self.parsed = sorted(parsed, key=sort_key)
 
         split_collections = {'num': [], 'a': []}
         names = {}

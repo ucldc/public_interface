@@ -24,17 +24,14 @@ col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 
 def collections_directory(request):
-    solr_collections = CollectionManager(settings.SOLR_URL,
-                                         settings.SOLR_API_KEY)
+    indexed_collections = CollectionManager()
     collections = []
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
 
-    for collection_link in solr_collections.shuffled[(page - 1) * 10:page *
-                                                     10]:
-        col_id = re.match(col_regex, collection_link.url).group('id')
+    for col in indexed_collections.shuffled[(page - 1) * 10:page * 10]:
         try:
-            collections.append(Collection(col_id).get_mosaic())
+            collections.append(Collection(col.id).get_mosaic())
         except Http404:
             continue
 
@@ -43,10 +40,10 @@ def collections_directory(request):
         'collections': collections,
         'random': True,
         'pages': int(
-            math.ceil(len(solr_collections.shuffled) / 10))
+            math.ceil(len(indexed_collections.shuffled) / 10))
     }
 
-    if page * 10 < len(solr_collections.shuffled):
+    if page * 10 < len(indexed_collections.shuffled):
         context['next_page'] = page + 1
     if page - 1 > 0:
         context['prev_page'] = page - 1
@@ -59,8 +56,7 @@ def collections_directory(request):
 
 
 def collections_az(request, collection_letter):
-    solr_collections = CollectionManager(settings.SOLR_URL,
-                                         settings.SOLR_API_KEY)
+    solr_collections = CollectionManager()
     collections_list = solr_collections.split[collection_letter.lower()]
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
@@ -107,7 +103,7 @@ def collections_titles(request):
             'calisphere:collectionView',
             kwargs={'collection_id': id})
 
-    collections = CollectionManager(settings.SOLR_URL, settings.SOLR_API_KEY)
+    collections = CollectionManager()
     data = [{
         'uri': djangoize(uri),
         'title': title

@@ -59,9 +59,9 @@ class SearchForm(object):
     def context(self):
         fft = [{
             'form_name': f.form_name,
-            'facet': f.solr_facet_field,
+            'facet': f.facet_field,
             'display_name': f.display_name,
-            'filter': f.solr_filter_field,
+            'filter': f.filter_field,
             'faceting_allowed': f.faceting_allowed
         } for f in self.facet_filter_types]
 
@@ -112,7 +112,7 @@ class SearchForm(object):
             'facet_mincount': 1,
             'facet_limit': '-1',
             'facet_field':
-            list(facet_type['solr_facet_field'] for facet_type in facet_types)
+            list(facet_type['facet_field'] for facet_type in facet_types)
         }
 
         query_fields = self.request.get('qf')
@@ -143,16 +143,16 @@ class SearchForm(object):
                     solr_params['fq'].append(extra_filter)
                 facet_search = SOLR_select(**solr_params)
 
-                self.facets[fft.solr_facet_field] = (
+                self.facets[fft.facet_field] = (
                     facet_search.facet_counts['facet_fields']
-                    [fft.solr_facet_field])
+                    [fft.facet_field])
 
-            solr_facets = self.facets[fft.solr_facet_field]
+            solr_facets = self.facets[fft.facet_field]
 
             facets[fft.form_name] = fft.process_facets(solr_facets)
 
-            for j, facet_item in enumerate(facets[fft.solr_facet_field]):
-                facets[fft.solr_facet_field][j] = (fft.facet_transform(
+            for j, facet_item in enumerate(facets[fft.facet_field]):
+                facets[fft.facet_field][j] = (fft.facet_transform(
                     facet_item[0]), facet_item[1])
 
         return facets
@@ -169,7 +169,7 @@ class SearchForm(object):
         filter_display = {}
         for filter_type in self.facet_filter_types:
             param_name = filter_type['form_name']
-            display_name = filter_type['solr_filter_field']
+            display_name = filter_type['filter_field']
             filter_transform = filter_type['filter_display']
 
             if len(self.request.getlist(param_name)) > 0:
@@ -195,7 +195,7 @@ class RepositoryForm(SearchForm):
         ff.DecadeFF,
         ff.CollectionFF
     ]
-    
+
     def __init__(self, request, institution):
         super().__init__(request)
         self.institution = institution

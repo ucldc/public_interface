@@ -28,9 +28,9 @@ def solr_escape(text):
 
 class FacetFilterType(object):
     form_name = ''
-    solr_facet_field = ''
+    facet_field = ''
     display_name = ''
-    solr_filter_field = ''
+    filter_field = ''
     sort_by = 'count'
     faceting_allowed = True
 
@@ -40,9 +40,9 @@ class FacetFilterType(object):
 
         if type:
             self.form_name = type['form_name']
-            self.solr_facet_field = type['solr_facet_field']
+            self.facet_field = type['facet_field']
             self.display_name = type['display_name']
-            self.solr_filter_field = type['solr_filter_field']
+            self.filter_field = type['filter_field']
             self.sort_by = type['sort_by']     # 'count' or 'value'
             self.faceting_allowed = type['faceting_allowed']
 
@@ -55,7 +55,7 @@ class FacetFilterType(object):
         selected_filters = self.form_context
         if len(selected_filters) > 0:
             selected_filters = list([
-                '{0}: "{1}"'.format(self.solr_filter_field,
+                '{0}: "{1}"'.format(self.filter_field,
                                     solr_escape(
                                         self.filter_transform(val)))
                 for val in selected_filters
@@ -110,7 +110,7 @@ class FacetFilterType(object):
         return display_facets
 
     def __str__(self):
-        return f'FacetFilterTypeClass: {self.solr_facet_field}'
+        return f'FacetFilterTypeClass: {self.facet_field}'
 
     def __getitem__(self, key):
         return getattr(self, key)
@@ -118,33 +118,33 @@ class FacetFilterType(object):
 
 class RelationFF(FacetFilterType):
     form_name = 'relation_ss'
-    solr_facet_field = 'relation_ss'
+    facet_field = 'relation_ss'
     display_name = 'Relation'
-    solr_filter_field = 'relation_ss'
+    filter_field = 'relation_ss'
     sort_by = 'value'
     faceting_allowed = False
 
 
 class TypeFF(FacetFilterType):
     form_name = 'type_ss'
-    solr_facet_field = 'type_ss'
+    facet_field = 'type_ss'
     display_name = 'Type of Item'
-    solr_filter_field = 'type_ss'
+    filter_field = 'type_ss'
 
 
 class DecadeFF(FacetFilterType):
     form_name = 'facet_decade'
-    solr_facet_field = 'facet_decade'
+    facet_field = 'facet_decade'
     display_name = 'Decade'
-    solr_filter_field = 'facet_decade'
+    filter_field = 'facet_decade'
     sort_by = 'value'
 
 
 class RepositoryFF(FacetFilterType):
     form_name = 'repository_data'
-    solr_facet_field = 'repository_data'
+    facet_field = 'repository_data'
     display_name = 'Contributing Institution'
-    solr_filter_field = 'repository_url'
+    filter_field = 'repository_url'
 
     def filter_transform(self, repository_id):
         return repo_template.format(repository_id)
@@ -186,9 +186,9 @@ class RepositoryFF(FacetFilterType):
 
 class CollectionFF(FacetFilterType):
     form_name = 'collection_data'
-    solr_facet_field = 'collection_data'
+    facet_field = 'collection_data'
     display_name = 'Collection'
-    solr_filter_field = 'collection_url'
+    filter_field = 'collection_url'
 
     def filter_transform(self, collection_id):
         return col_template.format(collection_id)

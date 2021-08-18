@@ -104,10 +104,10 @@ def item_view(request, item_id=''):
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
 
     item_id_search_term = 'id:"{0}"'.format(item_id)
-    item_solr_search = SOLR_select(q=item_id_search_term)
+    item_search = SOLR_select(q=item_id_search_term)
     order = request.GET.get('order')
 
-    if not item_solr_search.numFound:
+    if not item_search.numFound:
         # second level search
         def _fixid(id):
             return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)
@@ -120,7 +120,7 @@ def item_view(request, item_id=''):
         else:
             raise Http404("{0} does not exist".format(item_id))
 
-    item = item_solr_search.results[0]
+    item = item_search.results[0]
     if 'reference_image_dimensions' in item:
         split_ref = item['reference_image_dimensions'].split(':')
         item['reference_image_dimensions'] = split_ref
@@ -234,7 +234,7 @@ def item_view(request, item_id=''):
     context = {
         'q': '',
         'item': search_results,
-        'item_solr_search': item_solr_search,
+        'item_solr_search': item_search,
         'meta_image': meta_image,
         'repository_id': None,
         'itemId': None,
@@ -248,7 +248,7 @@ def item_view(request, item_id=''):
         context = {
             'q': '',
             'item': search_results,
-            'item_solr_search': item_solr_search,
+            'item_solr_search': item_search,
             'meta_image': meta_image,
             'rc_page': None,
             'related_collections': related_collections,
@@ -277,7 +277,7 @@ def search(request):
 
         num_related_collections = len(rc_ids)
         related_collections = get_rc_from_ids(
-            rc_ids, form.rc_page, form.query_encode().get('q'))
+            rc_ids, form.rc_page, form.query_string)
 
         context = {
             'facets': facets,
@@ -335,7 +335,7 @@ def item_view_carousel(request):
         # get any collection-specific facets
         collection = Collection(link_back_id)
         custom_facets = collection.custom_facets
-        form.facet_filter_types = form.facet_filter_types + custom_facets
+        form.facet_filter_types += custom_facets
         # # Add Custom Facet Filter Types
         if request.GET.get('relation_ss') and len(custom_facets) == 0:
             form.facet_filter_types.append(
@@ -349,23 +349,23 @@ def item_view_carousel(request):
             campus_url = campus_template.format(campus['id'])
             extra_filter = f'campus_url: "{campus_url}"'
 
-    solr_params = form.query_encode()
+    carousel_params = form.query_encode()
     if extra_filter:
-        solr_params['fq'].append(extra_filter)
+        carousel_params['fq'].append(extra_filter)
 
     # if no query string or filters, do a "more like this" search
-    if solr_params['q'] == '' and len(solr_params['fq']) == 0:
+    if carousel_params['q'] == '' and len(carousel_params['fq']) == 0:
         search_results, num_found = item_view_carousel_mlt(item_id)
     else:
-        solr_params.update({
+        carousel_params.update({
             'facet': 'false',
             'fields': 'id, type_ss, reference_image_md5, title'
         })
-        if solr_params.get('start') == 'NaN':
-            solr_params['start'] = 0
+        if carousel_params.get('start') == 'NaN':
+            carousel_params['start'] = 0
 
         try:
-            carousel_solr_search = SOLR_select(**solr_params)
+            carousel_solr_search = SOLR_select(**carousel_params)
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
             print((request.get_full_path()))
@@ -375,8 +375,8 @@ def item_view_carousel(request):
 
     if request.GET.get('init'):
         context = form.context()
-        context['start'] = solr_params[
-            'start'] if solr_params['start'] != 'NaN' else 0
+        context['start'] = carousel_params[
+            'start'] if carousel_params['start'] != 'NaN' else 0
 
         context['filters'] = {}
         for filter_type in form.facet_filter_types:

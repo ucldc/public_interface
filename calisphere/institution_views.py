@@ -154,7 +154,7 @@ class Campus(object):
         else:
             self.contact_info = ''
 
-        self.solr_filter = 'campus_url: "' + self.url + '"'
+        self.filter = 'campus_url: "' + self.url + '"'
 
 
 class Repository(object):
@@ -185,7 +185,7 @@ class Repository(object):
             if feat:
                 self.featured_image = feat[0].get('featuredImage')
 
-        self.solr_filter = 'repository_url: "' + self.url + '"'
+        self.filter = 'repository_url: "' + self.url + '"'
 
     def __str__(self):
         return f"{self.id}: {self.details.name}"
@@ -232,7 +232,7 @@ class Repository(object):
 
 def institution_search(request, form, institution):
     results = form.search()
-    facets = form.get_facets(institution.solr_filter)
+    facets = form.get_facets(institution.filter)
     filter_display = form.filter_display()
 
     page = (int(form.start) // int(form.rows)) + 1
@@ -273,7 +273,7 @@ def institution_collections(request, institution):
         'q': '',
         'rows': 0,
         'start': 0,
-        'fq': [institution.solr_filter],
+        'fq': [institution.filter],
         'facet': 'true',
         'facet_mincount': 1,
         'facet_limit': '-1',

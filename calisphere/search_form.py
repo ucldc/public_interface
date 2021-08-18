@@ -185,7 +185,7 @@ class CampusForm(SearchForm):
 
     def solr_encode(self, facet_types=[]):
         solr_query = super().solr_encode(facet_types)
-        solr_query['fq'].append(self.institution.solr_filter)
+        solr_query['fq'].append(self.institution.filter)
         return solr_query
 
 
@@ -195,13 +195,14 @@ class RepositoryForm(SearchForm):
         ff.DecadeFF,
         ff.CollectionFF
     ]
+    
     def __init__(self, request, institution):
         super().__init__(request)
         self.institution = institution
 
     def solr_encode(self, facet_types=[]):
         solr_query = super().solr_encode(facet_types)
-        solr_query['fq'].append(self.institution.solr_filter)
+        solr_query['fq'].append(self.institution.filter)
         return solr_query
 
 
@@ -210,6 +211,7 @@ class CollectionForm(SearchForm):
         ff.TypeFF,
         ff.DecadeFF,
     ]
+
     def __init__(self, request, collection):
         super().__init__(request)
         self.collection = collection
@@ -226,7 +228,7 @@ class CollectionForm(SearchForm):
 
     def solr_encode(self, facet_types=[]):
         solr_query = super().solr_encode(facet_types)
-        solr_query['fq'].append(self.collection.solr_filter)
+        solr_query['fq'].append(self.collection.filter)
         return solr_query
 
 

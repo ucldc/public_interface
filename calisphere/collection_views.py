@@ -141,7 +141,7 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
-        self.solr_filter = 'collection_url: "' + self.url + '"'
+        self.filter = 'collection_url: "' + self.url + '"'
 
     def _parse_custom_facets(self):
         custom_facets = []
@@ -395,7 +395,7 @@ def collection_search(request, collection_id):
     context = {
         'q': form.q,
         'search_form': form.context(),
-        'facets': form.get_facets(collection.solr_filter),
+        'facets': form.get_facets(collection.filter),
         'pages': int(math.ceil(results.numFound / int(form.rows))),
         'numFound': results.numFound,
         'search_results': results.results,
@@ -530,7 +530,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
         'search_results': results.results,
         'numFound': results.numFound,
         'pages': int(math.ceil(results.numFound / int(form.rows))),
-        'facets': form.get_facets(collection.solr_filter),
+        'facets': form.get_facets(collection.filter),
         'filters': form.filter_display(),
         'cluster': cluster,
         'cluster_value': parsed_cluster_value,

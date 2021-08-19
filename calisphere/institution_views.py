@@ -416,7 +416,7 @@ def campus_institutions(request, campus_slug):
         q='',
         rows=0,
         start=0,
-        fq=['campus_url: "' + institution.url + '"'],
+        fq=[institution.filter],
         facet='true',
         facet_mincount=1,
         facet_limit='-1',

@@ -188,7 +188,7 @@ class Collection(object):
         solr_params = {
             'facet': 'false',
             'rows': 0,
-            'fq': 'collection_url:"{}"'.format(self.url),
+            'fq': self.filter,
         }
         item_count_search = SOLR_select(**solr_params)
         self.item_count = item_count_search.numFound
@@ -232,7 +232,7 @@ class Collection(object):
             'facet': 'true',
             'rows': 0,
             'facet_field': [f"{ff.facet}_ss" for ff in facet_fields],
-            'fq': 'collection_url:"{}"'.format(self.url),
+            'fq': self.filter,
             'facet_limit': '-1',
             'facet_mincount': 1,
             'facet_sort': 'count',
@@ -285,14 +285,13 @@ class Collection(object):
             'sort': 'sort_title asc',
             'rows': 6,
             'start': 0,
-            'fq':
-            [f'collection_url: \"{ self.url }\"', 'type_ss: \"image\"']
+            'fq': [self.filter, 'type_ss: \"image\"']
         }
         display_items = SOLR_select(**search_terms)
         items = display_items.results
 
         search_terms['fq'] = [
-            f'collection_url: \"{ self.url }\"',
+            self.filter,
             '(*:* AND -type_ss:\"image\")'
         ]
         ugly_display_items = SOLR_select(**search_terms)
@@ -314,7 +313,7 @@ class Collection(object):
         rc_solr_params = {
             'q': keyword_query,
             'rows': '3',
-            'fq': [f"collection_url: \"{ self.url }\""],
+            'fq': [self.filter],
             'fields': (
                 'collection_data, reference_image_md5, '
                 'url_item, id, title, type_ss'
@@ -448,7 +447,7 @@ def collection_facet(request, collection_id, facet):
                 'rows': 3,
                 'fl': 'reference_image_md5, type_ss',
                 'fq':
-                    [f'collection_url: "{collection.url}"',
+                    [collection.filter,
                      f'{facet}_ss: "{escaped_cluster_value}"']
             }
             thumbs = SOLR_select(**thumb_params)
@@ -568,13 +567,13 @@ def collection_metadata(request, collection_id):
         request, 'calisphere/collections/collectionMetadata.html', context)
 
 
-def get_cluster_thumbnails(collection_url, facet, facet_value):
+def get_cluster_thumbnails(collection, facet, facet_value):
     escaped_cluster_value = solr_escape(facet_value)
     thumb_params = {
         'facet': 'false',
         'rows': 3,
         'fl': 'reference_image_md5, type_ss',
-        'fq': [f'collection_url: "{collection_url}"',
+        'fq': [collection.filter,
                f'{facet.facet}_ss: "{escaped_cluster_value}"']
         }
     thumbs = SOLR_select(**thumb_params)
@@ -600,7 +599,7 @@ def collection_browse(request, collection_id):
 
     for facet_set in facet_sets:
         facet_set['thumbnails'] = get_cluster_thumbnails(
-            collection.url,
+            collection,
             facet_set['facet_field'],
             facet_set['values'][0]['label']
         )

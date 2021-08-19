@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponse
 from . import constants
 from . import facet_filter_type as facet_module
-from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
+from .cache_retry import SOLR_select, SOLR_get, SOLR_raw, json_loads_url
 from .search_form import SearchForm, solr_escape, CollectionFacetValueForm
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository
@@ -104,10 +104,10 @@ def item_view(request, item_id=''):
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
 
     item_id_search_term = 'id:"{0}"'.format(item_id)
-    item_search = SOLR_select(q=item_id_search_term)
+    item_search = SOLR_get(q=item_id_search_term)
     order = request.GET.get('order')
 
-    if not item_search.numFound:
+    if not item_search.found:
         # second level search
         def _fixid(id):
             return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)
@@ -120,7 +120,7 @@ def item_view(request, item_id=''):
         else:
             raise Http404("{0} does not exist".format(item_id))
 
-    item = item_search.results[0]
+    item = item_search.item
     if 'reference_image_dimensions' in item:
         split_ref = item['reference_image_dimensions'].split(':')
         item['reference_image_dimensions'] = split_ref
@@ -234,7 +234,7 @@ def item_view(request, item_id=''):
     context = {
         'q': '',
         'item': search_results,
-        'item_solr_search': item_search,
+        'item_solr_search': item_search.resp,
         'meta_image': meta_image,
         'repository_id': None,
         'itemId': None,
@@ -248,7 +248,7 @@ def item_view(request, item_id=''):
         context = {
             'q': '',
             'item': search_results,
-            'item_solr_search': item_search,
+            'item_solr_search': item_search.resp,
             'meta_image': meta_image,
             'rc_page': None,
             'related_collections': related_collections,

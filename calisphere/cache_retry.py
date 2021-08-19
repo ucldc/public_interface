@@ -62,6 +62,16 @@ SOLR_DEFAULTS = {
 
 SolrResults = namedtuple(
     'SolrResults', 'results header numFound facet_counts nextCursorMark')
+SolrItem = namedtuple(
+    'SolrItem', 'found, item, resp')
+
+
+def SOLR_get(args):
+    item_search = SOLR_select(args)
+    found = bool(item_search.numFound)
+    item = item_search.results[0]
+    results = SolrItem(found, item, item_search)
+    return results
 
 
 def SOLR(**params):

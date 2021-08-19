@@ -56,22 +56,21 @@ def collections_directory(request):
 
 
 def collections_az(request, collection_letter):
-    solr_collections = CollectionManager()
-    collections_list = solr_collections.split[collection_letter.lower()]
+    indexed_collections = CollectionManager()
+    collections_list = indexed_collections.split[collection_letter.lower()]
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
     pages = int(math.ceil(len(collections_list) / 10))
 
     collections = []
-    for collection_link in collections_list[(page - 1) * 10:page * 10]:
-        col_id = re.match(col_regex, collection_link.url).group('id')
+    for col in collections_list[(page - 1) * 10:page * 10]:
         try:
-            collections.append(Collection(col_id).get_mosaic())
+            collections.append(Collection(col.id).get_mosaic())
         except Http404:
             continue
 
     alphabet = list((character, True if character.lower() not in
-                     solr_collections.no_collections else False)
+                     indexed_collections.no_collections else False)
                     for character in list(string.ascii_uppercase))
 
     context = {
@@ -95,19 +94,17 @@ def collections_az(request, collection_letter):
 def collections_titles(request):
     '''create JSON/data for the collections search page'''
 
-    def djangoize(uri):
+    def djangoize(id):
         '''turn registry URI into URL on django site'''
-        id = uri.split(
-            'https://registry.cdlib.org/api/v1/collection/', 1)[1][:-1]
         return reverse(
             'calisphere:collectionView',
             kwargs={'collection_id': id})
 
     collections = CollectionManager()
     data = [{
-        'uri': djangoize(uri),
+        'uri': djangoize(id),
         'title': title
-    } for (uri, title) in collections.parsed]
+    } for (uri, title, id) in collections.parsed]
     return JsonResponse(data, safe=False)
 
 

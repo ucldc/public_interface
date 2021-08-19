@@ -9,7 +9,6 @@ from django.contrib.sitemaps import Sitemap as RegularDjangoSitemap
 from static_sitemaps.generator import SitemapGenerator
 from static_sitemaps import conf
 from calisphere.collection_data import CollectionManager
-from public_interface import settings
 
 class CalisphereSitemapGenerator(SitemapGenerator):
     ''' subclass django-static-sitemaps '''
@@ -28,11 +27,8 @@ class CalisphereSitemapGenerator(SitemapGenerator):
             elif section == 'items':
                 collections = CollectionManager().parsed
                 for collection in collections:
-                    col_id = re.match(
-                        r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',
-                    collection.url).group('collection_id')
                     parts.extend(self.write_data_fast(
-                        f"collection_{col_id}", site, collection.url))
+                        f"collection_{collection.id}", site, collection.url))
             else:
                 parts.extend(self.write_data_fast(section, site))
 

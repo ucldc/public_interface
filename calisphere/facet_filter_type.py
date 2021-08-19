@@ -209,13 +209,13 @@ class CollectionFF(FacetFilterType):
         return collection
 
     def filter_display(self, collection_id):
-        solr_collections = CollectionManager()
+        indexed_collections = CollectionManager()
         collection = {
             'url': col_template.format(collection_id),
             'id': collection_id
         }
 
-        collection['name'] = solr_collections.names.get(
+        collection['name'] = indexed_collections.names.get(
             collection['url'])
 
         if not collection['name']:

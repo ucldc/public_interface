@@ -196,16 +196,14 @@ def item_view(request, item_id=''):
     item['parsed_repository_data'] = []
     item['institution_contact'] = []
     related_collections = []
-    for collection_url in item.get('collection_url'):
-        col_id = (re.match(col_regex, collection_url).group('id'))
+    for col_id in item.get('collection_ids'):
         collection = Collection(col_id)
         item['parsed_collection_data'].append(collection.item_view())
         if not from_item_page:
             lockup_data = collection.get_lockup(item_id_search_term)
             related_collections.append(lockup_data)
 
-    for repository_url in item.get('repository_url'):
-        repo_id = re.match(repo_regex, repository_url).group('id')
+    for repo_id in item.get('repository_ids'):
         repo = Repository(repo_id)
         item['parsed_repository_data'].append(repo.get_repo_data())
         item['institution_contact'].append(repo.get_contact_info())

@@ -15,6 +15,7 @@ import pickle
 import hashlib
 import json
 import itertools
+import re
 
 requests.packages.urllib3.disable_warnings()
 
@@ -65,11 +66,29 @@ SolrResults = namedtuple(
 SolrItem = namedtuple(
     'SolrItem', 'found, item, resp')
 
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
+repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
+              r'(?P<id>\d*)/?')
+
 
 def SOLR_get(args):
     item_search = SOLR_select(args)
     found = bool(item_search.numFound)
     item = item_search.results[0]
+
+    def get_col_id(url):
+        col_id = (re.match(col_regex, url).group('id'))
+        return col_id
+    def get_repo_id(url):
+        repo_id = (re.match(repo_regex, url).group('id'))
+        return repo_id
+
+    item['collection_ids'] = [
+        get_col_id(url) for url in item.get('collection_url')]
+    item['repository_ids'] = [
+        get_repo_id(url) for url in item.get('repository_url')]
+    
     results = SolrItem(found, item, item_search)
     return results
 

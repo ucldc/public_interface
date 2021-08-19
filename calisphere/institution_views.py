@@ -240,7 +240,7 @@ def institution_search(request, form, institution):
     if (page > 1):
         title = (f"{institution.full_name} Items - page {page}")
 
-    rc_ids = [cd[0]['id'] for cd in facets['collection_data']]
+    rc_ids = [cd[0]['id'] for cd in facets[CollectionFF.facet_field]]
     if len(request.GET.getlist('collection_data')):
         rc_ids = request.GET.getlist('collection_data')
 

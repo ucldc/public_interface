@@ -232,7 +232,7 @@ class Repository(object):
 
 def institution_search(request, form, institution):
     results = form.search()
-    facets = form.get_facets(institution.filter)
+    facets = form.get_facets()
     filter_display = form.filter_display()
 
     page = (int(form.start) // int(form.rows)) + 1

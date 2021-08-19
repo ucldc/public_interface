@@ -386,7 +386,7 @@ def collection_search(request, collection_id):
     context = {
         'q': form.q,
         'search_form': form.context(),
-        'facets': form.get_facets(collection.filter),
+        'facets': form.get_facets(),
         'pages': int(math.ceil(results.numFound / int(form.rows))),
         'numFound': results.numFound,
         'search_results': results.results,

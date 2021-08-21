@@ -9,6 +9,7 @@ from .facet_filter_type import FacetFilterType
 from .cache_retry import SOLR_select, json_loads_url
 from .search_form import CollectionForm, solr_escape
 from builtins import range
+from .temp import query_encode
 
 import os
 import math
@@ -134,6 +135,7 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
+        self.basic_filter = {'collection_url': [self.url]}
         self.filter = 'collection_url: "' + self.url + '"'
 
     def _parse_custom_facets(self):
@@ -186,11 +188,10 @@ class Collection(object):
             return self.item_count
 
         solr_params = {
-            'facet': 'false',
-            'rows': 0,
-            'fq': self.filter,
+            "filters": [self.basic_filter],
+            "rows": 0
         }
-        item_count_search = SOLR_select(**solr_params)
+        item_count_search = SOLR_select(**query_encode(**solr_params))
         self.item_count = item_count_search.numFound
         return self.item_count
 
@@ -227,17 +228,12 @@ class Collection(object):
         return facet_sets
 
     def get_facets(self, facet_fields):
-        # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
         solr_params = {
-            'facet': 'true',
-            'rows': 0,
-            'facet_field': [f"{ff.facet}_ss" for ff in facet_fields],
-            'fq': self.filter,
-            'facet_limit': '-1',
-            'facet_mincount': 1,
-            'facet_sort': 'count',
+            "filters": [self.basic_filter],
+            "rows": 0,
+            "facets": [ff.facet for ff in facet_fields]
         }
-        facet_search = SOLR_select(**solr_params)
+        facet_search = SOLR_select(**query_encode(**solr_params))
         self.item_count = facet_search.numFound
 
         facets = []
@@ -278,23 +274,29 @@ class Collection(object):
 
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
-            'q': '*:*',
-            'fields': (
-                'reference_image_md5, url_item, id, '
-                'title, collection_url, type_ss'),
-            'sort': 'sort_title asc',
-            'rows': 6,
-            'start': 0,
-            'fq': [self.filter, 'type_ss: \"image\"']
+            "q": "*:*",
+            "filters": [
+                self.basic_filter,
+                {"type_ss": ["image"]}
+            ],
+            "result_fields": [
+                "reference_image_md5",
+                "url_item",
+                "id",
+                "title",
+                "collection_url",
+                "type_ss"
+            ],
+            "sort": ("sort_title", "asc"),
+            "rows": 6
         }
-        display_items = SOLR_select(**search_terms)
+        display_items = SOLR_select(**query_encode(**search_terms))
         items = display_items.results
 
-        search_terms['fq'] = [
-            self.filter,
-            '(*:* AND -type_ss:\"image\")'
-        ]
-        ugly_display_items = SOLR_select(**search_terms)
+        search_terms['filters'].pop(1)
+        search_terms['exclude'] = [{"type_ss": ["image"]}]
+
+        ugly_display_items = SOLR_select(**query_encode(**search_terms))
         # if there's not enough image items, get some non-image
         # items for the mosaic preview
         if len(items) < 6:
@@ -311,21 +313,25 @@ class Collection(object):
 
     def get_lockup(self, keyword_query):
         rc_solr_params = {
-            'q': keyword_query,
-            'rows': '3',
-            'fq': [self.filter],
-            'fields': (
-                'collection_data, reference_image_md5, '
-                'url_item, id, title, type_ss'
-            )
+            'query_string': keyword_query,
+            'filters': [self.basic_filter],
+            'result_fields': [
+                "collection_data",
+                "reference_image_md5",
+                "url_item",
+                "id",
+                "title",
+                "type_ss"
+            ],
+            "rows": 3,
         }
-        collection_items = SOLR_select(**rc_solr_params)
+        collection_items = SOLR_select(**query_encode(**rc_solr_params))
         collection_items = collection_items.results
 
         if len(collection_items) < 3:
             # redo the query without any search terms
-            rc_solr_params['q'] = ''
-            collection_items_no_query = SOLR_select(**rc_solr_params)
+            rc_solr_params.pop('query_string')
+            collection_items_no_query = SOLR_select(**query_encode(**rc_solr_params))
             collection_items += collection_items_no_query.results
 
         if len(collection_items) <= 0:
@@ -443,14 +449,14 @@ def collection_facet(request, collection_id, facet):
         for value in values:
             escaped_cluster_value = solr_escape(value['label'])
             thumb_params = {
-                'facet': 'false',
-                'rows': 3,
-                'fl': 'reference_image_md5, type_ss',
-                'fq':
-                    [collection.filter,
-                     f'{facet}_ss: "{escaped_cluster_value}"']
+                "filters": [
+                    collection.basic_filter, 
+                    {f"{facet}_ss": [escaped_cluster_value]}
+                ],
+                "result_fields": ["reference_image_md5, type_ss"],
+                "rows": 3
             }
-            thumbs = SOLR_select(**thumb_params)
+            thumbs = SOLR_select(**query_encode(**thumb_params))
             value['thumbnails'] = thumbs.results
 
         context.update({
@@ -570,13 +576,14 @@ def collection_metadata(request, collection_id):
 def get_cluster_thumbnails(collection, facet, facet_value):
     escaped_cluster_value = solr_escape(facet_value)
     thumb_params = {
-        'facet': 'false',
-        'rows': 3,
-        'fl': 'reference_image_md5, type_ss',
-        'fq': [collection.filter,
-               f'{facet.facet}_ss: "{escaped_cluster_value}"']
-        }
-    thumbs = SOLR_select(**thumb_params)
+        'filters': [
+            collection.basic_filter,
+            {f'{facet}_ss': [escaped_cluster_value]}
+        ],
+        'result_fields': ['reference_image_md5', 'type_ss'],
+        'rows': 3
+    }
+    thumbs = SOLR_select(**query_encode(**thumb_params))
     return thumbs.results
 
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/

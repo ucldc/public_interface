@@ -274,7 +274,7 @@ class Collection(object):
 
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
-            "q": "*:*",
+            "query_string": "*:*",
             "filters": [
                 self.basic_filter,
                 {"type_ss": ["image"]}
@@ -380,7 +380,7 @@ class Collection(object):
 def collection_search(request, collection_id):
     collection = Collection(collection_id)
 
-    form = CollectionForm(request, collection)
+    form = CollectionForm(request.GET.copy(), collection)
     results = form.search()
     filter_display = form.filter_display()
 
@@ -510,7 +510,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     if cluster not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(cluster))
 
-    form = CollectionForm(request, collection)
+    form = CollectionForm(request.GET.copy(), collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
     escaped_cluster_value = solr_escape(parsed_cluster_value)

@@ -47,12 +47,12 @@ class FacetFilterType(object):
             self.faceting_allowed = type['faceting_allowed']
 
         if request:
-            selected_filters = request.GET.getlist(self.form_name)
-            self.form_context = selected_filters
+            self.form_context = request.getlist(self.form_name)
             self.set_query()
 
     def set_query(self):
         selected_filters = self.form_context
+        self.basic_query = {}
         if len(selected_filters) > 0:
             selected_filters = list([
                 '{0}: "{1}"'.format(self.filter_field,
@@ -61,6 +61,8 @@ class FacetFilterType(object):
                 for val in selected_filters
             ])
             selected_filters = " OR ".join(selected_filters)
+            self.basic_query = {self.filter_field: selected_filters}
+
         self.query = selected_filters
 
     def filter_transform(self, filter_val):
@@ -118,18 +120,18 @@ class FacetFilterType(object):
 
 class RelationFF(FacetFilterType):
     form_name = 'relation_ss'
-    facet_field = 'relation_ss'
+    facet_field = 'relation'
     display_name = 'Relation'
-    filter_field = 'relation_ss'
+    filter_field = 'relation'
     sort_by = 'value'
     faceting_allowed = False
 
 
 class TypeFF(FacetFilterType):
     form_name = 'type_ss'
-    facet_field = 'type_ss'
+    facet_field = 'type'
     display_name = 'Type of Item'
-    filter_field = 'type_ss'
+    filter_field = 'type'
 
 
 class DecadeFF(FacetFilterType):

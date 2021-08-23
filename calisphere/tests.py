@@ -32,7 +32,8 @@ class CollectionQueriesTestCase(unittest.TestCase):
         solr_params = {
             "filters": [collection.basic_filter],
             "rows": 0,
-            "facets": [ff.facet for ff in facet_fields]
+            "facets": [ff.facet for ff in facet_fields],
+            "facet_sort": 'count'
         }
         encoded = query_encode(**solr_params)
         manual_params = {
@@ -169,61 +170,54 @@ class CollectionQueriesTestCase(unittest.TestCase):
 class InstitutionQueriesTestCase(unittest.TestCase):
     def test_campus_directory(self):
         solr_params = {
-            "facets": ["repository_ids"]
+            "query_string": "*:*",
+            "facets": ["repository_url"]
         }
         solr_params = query_encode(**solr_params)
         repositories_query = {
-            "size": 0,
-            "aggs": {
-                "repository_ids": {
-                    "terms": {
-                        "field": "repository_ids",
-                        "size": 10000
-                    }
-                }
-            }
+            'q': '*:*',
+            'rows': 0,
+            'facet': 'true',
+            'facet_mincount': 1,
+            'facet_field': ['repository_url'],
+            'facet_limit': '-1'
         }
         self.assertEqual(solr_params, repositories_query)
 
     def test_statewide_directory(self):
         solr_params = {
-            "facets": ["repository_ids"]
+            "query_string": "*:*",
+            "facets": ["repository_url"]
         }
         solr_params = query_encode(**solr_params)
         repositories_query = {
-            "size": 0,
-            "aggs": {
-                "repository_ids": {
-                    "terms": {
-                        "field": "repository_ids",
-                        "size": 10000
-                    }
-                }
-            }
+            "q": '*:*',
+            "rows": 0,
+            "facet": 'true',
+            "facet_mincount": 1,
+            "facet_field": ['repository_url'],
+            "facet_limit": '-1'
         }
         self.assertEqual(solr_params, repositories_query)
 
-    # def test_institution_collections(self):
-    #     institution = Repository(25)
-    #     solr_params = {
-    #         'filters': institution.basic_filter,
-    #         'facets': ['collection_data']
-    #     }
-    #     collections_params = {
-    #         "query": institution.filter,
-    #         "size": 0,
-    #         "aggs": {
-    #             "collection_data": {
-    #                 "terms": {
-    #                     "field": "collection_data.keyword",
-    #                     "order": {
-    #                         "_key": "asc"
-    #                     }
-    #                 }
-    #             }
-    #         }
-    #     }
-    #     self.assertEqual(solr_params, collections_params)
+    def test_institution_collections(self):
+        institution = Repository(25)
+        solr_params = {
+            'filters': [institution.basic_filter],
+            'facets': ['sort_collection_data'],
+            'facet_sort': 'index'
+        }
+        solr_params = query_encode(**solr_params)
+        collections_params = {
+            'rows': 0,
+            'fq': institution.filter,
+            'facet': 'true',
+            'facet_mincount': 1,
+            'facet_limit': '-1',
+            'facet_field': ['sort_collection_data'],
+            'facet_sort': 'index'
+        }
+        self.assertEqual(solr_params, collections_params)
 
     def test_campus_institutions(self):
         institution = Campus('UCI')
@@ -233,20 +227,12 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         }
         solr_params = query_encode(**solr_params)
         institutions_search = {
-            "query": {
-                "terms": {
-                    "campus_ids": [institution.id]
-                }
-            },
-            "size": 0,
-            "aggs": {
-                "repository_data": {
-                    "terms": {
-                        "field": "repository_data.keyword",
-                        "size": 10000
-                    }
-                }
-            }
+            'rows': 0,
+            'fq': institution.filter,
+            'facet': 'true',
+            'facet_mincount': 1,
+            'facet_limit': '-1',
+            'facet_field': ['repository_data']
         }
         self.assertEqual(solr_params, institutions_search)
 
@@ -258,15 +244,11 @@ class CollectionDataQueriesTestCase(unittest.TestCase):
         }
         solr_params = query_encode(**solr_params)
         collections_query = {
-            "size": 0,
-            "aggs": {
-                "collection_data": {
-                    "terms": {
-                        "field": "collection_data.keyword",
-                        "size": 10000
-                    }
-                }
-            }
+            "facet_field": ['collection_data'],
+            'facet': 'true',
+            'rows': 0,
+            'facet_limit': '-1',
+            'facet_mincount': 1
         }
         self.assertEqual(solr_params, collections_query)
 
@@ -284,37 +266,29 @@ class ViewQueriesTestCase(unittest.TestCase):
         }
         solr_params = query_encode(**solr_params)
         old_id_search = {
-            "query": {
-                "query_string": {
-                    "query": f"harvest_id_s:*{_fixid(item_id)}"
-                }
-            },
-            "size": 10
+            'q': 'harvest_id_s:*{}'.format(_fixid(item_id)),
+            'rows': 10
         }
         self.assertEqual(solr_params, old_id_search)
 
     def test_report_collection_facet(self):
-        collection_id = 466
+        collection_url = "https://registry.cdlib.org/api/v1/collection/466/"
         facet = "subject"
         solr_params = {
-            "filters": [{'collection_ids': [collection_id]}],
-            "facets": [facet]
+            "filters": [{'collection_url': [collection_url]}],
+            "facets": [facet],
+            "facet_sort": "count"
         }
         solr_params = query_encode(**solr_params)
 
         collection_facet_query = {
-            "query": {
-                "terms": {'collection_ids': [collection_id]}
-            },
-            "size": 0,
-            "aggs": {
-                facet: {
-                    "terms": {
-                        "field": f'{facet}.keyword',
-                        "size": 10000
-                    }
-                }
-            }
+            'facet': 'true',
+            'rows': 0,
+            'facet_field': ['{}_ss'.format(facet)],
+            'fq': 'collection_url: "{}"'.format(collection_url),
+            'facet_limit': '-1',
+            'facet_mincount': 1,
+            'facet_sort': 'count',
         }
         self.assertEqual(solr_params, collection_facet_query)
 

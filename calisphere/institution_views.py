@@ -154,6 +154,7 @@ class Campus(object):
         else:
             self.contact_info = ''
 
+        self.basic_filter = {'campus_url': [self.url]}
         self.filter = 'campus_url: "' + self.url + '"'
 
 
@@ -185,6 +186,7 @@ class Repository(object):
             if feat:
                 self.featured_image = feat[0].get('featuredImage')
 
+        self.basic_filter = {'repository_url': [self.url]}
         self.filter = 'repository_url: "' + self.url + '"'
 
     def __str__(self):
@@ -325,7 +327,7 @@ def institution_collections(request, institution):
 
 def repository_search(request, repository_id):
     institution = Repository(repository_id)
-    form = RepositoryForm(request, institution)
+    form = RepositoryForm(request.GET.copy(), institution)
 
     context = institution_search(request, form, institution)
 
@@ -424,7 +426,7 @@ def campus_institutions(request, campus_slug):
     institutions = institutions_search.facet_counts['facet_fields'][
         'repository_data']
 
-    repo_fft = RepositoryFF(request)
+    repo_fft = RepositoryFF(request.GET.copy())
 
     related_institutions = list(
         institution[0] for institution in

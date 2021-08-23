@@ -14,7 +14,8 @@ def query_encode(query_string: str = None,
                  start: int = None,
                  rows: int = 0,
                  result_fields: List[str] = None,
-                 facets: List[str] = None):
+                 facets: List[str] = None,
+                 facet_sort: str = None):
 
     solr_params = {}
 
@@ -41,13 +42,24 @@ def query_encode(query_string: str = None,
             solr_params['fq'] = solr_filters
 
     if facets:
-        solr_facets = [f"{facet}_ss" for facet in facets]
+        exceptions = [
+            'repository_url', 
+            'sort_collection_data', 
+            'repository_data',
+            'collection_data',
+            'facet_decade']
+        solr_facets = [f"{facet}_ss" if facet not in exceptions 
+                       else facet for facet in facets]
         solr_params.update({
             'facet': 'true',
             'facet_field': solr_facets,
             'facet_limit': '-1',
-            'facet_mincount': 1,
-            'facet_sort': 'count'})
+            'facet_mincount': 1})
+
+    if facet_sort:
+        solr_params.update({
+            'facet_sort': facet_sort
+        })
 
     if result_fields:
         solr_params['fl'] = ", ".join(result_fields)

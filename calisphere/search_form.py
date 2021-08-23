@@ -13,12 +13,12 @@ class SortField(object):
     no_keyword = 'a'
 
     def __init__(self, request):
-        if (request.GET.get('q')
-           or request.GET.getlist('rq')
-           or request.GET.getlist('fq')):
-            self.sort = request.GET.get('sort', self.default)
+        if (request.get('q')
+           or request.getlist('rq')
+           or request.getlist('fq')):
+            self.sort = request.get('sort', self.default)
         else:
-            self.sort = request.GET.get('sort', self.no_keyword)
+            self.sort = request.get('sort', self.no_keyword)
 
 
 class SearchForm(object):
@@ -39,7 +39,7 @@ class SearchForm(object):
     ]
 
     def __init__(self, request):
-        self.request = request.GET.copy()
+        self.request = request
         self.facet_filter_types = [
             ff_field(request) for ff_field in self.facet_filter_fields
         ]
@@ -47,11 +47,11 @@ class SearchForm(object):
         for field in self.simple_fields:
             if isinstance(self.simple_fields[field], list):
                 self.__dict__.update({
-                    field: request.GET.getlist(field)
+                    field: request.getlist(field)
                 })
             else:
                 self.__dict__.update({
-                    field: request.GET.get(field, self.simple_fields[field])
+                    field: request.get(field, self.simple_fields[field])
                 })
 
         self.sort = self.sort_field(request).sort
@@ -219,8 +219,8 @@ class CollectionForm(SearchForm):
         # this is a bit crude and assumes if any custom facets, relation_ss 
         # is a custom facet
         if not collection.custom_facets:
-            if request.GET.get('relation_ss'):
-                facet_filter_types.append(ff.RelationFF(request))
+            if request.get('relation_ss'):
+                facet_filter_types.append(ff.RelationFF(request.GET.copy()))
         self.facet_filter_types = facet_filter_types
         self.implicit_filter = collection.filter
 

@@ -264,7 +264,7 @@ def item_view(request, item_id=''):
 
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
-        form = SearchForm(request)
+        form = SearchForm(request.GET.copy())
         results = form.search()
         facets = form.get_facets()
         filter_display = form.filter_display()
@@ -324,7 +324,7 @@ def item_view_carousel(request):
     referral = request.GET.get('referral')
     link_back_id = ''
     extra_filter = None
-    form = SearchForm(request)
+    form = SearchForm(request.GET.copy())
 
     if referral == 'institution':
         link_back_id = request.GET.get('repository_data', None)
@@ -337,7 +337,7 @@ def item_view_carousel(request):
         # # Add Custom Facet Filter Types
         if request.GET.get('relation_ss') and len(custom_facets) == 0:
             form.facet_filter_types.append(
-                facet_module.RelationFF(request)
+                facet_module.RelationFF(request.GET.copy())
             )
     if referral == 'campus':
         link_back_id = request.GET.get('campus_slug', None)
@@ -404,8 +404,8 @@ repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
 def get_related_collections(request, slug=None, repository_id=None):
-    form = SearchForm(request)
-    field = CollectionFF(request)
+    form = SearchForm(request.GET.copy())
+    field = CollectionFF(request.GET.copy())
 
     rc_params = form.query_encode([field])
     rc_params['rows'] = 0
@@ -556,7 +556,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
     escaped_facet_value = solr_escape(parsed_facet_value)
 
-    form = CollectionFacetValueForm(request, collection)
+    form = CollectionFacetValueForm(request.GET.copy(), collection)
     filter_params = form.query_encode()
     if filter_params.query_string:
         filter_params['q'] += " AND "

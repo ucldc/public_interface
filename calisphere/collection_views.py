@@ -187,11 +187,11 @@ class Collection(object):
         if hasattr(self, 'item_count'):
             return self.item_count
 
-        solr_params = {
+        item_query = {
             "filters": [self.basic_filter],
             "rows": 0
         }
-        item_count_search = SOLR_select(**query_encode(**solr_params))
+        item_count_search = SOLR_select(**query_encode(**item_query))
         self.item_count = item_count_search.numFound
         return self.item_count
 
@@ -228,12 +228,12 @@ class Collection(object):
         return facet_sets
 
     def get_facets(self, facet_fields):
-        solr_params = {
+        facet_query = {
             "filters": [self.basic_filter],
             "rows": 0,
             "facets": [ff.facet for ff in facet_fields]
         }
-        facet_search = SOLR_select(**query_encode(**solr_params))
+        facet_search = SOLR_select(**query_encode(**facet_query))
         self.item_count = facet_search.numFound
 
         facets = []
@@ -527,7 +527,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
         'search_results': results.results,
         'numFound': results.numFound,
         'pages': int(math.ceil(results.numFound / int(form.rows))),
-        'facets': form.get_facets(collection.filter),
+        'facets': form.get_facets(),
         'filters': form.filter_display(),
         'cluster': cluster,
         'cluster_value': parsed_cluster_value,

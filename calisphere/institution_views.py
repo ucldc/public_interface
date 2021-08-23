@@ -10,6 +10,7 @@ from .facet_filter_type import (
     CollectionFF, RepositoryFF)
 from django.apps import apps
 from django.conf import settings
+from .temp import query_encode
 
 
 import math
@@ -40,15 +41,12 @@ def process_sort_collection_data(string):
 
 
 def campus_directory(request):
-    repositories_query = SOLR_select(
-        q='*:*',
-        rows=0,
-        start=0,
-        facet='true',
-        facet_mincount=1,
-        facet_field=['repository_url'],
-        facet_limit='-1')
-    index_repositories = repositories_query.facet_counts['facet_fields'][
+    repo_query = {
+        "query_string": "*:*",
+        "facets": ["repository_url"]
+    }
+    repo_search = SOLR_select(**query_encode(**repo_query))
+    index_repositories = repo_search.facet_counts['facet_fields'][
         'repository_url']
 
     repositories = []
@@ -79,15 +77,12 @@ def campus_directory(request):
 
 
 def statewide_directory(request):
-    repositories_query = SOLR_select(
-        q='*:*',
-        rows=0,
-        start=0,
-        facet='true',
-        facet_mincount=1,
-        facet_field=['repository_url'],
-        facet_limit='-1')
-    index_repositories = repositories_query.facet_counts['facet_fields'][
+    repo_query = {
+        "query_string": "*:*",
+        "facets": ["repository_url"]
+    }
+    repo_search = SOLR_select(**query_encode(**repo_query))
+    index_repositories = repo_search.facet_counts['facet_fields'][
         'repository_url']
     repositories = []
     for repository_url in index_repositories:
@@ -272,18 +267,12 @@ def institution_collections(request, institution):
     page = int(request.GET['page']) if 'page' in request.GET else 1
 
     collections_params = {
-        'q': '',
-        'rows': 0,
-        'start': 0,
-        'fq': [institution.filter],
-        'facet': 'true',
-        'facet_mincount': 1,
-        'facet_limit': '-1',
-        'facet_field': ['sort_collection_data'],
+        'filters': [institution.basic_filter],
+        'facets': ['sort_collection_data'],
         'facet_sort': 'index'
     }
 
-    collections_search = SOLR_select(**collections_params)
+    collections_search = SOLR_select(**query_encode(**collections_params))
     sort_collection_data = collections_search.facet_counts['facet_fields'][
         'sort_collection_data']
 
@@ -292,7 +281,7 @@ def institution_collections(request, institution):
     # solrpy gives us a dict == unsorted (!)
     # use the `facet_decade` mode of process_facets to do a
     # lexical sort by value ....
-    col_fft = CollectionFF(request)
+    col_fft = CollectionFF(request.GET.copy())
     related_collections = list(
         collection[0] for collection in
         col_fft.process_facets(sort_collection_data, 'value'))
@@ -372,7 +361,7 @@ def repository_collections(request, repository_id):
 
 def campus_search(request, campus_slug):
     institution = Campus(campus_slug)
-    form = CampusForm(request, institution)
+    form = CampusForm(request.GET.copy(), institution)
     context = institution_search(request, form, institution)
 
     context.update({
@@ -414,15 +403,11 @@ def campus_collections(request, campus_slug):
 def campus_institutions(request, campus_slug):
     institution = Campus(campus_slug)
 
-    institutions_search = SOLR_select(
-        q='',
-        rows=0,
-        start=0,
-        fq=[institution.filter],
-        facet='true',
-        facet_mincount=1,
-        facet_limit='-1',
-        facet_field=['repository_data'])
+    institutions_query = {
+        'filters': [institution.basic_filter],
+        'facets': ['repository_data']
+    }
+    institutions_search = SOLR_select(query_encode(**institutions_query))
     institutions = institutions_search.facet_counts['facet_fields'][
         'repository_data']
 

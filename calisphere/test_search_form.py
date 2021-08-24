@@ -9,21 +9,21 @@ from django.http import QueryDict
 from urllib.parse import urlencode
 
 
-def es_query_new(form):
-    es_query_new = {
+def solr_query_new(form):
+    solr_query_new = {
         "query_string": form.query_string,
         "filters": [ft.basic_query for ft in form.facet_filter_types 
                     if ft.basic_query],
         "rows": int(form.rows),
         "start": int(form.start),
-        # "sort": tuple(
-        #     (constants.SORT_OPTIONS[form.sort]).split(' ')
-        # ),
+        "sort": tuple(
+            (constants.SORT_OPTIONS[form.sort]).split(' ')
+        ),
         "facets": [ft.facet_field for ft in form.facet_filter_types]
     }
     if form.implicit_filter:
-        es_query_new['filters'].append(form.basic_implicit_filter)
-    return es_query_new
+        solr_query_new['filters'].append(form.basic_implicit_filter)
+    return solr_query_new
 
 
 class SearchFormTestCase(unittest.TestCase):
@@ -38,11 +38,11 @@ class SearchFormTestCase(unittest.TestCase):
         ]
 
         for param in params:
-            req = QueryDict(urlencode(param))
+            req = QueryDict(urlencode(param, True))
             form = SearchForm(req)
             search_query = form.query_encode()
 
-            new_query = es_query_new(form)
+            new_query = solr_query_new(form)
             new_query = query_encode(**new_query)
 
-            self.assertEqual(search_query, new_query)
+            self.assertEqual(new_query, search_query)

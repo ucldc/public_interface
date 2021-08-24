@@ -274,7 +274,6 @@ class Collection(object):
 
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
-            "query_string": "*:*",
             "filters": [
                 self.basic_filter,
                 {"type_ss": ["image"]}

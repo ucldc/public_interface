@@ -407,7 +407,7 @@ def campus_institutions(request, campus_slug):
         'filters': [institution.basic_filter],
         'facets': ['repository_data']
     }
-    institutions_search = SOLR_select(query_encode(**institutions_query))
+    institutions_search = SOLR_select(**query_encode(**institutions_query))
     institutions = institutions_search.facet_counts['facet_fields'][
         'repository_data']
 

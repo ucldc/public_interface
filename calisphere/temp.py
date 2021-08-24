@@ -25,9 +25,13 @@ def query_encode(query_string: str = None,
     solr_filters = []
     if filters:
         for f in filters:
-            fq = [f"{k}: \"{' OR '.join(v)}\"" 
-                  for k, v in f.items()]
-            solr_filters.append(fq[0])
+            filters_of_type = []
+            for filter_field, values in f.items():
+                fq = [f"{filter_field}: \"{v}\"" for v in values]
+                filters_of_type.append(fq)
+
+            filters_of_type = " OR ".join(filters_of_type[0])
+            solr_filters.append(filters_of_type)
 
     if exclude:
         for f in exclude:
@@ -47,7 +51,8 @@ def query_encode(query_string: str = None,
             'sort_collection_data', 
             'repository_data',
             'collection_data',
-            'facet_decade']
+            'facet_decade',
+            'type_ss']
         solr_facets = [f"{facet}_ss" if facet not in exceptions 
                        else facet for facet in facets]
         solr_params.update({

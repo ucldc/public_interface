@@ -52,18 +52,18 @@ class FacetFilterType(object):
 
     def set_query(self):
         selected_filters = self.form_context
+        self.query = []
         self.basic_query = {}
         if len(selected_filters) > 0:
-            selected_filters = list([
+            query = list([
                 '{0}: "{1}"'.format(self.filter_field,
                                     solr_escape(
                                         self.filter_transform(val)))
                 for val in selected_filters
             ])
-            selected_filters = " OR ".join(selected_filters)
-            self.basic_query = {self.filter_field: selected_filters}
-
-        self.query = selected_filters
+            self.query = " OR ".join(query)
+            self.basic_query = {self.filter_field: [
+                self.filter_transform(v) for v in selected_filters]}
 
     def filter_transform(self, filter_val):
         return filter_val
@@ -122,16 +122,16 @@ class RelationFF(FacetFilterType):
     form_name = 'relation_ss'
     facet_field = 'relation'
     display_name = 'Relation'
-    filter_field = 'relation'
+    filter_field = 'relation_ss'
     sort_by = 'value'
     faceting_allowed = False
 
 
 class TypeFF(FacetFilterType):
     form_name = 'type_ss'
-    facet_field = 'type'
+    facet_field = 'type_ss'
     display_name = 'Type of Item'
-    filter_field = 'type'
+    filter_field = 'type_ss'
 
 
 class DecadeFF(FacetFilterType):

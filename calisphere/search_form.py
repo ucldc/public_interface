@@ -2,7 +2,8 @@ from .cache_retry import SOLR_select
 from . import constants
 from django.http import Http404
 from . import facet_filter_type as ff
-
+from .temp import query_encode as solr_query_encode
+import json
 
 def solr_escape(text):
     return text.replace('?', '\\?').replace('"', '\\"')
@@ -90,9 +91,6 @@ class SearchForm(object):
             terms[0] if len(terms) == 1 else " AND ".join(terms))
         # qt_string = qt_string.replace('?', '')
 
-        filters = [ft.query for ft in self.facet_filter_types
-                   if ft.query]
-
         try:
             rows = int(self.rows)
             start = int(self.start)
@@ -104,27 +102,26 @@ class SearchForm(object):
         if len(facet_types) == 0:
             facet_types = self.facet_filter_types
 
+
         solr_query = {
-            'q': self.query_string,
+            'query_string': self.query_string,
+            'filters': [ft.basic_query for ft in self.facet_filter_types
+                        if ft.query],
             'rows': rows,
             'start': start,
-            'sort': sort,
-            'fq': filters,
-            'facet': 'true',
-            'facet_mincount': 1,
-            'facet_limit': '-1',
-            'facet_field':
-            list(facet_type['facet_field'] for facet_type in facet_types)
+            'sort': tuple(sort.split(' ')),
+            'facets': [ft['facet_field'] for ft in facet_types]
         }
-
-        query_fields = self.request.get('qf')
-        if query_fields:
-            solr_query.update({'qf': query_fields})
-
         if self.implicit_filter:
-            solr_query['fq'].append(self.implicit_filter)
+            solr_query['filters'].append(self.implicit_filter)
 
-        return solr_query
+        new_query = solr_query_encode(**solr_query)
+
+        # query_fields = self.request.get('qf')
+        # if query_fields:
+        #     solr_query.update({'qf': query_fields})
+
+        return new_query
 
     def get_facets(self):
         # get facet counts
@@ -139,13 +136,15 @@ class SearchForm(object):
         facets = {}
         for fft in self.facet_filter_types:
             if (len(fft.query) > 0):
-                exclude_filter = fft.query
-                fft.query = None
+                exclude_filter = fft.basic_query
+                fft.basic_query = None
                 facet_params = self.query_encode([fft])
-                fft.query = exclude_filter
+                fft.basic_query = exclude_filter
 
                 if self.implicit_filter:
-                    facet_params['fq'].append(self.implicit_filter)
+                    for facet_field, values in self.implicit_filter.items():
+                        facet_params['fq'].append(
+                            f'{facet_field}: \"{values[0]}\"')
                 facet_search = SOLR_select(**facet_params)
 
                 self.facets[fft.facet_field] = (
@@ -187,7 +186,7 @@ class CampusForm(SearchForm):
     def __init__(self, request, campus):
         super().__init__(request)
         self.institution = campus
-        self.implicit_filter = campus.filter
+        self.implicit_filter = campus.basic_filter
 
 
 class RepositoryForm(SearchForm):
@@ -200,7 +199,7 @@ class RepositoryForm(SearchForm):
     def __init__(self, request, institution):
         super().__init__(request)
         self.institution = institution
-        self.implicit_filter = institution.filter
+        self.implicit_filter = institution.basic_filter
 
 
 class CollectionForm(SearchForm):
@@ -220,9 +219,9 @@ class CollectionForm(SearchForm):
         # is a custom facet
         if not collection.custom_facets:
             if request.get('relation_ss'):
-                facet_filter_types.append(ff.RelationFF(request.GET.copy()))
+                facet_filter_types.append(ff.RelationFF(request))
         self.facet_filter_types = facet_filter_types
-        self.implicit_filter = collection.filter
+        self.implicit_filter = collection.basic_filter
 
 
 class AltSortField(SortField):

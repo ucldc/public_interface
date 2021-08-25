@@ -344,11 +344,11 @@ def item_view_carousel(request):
     carousel_params = form.query_encode()
 
     # if no query string or filters, do a "more like this" search
-    if not form.query_string and not form.filter_query:
+    if not form.query_string and not carousel_params.get('filters'):
         search_results, num_found = item_view_carousel_mlt(item_id)
     else:
         try:
-            carousel_search = SOLR_select(**carousel_params)
+            carousel_search = SOLR_select(**query_encode(**carousel_params))
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
             print((request.get_full_path()))
@@ -397,11 +397,12 @@ def get_related_collections(request):
     rc_params['rows'] = 0
 
     # mlt search
-    if len(form.query_string) == 0 and len(rc_params['fq']) == 0:
+    if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
-            rc_params['q'] = 'id:' + request.GET.get('itemId', '')
+            rc_params['query_string'] = (
+                f"id:{request.GET.get('itemId')}")
 
-    related_collections = SOLR_select(**rc_params)
+    related_collections = SOLR_select(**query_encode(**rc_params))
     related_collections = related_collections.facet_counts['facet_fields'][
         CollectionFF.facet_field]
 
@@ -420,7 +421,7 @@ def get_related_collections(request):
         col_id = (re.match(
             col_regex, related_collections[i].split('::')[0]).group('id'))
         collection = Collection(col_id)
-        lockup_data = collection.get_lockup(form.query_string)
+        lockup_data = collection.get_lockup(rc_params['query_string'])
         three_related_collections.append(lockup_data)
 
     return three_related_collections, len(related_collections)
@@ -528,11 +529,13 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
 
     form = CollectionFacetValueForm(request.GET.copy(), collection)
     filter_params = form.query_encode()
-    if filter_params.query_string:
-        filter_params['q'] += " AND "
-    filter_params['q'] += f"{facet}_ss:\"{escaped_facet_value}\""
 
-    filter_search = SOLR_select(**filter_params)
+    if not filter_params.get('filters'):
+        filter_params['filters'] = {f'{facet}_ss': [escaped_facet_value]}
+    else:
+        filter_params['filters'].append({f'{facet}_ss': [escaped_facet_value]})
+
+    filter_search = SOLR_select(**query_encode(**filter_params))
 
     collection_name = collection_details.get('name')
 

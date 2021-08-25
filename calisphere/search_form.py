@@ -2,7 +2,7 @@ from .cache_retry import SOLR_select
 from . import constants
 from django.http import Http404
 from . import facet_filter_type as ff
-from .temp import query_encode as solr_query_encode
+from .temp import query_encode as index_query_encode
 import json
 
 def solr_escape(text):
@@ -48,11 +48,11 @@ class SearchForm(object):
         for field in self.simple_fields:
             if isinstance(self.simple_fields[field], list):
                 self.__dict__.update({
-                    field: request.getlist(field)
+                    field: self.request.getlist(field)
                 })
             else:
                 self.__dict__.update({
-                    field: request.get(field, self.simple_fields[field])
+                    field: self.request.get(field, self.simple_fields[field])
                 })
 
         self.sort = self.sort_field(request).sort
@@ -102,19 +102,19 @@ class SearchForm(object):
         if len(facet_types) == 0:
             facet_types = self.facet_filter_types
 
-        solr_query = {
-            'query_string': self.query_string,
-            'filters': [ft.basic_query for ft in self.facet_filter_types
+        index_query = {
+            "query_string": self.query_string,
+            "filters": [ft.basic_query for ft in self.facet_filter_types
                         if ft.basic_query],
-            'rows': rows,
-            'start': start,
-            'sort': tuple(sort.split(' ')),
-            'facets': [ft['facet_field'] for ft in facet_types]
+            "rows": rows,
+            "start": start,
+            "sort": tuple(sort.split(' ')),
+            "facets": [ft['facet_field'] for ft in facet_types]
         }
         if self.implicit_filter:
-            solr_query['filters'].append(self.implicit_filter)
+            index_query['filters'].append(self.implicit_filter)
 
-        new_query = solr_query_encode(**solr_query)
+        new_query = index_query_encode(**index_query)
 
         # query_fields = self.request.get('qf')
         # if query_fields:
@@ -219,7 +219,6 @@ class CollectionForm(SearchForm):
         if not collection.custom_facets:
             if request.get('relation_ss'):
                 self.facet_filter_types.append(ff.RelationFF(request))
-
         self.implicit_filter = collection.basic_filter
 
 

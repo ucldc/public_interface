@@ -35,18 +35,8 @@ class FacetFilterType(object):
     faceting_allowed = True
 
     def __init__(self,
-                 request,
-                 type=None):
-
-        if type:
-            self.form_name = type['form_name']
-            self.facet_field = type['facet_field']
-            self.display_name = type['display_name']
-            self.filter_field = type['filter_field']
-            self.sort_by = type['sort_by']     # 'count' or 'value'
-            self.faceting_allowed = type['faceting_allowed']
-
-        if request:
+                 request):
+        if request is not None:
             self.form_context = request.getlist(self.form_name)
             self.set_query()
 

@@ -1,4 +1,6 @@
 from typing import Dict, List, Tuple
+from .cache_retry import SOLR_select
+
 
 FieldName = str
 Order = str
@@ -51,10 +53,10 @@ def query_encode(query_string: str = None,
             'sort_collection_data', 
             'repository_data',
             'collection_data',
-            'facet_decade',
-            'type_ss']
-        solr_facets = [f"{facet}_ss" if facet not in exceptions 
-                       else facet for facet in facets]
+            'facet_decade']
+        solr_facets = [facet if (facet in exceptions
+                       or facet[-3:] == '_ss')
+                       else f"{facet}_ss" for facet in facets]
         solr_params.update({
             'facet': 'true',
             'facet_field': solr_facets,
@@ -75,3 +77,7 @@ def query_encode(query_string: str = None,
     solr_params.update({'rows': rows})
 
     return solr_params
+
+
+def search_index(query):
+    return SOLR_select(**query_encode(**query))

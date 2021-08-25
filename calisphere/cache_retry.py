@@ -72,8 +72,8 @@ repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<id>\d*)/?')
 
 
-def SOLR_get(args):
-    item_search = SOLR_select(args)
+def SOLR_get(**kwargs):
+    item_search = SOLR_select(**kwargs)
     found = bool(item_search.numFound)
     item = item_search.results[0]
 

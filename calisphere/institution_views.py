@@ -3,14 +3,14 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .cache_retry import SOLR_select, json_loads_url
+from .cache_retry import json_loads_url
 from .search_form import CampusForm, RepositoryForm
 from .collection_views import Collection, get_rc_from_ids
 from .facet_filter_type import (
     CollectionFF, RepositoryFF)
 from django.apps import apps
 from django.conf import settings
-from .temp import query_encode
+from .temp import search_index
 
 
 import math
@@ -45,7 +45,7 @@ def campus_directory(request):
         "query_string": "*:*",
         "facets": ["repository_url"]
     }
-    repo_search = SOLR_select(**query_encode(**repo_query))
+    repo_search = search_index(repo_query)
     index_repositories = repo_search.facet_counts['facet_fields'][
         'repository_url']
 
@@ -81,7 +81,7 @@ def statewide_directory(request):
         "query_string": "*:*",
         "facets": ["repository_url"]
     }
-    repo_search = SOLR_select(**query_encode(**repo_query))
+    repo_search = search_index(repo_query)
     index_repositories = repo_search.facet_counts['facet_fields'][
         'repository_url']
     repositories = []
@@ -272,7 +272,7 @@ def institution_collections(request, institution):
         'facet_sort': 'index'
     }
 
-    collections_search = SOLR_select(**query_encode(**collections_params))
+    collections_search = search_index(collections_params)
     sort_collection_data = collections_search.facet_counts['facet_fields'][
         'sort_collection_data']
 
@@ -282,15 +282,16 @@ def institution_collections(request, institution):
     # use the `facet_decade` mode of process_facets to do a
     # lexical sort by value ....
     col_fft = CollectionFF(request.GET.copy())
-    related_collections = list(
+    sort_collection_data = list(
         collection[0] for collection in
         col_fft.process_facets(sort_collection_data, 'value'))
+
     start = ((page-1) * 10)
     end = page * 10
-    related_collections = related_collections[start:end]
+    sort_collection_data = sort_collection_data[start:end]
 
     related_collections = []
-    for i, related_collection in enumerate(related_collections):
+    for i, related_collection in enumerate(sort_collection_data):
         collection_parts = process_sort_collection_data(
             related_collection)
         col_id = re.match(col_regex, collection_parts[2]).group('id')
@@ -407,7 +408,7 @@ def campus_institutions(request, campus_slug):
         'filters': [institution.basic_filter],
         'facets': ['repository_data']
     }
-    institutions_search = SOLR_select(**query_encode(**institutions_query))
+    institutions_search = search_index(institutions_query)
     institutions = institutions_search.facet_counts['facet_fields'][
         'repository_data']
 

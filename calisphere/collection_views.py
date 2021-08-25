@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
-from .facet_filter_type import FacetFilterType
+from .facet_filter_type import FacetFilterType, TypeFF
 from .cache_retry import json_loads_url
 from .search_form import CollectionForm, solr_escape
 from builtins import range
@@ -135,7 +135,6 @@ class Collection(object):
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
         self.basic_filter = {'collection_url': [self.url]}
-        self.filter = 'collection_url: "' + self.url + '"'
 
     def _parse_custom_facets(self):
         custom_facets = []
@@ -277,7 +276,7 @@ class Collection(object):
         search_terms = {
             "filters": [
                 self.basic_filter,
-                {"type_ss": ["image"]}
+                {TypeFF.filter_field: ["image"]}
             ],
             "result_fields": [
                 "reference_image_md5",
@@ -294,7 +293,7 @@ class Collection(object):
         items = display_items.results
 
         search_terms['filters'].pop(1)
-        search_terms['exclude'] = [{"type_ss": ["image"]}]
+        search_terms['exclude'] = [{TypeFF.filter_field: ["image"]}]
 
         ugly_display_items = search_index(search_terms)
         # if there's not enough image items, get some non-image
@@ -312,7 +311,7 @@ class Collection(object):
         }
 
     def get_lockup(self, keyword_query):
-        rc_solr_params = {
+        rc_params = {
             'query_string': keyword_query,
             'filters': [self.basic_filter],
             'result_fields': [
@@ -325,13 +324,13 @@ class Collection(object):
             ],
             "rows": 3,
         }
-        collection_items = search_index(rc_solr_params)
+        collection_items = search_index(rc_params)
         collection_items = collection_items.results
 
         if len(collection_items) < 3:
             # redo the query without any search terms
-            rc_solr_params.pop('query_string')
-            collection_items_no_query = search_index(rc_solr_params)
+            rc_params.pop('query_string')
+            collection_items_no_query = search_index(rc_params)
             collection_items += collection_items_no_query.results
 
         if len(collection_items) <= 0:

@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
-from .facet_filter_type import FacetFilterType, TypeFF
+from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
 from .cache_retry import json_loads_url
 from .search_form import CollectionForm, solr_escape
 from builtins import range
@@ -134,7 +134,7 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
-        self.basic_filter = {'collection_url': [self.url]}
+        self.basic_filter = {CollectionFF.filter_field: [self.url]}
 
     def _parse_custom_facets(self):
         custom_facets = []
@@ -283,7 +283,7 @@ class Collection(object):
                 "url_item",
                 "id",
                 "title",
-                "collection_url",
+                CollectionFF.filter_field,
                 "type_ss"
             ],
             "sort": ("sort_title", "asc"),

@@ -63,6 +63,13 @@ UCLDC_SCHEMA_FACETS = [
   FacetDisplay("spatial", "spatial"),
 ]
 
+FacetDisplayField = namedtuple(
+    'FacetDisplayField', 'facet, display, field')
+UCLDC_SOLR_SCHEMA_FACETS = [
+    FacetDisplayField(fd.facet, fd.display, f"{fd.facet}_ss") 
+    for fd in UCLDC_SCHEMA_FACETS
+]
+
 CAMPUS_LIST = [
     {
         'featuredImage': {

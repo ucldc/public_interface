@@ -1,9 +1,8 @@
-from .cache_retry import SOLR_select
 from . import constants
 from django.http import Http404
 from . import facet_filter_type as ff
-from .temp import query_encode as index_query_encode
-import json
+from .temp import search_index
+
 
 def solr_escape(text):
     return text.replace('?', '\\?').replace('"', '\\"')
@@ -109,7 +108,7 @@ class SearchForm(object):
             "rows": rows,
             "start": start,
             "sort": tuple(sort.split(' ')),
-            "facets": [ft['facet_field'] for ft in facet_types]
+            "facets": [ft.facet_field for ft in facet_types]
         }
         if self.implicit_filter:
             index_query['filters'].append(self.implicit_filter)
@@ -141,7 +140,7 @@ class SearchForm(object):
                 if self.implicit_filter:
                     facet_params['filters'].append(self.implicit_filter)
 
-                facet_search = SOLR_select(**index_query_encode(**facet_params))
+                facet_search = search_index(facet_params)
 
                 self.facets[fft.facet_field] = (
                     facet_search.facet_counts['facet_fields']
@@ -162,7 +161,7 @@ class SearchForm(object):
         if extra_filter:
             query['filters'].append(extra_filter)
 
-        results = SOLR_select(**index_query_encode(**query))
+        results = search_index(query)
         self.facets = results.facet_counts['facet_fields']
         return results
 

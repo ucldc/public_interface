@@ -4,11 +4,10 @@ from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, HttpResponse
 from . import constants
-from . import facet_filter_type as facet_module
-from .cache_retry import SOLR_select, SOLR_get, SOLR_raw, json_loads_url
+from .cache_retry import SOLR_get, SOLR_raw, json_loads_url
 from .search_form import (SearchForm, solr_escape, CollectionFacetValueForm,
                           CarouselForm, CollectionCarouselForm, 
-                          CampusCarouselForm, CampusForm, RepositoryForm)
+                          CampusCarouselForm, CampusForm)
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository, Campus
 from .facet_filter_type import CollectionFF
@@ -16,7 +15,7 @@ from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
 from exhibits.models import ExhibitItem, Exhibit
-from .temp import query_encode
+from .temp import search_index
 
 import os
 import math
@@ -119,7 +118,7 @@ def item_view(request, item_id=''):
             "query_string": f"harvest_id_s:*{_fixid(item_id)}",
             "rows": 10
         }
-        old_id_search = SOLR_select(**query_encode(**old_id_query))
+        old_id_search = search_index(old_id_query)
         if old_id_search.numFound:
             return redirect('calisphere:itemView',
                             old_id_search.results[0]['id'])
@@ -348,7 +347,7 @@ def item_view_carousel(request):
         search_results, num_found = item_view_carousel_mlt(item_id)
     else:
         try:
-            carousel_search = SOLR_select(**query_encode(**carousel_params))
+            carousel_search = search_index(carousel_params)
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
             print((request.get_full_path()))
@@ -402,7 +401,7 @@ def get_related_collections(request):
             rc_params['query_string'] = (
                 f"id:{request.GET.get('itemId')}")
 
-    related_collections = SOLR_select(**query_encode(**rc_params))
+    related_collections = search_index(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
         CollectionFF.facet_field]
 
@@ -485,7 +484,7 @@ def report_collection_facet(request, collection_id, facet):
         "filters": [{'collection_url': [collection_url]}],
         "facets": [facet]
     }
-    facet_search = SOLR_select(**query_encode(**facet_params))
+    facet_search = search_index(facet_params)
 
     values = facet_search.facet_counts.get(
         'facet_fields').get('{}_ss'.format(facet))
@@ -527,13 +526,14 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
 
     form = CollectionFacetValueForm(request.GET.copy(), collection)
     filter_params = form.query_encode()
+    query_string = f"{facet}:\"{escaped_facet_value}\""
 
-    if not filter_params.get('filters'):
-        filter_params['filters'] = {f'{facet}_ss': [escaped_facet_value]}
+    if form.query_string:
+        filter_params['query_string'] += " AND ({query_string})"
     else:
-        filter_params['filters'].append({f'{facet}_ss': [escaped_facet_value]})
+        filter_params['query_string'] = query_string
 
-    filter_search = SOLR_select(**query_encode(**filter_params))
+    filter_search = search_index(filter_params)
 
     collection_name = collection_details.get('name')
 

@@ -42,7 +42,6 @@ def process_sort_collection_data(string):
 
 def campus_directory(request):
     repo_query = {
-        "query_string": "*:*",
         "facets": ["repository_url"]
     }
     repo_search = search_index(repo_query)
@@ -78,7 +77,6 @@ def campus_directory(request):
 
 def statewide_directory(request):
     repo_query = {
-        "query_string": "*:*",
         "facets": ["repository_url"]
     }
     repo_search = search_index(repo_query)
@@ -150,7 +148,6 @@ class Campus(object):
             self.contact_info = ''
 
         self.basic_filter = {'campus_url': [self.url]}
-        self.filter = 'campus_url: "' + self.url + '"'
 
 
 class Repository(object):
@@ -182,7 +179,6 @@ class Repository(object):
                 self.featured_image = feat[0].get('featuredImage')
 
         self.basic_filter = {'repository_url': [self.url]}
-        self.filter = 'repository_url: "' + self.url + '"'
 
     def __str__(self):
         return f"{self.id}: {self.details.name}"

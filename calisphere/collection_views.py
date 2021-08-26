@@ -165,7 +165,7 @@ class Collection(object):
         if self.custom_facets:
             for custom in self.custom_facets:
                 for i, facet in enumerate(custom_schema_facets):
-                    if custom.facet_field == facet.facet_field:
+                    if custom.facet_field == facet.field:
                         custom_schema_facets[i] = constants.FacetDisplayField(
                             facet.facet, custom.display_name, facet.field)
         return custom_schema_facets

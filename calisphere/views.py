@@ -481,11 +481,9 @@ def report_collection_facet(request, collection_id, facet):
         repository['resource_id'] = repository.get('resource_uri').split(
             '/')[-2]
 
-    # facet=true&facet.query=*&rows=0&facet.field=title_ss&facet.pivot=title_ss,collection_data"
     facet_params = {
         "filters": [{'collection_url': [collection_url]}],
-        "facets": [facet],
-        "facet_sort": "count"
+        "facets": [facet]
     }
     facet_search = SOLR_select(**query_encode(**facet_params))
 

@@ -42,11 +42,11 @@ def process_sort_collection_data(string):
 
 def campus_directory(request):
     repo_query = {
-        "facets": ["repository_url"]
+        "facets": [RepositoryFF.filter_field]
     }
     repo_search = search_index(repo_query)
     index_repositories = repo_search.facet_counts['facet_fields'][
-        'repository_url']
+        RepositoryFF.filter_field]
 
     repositories = []
     for repository_url in index_repositories:
@@ -77,11 +77,12 @@ def campus_directory(request):
 
 def statewide_directory(request):
     repo_query = {
-        "facets": ["repository_url"]
+        "facets": [RepositoryFF.filter_field]
     }
     repo_search = search_index(repo_query)
     index_repositories = repo_search.facet_counts['facet_fields'][
-        'repository_url']
+        RepositoryFF.filter_field]
+
     repositories = []
     for repository_url in index_repositories:
         repo_id = re.match(repo_regex, repository_url).group('repository_id')

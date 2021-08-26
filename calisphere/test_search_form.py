@@ -28,21 +28,77 @@ def solr_query_new(form):
 
 class SearchFormTestCase(unittest.TestCase):
 
+    def build_query(self, test):
+        form = SearchForm(QueryDict(urlencode(test, True)))
+        search_query = query_encode(**form.query_encode())
+        return search_query
+
     def test_keyword_only_search(self):
-        params = [
-            {'q': 'welcome'},
-            {'q': 'welcome', 'rq': 'anthill'},
-            {'q': 'welcome', 'rq': 'anthill', 'type_ss': ['text', 'image']},
-            {'q': 'welcome', 'rq': 'anthill', 'type_ss': ['text', 'image'], 'collection_data': ['466', '26695']},
-            {'type_ss': ['text', 'image'], 'collection_data': ['466', '26695']}
-        ]
+        test = {'q': 'welcome'}
+        solr = {'q': 'welcome', 'facet': 'true', 'facet_field': [
+            'type_ss', 'facet_decade', 'repository_data', 'collection_data'], 
+            'facet_limit': '-1', 'facet_mincount': 1, 'sort': 'score desc', 
+            'rows': 24
+        }
+        self.assertEqual(self.build_query(test), solr)
 
-        for param in params:
-            req = QueryDict(urlencode(param, True))
-            form = SearchForm(req)
-            search_query = form.query_encode()
+    def test_refine_query(self):
+        test = {'q': 'welcome', 'rq': 'anthill'}
+        solr = {'q': 'welcome AND anthill', 'facet': 'true', 'facet_field': [
+            'type_ss', 'facet_decade', 'repository_data', 'collection_data'], 
+            'facet_limit': '-1', 'facet_mincount': 1, 'sort': 'score desc', 
+            'rows': 24
+        }
+        self.assertEqual(self.build_query(test), solr)
 
-            new_query = solr_query_new(form)
-            new_query = query_encode(**new_query)
+    def test_filter_query(self):
+        test = {'q': 'welcome', 'rq': 'anthill', 'type_ss': ['text', 'image']}
+        solr = {
+            'q': 'welcome AND anthill', 
+            'fq': 'type_ss: "text" OR type_ss: "image"', 'facet': 'true', 
+            'facet_field': [
+                'type_ss', 'facet_decade', 'repository_data', 'collection_data'
+            ], 'facet_limit': '-1', 'facet_mincount': 1, 'sort': 'score desc', 
+            'rows': 24
+        }
+        self.assertEqual(self.build_query(test), solr)
 
-            self.assertEqual(new_query, search_query)
+    def test_multiple_filters(self):
+        test = {'q': 'welcome', 'rq': 'anthill', 'type_ss': ['text', 'image'], 
+                'collection_data': ['466', '26695']}
+        solr = {
+            'q': 'welcome AND anthill', 
+            'fq': [
+                'type_ss: "text" OR type_ss: "image"', 
+                ('collection_url: '
+                    '"https://registry.cdlib.org/api/v1/collection/466/" '
+                    'OR collection_url: '
+                    '"https://registry.cdlib.org/api/v1/collection/26695/"')
+            ], 
+            'facet': 'true', 
+            'facet_field': [
+                'type_ss', 'facet_decade', 'repository_data', 'collection_data'
+            ], 
+            'facet_limit': '-1', 'facet_mincount': 1, 'sort': 'score desc', 
+            'rows': 24
+        }
+        self.assertEqual(self.build_query(test), solr)
+
+    def test_filters_only(self):
+        test = {'type_ss': ['text', 'image'], 'collection_data': ['466', '26695']}
+        solr = {
+            'fq': [
+                'type_ss: "text" OR type_ss: "image"', 
+                ('collection_url: '
+                    '"https://registry.cdlib.org/api/v1/collection/466/" '
+                    'OR collection_url: '
+                    '"https://registry.cdlib.org/api/v1/collection/26695/"')
+            ], 
+            'facet': 'true', 
+            'facet_field': [
+                'type_ss', 'facet_decade', 'repository_data', 'collection_data'
+            ], 
+            'facet_limit': '-1', 'facet_mincount': 1, 'sort': 'sort_title asc', 
+            'rows': 24
+        }
+        self.assertEqual(self.build_query(test), solr)

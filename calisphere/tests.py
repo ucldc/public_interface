@@ -32,7 +32,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         solr_params = {
             "filters": [collection.basic_filter],
             "rows": 0,
-            "facets": [ff.facet for ff in facet_fields],
+            "facets": [ff.field for ff in facet_fields],
             "facet_sort": 'count'
         }
         encoded = query_encode(**solr_params)
@@ -210,7 +210,7 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         solr_params = query_encode(**solr_params)
         collections_params = {
             'rows': 0,
-            'fq': institution.filter,
+            'fq': 'repository_url: "https://registry.cdlib.org/api/v1/repository/25/"',
             'facet': 'true',
             'facet_mincount': 1,
             'facet_limit': '-1',
@@ -228,7 +228,7 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         solr_params = query_encode(**solr_params)
         institutions_search = {
             'rows': 0,
-            'fq': institution.filter,
+            'fq': 'campus_url: "https://registry.cdlib.org/api/v1/campus/3/"',
             'facet': 'true',
             'facet_mincount': 1,
             'facet_limit': '-1',

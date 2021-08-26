@@ -395,7 +395,7 @@ def get_related_collections(request):
     rc_params = form.query_encode([field])
     rc_params['rows'] = 0
 
-    # mlt search
+    # mlt search (TODO, need to actually make MLT?)
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
             rc_params['query_string'] = (
@@ -529,7 +529,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     query_string = f"{facet}:\"{escaped_facet_value}\""
 
     if form.query_string:
-        filter_params['query_string'] += " AND ({query_string})"
+        filter_params['query_string'] += f" AND ({query_string})"
     else:
         filter_params['query_string'] = query_string
 

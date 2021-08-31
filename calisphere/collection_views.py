@@ -514,6 +514,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
 
     cluster_type = [tup for tup in collection.custom_schema_facets
                     if tup.facet == cluster][0]
+
     if not cluster_type:
         raise Http404("{} is not a valid facet".format(cluster))
 
@@ -585,7 +586,7 @@ def get_cluster_thumbnails(collection, facet, facet_value):
     thumb_params = {
         'filters': [
             collection.basic_filter,
-            {f'{facet}_ss': [escaped_cluster_value]}
+            {facet.field: [escaped_cluster_value]}
         ],
         'result_fields': ['reference_image_md5', 'type_ss'],
         'rows': 3

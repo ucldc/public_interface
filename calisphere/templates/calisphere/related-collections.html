@@ -62,30 +62,30 @@
             {% for item in items %}
             {% if forloop.counter <= 3 %}
             <div class="related-coll__thumbnail-container{{ forloop.counter }}">
-              {% if 'reference_image_md5' in item and 'type_ss' in item %}
+              {% if 'reference_image_md5' in item and 'type' in item %}
                 <img
                 src="{{ thumbnailUrl }}crop/300x300/{{ item.reference_image_md5 }}"
                 class="thumbnail__image"
                 alt="">
 
-                {% if item.type_ss.0|lower == "moving image" %}
+                {% if item.type.0|lower == "moving image" %}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-play-circle-o"></div>
-                {% elif item.type_ss.0|lower == "sound"%}
+                {% elif item.type.0|lower == "sound"%}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-volume-up"></div>
-                {# elif item.type_ss.0|lower == "text"#}
+                {# elif item.type.0|lower == "text"#}
                 <!-- <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}- -large{% endif %} fa-file-text-o"></div> -->
-                {% elif item.type_ss.0|lower == "dataset" %}
+                {% elif item.type.0|lower == "dataset" %}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
                 {% endif %}
 
               {% else %}
-                {% if item.type_ss.0|lower == "moving image" %}
+                {% if item.type.0|lower == "moving image" %}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-play-circle-o"></div>
-                {% elif item.type_ss.0|lower == "sound"%}
+                {% elif item.type.0|lower == "sound"%}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-volume-up"></div>
-                {% elif item.type_ss.0|lower == "text"%}
+                {% elif item.type.0|lower == "text"%}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-file-text-o"></div>
-                {% elif item.type_ss.0|lower == "dataset" %}
+                {% elif item.type.0|lower == "dataset" %}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
                 {% endif %}
               {% endif %}

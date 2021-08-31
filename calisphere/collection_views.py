@@ -322,7 +322,7 @@ class Collection(object):
                 "url_item",
                 "id",
                 "title",
-                "type_ss"
+                "type"
             ],
             "rows": 3,
         }

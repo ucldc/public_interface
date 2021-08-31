@@ -512,14 +512,16 @@ def collection_facet_json(request, collection_id, facet):
 def collection_facet_value(request, collection_id, cluster, cluster_value):
     collection = Collection(collection_id)
 
-    if cluster not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
+    cluster_type = [tup for tup in collection.custom_schema_facets
+                    if tup.facet == cluster][0]
+    if not cluster_type:
         raise Http404("{} is not a valid facet".format(cluster))
 
     form = CollectionForm(request.GET.copy(), collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
     escaped_cluster_value = solr_escape(parsed_cluster_value)
-    extra_filter = {f"{cluster}_ss": [escaped_cluster_value]}
+    extra_filter = {cluster_type.facet: [escaped_cluster_value]}
 
     results = form.search(extra_filter)
 

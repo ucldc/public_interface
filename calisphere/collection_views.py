@@ -286,7 +286,7 @@ class Collection(object):
                 "id",
                 "title",
                 CollectionFF.filter_field,
-                "type_ss"
+                "type"
             ],
             "sort": ("sort_title", "asc"),
             "rows": 6

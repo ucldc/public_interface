@@ -453,7 +453,7 @@ def collection_facet(request, collection_id, facet):
             thumb_params = {
                 "filters": [
                     collection.basic_filter, 
-                    {f"{facet}_ss": [escaped_cluster_value]}
+                    {facet_type.field: [escaped_cluster_value]}
                 ],
                 "result_fields": ["reference_image_md5, type_ss"],
                 "rows": 3

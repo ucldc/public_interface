@@ -78,7 +78,7 @@ class SearchForm(object):
         }
         return search_form
 
-    def query_encode(self, facet_types=[]):
+    def get_query(self, facet_types=[]):
         # concatenate query terms from refine query and query box
         terms = (
             [solr_escape(self.q)] +
@@ -132,11 +132,8 @@ class SearchForm(object):
             if (len(fft.query) > 0):
                 exclude_filter = fft.basic_query
                 fft.basic_query = None
-                facet_params = self.query_encode([fft])
+                facet_params = self.get_query([fft])
                 fft.basic_query = exclude_filter
-
-                if self.implicit_filter:
-                    facet_params['filters'] += self.implicit_filter
 
                 facet_search = search_index(facet_params)
 
@@ -212,8 +209,8 @@ class CollectionForm(SearchForm):
 
 
 class CarouselForm(SearchForm):
-    def query_encode(self, facet_types=[]):
-        carousel_params = super().query_encode(facet_types)
+    def get_query(self, facet_types=[]):
+        carousel_params = super().get_query(facet_types)
         carousel_params.pop('facets')
         carousel_params['result_fields'] = [
             'id',

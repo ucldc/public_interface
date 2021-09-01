@@ -270,7 +270,7 @@ def item_view(request, item_id=''):
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = SearchForm(request.GET.copy())
-        results = search_index(form.query_encode())
+        results = search_index(form.get_query())
         facets = form.get_facets(results.facet_counts['facet_fields'])
         filter_display = form.filter_display()
 
@@ -340,7 +340,7 @@ def item_view_carousel(request):
         link_back_id = request.GET.get('campus_slug', None)
         form = CampusCarouselForm(request.GET.copy(), Campus(link_back_id))
 
-    carousel_params = form.query_encode()
+    carousel_params = form.get_query()
 
     # if no query string or filters, do a "more like this" search
     if not form.query_string and not carousel_params.get('filters'):
@@ -392,13 +392,13 @@ def get_related_collections(request):
         slug = request.GET.get('campus_slug')
         form = CampusForm(request.GET.copy(), Campus(slug))
 
-    rc_params = form.query_encode([field])
+    rc_params = form.get_query([field])
     rc_params['rows'] = 0
 
     # mlt search (TODO, need to actually make MLT?)
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
-            rc_params['query_string'] = (
+            rc_params['query_string'] = form.query_string = (
                 f"id:{request.GET.get('itemId')}")
 
     related_collections = search_index(rc_params)
@@ -525,7 +525,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     escaped_facet_value = solr_escape(parsed_facet_value)
 
     form = CollectionFacetValueForm(request.GET.copy(), collection)
-    filter_params = form.query_encode()
+    filter_params = form.get_query()
     query_string = f"{facet}:\"{escaped_facet_value}\""
 
     if form.query_string:

@@ -225,7 +225,7 @@ class Repository(object):
 
 
 def institution_search(request, form, institution):
-    results = search_index(form.query_encode())
+    results = search_index(form.get_query())
     facets = form.get_facets(results.facet_counts['facet_fields'])
     filter_display = form.filter_display()
 

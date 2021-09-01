@@ -55,7 +55,7 @@ class SearchForm(object):
                 })
 
         self.sort = self.sort_field(request).sort
-        self.implicit_filter = None
+        self.implicit_filter = []
 
     def context(self):
         fft = [{
@@ -104,14 +104,12 @@ class SearchForm(object):
         index_query = {
             "query_string": self.query_string,
             "filters": [ft.basic_query for ft in self.facet_filter_types
-                        if ft.basic_query],
+                        if ft.basic_query] + self.implicit_filter,
             "rows": rows,
             "start": start,
             "sort": tuple(sort.split(' ')),
             "facets": [ft.facet_field for ft in facet_types]
         }
-        if self.implicit_filter:
-            index_query['filters'].append(self.implicit_filter)
 
         # query_fields = self.request.get('qf')
         # if query_fields:
@@ -119,7 +117,7 @@ class SearchForm(object):
 
         return index_query
 
-    def get_facets(self):
+    def get_facets(self, result_facets):
         # get facet counts
         # if the user's selected some of the available facets (ie - there are
         # filters selected for this field type) perform a search as if those
@@ -138,15 +136,15 @@ class SearchForm(object):
                 fft.basic_query = exclude_filter
 
                 if self.implicit_filter:
-                    facet_params['filters'].append(self.implicit_filter)
+                    facet_params['filters'] += self.implicit_filter
 
                 facet_search = search_index(facet_params)
 
-                self.facets[fft.facet_field] = (
+                result_facets[fft.facet_field] = (
                     facet_search.facet_counts['facet_fields']
                     [fft.facet_field])
 
-            facets_of_type = self.facets[fft.facet_field]
+            facets_of_type = result_facets[fft.facet_field]
 
             facets[fft.facet_field] = fft.process_facets(facets_of_type)
 
@@ -155,15 +153,6 @@ class SearchForm(object):
                     facet_item[0]), facet_item[1])
 
         return facets
-
-    def search(self, extra_filter=None):
-        query = self.query_encode()
-        if extra_filter:
-            query['filters'].append(extra_filter)
-
-        results = search_index(query)
-        self.facets = results.facet_counts['facet_fields']
-        return results
 
     def filter_display(self):
         filter_display = {}
@@ -182,7 +171,7 @@ class CampusForm(SearchForm):
     def __init__(self, request, campus):
         super().__init__(request)
         self.institution = campus
-        self.implicit_filter = campus.basic_filter
+        self.implicit_filter = [campus.basic_filter]
 
 
 class RepositoryForm(SearchForm):
@@ -195,7 +184,7 @@ class RepositoryForm(SearchForm):
     def __init__(self, request, institution):
         super().__init__(request)
         self.institution = institution
-        self.implicit_filter = institution.basic_filter
+        self.implicit_filter = [institution.basic_filter]
 
 
 class CollectionForm(SearchForm):
@@ -219,7 +208,7 @@ class CollectionForm(SearchForm):
         if not collection.custom_facets:
             if request.get('relation_ss'):
                 self.facet_filter_types.append(ff.RelationFF(request))
-        self.implicit_filter = collection.basic_filter
+        self.implicit_filter = [collection.basic_filter]
 
 
 class CarouselForm(SearchForm):
@@ -258,7 +247,7 @@ class CampusCarouselForm(CarouselForm):
     def __init__(self, request, campus):
         super().__init__(request)
         self.institution = campus
-        self.implicit_filter = campus.basic_filter
+        self.implicit_filter = [campus.basic_filter]
 
 
 class AltSortField(SortField):

@@ -270,8 +270,8 @@ def item_view(request, item_id=''):
 def search(request):
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = SearchForm(request.GET.copy())
-        results = form.search()
-        facets = form.get_facets()
+        results = search_index(form.query_encode())
+        facets = form.get_facets(results.facet_counts['facet_fields'])
         filter_display = form.filter_display()
 
         rc_ids = [cd[0]['id'] for cd in facets[CollectionFF.facet_field]]

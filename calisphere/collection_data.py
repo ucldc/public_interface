@@ -9,6 +9,7 @@ from collections import namedtuple
 import string
 import random
 from .cache_retry import json_loads_url
+from .temp import search_index
 from django.core.cache import cache
 from django.conf import settings
 import time
@@ -38,23 +39,21 @@ class CollectionManager(object):
             self.total_objects = saved.get('total_objects', 850000)
         else:
             # look it up from solr
-            url = (
-                '{0}/query?facet.field=collection_data&facet=on&rows=0&facet.limit=-1&facet.mincount=1'
-                .format(settings.SOLR_URL))
-            req = urllib.request.Request(url, None,
-                                         {'X-Authentication-Token': settings.SOLR_API_KEY})
+            collections_query = {
+                'facets': ['collection_data']
+            }
+
             save = {}
-            index_data = json_loads_url(req)
-            save['data'] = self.data = index_data['facet_counts'][
-                'facet_fields']['collection_data'][::2]
+            index_data = search_index(collections_query)
+            save['data'] = self.data = list(index_data.facet_counts[
+                'facet_fields']['collection_data'].keys())
             self.parse()
             save['parsed'] = self.parsed
             save['names'] = self.names
             save['split'] = self.split
             save['no_collections'] = self.no_collections
             save['shuffled'] = self.shuffled
-            save['total_objects'] = self.total_objects = index_data['response'][
-                'numFound']
+            save['total_objects'] = self.total_objects = index_data.numFound
             cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT)
 
     def parse(self):

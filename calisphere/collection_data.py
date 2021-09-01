@@ -19,6 +19,7 @@ CollectionLink = namedtuple('CollectionLink', 'url, label, id')
 
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
              r'(?P<id>\d*)/?')
+col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 
 class CollectionManager(object):

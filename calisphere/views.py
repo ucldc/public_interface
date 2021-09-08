@@ -32,6 +32,18 @@ repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<id>\d*)/?')
 
 
+def select_index(request, index):
+    request.session['index'] = index
+    next_page = request.GET.get('next', 'calisphere:home')
+    other = request.GET.copy()
+    other.pop('next')
+    if next_page != 'calisphere:home':
+        query = other.urlencode()
+        next_page += f"&{query}"
+
+    return redirect(next_page)
+
+
 def get_hosted_content_file(structmap):
     content_file = ''
     if structmap['format'] == 'image':
@@ -268,6 +280,7 @@ def item_view(request, item_id=''):
 
 
 def search(request):
+    print(f'request.session.get: {request.session.get("index")}')
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = SearchForm(request.GET.copy())
         results = search_index(form.get_query())

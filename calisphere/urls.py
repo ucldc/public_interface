@@ -11,6 +11,7 @@ app_name = 'calisphere'
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^select-index/(?P<index>.*)/', views.select_index, name='select_index'),
     url(r'^search/$', views.search, name='search'),
     url(r'^item/(?P<item_id>.*)/$', views.item_view, name='itemView'),
     url(r'^collections/$',

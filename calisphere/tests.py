@@ -1,6 +1,6 @@
 from django.test import Client
 import unittest
-from .cache_retry import query_encode
+from .temp import query_encode
 from .collection_views import Collection
 from .institution_views import Repository, Campus
 import re

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, HttpResponse
 from . import constants
-from .cache_retry import SOLR_get, SOLR_raw, json_loads_url
+from .cache_retry import SOLR_get, SOLR_raw, json_loads_url, search_index
 from .search_form import (SearchForm, solr_escape, CollectionFacetValueForm,
                           CarouselForm, CollectionCarouselForm, 
                           CampusCarouselForm, CampusForm)
@@ -15,7 +15,6 @@ from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
 from exhibits.models import ExhibitItem, Exhibit
-from .temp import search_index
 
 import os
 import math

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, HttpResponse
 from . import constants
-from .cache_retry import SOLR_get, SOLR_raw, json_loads_url
+from .cache_retry import SOLR_get, SOLR_raw, json_loads_url, search_index
 from .search_form import (SearchForm, solr_escape, CollectionFacetValueForm,
                           CarouselForm, CollectionCarouselForm, 
                           CampusCarouselForm, CampusForm)
@@ -15,7 +15,6 @@ from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
 from exhibits.models import ExhibitItem, Exhibit
-from .temp import search_index
 
 import os
 import math
@@ -30,6 +29,18 @@ col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
 col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<id>\d*)/?')
+
+
+def select_index(request, index):
+    request.session['index'] = index
+    next_page = request.GET.get('next', 'calisphere:home')
+    other = request.GET.copy()
+    other.pop('next')
+    if next_page != 'calisphere:home':
+        query = other.urlencode()
+        next_page += f"&{query}"
+
+    return redirect(next_page)
 
 
 def get_hosted_content_file(structmap):
@@ -268,6 +279,7 @@ def item_view(request, item_id=''):
 
 
 def search(request):
+    print(f'request.session.get: {request.session.get("index")}')
     if request.method == 'GET' and len(request.GET.getlist('q')) > 0:
         form = SearchForm(request.GET.copy())
         results = search_index(form.get_query())

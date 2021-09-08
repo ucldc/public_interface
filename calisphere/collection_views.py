@@ -6,10 +6,9 @@ from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
-from .cache_retry import json_loads_url
+from .cache_retry import json_loads_url, search_index
 from .search_form import CollectionForm, solr_escape
 from builtins import range
-from .temp import search_index
 
 import os
 import math

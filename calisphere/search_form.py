@@ -1,7 +1,7 @@
 from . import constants
 from django.http import Http404
 from . import facet_filter_type as ff
-from .temp import search_index
+from .cache_retry import search_index
 
 
 def solr_escape(text):

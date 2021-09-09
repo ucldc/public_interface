@@ -94,6 +94,26 @@ def SOLR_get(**kwargs):
     return results
 
 
+def SOLR_mlt(item_id):
+    res = SOLR_raw(
+        q='id:' + item_id,
+        fields='id, type_ss, reference_image_md5, title',
+        mlt='true',
+        mlt_count='24',
+        mlt_fl='title,collection_name,subject',
+        mlt_mintf=1,
+    )
+    results = json.loads(res.decode('utf-8'))
+    return SolrResults(
+        (results['response']['docs'] + 
+            results['moreLikeThis'][item_id]['docs']),
+        results['responseHeader'],
+        results['response']['numFound'],
+        None,
+        results.get('nextCursorMark')
+    )
+
+
 def SOLR(**params):
     # replacement for edsu's solrpy based stuff
     solr_url = '{}/query/'.format(settings.SOLR_URL)

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, HttpResponse
 from . import constants
-from .cache_retry import SOLR_get, SOLR_raw, json_loads_url, search_index
+from .cache_retry import SOLR_get, SOLR_mlt, json_loads_url, search_index
 from .search_form import (SearchForm, solr_escape, CollectionFacetValueForm,
                           CarouselForm, CollectionCarouselForm, 
                           CampusCarouselForm, CampusForm)
@@ -315,19 +315,10 @@ def search(request):
 
 
 def item_view_carousel_mlt(item_id):
-    carousel_solr_search = SOLR_raw(
-        q='id:' + item_id,
-        fields='id, type_ss, reference_image_md5, title',
-        mlt='true',
-        mlt_count='24',
-        mlt_fl='title,collection_name,subject',
-        mlt_mintf=1,
-    )
-    if json.loads(carousel_solr_search)['response']['numFound'] == 0:
+    carousel_solr_search = SOLR_mlt(item_id)
+    if carousel_solr_search.numFound == 0:
         raise Http404('No object with id "' + item_id + '" found.')
-    search_results = json.loads(
-        carousel_solr_search)['response']['docs'] + json.loads(
-            carousel_solr_search)['moreLikeThis'][item_id]['docs']
+    search_results = carousel_solr_search.results
     num_found = len(search_results)
 
     return search_results, num_found

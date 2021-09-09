@@ -8,8 +8,7 @@ import urllib.request, urllib.error, urllib.parse
 from collections import namedtuple
 import string
 import random
-from .cache_retry import json_loads_url
-from .temp import search_index
+from .cache_retry import json_loads_url, search_index
 from django.core.cache import cache
 from django.conf import settings
 import time

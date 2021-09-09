@@ -53,12 +53,9 @@ class CollectionSitemap(HttpsSitemap):
         return CollectionManager().parsed
 
     def location(self, item):
-        col_id = re.match(
-            r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',
-            item.url)
         return reverse(
             'calisphere:collectionView',
-            kwargs={'collection_id': col_id.group('collection_id')})
+            kwargs={'collection_id': item.id})
 
 
 class ItemSitemap(object):

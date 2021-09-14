@@ -215,7 +215,7 @@ def item_view(request, item_id=''):
     item['institution_contact'] = []
     related_collections = []
     for col_id in item.get('collection_ids'):
-        collection = Collection(col_id)
+        collection = Collection(col_id, 'solr')
         item['parsed_collection_data'].append(collection.item_view())
         if not from_item_page:
             lockup_data = collection.get_lockup(item_id_search_term)
@@ -339,7 +339,7 @@ def item_view_carousel(request):
         link_back_id = request.GET.get('repository_data', None)
     if referral == 'collection':
         link_back_id = request.GET.get('collection_data', None)
-        collection = Collection(link_back_id)
+        collection = Collection(link_back_id, 'solr')
         form = CollectionCarouselForm(request.GET.copy(), collection)
     if referral == 'campus':
         link_back_id = request.GET.get('campus_slug', None)
@@ -424,7 +424,7 @@ def get_related_collections(request):
 
         col_id = (re.match(
             col_regex, related_collections[i].split('::')[0]).group('id'))
-        collection = Collection(col_id)
+        collection = Collection(col_id, 'solr')
         lockup_data = collection.get_lockup(rc_params['query_string'])
         three_related_collections.append(lockup_data)
 
@@ -520,7 +520,7 @@ def report_collection_facet(request, collection_id, facet):
 
 
 def report_collection_facet_value(request, collection_id, facet, facet_value):
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
     collection_details = collection.details
 
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:

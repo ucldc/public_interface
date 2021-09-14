@@ -69,6 +69,10 @@ UCLDC_SOLR_SCHEMA_FACETS = [
     FacetDisplayField(fd.facet, fd.display, f"{fd.facet}_ss") 
     for fd in UCLDC_SCHEMA_FACETS
 ]
+UCLDC_ES_SCHEMA_FACETS = [
+    FacetDisplayField(fd.facet, fd.display, f"{fd.facet}.keyword")
+    for fd in UCLDC_SCHEMA_FACETS
+]
 
 CAMPUS_LIST = [
     {

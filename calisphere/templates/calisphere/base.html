@@ -36,6 +36,7 @@
     <div class="container-fluid">
       <a href="{% url 'calisphere:select_index' 'solr' %}?next={{ request.get_full_path }}">Solr</a>
       <a href="{% url 'calisphere:select_index' 'es' %}?next={{ request.get_full_path }}">ElasticSearch</a>
+      Currently Selected: {{ request.session.index }}
     </div>
     <div class="container-fluid">
       <a href="#js-pageContent" class="skipnav">Skip to main content</a>

@@ -293,7 +293,7 @@ def institution_collections(request, institution):
         col_id = re.match(col_regex, collection_parts[2]).group('id')
         try:
             related_collections.append(
-                Collection(col_id).get_mosaic())
+                Collection(col_id, 'solr').get_mosaic())
         except Http404:
             pass
 

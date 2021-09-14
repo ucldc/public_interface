@@ -33,7 +33,7 @@ def collections_directory(request):
 
     for col in indexed_collections.shuffled[(page - 1) * 10:page * 10]:
         try:
-            collections.append(Collection(col.id).get_mosaic())
+            collections.append(Collection(col.id, index).get_mosaic())
         except Http404:
             continue
 
@@ -69,7 +69,7 @@ def collections_az(request, collection_letter):
     collections = []
     for col in collections_list[(page - 1) * 10:page * 10]:
         try:
-            collections.append(Collection(col.id).get_mosaic())
+            collections.append(Collection(col.id, index).get_mosaic())
         except Http404:
             continue
 
@@ -114,6 +114,7 @@ def collections_titles(request):
     return JsonResponse(data, safe=False)
 
 
+@cache_by_session_state
 def collections_search(request):
     return render(
         request,
@@ -127,7 +128,7 @@ def collections_search(request):
 
 class Collection(object):
 
-    def __init__(self, collection_id):
+    def __init__(self, collection_id, index):
         self.id = collection_id
         self.url = col_template.format(collection_id)
         self.details = json_loads_url(f"{self.url}?format=json")
@@ -140,32 +141,58 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
-        self.basic_filter = {CollectionFF.filter_field: [self.url]}
+        self.index = index
+        if index == 'solr':
+            self.basic_filter = {'collection_url': [self.url]}
+        elif index == 'es':
+            self.basic_filter = {'collection_ids': [self.id]}
 
     def _parse_custom_facets(self):
         custom_facets = []
         if self.details.get('custom_facet'):
             for custom_facet in self.details.get('custom_facet'):
                 facet_field = custom_facet['facet_field']
-                custom_facets.append(
-                    type(
-                        f"{facet_field}Class",
-                        (FacetFilterType, ),
-                        {
-                            'form_name': custom_facet['facet_field'],
-                            'facet_field': custom_facet['facet_field'],
-                            'display_name': custom_facet['label'],
-                            'filter_field': custom_facet['facet_field'],
-                            'sort_by': 'count',
-                            'faceting_allowed': True
-                        }
+                if self.index == 'solr':
+                    custom_facets.append(
+                        type(
+                            f"{facet_field}Class",
+                            (FacetFilterType, ),
+                            {
+                                'form_name': custom_facet['facet_field'],
+                                'facet_field': custom_facet['facet_field'],
+                                'display_name': custom_facet['label'],
+                                'filter_field': custom_facet['facet_field'],
+                                'sort_by': 'count',
+                                'faceting_allowed': True
+                            }
+                        )
                     )
-                )
+                elif self.index == 'es':
+                    custom_facets.append(
+                        type(
+                            f"{facet_field}Class",
+                            (FacetFilterType, ),
+                            {
+                                'form_name': custom_facet['facet_field'],
+                                'facet_field': (
+                                    f"{custom_facet['facet_field'][:-3]}.keyword"),
+                                'display_name': custom_facet['label'],
+                                'filter_field': (
+                                    f"{custom_facet['facet_field'][:-3]}.keyword"),
+                                'sort_by': 'count',
+                                'faceting_allowed': True
+                            }
+                        )
+                    )
         return custom_facets
 
     def _generate_custom_schema_facets(self):
-        custom_schema_facets = [fd for fd in constants.UCLDC_SOLR_SCHEMA_FACETS
-                                if fd.facet != 'spatial']
+        if self.index == 'solr':
+            custom_schema_facets = [fd for fd in constants.UCLDC_SOLR_SCHEMA_FACETS
+                                    if fd.facet != 'spatial']
+        elif self.index == 'es':
+            custom_schema_facets = [fd for fd in constants.UCLDC_ES_SCHEMA_FACETS
+                                    if fd.facet != 'spatial']
 
         # Use a registry-specified display name over constants.py display name
         if self.custom_facets:
@@ -280,6 +307,11 @@ class Collection(object):
             else:
                 repositories.append(repository['name'])
 
+        if self.index == 'solr':
+            sort = ("sort_title", "asc")
+        elif self.index == 'es':
+            sort = ("sort_title.keyword", "asc")
+
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
             "filters": [
@@ -294,7 +326,7 @@ class Collection(object):
                 CollectionFF.filter_field,
                 "type"
             ],
-            "sort": ("sort_title", "asc"),
+            "sort": sort,
             "rows": 6
         }
         display_items = search_index(search_terms)
@@ -385,7 +417,7 @@ class Collection(object):
 
 
 def collection_search(request, collection_id):
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
 
     form = CollectionForm(request.GET.copy(), collection)
     results = search_index(form.get_query())
@@ -423,7 +455,7 @@ def collection_search(request, collection_id):
 
 
 def collection_facet(request, collection_id, facet):
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
@@ -504,7 +536,7 @@ def collection_facet_json(request, collection_id, facet):
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
     facet_type = [tup for tup in collection.custom_schema_facets
                   if tup.facet == facet][0]
 
@@ -516,7 +548,7 @@ def collection_facet_json(request, collection_id, facet):
 
 
 def collection_facet_value(request, collection_id, cluster, cluster_value):
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
 
     cluster_type = [tup for tup in collection.custom_schema_facets
                     if tup.facet == cluster][0]
@@ -568,7 +600,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
 
 
 def collection_metadata(request, collection_id):
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
     summary_data = collection.get_summary_data()
 
     context = {
@@ -613,7 +645,7 @@ def get_cluster_thumbnails(collection, facet, facet_value):
 
 
 def collection_browse(request, collection_id):
-    collection = Collection(collection_id)
+    collection = Collection(collection_id, 'solr')
     facet_sets = collection.get_facet_sets()
 
     if len(facet_sets) == 0:
@@ -651,7 +683,7 @@ def get_rc_from_ids(rc_ids, rc_page, keyword_query):
         if len(rc_ids) <= i or not rc_ids[i]:
             break
 
-        collection = Collection(rc_ids[i])
+        collection = Collection(rc_ids[i], 'solr')
         lockup_data = collection.get_lockup(keyword_query)
         three_related_collections.append(lockup_data)
 

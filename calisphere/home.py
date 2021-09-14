@@ -22,7 +22,7 @@ class HomeView(TemplateView):
         this_dir = os.path.dirname(os.path.realpath(__file__))
         this_data = os.path.join(this_dir, 'home-data.json')
         self.home_data = json.loads(open(this_data).read())
-        indexed_collections = CollectionManager()
+        indexed_collections = CollectionManager("solr")
         self.total_objects = intcomma(
             int(
                 math.floor((int(indexed_collections.total_objects) - 1) / 25000) *

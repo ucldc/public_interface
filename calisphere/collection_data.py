@@ -24,8 +24,9 @@ col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 class CollectionManager(object):
     """ manage collection information that is parsed from solr facets """
 
-    def __init__(self):
-        cache_key = 'collection-manager'  # won't vary except on djano restart
+    def __init__(self, index):
+        self.index = index
+        cache_key = f'collection-manager-{index}'  # won't vary except on djano restart
         saved = cache.get(cache_key)
         if saved:
             # got this cached
@@ -38,13 +39,13 @@ class CollectionManager(object):
             self.shuffled = saved['shuffled']  # For the collections explore
             self.total_objects = saved.get('total_objects', 850000)
         else:
-            # look it up from solr
+            # look it up from the index
             collections_query = {
                 'facets': ['collection_data']
             }
 
             save = {}
-            index_data = search_index(collections_query)
+            index_data = search_index(collections_query, index)
             save['data'] = self.data = list(index_data.facet_counts[
                 'facet_fields']['collection_data'].keys())
             self.parse()
@@ -64,9 +65,13 @@ class CollectionManager(object):
 
         parsed = []
         for x in self.data:
-            cd = x.rsplit('::')
-            cd.append(re.match(
-                col_regex, cd[0]).group('id'))
+            if self.index == "solr":
+                cd = x.rsplit('::')
+                cd.append(re.match(
+                    col_regex, cd[0]).group('id'))
+            elif self.index == "es":
+                cd = x.rsplit('::')[::-1]
+                cd.insert(0, col_template.format(cd[1]))
             parsed.append(CollectionLink(*cd))
         self.parsed = sorted(parsed, key=sort_key)
 

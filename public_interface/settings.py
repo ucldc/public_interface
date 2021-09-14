@@ -40,6 +40,12 @@ SECRET_KEY = getenv(
 
 SOLR_URL = getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
 SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
+
+ES_HOST = getenv('ES_HOST', '')
+ES_USER = getenv('ES_USER', '')
+ES_PASS = getenv('ES_PASS', '')
+
+
 UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')
 UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
 UCLDC_IIIF = getenv('UCLDC_IIIF', '')
@@ -143,11 +149,11 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'django_feature_policy.FeaturePolicyMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',  # are we using sessions?
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',

@@ -33,12 +33,14 @@ repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
 
 def select_index(request, index):
     request.session['index'] = index
-    next_page = request.GET.get('next', 'calisphere:home')
-    other = request.GET.copy()
-    other.pop('next')
-    if next_page != 'calisphere:home':
-        query = other.urlencode()
-        next_page += f"&{query}"
+    query_dict = request.GET.copy()
+    next_page = query_dict.pop('next', ['calisphere:home'])[0]
+
+    if 'index' not in query_dict:
+        query_dict['index'] = index
+
+    query = query_dict.urlencode()
+    next_page += f"?{query}"
 
     return redirect(next_page)
 

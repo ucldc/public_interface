@@ -201,7 +201,7 @@ class CollectionFF(FacetFilterType):
         return collection
 
     def filter_display(self, collection_id):
-        indexed_collections = CollectionManager()
+        indexed_collections = CollectionManager("solr")
         collection = {
             'url': col_template.format(collection_id),
             'id': collection_id

@@ -50,7 +50,7 @@ class InstitutionSitemap(HttpsSitemap):
 
 class CollectionSitemap(HttpsSitemap):
     def items(self):
-        return CollectionManager().parsed
+        return CollectionManager("solr").parsed
 
     def location(self, item):
         return reverse(

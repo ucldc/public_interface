@@ -9,6 +9,7 @@ from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
 from .cache_retry import json_loads_url, search_index
 from .search_form import CollectionForm, solr_escape
 from builtins import range
+from .decorators import cache_by_session_state
 
 import os
 import math
@@ -22,8 +23,10 @@ col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
 col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 
+@cache_by_session_state
 def collections_directory(request):
-    indexed_collections = CollectionManager()
+    index = request.session.get("index", "solr")
+    indexed_collections = CollectionManager(index)
     collections = []
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
@@ -54,8 +57,10 @@ def collections_directory(request):
     )
 
 
+@cache_by_session_state
 def collections_az(request, collection_letter):
-    indexed_collections = CollectionManager()
+    index = request.session.get("index", "solr")
+    indexed_collections = CollectionManager(index)
     collections_list = indexed_collections.split[collection_letter.lower()]
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
@@ -90,6 +95,7 @@ def collections_az(request, collection_letter):
                   context)
 
 
+@cache_by_session_state
 def collections_titles(request):
     '''create JSON/data for the collections search page'''
 
@@ -99,7 +105,8 @@ def collections_titles(request):
             'calisphere:collectionView',
             kwargs={'collection_id': id})
 
-    collections = CollectionManager()
+    index = request.session.get("index", "solr")
+    collections = CollectionManager(index)
     data = [{
         'uri': djangoize(id),
         'title': title

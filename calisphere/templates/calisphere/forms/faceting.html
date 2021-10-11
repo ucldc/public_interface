@@ -27,10 +27,10 @@
 
         <div class="check" role="group" aria-labelledby="{{ form_name }}-aria-label">
           <div class="display-none" id="{{ form_name }}-aria-label">
-          Facet search results by {{ facet_type_display }} - {% if filters|get_item:filter_type|length > 0 %}({{ filters|get_item:filter_type|length }} selected){% endif %}
+          Facet search results by {{ facet_type_display }} - {% if filters|get_item:form_name|length > 0 %}({{ filters|get_item:form_name|length }} selected){% endif %}
           </div>
           <div class="check__header js-a-check__header">
-            <p class="check__header-text js-a-check__header-text">{{ facet_type_display }} {% if filters|get_item:filter_type|length > 0 %}({{ filters|get_item:filter_type|length }} selected){% endif %}</p>
+            <p class="check__header-text js-a-check__header-text">{{ facet_type_display }} {% if filters|get_item:form_name|length > 0 %}({{ filters|get_item:form_name|length }} selected){% endif %}</p>
             <i class="check__header-arrow-icon js-a-check__header-arrow-icon fa fa-angle-down"></i>
             <div class="check__header-links">
               <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select all</a>
@@ -49,15 +49,15 @@
             <div class="check__group">
               {% for facet, count in facets|get_item:facet_type %}
                 {% if form_name == 'repository_data' %}
-                  <input id="r-{{ facet.id }}" class="check__input facet js-facet facet-{{ form_name }}" form="js-facet" type="checkbox" name="{{ form_name }}" value="{{ facet.id }}" {% if facet in filters|get_item:filter_type %}checked{% endif %}>
+                  <input id="r-{{ facet.id }}" class="check__input facet js-facet facet-{{ form_name }}" form="js-facet" type="checkbox" name="{{ form_name }}" value="{{ facet.id }}" {% if facet in filters|get_item:form_name %}checked{% endif %}>
                   <label class="check__label" for="r-{{ facet.id }}">{% if facet.campus %}{{ facet.campus }}, {% endif %}{{ facet.name }} ({{ count|intcomma }})</label>
                 
                 {% elif form_name == 'collection_data' %}
-                  <input id="c-{{ facet.id }}" class="check__input facet js-facet facet-{{ form_name }}" form="js-facet" type="checkbox" name="{{ form_name }}" value="{{ facet.id }}" {% if facet in filters|get_item:filter_type %}checked{% endif %}>
+                  <input id="c-{{ facet.id }}" class="check__input facet js-facet facet-{{ form_name }}" form="js-facet" type="checkbox" name="{{ form_name }}" value="{{ facet.id }}" {% if facet in filters|get_item:form_name %}checked{% endif %}>
                   <label class="check__label" for="c-{{ facet.id }}">{{ facet.name }} ({{ count|intcomma }})</label>
                 
                 {% else %}
-                  <input id="{{ facet|slugify }}" class="check__input facet js-facet facet-{{ form_name }}" form="js-facet" type="checkbox" name="{{ form_name }}" value="{{ facet }}" {% if facet in filters|get_item:filter_type %}checked{% endif %}>
+                  <input id="{{ facet|slugify }}" class="check__input facet js-facet facet-{{ form_name }}" form="js-facet" type="checkbox" name="{{ form_name }}" value="{{ facet }}" {% if facet in filters|get_item:form_name %}checked{% endif %}>
                   <label class="check__label" for="{{ facet|slugify }}">{{ facet }} ({{ count|intcomma }})</label>
                 {% endif %}
               {% endfor %}

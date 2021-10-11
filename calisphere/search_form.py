@@ -37,6 +37,7 @@ class SearchForm(object):
         ff.RepositoryFF,
         ff.CollectionFF
     ]
+    index = 'solr'
 
     def __init__(self, request):
         self.request = request
@@ -135,7 +136,7 @@ class SearchForm(object):
                 facet_params = self.get_query([fft])
                 fft.basic_query = exclude_filter
 
-                facet_search = search_index(facet_params)
+                facet_search = search_index(facet_params, self.index)
 
                 result_facets[fft.facet_field] = (
                     facet_search.facet_counts['facet_fields']
@@ -159,9 +160,19 @@ class SearchForm(object):
             filter_transform = filter_type['filter_display']
 
             if len(self.request.getlist(param_name)) > 0:
-                filter_display[display_name] = list(
+                filter_display[param_name] = list(
                     map(filter_transform, self.request.getlist(param_name)))
         return filter_display
+
+
+class ESSearchForm(SearchForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESRepositoryFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'
 
 
 class CampusForm(SearchForm):
@@ -169,6 +180,16 @@ class CampusForm(SearchForm):
         super().__init__(request)
         self.institution = campus
         self.implicit_filter = [campus.basic_filter]
+
+
+class ESCampusForm(CampusForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESRepositoryFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'
 
 
 class RepositoryForm(SearchForm):
@@ -182,6 +203,15 @@ class RepositoryForm(SearchForm):
         super().__init__(request)
         self.institution = institution
         self.implicit_filter = [institution.basic_filter]
+
+
+class ESRepositoryForm(RepositoryForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'
 
 
 class CollectionForm(SearchForm):
@@ -208,6 +238,14 @@ class CollectionForm(SearchForm):
         self.implicit_filter = [collection.basic_filter]
 
 
+class ESCollectionForm(CollectionForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF
+    ]
+    index = 'es'
+
+
 class CarouselForm(SearchForm):
     def get_query(self, facet_types=[]):
         carousel_params = super().get_query(facet_types)
@@ -220,6 +258,16 @@ class CarouselForm(SearchForm):
         ]
         self.filter_query = bool(carousel_params.get('filters'))
         return carousel_params
+
+
+class ESCarouselForm(CarouselForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESRepositoryFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'
 
 
 class CollectionCarouselForm(CarouselForm):
@@ -240,11 +288,31 @@ class CollectionCarouselForm(CarouselForm):
                 self.facet_filter_types.append(ff.RelationFF(request))
 
 
+class ESCollectionCarouselForm(CollectionCarouselForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESRepositoryFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'
+
+
 class CampusCarouselForm(CarouselForm):
     def __init__(self, request, campus):
         super().__init__(request)
         self.institution = campus
         self.implicit_filter = [campus.basic_filter]
+
+
+class ESCampusCarouselForm(CampusCarouselForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESRepositoryFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'
 
 
 class AltSortField(SortField):
@@ -262,3 +330,13 @@ class CollectionFacetValueForm(CollectionForm):
         'rc_page': 0
     }
     sort_field = AltSortField
+
+
+class ESCollectionFacetValueForm(CollectionFacetValueForm):
+    facet_filter_fields = [
+        ff.ESTypeFF,
+        ff.ESDecadeFF,
+        ff.ESRepositoryFF,
+        ff.ESCollectionFF
+    ]
+    index = 'es'

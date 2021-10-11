@@ -201,7 +201,7 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, repositories_query)
 
     def test_institution_collections(self):
-        institution = Repository(25)
+        institution = Repository(25, 'solr')
         solr_params = {
             'filters': [institution.basic_filter],
             'facets': ['sort_collection_data'],
@@ -220,7 +220,7 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, collections_params)
 
     def test_campus_institutions(self):
-        institution = Campus('UCI')
+        institution = Campus('UCI', 'solr')
         solr_params = {
             'filters': [institution.basic_filter],
             'facets': ['repository_data']

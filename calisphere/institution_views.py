@@ -4,12 +4,14 @@ from django.urls import reverse
 from django.http import Http404
 from . import constants
 from .cache_retry import json_loads_url, search_index
-from .search_form import CampusForm, RepositoryForm
+from .search_form import (CampusForm, ESCampusForm, 
+                          RepositoryForm, ESRepositoryForm)
 from .collection_views import Collection, get_rc_from_ids
 from .facet_filter_type import (
-    CollectionFF, RepositoryFF)
+    CollectionFF, ESCollectionFF, RepositoryFF, ESRepositoryFF)
 from django.apps import apps
 from django.conf import settings
+from .decorators import cache_by_session_state
 
 
 import math
@@ -39,18 +41,31 @@ def process_sort_collection_data(string):
         return [part1, part2, 'https:{}'.format(part3)]
 
 
+@cache_by_session_state
 def campus_directory(request):
-    repo_query = {
-        "facets": [RepositoryFF.filter_field]
-    }
-    repo_search = search_index(repo_query)
-    index_repositories = repo_search.facet_counts['facet_fields'][
-        RepositoryFF.filter_field]
+    index = request.session.get("index", "solr")
+    if index == 'es':
+        repo_query = {
+            "facets": ['repository_ids']
+        }
+    else:
+        repo_query = {
+            "facets": ['repository_url']
+        }
+    repo_search = search_index(repo_query, index)
 
     repositories = []
-    for repository_url in index_repositories:
-        repo_id = re.match(repo_regex, repository_url).group('repository_id')
-        repository = Repository(repo_id).get_repo_data()
+    if index == 'es':
+        index_repositories = repo_search.facet_counts['facet_fields'][
+            'repository_ids']
+    else:
+        index_repositories = repo_search.facet_counts['facet_fields'][
+            'repository_url']
+        index_repositories = [re.match(repo_regex, repo_url).group(
+            'repository_id') for repo_url in index_repositories]
+
+    for repo_id in index_repositories:
+        repository = Repository(repo_id, index).get_repo_data()
         if repository['campus']:
             repositories.append({
                 'name': repository['name'],
@@ -74,18 +89,31 @@ def campus_directory(request):
         })
 
 
+@cache_by_session_state
 def statewide_directory(request):
-    repo_query = {
-        "facets": [RepositoryFF.filter_field]
-    }
-    repo_search = search_index(repo_query)
-    index_repositories = repo_search.facet_counts['facet_fields'][
-        RepositoryFF.filter_field]
+    index = request.session.get("index", "solr")
+    if index == 'es':
+        repo_query = {
+            "facets": ['repository_ids']
+        }
+    else:
+        repo_query = {
+            "facets": ['repository_url']
+        }
+
+    repo_search = search_index(repo_query, index)
+    if index == 'es':
+        index_repositories = repo_search.facet_counts['facet_fields'][
+            'repository_ids']
+    else:
+        index_repositories = repo_search.facet_counts['facet_fields'][
+            'repository_url']
+        index_repositories = [re.match(repo_regex, repo_url).group(
+            'repository_id') for repo_url in index_repositories]
 
     repositories = []
-    for repository_url in index_repositories:
-        repo_id = re.match(repo_regex, repository_url).group('repository_id')
-        repository = Repository(repo_id).get_repo_data()
+    for repo_id in index_repositories:
+        repository = Repository(repo_id, index).get_repo_data()
         if repository['campus'] == '':
             repositories.append({
                 'name':
@@ -125,7 +153,7 @@ def statewide_directory(request):
 
 
 class Campus(object):
-    def __init__(self, slug):
+    def __init__(self, slug, index):
         campus = [c for c in constants.CAMPUS_LIST if slug == c['slug']][0]
         if not campus:
             raise Http404(f"{slug} campus does not exist.")
@@ -134,6 +162,7 @@ class Campus(object):
         self.id = campus.get('id')
         self.featured_image = campus.get('featuredImage')
         self.url = campus_template.format(self.id)
+        self.index = index
 
         self.details = json_loads_url(self.url + "?format=json")
         if not self.details:
@@ -147,13 +176,17 @@ class Campus(object):
         else:
             self.contact_info = ''
 
-        self.basic_filter = {'campus_url': [self.url]}
+        if index == 'es':
+            self.basic_filter = {'campus_ids': [self.id]}
+        else:
+            self.basic_filter = {'campus_url': [self.url]}
 
 
 class Repository(object):
-    def __init__(self, id):
+    def __init__(self, id, index):
         self.id = id
         self.url = repo_template.format(id)
+        self.index = index
 
         app = apps.get_app_config('calisphere')
         self.details = app.registry.repository_data.get(
@@ -178,7 +211,10 @@ class Repository(object):
             if feat:
                 self.featured_image = feat[0].get('featuredImage')
 
-        self.basic_filter = {'repository_url': [self.url]}
+        if index == 'es':
+            self.basic_filter = {'repository_ids': [self.id]}
+        else:
+            self.basic_filter = {'repository_url': [self.url]}
 
     def __str__(self):
         return f"{self.id}: {self.details.name}"
@@ -223,8 +259,8 @@ class Repository(object):
         return self.contact_info
 
 
-def institution_search(request, form, institution):
-    results = search_index(form.get_query())
+def institution_search(request, form, institution, index):
+    results = search_index(form.get_query(), index)
     facets = form.get_facets(results.facet_counts['facet_fields'])
     filter_display = form.filter_display()
 
@@ -233,13 +269,16 @@ def institution_search(request, form, institution):
     if (page > 1):
         title = (f"{institution.full_name} Items - page {page}")
 
-    rc_ids = [cd[0]['id'] for cd in facets[CollectionFF.facet_field]]
+    if index == 'es':
+        rc_ids = [cd[0]['id'] for cd in facets[ESCollectionFF.facet_field]]
+    else:
+        rc_ids = [cd[0]['id'] for cd in facets[CollectionFF.facet_field]]
     if len(request.GET.getlist('collection_data')):
         rc_ids = request.GET.getlist('collection_data')
 
     num_related_collections = len(rc_ids)
     rcs = get_rc_from_ids(
-        rc_ids, form.rc_page, form.query_string)
+        rc_ids, form.rc_page, form.query_string, index)
 
     context = {
         'title': title,
@@ -258,17 +297,19 @@ def institution_search(request, form, institution):
     return context
 
 
-def institution_collections(request, institution):
-
+def institution_collections(request, institution, index):
     page = int(request.GET['page']) if 'page' in request.GET else 1
 
     collections_params = {
         'filters': [institution.basic_filter],
-        'facets': ['sort_collection_data'],
-        'facet_sort': 'index'
+        'facets': ['sort_collection_data']
     }
+    if index == 'es':
+        collections_params['facet_sort'] = {"_key": "asc"}
+    else:
+        collections_params['facet_sort'] = 'index'
 
-    collections_search = search_index(collections_params)
+    collections_search = search_index(collections_params, index)
     sort_collection_data = collections_search.facet_counts['facet_fields'][
         'sort_collection_data']
 
@@ -277,7 +318,11 @@ def institution_collections(request, institution):
     # solrpy gives us a dict == unsorted (!)
     # use the `facet_decade` mode of process_facets to do a
     # lexical sort by value ....
-    col_fft = CollectionFF(request.GET.copy())
+    if index == 'es':
+        col_fft = ESCollectionFF(request.GET.copy())
+    else:
+        col_fft = CollectionFF(request.GET.copy())
+
     sort_collection_data = list(
         collection[0] for collection in
         col_fft.process_facets(sort_collection_data, 'value'))
@@ -290,10 +335,13 @@ def institution_collections(request, institution):
     for i, related_collection in enumerate(sort_collection_data):
         collection_parts = process_sort_collection_data(
             related_collection)
-        col_id = re.match(col_regex, collection_parts[2]).group('id')
+        if index == 'es':
+            col_id = collection_parts[2]
+        else:
+            col_id = re.match(col_regex, collection_parts[2]).group('id')
         try:
             related_collections.append(
-                Collection(col_id, 'solr').get_mosaic())
+                Collection(col_id, index).get_mosaic())
         except Http404:
             pass
 
@@ -311,11 +359,17 @@ def institution_collections(request, institution):
     return context
 
 
+@cache_by_session_state
 def repository_search(request, repository_id):
-    institution = Repository(repository_id)
-    form = RepositoryForm(request.GET.copy(), institution)
+    index = request.session.get("index", "solr")
 
-    context = institution_search(request, form, institution)
+    institution = Repository(repository_id, index)
+    if index == 'es':
+        form = ESRepositoryForm(request.GET.copy(), institution)
+    else:
+        form = RepositoryForm(request.GET.copy(), institution)
+
+    context = institution_search(request, form, institution, index)
 
     context.update({
         'institution': institution.details,
@@ -332,10 +386,13 @@ def repository_search(request, repository_id):
     return render(request, 'calisphere/institutionViewItems.html', context)
 
 
+@cache_by_session_state
 def repository_collections(request, repository_id):
-    institution = Repository(repository_id)
+    index = request.session.get("index", "solr")
 
-    context = institution_collections(request, institution)
+    institution = Repository(repository_id, index)
+
+    context = institution_collections(request, institution, index)
 
     context.update({
         'contact_information': institution.get_contact_info(),
@@ -356,10 +413,15 @@ def repository_collections(request, repository_id):
                   context)
 
 
+@cache_by_session_state
 def campus_search(request, campus_slug):
-    institution = Campus(campus_slug)
-    form = CampusForm(request.GET.copy(), institution)
-    context = institution_search(request, form, institution)
+    index = request.session.get("index", "solr")
+    institution = Campus(campus_slug, index)
+    if index == 'es':
+        form = ESCampusForm(request.GET.copy(), institution)
+    else:
+        form = CampusForm(request.GET.copy(), institution)
+    context = institution_search(request, form, institution, index)
 
     context.update({
         'institution': institution.details,
@@ -375,10 +437,13 @@ def campus_search(request, campus_slug):
     return render(request, 'calisphere/institutionViewItems.html', context)
 
 
+@cache_by_session_state
 def campus_collections(request, campus_slug):
-    institution = Campus(campus_slug)
+    index = request.session.get("index", "solr")
 
-    context = institution_collections(request, institution)
+    institution = Campus(campus_slug, index)
+
+    context = institution_collections(request, institution, index)
     context['title'] = institution.name
     if context['page'] > 1:
         context['title'] = (
@@ -397,27 +462,36 @@ def campus_collections(request, campus_slug):
                   context)
 
 
+@cache_by_session_state
 def campus_institutions(request, campus_slug):
-    institution = Campus(campus_slug)
+    index = request.session.get("index", "solr")
+
+    institution = Campus(campus_slug, index)
 
     institutions_query = {
         'filters': [institution.basic_filter],
         'facets': ['repository_data']
     }
-    institutions_search = search_index(institutions_query)
+    institutions_search = search_index(institutions_query, index)
     institutions = institutions_search.facet_counts['facet_fields'][
         'repository_data']
 
-    repo_fft = RepositoryFF(request.GET.copy())
+    if index == 'es':
+        repo_fft = ESRepositoryFF(request.GET.copy())
+    else:
+        repo_fft = RepositoryFF(request.GET.copy())
 
     related_institutions = list(
         institution[0] for institution in
         repo_fft.process_facets(institutions))
 
     for i, related_institution in enumerate(related_institutions):
-        repo_url = related_institution.split('::')[0]
-        repo_id = re.match(repo_regex, repo_url).group('repository_id')
-        related_institutions[i] = Repository(repo_id).get_repo_data()
+        if index == 'es':
+            repo_id = related_institution.split('::')[0]
+        else:
+            repo_url = related_institution.split('::')[0]
+            repo_id = re.match(repo_regex, repo_url).group('repository_id')
+        related_institutions[i] = Repository(repo_id, index).get_repo_data()
     related_institutions = sorted(
         related_institutions,
         key=lambda related_institution: related_institution['name'])

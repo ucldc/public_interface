@@ -27,8 +27,8 @@
 
           {% for filter_type in filters %}
             {% for filter in filters|get_item:filter_type %}
-              {% if filter_type == 'collection_url' or filter_type == 'repository_url' %}
-                <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{% if filter_type == 'collection_url' %}c-{% else %}r-{% endif %}{{ filter.id }}">{% if 'campus' in filter and filter.campus|length > 0 %}{{ filter.campus }}, {% endif %}{{ filter.name }}<i class="fa fa-close button__close-icon"></i>
+              {% if filter_type == 'collection_data' or filter_type == 'repository_data' %}
+                <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{% if filter_type == 'collection_data' %}c-{% else %}r-{% endif %}{{ filter.id }}">{% if 'campus' in filter and filter.campus|length > 0 %}{{ filter.campus }}, {% endif %}{{ filter.name }}<i class="fa fa-close button__close-icon"></i>
                 </button>
               {% else %}
                 <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{{ filter|slugify }}">{{ filter }}<i class="fa fa-close button__close-icon"></i>
@@ -87,10 +87,10 @@
         <!-- TODO: facets.collection_name|length is only accurate if no collection filters have been applied -->
         <h2 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
           <a href="#related-coll">
-            {% if filters|get_item:'collection_url'|length == 0 %}
+            {% if filters|get_item:'collection_data'|length == 0 %}
               {{ facets.collection_data|length }} collection{{ facets.collection_data|pluralize }}
             {% else %}
-              {{ filters|get_item:'collection_url'|length }} collection{{ filters|get_item:'collection_url'|pluralize }}
+              {{ filters|get_item:'collection_data'|length }} collection{{ filters|get_item:'collection_data'|pluralize }}
             {% endif %}
           </a>{% endblock %}
         </h2>

@@ -108,11 +108,69 @@ class FacetFilterType(object):
         return getattr(self, key)
 
 
+class ESFacetFilterType(FacetFilterType):
+    def set_query(self):
+        selected_filters = self.form_context
+        self.query = {}
+        self.basic_query = {}
+        if len(selected_filters) > 0:
+            self.query = {
+                "terms": {
+                    self.filter_field: selected_filters
+                }
+            }
+            self.basic_query = {self.filter_field: selected_filters}
+
+    def process_facets(self, facets, sort_override=None):
+        filters = list(map(self.filter_transform, self.form_context))
+
+        # remove facets with count of zero
+        display_facets = dict(
+            (facet, count) for facet, count in list(
+                facets.items()) if count != 0)
+
+        # sort facets by value of sort_by - either count or value
+        sort_by = sort_override if sort_override else self.sort_by
+        if sort_by == 'value':
+            display_facets = sorted(
+                iter(list(display_facets.items())), key=operator.itemgetter(0))
+        elif sort_by == 'count':
+            display_facets = sorted(
+                iter(list(display_facets.items())),
+                key=operator.itemgetter(1),
+                reverse=True)
+
+        # append selected filters even if they have a count of 0
+        for f in filters:
+            if not any(f in facet[0] for facet in display_facets):
+                if self.form_name == 'collection_data':
+                    collection = self.filter_display(f)
+                    display_facets.append(("{}::{}".format(
+                        collection.get('id'), collection.get('name')), 0))
+                elif self.form_name == 'repository_data':
+                    repository = self.repo_from_id(f)
+                    display_facets.append(("{}::{}".format(
+                        repository.get('id'), repository.get('name')), 0))
+                else:
+                    display_facets.append((f, 0))
+
+        return display_facets
+
+
 class RelationFF(FacetFilterType):
     form_name = 'relation_ss'
     facet_field = 'relation'
     display_name = 'Relation'
     filter_field = 'relation_ss'
+    sort_by = 'value'
+    faceting_allowed = False
+
+
+class ESRelationFF(ESFacetFilterType):
+    form_name = 'relation_ss'
+    facet_field = 'relation'
+    display_name = 'Relation'
+    filter_field = 'relation.keyword'
     sort_by = 'value'
     faceting_allowed = False
 
@@ -124,11 +182,26 @@ class TypeFF(FacetFilterType):
     filter_field = 'type_ss'
 
 
+class ESTypeFF(ESFacetFilterType):
+    form_name = 'type_ss'
+    facet_field = 'type'
+    display_name = 'Type of Item'
+    filter_field = 'type.keyword'
+
+
 class DecadeFF(FacetFilterType):
     form_name = 'facet_decade'
     facet_field = 'facet_decade'
     display_name = 'Decade'
     filter_field = 'facet_decade'
+    sort_by = 'value'
+
+
+class ESDecadeFF(ESFacetFilterType):
+    form_name = 'facet_decade'
+    facet_field = 'date'
+    display_name = 'Decade'
+    filter_field = 'date.keyword'
     sort_by = 'value'
 
 
@@ -144,6 +217,46 @@ class RepositoryFF(FacetFilterType):
     def facet_transform(self, facet_val):
         url = facet_val.split('::')[0]
         repo_id = re.match(repo_regex, url).group('id')
+        return self.repo_from_id(repo_id)
+
+    def filter_display(self, filter_val):
+        repository = self.repo_from_id(filter_val)
+        repository.pop('local_id', None)
+        return repository
+
+    def repo_from_id(self, repo_id):
+        app = apps.get_app_config('calisphere')
+        repo = {
+            'url': repo_template.format(repo_id),
+            'id': repo_id
+        }
+        repo_details = app.registry.repository_data.get(int(repo['id']), {})
+        repo['name'] = repo_details.get('name', None)
+        repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
+
+        prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+        if prod_aeon:
+            repo['aeon_url'] = repo_details.get('aeon_prod', None)
+        else:
+            repo['aeon_url'] = repo_details.get('aeon_test', None)
+
+        parent = repo_details['campus']
+        pslug = ''
+        if len(parent):
+            pslug = '{0}-'.format(parent[0].get('slug', None))
+        repo['slug'] = pslug + repo_details.get('slug', None)
+
+        return repo
+
+
+class ESRepositoryFF(ESFacetFilterType):
+    form_name = 'repository_data'
+    facet_field = 'repository_data'
+    display_name = 'Contributing Institution'
+    filter_field = 'repository_ids'
+
+    def facet_transform(self, facet_val):
+        repo_id = facet_val.split('::')[0]
         return self.repo_from_id(repo_id)
 
     def filter_display(self, filter_val):
@@ -202,6 +315,40 @@ class CollectionFF(FacetFilterType):
 
     def filter_display(self, collection_id):
         indexed_collections = CollectionManager("solr")
+        collection = {
+            'url': col_template.format(collection_id),
+            'id': collection_id
+        }
+
+        collection['name'] = indexed_collections.names.get(
+            collection['url'])
+
+        if not collection['name']:
+            collection_details = json_loads_url("{0}?format=json".format(
+                collection['url']))
+            collection['name'] = collection_details.get(
+                'name', '[no collection name]')
+
+        return collection
+
+
+class ESCollectionFF(ESFacetFilterType):
+    form_name = 'collection_data'
+    facet_field = 'collection_data'
+    display_name = 'Collection'
+    filter_field = 'collection_ids'
+
+    def facet_transform(self, collection_data):
+        parts = collection_data.split('::')
+        collection = {
+            'url': col_template.format(parts[0]),
+            'id': parts[0],
+            'name': parts[1]
+        }
+        return collection
+
+    def filter_display(self, collection_id):
+        indexed_collections = CollectionManager("es")
         collection = {
             'url': col_template.format(collection_id),
             'id': collection_id

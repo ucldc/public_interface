@@ -142,32 +142,17 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
-        if index == 'solr':
-            self.basic_filter = {'collection_url': [self.url]}
-        elif index == 'es':
+        if index == 'es':
             self.basic_filter = {'collection_ids': [self.id]}
+        else:
+            self.basic_filter = {'collection_url': [self.url]}
 
     def _parse_custom_facets(self):
         custom_facets = []
         if self.details.get('custom_facet'):
             for custom_facet in self.details.get('custom_facet'):
                 facet_field = custom_facet['facet_field']
-                if self.index == 'solr':
-                    custom_facets.append(
-                        type(
-                            f"{facet_field}Class",
-                            (FacetFilterType, ),
-                            {
-                                'form_name': custom_facet['facet_field'],
-                                'facet_field': custom_facet['facet_field'],
-                                'display_name': custom_facet['label'],
-                                'filter_field': custom_facet['facet_field'],
-                                'sort_by': 'count',
-                                'faceting_allowed': True
-                            }
-                        )
-                    )
-                elif self.index == 'es':
+                if self.index == 'es':
                     custom_facets.append(
                         type(
                             f"{facet_field}Class",
@@ -184,14 +169,30 @@ class Collection(object):
                             }
                         )
                     )
+                else:
+                    custom_facets.append(
+                        type(
+                            f"{facet_field}Class",
+                            (FacetFilterType, ),
+                            {
+                                'form_name': custom_facet['facet_field'],
+                                'facet_field': custom_facet['facet_field'],
+                                'display_name': custom_facet['label'],
+                                'filter_field': custom_facet['facet_field'],
+                                'sort_by': 'count',
+                                'faceting_allowed': True
+                            }
+                        )
+                    )
+
         return custom_facets
 
     def _generate_custom_schema_facets(self):
-        if self.index == 'solr':
-            custom_schema_facets = [fd for fd in constants.UCLDC_SOLR_SCHEMA_FACETS
-                                    if fd.facet != 'spatial']
-        elif self.index == 'es':
+        if self.index == 'es':
             custom_schema_facets = [fd for fd in constants.UCLDC_ES_SCHEMA_FACETS
+                                    if fd.facet != 'spatial']
+        else:
+            custom_schema_facets = [fd for fd in constants.UCLDC_SOLR_SCHEMA_FACETS
                                     if fd.facet != 'spatial']
 
         # Use a registry-specified display name over constants.py display name
@@ -307,10 +308,10 @@ class Collection(object):
             else:
                 repositories.append(repository['name'])
 
-        if self.index == 'solr':
-            sort = ("sort_title", "asc")
-        elif self.index == 'es':
+        if self.index == 'es':
             sort = ("sort_title.keyword", "asc")
+        else:
+            sort = ("sort_title", "asc")
 
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
@@ -690,7 +691,7 @@ def collection_browse(request, collection_id):
         request, 'calisphere/collections/collectionBrowse.html', context)
 
 
-def get_rc_from_ids(rc_ids, rc_page, keyword_query, index='solr'):
+def get_rc_from_ids(rc_ids, rc_page, keyword_query, index):
     # get three items for each related collection
     three_related_collections = []
     rc_page = int(rc_page)

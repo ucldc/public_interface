@@ -295,7 +295,7 @@ def query_encode(query_string: str = None,
     return solr_params
 
 
-def search_index(query, index="solr"):
+def search_index(query, index):
     if index == "solr":
         results = SOLR_select(**query_encode(**query))
     elif index == "es":

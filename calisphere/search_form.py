@@ -22,6 +22,22 @@ class SortField(object):
 
 
 class SearchForm(object):
+    """Search Form for /search/ page, and base class for other Search Forms
+
+    Methods:
+    __init__ -- initialize the SearchForm from a QueryDict, set defaults
+    context -- get the search form template context
+    get_query -- interpret the search form to define a query for the index
+    get_facets -- search the index in order to retrieve facets for 
+                  filtered types (ex: if decade type facets are "1990" and 
+                  "1980" and a filter is applied for "1990", then "1980" 
+                  should still appear on the form, even though the filtered
+                  search does not return "1980")
+    filter_display -- convert filter values into user-friendly display values
+                      (ex: 76 -> "Henry O. Nightingale diaries")
+    """
+
+    # search form fields and their defaults
     simple_fields = {
         'q': '',
         'rq': [],
@@ -37,14 +53,23 @@ class SearchForm(object):
         ff.RepositoryFF,
         ff.CollectionFF
     ]
+    # default search index
     index = 'solr'
 
     def __init__(self, request):
+        """initialize the SearchForm from a QueryDict, set defaults
+
+        Arguments:
+        request -- QueryDict from the HttpRequest object, request.GET.copy()
+        """
         self.request = request
+
+        # pass the request's parameters to the facet filter field
         self.facet_filter_types = [
             ff_field(request) for ff_field in self.facet_filter_fields
         ]
 
+        # retrieve simple fields from the request, or set defaults
         for field in self.simple_fields:
             if isinstance(self.simple_fields[field], list):
                 self.__dict__.update({
@@ -59,6 +84,7 @@ class SearchForm(object):
         self.implicit_filter = []
 
     def context(self):
+        """get the search form template context"""
         fft = [{
             'form_name': f.form_name,
             'facet': f.facet_field,
@@ -80,6 +106,12 @@ class SearchForm(object):
         return search_form
 
     def get_query(self, facet_types=[]):
+        """interpret the search form to define a query for the index
+
+        Arguments:
+        facet_types -- optional: list of FacetFilterField instances to facet 
+                       on, if not specified, use self.facet_filter_types"""
+
         # concatenate query terms from refine query and query box
         terms = (
             [solr_escape(self.q)] +
@@ -119,14 +151,20 @@ class SearchForm(object):
         return index_query
 
     def get_facets(self, result_facets):
-        # get facet counts
-        # if the user's selected some of the available facets (ie - there are
-        # filters selected for this field type) perform a search as if those
-        # filters were not applied to obtain facet counts
-        #
-        # since we AND filters of the same type, counts should go UP when
-        # more than one facet is selected as a filter, not DOWN (or'ed filters
-        # of the same type)
+        """search the index again in order to retrieve facets for any
+        filtered fields, also processes the facets - retrieving display
+        data for each facet value, inserting filtered facets into list,
+        and sorting appropriately.
+
+        ex: if decade type facets are "1990" and 
+        "1980" and a filter is applied for "1990", then "1980" 
+        should still appear on the form, even though the filtered
+        search does not return "1980"
+
+        Arguments:
+        result_facets -- list of facets returned from the first search
+                         if there's no filters applied, this list is good
+        """
 
         facets = {}
         for fft in self.facet_filter_types:
@@ -153,10 +191,12 @@ class SearchForm(object):
         return facets
 
     def filter_display(self):
+        """Convert filter values into user-friendly display values
+        (ex: 76 -> "Henry O. Nightingale diaries")
+        """
         filter_display = {}
         for filter_type in self.facet_filter_types:
             param_name = filter_type['form_name']
-            display_name = filter_type['filter_field']
             filter_transform = filter_type['filter_display']
 
             if len(self.request.getlist(param_name)) > 0:
@@ -166,6 +206,7 @@ class SearchForm(object):
 
 
 class ESSearchForm(SearchForm):
+    """ElasticSearch Search Form for /search/ page"""
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF,
@@ -176,6 +217,7 @@ class ESSearchForm(SearchForm):
 
 
 class CampusForm(SearchForm):
+    """Search Form for /campus/items/ page"""
     def __init__(self, request, campus):
         super().__init__(request)
         self.institution = campus
@@ -183,6 +225,7 @@ class CampusForm(SearchForm):
 
 
 class ESCampusForm(CampusForm):
+    """ElasticSearch Search Form for /campus/items/ page"""
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF,
@@ -193,6 +236,9 @@ class ESCampusForm(CampusForm):
 
 
 class RepositoryForm(SearchForm):
+    """Search Form for /institution/<repo_id>/items/ page
+    This form does not retrieve repository facets.
+    """
     facet_filter_fields = [
         ff.TypeFF,
         ff.DecadeFF,
@@ -206,6 +252,7 @@ class RepositoryForm(SearchForm):
 
 
 class ESRepositoryForm(RepositoryForm):
+    """ElasticSearch Search Form for /institution/<repo_id>/items/ page"""
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF,
@@ -215,6 +262,9 @@ class ESRepositoryForm(RepositoryForm):
 
 
 class CollectionForm(SearchForm):
+    """Search Form for /collections/<col_id>/ page
+    This form does not retrieve collection or repository facets.
+    """
     facet_filter_fields = [
         ff.TypeFF,
         ff.DecadeFF,
@@ -239,6 +289,7 @@ class CollectionForm(SearchForm):
 
 
 class ESCollectionForm(CollectionForm):
+    """ElasticSearch Search Form for /collections/<col_id>/ page"""
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF
@@ -247,6 +298,10 @@ class ESCollectionForm(CollectionForm):
 
 
 class CarouselForm(SearchForm):
+    """Search Form for the carousel on an /item/<item_id>/ page
+    This form does not retrieve any facets, though it does handle filters
+    Additionally, for the carousel we only want a subset of result fields
+    """
     def get_query(self, facet_types=[]):
         carousel_params = super().get_query(facet_types)
         carousel_params.pop('facets')
@@ -261,6 +316,9 @@ class CarouselForm(SearchForm):
 
 
 class ESCarouselForm(CarouselForm):
+    """Elastic Search Search Form for the carousel on an 
+    /item/<item_id>/ page
+    """
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF,
@@ -271,6 +329,11 @@ class ESCarouselForm(CarouselForm):
 
 
 class CollectionCarouselForm(CarouselForm):
+    """Search Form for the carousel on an /item/<item_id>/ page if 
+    the user has arrived at this page from a collection page
+    This carousel needs to also handle filters on the relation field
+    and any other custom-defined facets for the collection
+    """
     def __init__(self, request, collection):
         super().__init__(request)
 
@@ -289,6 +352,9 @@ class CollectionCarouselForm(CarouselForm):
 
 
 class ESCollectionCarouselForm(CollectionCarouselForm):
+    """ElasticSearch Search Form for the carousel on an /item/<item_id> 
+    page if the user has arrived from a collection page
+    """
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF,
@@ -299,6 +365,9 @@ class ESCollectionCarouselForm(CollectionCarouselForm):
 
 
 class CampusCarouselForm(CarouselForm):
+    """Search Form for the carousel on an /item/<item_id>/ page if 
+    the user has arrived at this page from a campus page
+    """
     def __init__(self, request, campus):
         super().__init__(request)
         self.institution = campus
@@ -306,6 +375,10 @@ class CampusCarouselForm(CarouselForm):
 
 
 class ESCampusCarouselForm(CampusCarouselForm):
+    """ElasticSearch Search Form for the carousel on an 
+    /item/<item_id>/ page if the user has arrived at this page 
+    from a campus page
+    """
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF,

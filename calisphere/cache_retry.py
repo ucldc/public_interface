@@ -82,6 +82,7 @@ def SOLR_get(**kwargs):
     def get_col_id(url):
         col_id = (re.match(col_regex, url).group('id'))
         return col_id
+
     def get_repo_id(url):
         repo_id = (re.match(repo_regex, url).group('id'))
         return repo_id

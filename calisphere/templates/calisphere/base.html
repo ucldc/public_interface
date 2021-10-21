@@ -33,11 +33,22 @@
     {% include "calisphere/ga_site_code.html" %}
   </head>
   <body>
-    <div class="container-fluid">
-      <a href="{% url 'calisphere:select_index' 'solr' %}?next={{ request.get_full_path }}">Solr</a>
-      <a href="{% url 'calisphere:select_index' 'es' %}?next={{ request.get_full_path }}">ElasticSearch</a>
-      Currently Selected: {{ request.session.index }}
+    {% if multiple_indexes %}
+    <div class="container-fluid" 
+         style="background-color: lightgray; padding: 10px 20px">
+      <i class="fa fa-exclamation-circle"></i>
+      This is a development feature for Rikolti - Currently Viewing Results From: {{ request.session.index }}
+      <a 
+        href="{% url 'calisphere:select_index' 'solr' %}?next={{ request.get_full_path }}" 
+        class="btn" 
+        style="border-color: black; margin-left: 10px;">Solr</a>
+      <a 
+        href="{% url 'calisphere:select_index' 'es' %}?next={{ request.get_full_path }}" 
+        class="btn" 
+        style="border-color: black; margin-left: 10px;">ElasticSearch</a>
+      
     </div>
+    {% endif %}
     <div class="container-fluid">
       <a href="#js-pageContent" class="skipnav">Skip to main content</a>
       <header class="header">

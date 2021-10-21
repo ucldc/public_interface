@@ -329,3 +329,8 @@ STATICSITEMAPS_ROOT_DIR = os.path.join(BASE_DIR, "sitemaps")
 STATICSITEMAPS_URL = UCLDC_FRONT
 
 STATICSITEMAPS_PING_GOOGLE = False
+
+try:
+    from public_interface.local_settings import *
+except ImportError:
+    pass

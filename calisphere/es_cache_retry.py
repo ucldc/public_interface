@@ -23,6 +23,9 @@ standard_library.install_aliases()
 if hasattr(settings, 'XRAY_RECORDER'):
     patch(('requests', ))
 
+if not settings.ES_HOST or not settings.ES_USER or not settings.ES_PASS:
+    raise ImportError("ES settings not defined")
+
 elastic_client = Elasticsearch(
     hosts=[settings.ES_HOST],
     http_auth=(settings.ES_USER, settings.ES_PASS))
@@ -223,5 +226,5 @@ def query_encode(query_string: str = None,
     return es_params
 
 
-def search_index(query):
+def search_es(query):
     return es_search(query_encode(**query))

@@ -4,8 +4,9 @@ from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, HttpResponse, QueryDict
 from . import constants
-from .cache_retry import SOLR_get, SOLR_mlt, json_loads_url, search_index
-from .es_cache_retry import es_get, es_mlt
+from .cache_retry import json_loads_url
+from .item_manager import ItemManager
+
 from .search_form import (SearchForm, ESSearchForm, solr_escape, 
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
                           CarouselForm, ESCarouselForm,
@@ -127,11 +128,7 @@ def item_view(request, item_id=''):
     index = request.session.get('index', 'solr')
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
 
-    item_id_search_term = 'id:"{0}"'.format(item_id)
-    if index == 'es':
-        item_search = es_get(item_id)
-    else:
-        item_search = SOLR_get(q=item_id_search_term)
+    item_search = ItemManager(index).get(item_id)
     order = request.GET.get('order')
 
     if not item_search.found:
@@ -143,7 +140,7 @@ def item_view(request, item_id=''):
             "query_string": f"harvest_id_s:*{_fixid(item_id)}",
             "rows": 10
         }
-        old_id_search = search_index(old_id_query, index)
+        old_id_search = ItemManager(index).search(old_id_query)
         if old_id_search.numFound:
             return redirect('calisphere:itemView',
                             old_id_search.results[0]['id'])
@@ -230,7 +227,7 @@ def item_view(request, item_id=''):
         collection = Collection(col_id, index)
         item['parsed_collection_data'].append(collection.item_view())
         if not from_item_page:
-            lockup_data = collection.get_lockup(item_id_search_term)
+            lockup_data = collection.get_lockup(f'id:"{item_id}"')
             related_collections.append(lockup_data)
 
     for repo_id in item.get('repository_ids'):
@@ -303,7 +300,7 @@ def search(request):
     else:
         form = SearchForm(request.GET.copy())
 
-    results = search_index(form.get_query(), index)
+    results = ItemManager(index).search(form.get_query())
     facets = form.get_facets(results.facet_counts['facet_fields'])
     filter_display = form.filter_display()
 
@@ -334,10 +331,7 @@ def search(request):
 
 
 def item_view_carousel_mlt(item_id, index):
-    if index == 'es':
-        carousel_search = es_mlt(item_id)
-    else:
-        carousel_search = SOLR_mlt(item_id)
+    carousel_search = ItemManager(index).more_like_this(item_id)
     if carousel_search.numFound == 0:
         return None, None
         # raise Http404('No object with id "' + item_id + '" found.')
@@ -384,7 +378,7 @@ def item_view_carousel(request):
         search_results, num_found = item_view_carousel_mlt(item_id, index)
     else:
         try:
-            carousel_search = search_index(carousel_params, index)
+            carousel_search = ItemManager(index).search(carousel_params)
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
             print((request.get_full_path()))
@@ -421,7 +415,6 @@ campus_template = "https://registry.cdlib.org/api/v1/campus/{0}/"
 repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
-@cache_by_session_state
 def get_related_collections(request):
     index = request.session.get('index', 'solr')
     if index == 'es':
@@ -446,7 +439,7 @@ def get_related_collections(request):
             rc_params['query_string'] = form.query_string = (
                 f"id:{request.GET.get('itemId')}")
 
-    related_collections = search_index(rc_params, index)
+    related_collections = ItemManager(index).search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
         CollectionFF.facet_field]
 
@@ -541,7 +534,7 @@ def report_collection_facet(request, collection_id, facet):
             "filters": [{'collection_url': [collection_url]}],
             "facets": [facet]
         }
-    facet_search = search_index(facet_params, index)
+    facet_search = ItemManager(index).search(facet_params)
 
     if index == 'es':
         values = facet_search.facet_counts.get(
@@ -600,7 +593,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     else:
         filter_params['query_string'] = query_string
 
-    filter_search = search_index(filter_params, index)
+    filter_search = ItemManager(index).search(filter_params)
 
     collection_name = collection_details.get('name')
 

@@ -3,7 +3,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .cache_retry import json_loads_url, search_index
+from .cache_retry import json_loads_url
+from .item_manager import ItemManager
 from .search_form import (CampusForm, ESCampusForm, 
                           RepositoryForm, ESRepositoryForm)
 from .collection_views import Collection, get_rc_from_ids
@@ -52,7 +53,7 @@ def campus_directory(request):
         repo_query = {
             "facets": ['repository_url']
         }
-    repo_search = search_index(repo_query, index)
+    repo_search = ItemManager(index).search(repo_query)
 
     repositories = []
     if index == 'es':
@@ -101,7 +102,7 @@ def statewide_directory(request):
             "facets": ['repository_url']
         }
 
-    repo_search = search_index(repo_query, index)
+    repo_search = ItemManager(index).search(repo_query)
     if index == 'es':
         index_repositories = repo_search.facet_counts['facet_fields'][
             'repository_ids']
@@ -260,7 +261,7 @@ class Repository(object):
 
 
 def institution_search(request, form, institution, index):
-    results = search_index(form.get_query(), index)
+    results = ItemManager(index).search(form.get_query())
     facets = form.get_facets(results.facet_counts['facet_fields'])
     filter_display = form.filter_display()
 
@@ -309,7 +310,7 @@ def institution_collections(request, institution, index):
     else:
         collections_params['facet_sort'] = 'index'
 
-    collections_search = search_index(collections_params, index)
+    collections_search = ItemManager(index).search(collections_params)
     sort_collection_data = collections_search.facet_counts['facet_fields'][
         'sort_collection_data']
 
@@ -472,7 +473,7 @@ def campus_institutions(request, campus_slug):
         'filters': [institution.basic_filter],
         'facets': ['repository_data']
     }
-    institutions_search = search_index(institutions_query, index)
+    institutions_search = ItemManager(index).search(institutions_query)
     institutions = institutions_search.facet_counts['facet_fields'][
         'repository_data']
 

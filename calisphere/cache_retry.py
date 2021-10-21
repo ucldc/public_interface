@@ -17,7 +17,6 @@ import json
 import itertools
 import re
 from typing import Dict, List, Tuple
-from .es_cache_retry import search_index as search_es
 
 requests.packages.urllib3.disable_warnings()
 
@@ -296,9 +295,5 @@ def query_encode(query_string: str = None,
     return solr_params
 
 
-def search_index(query, index):
-    if index == "solr":
-        results = SOLR_select(**query_encode(**query))
-    elif index == "es":
-        results = search_es(query)
-    return results
+def search_solr(query):
+    return SOLR_select(**query_encode(**query))

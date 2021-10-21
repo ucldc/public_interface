@@ -8,7 +8,8 @@ import urllib.request, urllib.error, urllib.parse
 from collections import namedtuple
 import string
 import random
-from .cache_retry import json_loads_url, search_index
+from .cache_retry import json_loads_url
+from .item_manager import ItemManager
 from django.core.cache import cache
 from django.conf import settings
 import time
@@ -45,7 +46,7 @@ class CollectionManager(object):
             }
 
             save = {}
-            index_data = search_index(collections_query, index)
+            index_data = ItemManager(index).search(collections_query)
             save['data'] = self.data = list(index_data.facet_counts[
                 'facet_fields']['collection_data'].keys())
             self.parse()

@@ -6,7 +6,8 @@ from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
-from .cache_retry import json_loads_url, search_index
+from .cache_retry import json_loads_url
+from .item_manager import ItemManager
 from .search_form import CollectionForm, solr_escape
 from builtins import range
 from .decorators import cache_by_session_state
@@ -227,7 +228,7 @@ class Collection(object):
             "filters": [self.basic_filter],
             "rows": 0
         }
-        item_count_search = search_index(item_query, self.index)
+        item_count_search = ItemManager(self.index).search(item_query)
         self.item_count = item_count_search.numFound
         return self.item_count
 
@@ -269,7 +270,7 @@ class Collection(object):
             "rows": 0,
             "facets": [ff.field for ff in facet_fields]
         }
-        facet_search = search_index(facet_query, self.index)
+        facet_search = ItemManager(self.index).search(facet_query)
         self.item_count = facet_search.numFound
 
         facets = []
@@ -330,13 +331,13 @@ class Collection(object):
             "sort": sort,
             "rows": 6
         }
-        display_items = search_index(search_terms, self.index)
+        display_items = ItemManager(self.index).search(search_terms)
         items = display_items.results
 
         search_terms['filters'].pop(1)
         search_terms['exclude'] = [{TypeFF.filter_field: ["image"]}]
 
-        ugly_display_items = search_index(search_terms, self.index)
+        ugly_display_items = ItemManager(self.index).search(search_terms)
         # if there's not enough image items, get some non-image
         # items for the mosaic preview
         if len(items) < 6:
@@ -365,13 +366,13 @@ class Collection(object):
             ],
             "rows": 3,
         }
-        collection_items = search_index(rc_params, self.index)
+        collection_items = ItemManager(self.index).search(rc_params)
         collection_items = collection_items.results
 
         if len(collection_items) < 3:
             # redo the query without any search terms
             rc_params.pop('query_string')
-            collection_items_no_query = search_index(rc_params, self.index)
+            collection_items_no_query = ItemManager(self.index).search(rc_params)
             collection_items += collection_items_no_query.results
 
         if len(collection_items) <= 0:
@@ -424,7 +425,7 @@ def collection_search(request, collection_id):
     collection = Collection(collection_id, index)
 
     form = CollectionForm(request.GET.copy(), collection)
-    results = search_index(form.get_query(), index)
+    results = ItemManager(index).search(form.get_query())
     filter_display = form.filter_display()
 
     if settings.UCLDC_FRONT == 'https://calisphere.org/':
@@ -502,7 +503,7 @@ def collection_facet(request, collection_id, facet):
                 "result_fields": ["reference_image_md5, type_ss"],
                 "rows": 3
             }
-            thumbs = search_index(thumb_params, index)
+            thumbs = ItemManager(index).search(thumb_params)
             value['thumbnails'] = thumbs.results
 
         context.update({
@@ -574,7 +575,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     extra_filter = {cluster_type.field: [escaped_cluster_value]}
 
     form.implicit_filter.append(extra_filter)
-    results = search_index(form.get_query(), index)
+    results = ItemManager(index).search(form.get_query())
 
     if results.numFound == 1:
         return redirect('calisphere:itemView', results.results[0]['id'])
@@ -643,7 +644,7 @@ def get_cluster_thumbnails(collection, facet, facet_value, index):
         'result_fields': ['reference_image_md5', 'type'],
         'rows': 3
     }
-    thumbs = search_index(thumb_params, index)
+    thumbs = ItemManager(index).search(thumb_params)
     return thumbs.results
 
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/

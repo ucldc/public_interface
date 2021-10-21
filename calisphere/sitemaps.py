@@ -16,6 +16,7 @@ from .cache_retry import SOLR_select_nocache
 
 app = apps.get_app_config('calisphere')
 
+
 class HttpsSitemap(Sitemap):
     protocol = 'https'
 

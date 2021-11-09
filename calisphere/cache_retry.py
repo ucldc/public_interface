@@ -290,7 +290,10 @@ def query_encode(query_string: str = None,
     if sort:
         solr_params['sort'] = f"{sort[0]} {sort[1]}"
     
-    solr_params.update({'rows': rows})
+    solr_params.update({
+        'rows': rows,
+        'start': start
+    })
 
     return solr_params
 

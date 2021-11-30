@@ -159,7 +159,7 @@ class ESFacetFilterType(FacetFilterType):
 
 class RelationFF(FacetFilterType):
     form_name = 'relation_ss'
-    facet_field = 'relation'
+    facet_field = 'relation_ss'
     display_name = 'Relation'
     filter_field = 'relation_ss'
     sort_by = 'value'

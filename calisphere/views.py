@@ -131,7 +131,7 @@ def item_view(request, item_id=''):
     item_search = ItemManager(index).get(item_id)
     order = request.GET.get('order')
 
-    if not item_search.found:
+    if not item_search:
         # second level search
         def _fixid(id):
             return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)

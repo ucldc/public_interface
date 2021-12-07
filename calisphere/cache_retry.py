@@ -76,6 +76,8 @@ repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
 def SOLR_get(**kwargs):
     item_search = SOLR_select(**kwargs)
     found = bool(item_search.numFound)
+    if found <= 0:
+        return None
     item = item_search.results[0]
 
     def get_col_id(url):

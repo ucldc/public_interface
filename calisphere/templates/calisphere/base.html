@@ -37,15 +37,15 @@
     <div class="container-fluid" 
          style="background-color: lightgray; padding: 10px 20px">
       <i class="fa fa-exclamation-circle"></i>
-      This is a development feature for Rikolti - Currently Viewing Results From: {{ request.session.index }}
+      This is a development feature for <a href="https://github.com/ucldc/rikolti/wiki">Rikolti</a>, Calisphere's new harvesting infrastructure - Currently Viewing Results From: <b><i>{{ request.session.index }}</i></b>
       <a 
         href="{% url 'calisphere:select_index' 'solr' %}?next={{ request.get_full_path }}" 
         class="btn" 
-        style="border-color: black; margin-left: 10px;">Solr</a>
+        style="border-color: black; margin-left: 10px;">Legacy Solr Index</a>
       <a 
         href="{% url 'calisphere:select_index' 'es' %}?next={{ request.get_full_path }}" 
         class="btn" 
-        style="border-color: black; margin-left: 10px;">ElasticSearch</a>
+        style="border-color: black; margin-left: 10px;">New ElasticSearch Index</a>
       
     </div>
     {% endif %}

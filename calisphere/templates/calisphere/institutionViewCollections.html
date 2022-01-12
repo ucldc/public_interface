@@ -40,14 +40,14 @@
     {% if repository_id %}
     <div id="js-collectionPagination">
       {% if prev_page %}
-      <a class="btn btn-link related-coll__prev-button" href="{% url 'calisphere:repositoryView' repository_id 'collections' %}?page={{ prev_page }}">
+      <a class="btn btn-link related-coll__prev-button" href="{% url 'calisphere:repositoryCollections' repository_id %}?page={{ prev_page }}">
         <span class="fa fa-caret-left"></span>
         <abbr title="Previous">Prev</abbr>
       </a>
       {% endif %}
 
       {% if next_page %}
-      <a class="btn btn-link related-coll__next-button js-next" href="{% url 'calisphere:repositoryView' repository_id 'collections' %}?page={{ next_page }}">
+      <a class="btn btn-link related-coll__next-button js-next" href="{% url 'calisphere:repositoryCollections' repository_id %}?page={{ next_page }}">
         Next
         <span class="fa fa-caret-right"></span>
       </a>
@@ -56,14 +56,14 @@
     {% elif campus_slug %}
     <div id="js-collectionPagination">
       {% if prev_page %}
-      <a class="btn btn-link related-coll__prev-button" href="{% url 'calisphere:campusView' campus_slug 'collections' %}?page={{ prev_page }}">
+      <a class="btn btn-link related-coll__prev-button" href="{% url 'calisphere:campusCollections' campus_slug %}?page={{ prev_page }}">
         <span class="fa fa-caret-left"></span>
         <abbr title="Previous">Prev</abbr>
       </a>
       {% endif %}
 
       {% if next_page %}
-      <a class="btn btn-link related-coll__next-button js-next" href="{% url 'calisphere:campusView' campus_slug 'collections' %}?page={{ next_page }}">
+      <a class="btn btn-link related-coll__next-button js-next" href="{% url 'calisphere:campusCollections' campus_slug %}?page={{ next_page }}">
         Next
         <span class="fa fa-caret-right"></span>
       </a>

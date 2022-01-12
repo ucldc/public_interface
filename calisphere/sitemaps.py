@@ -16,6 +16,7 @@ from .cache_retry import SOLR_select_nocache
 
 app = apps.get_app_config('calisphere')
 
+
 class HttpsSitemap(Sitemap):
     protocol = 'https'
 
@@ -42,7 +43,7 @@ class InstitutionSitemap(HttpsSitemap):
 
     def location(self, item):
         return reverse(
-            'calisphere:repositoryView',
+            'calisphere:repositoryCollections',
             kwargs={
                 'repository_id': item,
             })
@@ -50,16 +51,12 @@ class InstitutionSitemap(HttpsSitemap):
 
 class CollectionSitemap(HttpsSitemap):
     def items(self):
-        return CollectionManager(settings.SOLR_URL,
-                                 settings.SOLR_API_KEY).parsed
+        return CollectionManager("solr").parsed
 
     def location(self, item):
-        col_id = re.match(
-            r'^https://registry.cdlib.org/api/v1/collection/(?P<collection_id>\d+)/$',
-            item.url)
         return reverse(
             'calisphere:collectionView',
-            kwargs={'collection_id': col_id.group('collection_id')})
+            kwargs={'collection_id': item.id})
 
 
 class ItemSitemap(object):

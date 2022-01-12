@@ -15,6 +15,8 @@ import pickle
 import hashlib
 import json
 import itertools
+import re
+from typing import Dict, List, Tuple
 
 requests.packages.urllib3.disable_warnings()
 
@@ -62,6 +64,57 @@ SOLR_DEFAULTS = {
 
 SolrResults = namedtuple(
     'SolrResults', 'results header numFound facet_counts nextCursorMark')
+SolrItem = namedtuple(
+    'SolrItem', 'found, item, resp')
+
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
+repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
+              r'(?P<id>\d*)/?')
+
+
+def SOLR_get(**kwargs):
+    item_search = SOLR_select(**kwargs)
+    found = bool(item_search.numFound)
+    if found <= 0:
+        return None
+    item = item_search.results[0]
+
+    def get_col_id(url):
+        col_id = (re.match(col_regex, url).group('id'))
+        return col_id
+
+    def get_repo_id(url):
+        repo_id = (re.match(repo_regex, url).group('id'))
+        return repo_id
+
+    item['collection_ids'] = [
+        get_col_id(url) for url in item.get('collection_url')]
+    item['repository_ids'] = [
+        get_repo_id(url) for url in item.get('repository_url')]
+    
+    results = SolrItem(found, item, item_search)
+    return results
+
+
+def SOLR_mlt(item_id):
+    res = SOLR_raw(
+        q='id:' + item_id,
+        fields='id, type_ss, reference_image_md5, title',
+        mlt='true',
+        mlt_count='24',
+        mlt_fl='title,collection_name,subject',
+        mlt_mintf=1,
+    )
+    results = json.loads(res.decode('utf-8'))
+    return SolrResults(
+        (results['response']['docs'] + 
+            results['moreLikeThis'][item_id]['docs']),
+        results['responseHeader'],
+        results['response']['numFound'],
+        None,
+        results.get('nextCursorMark')
+    )
 
 
 def SOLR(**params):
@@ -165,3 +218,87 @@ def SOLR_select_nocache(**kwargs):
     kwargs.update(SOLR_DEFAULTS)
     sr = SOLR(**kwargs)
     return sr
+
+
+FieldName = str
+Order = str
+FilterValues = list
+FilterField = Dict[FieldName, FilterValues]
+Filters = List[FilterField]
+
+
+def query_encode(query_string: str = None, 
+                 filters: Filters = None,
+                 exclude: Filters = None,
+                 sort: Tuple[FieldName, Order] = None,
+                 start: int = None,
+                 rows: int = 0,
+                 result_fields: List[str] = None,
+                 facets: List[str] = None,
+                 facet_sort: str = None):
+
+    solr_params = {}
+
+    if query_string:
+        solr_params['q'] = query_string
+
+    solr_filters = []
+    if filters:
+        for f in filters:
+            filters_of_type = []
+            for filter_field, values in f.items():
+                fq = [f"{filter_field}: \"{v}\"" for v in values]
+                filters_of_type.append(fq)
+
+            filters_of_type = " OR ".join(filters_of_type[0])
+            solr_filters.append(filters_of_type)
+
+    if exclude:
+        for f in exclude:
+            eq = [f'(*:* AND -{k}:\"{v[0]}\")'
+                  for k, v in f.items()]
+            solr_filters.append(eq[0])
+
+    if solr_filters:
+        if len(solr_filters) == 1:
+            solr_params['fq'] = solr_filters[0]
+        else:
+            solr_params['fq'] = solr_filters
+
+    if facets:
+        exceptions = [
+            'repository_url', 
+            'sort_collection_data', 
+            'repository_data',
+            'collection_data',
+            'facet_decade']
+        solr_facets = [facet if (facet in exceptions
+                       or facet[-3:] == '_ss')
+                       else f"{facet}_ss" for facet in facets]
+        solr_params.update({
+            'facet': 'true',
+            'facet_field': solr_facets,
+            'facet_limit': '-1',
+            'facet_mincount': 1})
+
+    if facet_sort:
+        solr_params.update({
+            'facet_sort': facet_sort
+        })
+
+    if result_fields:
+        solr_params['fl'] = ", ".join(result_fields)
+
+    if sort:
+        solr_params['sort'] = f"{sort[0]} {sort[1]}"
+    
+    solr_params.update({
+        'rows': rows,
+        'start': start
+    })
+
+    return solr_params
+
+
+def search_solr(query):
+    return SOLR_select(**query_encode(**query))

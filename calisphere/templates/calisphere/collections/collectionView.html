@@ -33,13 +33,13 @@
         {% for repository in collection.repository %}
           {% if 'campus' in repository and repository.campus.0.name %}
             <a
-              href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+              href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
               class="collection-intro__institution-heading-link"
               data-pjax="js-pageContent"
             >{{ repository.campus.0.name }}</a>,
           {% endif %}
           <a
-            href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+            href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
             class="collection-intro__institution-heading-link"
             data-pjax="js-pageContent"
             data-ga-code="{{ repository.google_analytics_tracking_code }}"
@@ -99,14 +99,14 @@
   <div class="col-sm-6 col-md-12">
     {% if collection.repository|length > 1 %}
     {% for repository in collection.repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Go to {{ repository.name }} Page
       </a>
     {% endfor %}
     {% else %}
     {% with collection.repository.0 as repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Go to Institution Page
       </a>

@@ -5,84 +5,132 @@
   <ul class="pag-buttons__list">
     
     <!-- previous button -->
-    {% if start|subtract:rows >= 0 %}
+    {% with search_form.start|subtract:search_form.rows as prev_page %}
+    {% if prev_page >= 0 %}
       <li class="pag-buttons__list-item">
-        <a class="btn btn-default button__prev" aria-label="previous page" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr></a>
+        <a class="btn btn-default button__prev" 
+           aria-label="previous page" 
+           data-start="{{ prev_page }}" 
+           href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ prev_page }}">
+            <i class="fa fa-caret-left fa-lg"></i> <abbr title="Previous">Prev</abbr>
+        </a>
       </li>
     {% endif %}
+    {% endwith %}
     
     <!-- if pages is less than 6, just include all the buttons -->
     {% if pages <= 6 %}
       {% for page in pages|get_range %}
+      {% with page|multiply:search_form.rows as this_page %}
       <li class="pag-buttons__list-item">
-        <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}" aria-label="page {{ page|add:1 }}">{{ page|add:"1" }}</button>
+        <button class="btn btn-default {% if search_form.start == this_page %}pag-buttons__list-link--selected{% endif %}" 
+                data-start="{{ this_page }}" 
+                aria-label="page {{ page|add:1 }}">
+              {{ page|add:"1" }}
+        </button>
       </li>
+      {% endwith %}
       {% endfor %}
     <!-- more than 6 pages of results -->
     {% else %}
+      {% with search_form.start|current_page:search_form.rows as the_current_page %}
       <!-- the page we're currently on is one of the first 4, include first five buttons -->
-      {% if start|current_page:rows <= 4 %}
+      {% if the_current_page <= 4 %}
         {% for page in 5|get_range %}
-        <li class="pag-buttons__list-item">
-          <button class="btn btn-default {% if start == page|multiply:rows %}pag-buttons__list-link--selected{% endif %}" data-start="{{ page|multiply:rows }}" aria-label="page {{ page|add:1 }}">
-            {{ page|add:"1" }}
-          </button>
-        </li>
+          {% with page|multiply:search_form.rows as a_page %}
+          <li class="pag-buttons__list-item">
+            <button 
+              class="btn btn-default {% if search_form.start == a_page %}pag-buttons__list-link--selected{% endif %}" 
+              data-start="{{ a_page }}" 
+              aria-label="page {{ page|add:1 }}">
+              {{ page|add:"1" }}
+            </button>
+          </li>
+          {% endwith %}
         {% endfor %}
         <li class="pag-buttons__list-item">&#8230;</li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}" aria-label="page {{ pages }}">{{ pages }}</button>
+          <button class="btn btn-default" 
+                  data-start="{{ pages|subtract:1|multiply:search_form.rows }}" 
+                  aria-label="page {{ pages }}">
+                {{ pages }}
+          </button>
         </li>
       <!-- the page we're currently on is one of the last 4, include last five buttons -->
-      {% elif pages|subtract:4 < start|current_page:rows %}
+      {% elif pages|subtract:4 < the_current_page %}
         <li class="pag-buttons__list-item">
           <button class="btn btn-default" data-start="0">1</button>
         </li>
         <li class="pag-buttons__list-item">&#8230;</li>
           {% for page in 5|get_range %}
-          <li class="pag-buttons__list-item">
-            <button class="btn btn-default {% if start|current_page:rows == pages|subtract:5|add:page|add:1 %}pag-buttons__list-link--selected{% endif %}" data-start="{{ pages|subtract:5|add:page|multiply:rows }}" aria-label="page {{ pages|subtract:5|add:page|add:1 }}">
-              {{ pages|subtract:5|add:page|add:1 }}
-            </button>
-          </li>
+            {% with pages|subtract:5|add:page|add:1 as a_page %}
+            <li class="pag-buttons__list-item">
+              <button class="btn btn-default {% if the_current_page == a_page %}pag-buttons__list-link--selected{% endif %}" 
+                      data-start="{{ pages|subtract:5|add:page|multiply:search_form.rows }}" 
+                      aria-label="page {{ a_page }}">
+                {{ a_page }}
+              </button>
+            </li>
+            {% endwith %}
           {% endfor %}
       <!-- the page we're currently on is in the middle -->
       {% else %}
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="0" aria-label="page 1">1</button>
+          <button class="btn btn-default" 
+                  data-start="0" 
+                  aria-label="page 1">1</button>
         </li>
         <li class="pag-buttons__list-item">&#8230;</li>
         
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ start|subtract:rows }}" aria-label="page {{ start|current_page:rows|subtract:1 }}">
-            {{ start|current_page:rows|subtract:1 }}
+          <button class="btn btn-default" 
+                  data-start="{{ search_form.start|subtract:search_form.rows }}" 
+                  aria-label="page {{ the_current_page|subtract:1 }}">
+            {{ the_current_page|subtract:1 }}
           </button>
         </li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default pag-buttons__list-link--selected" data-start="{{ start }}" aria-label="page {{ start|current_page:rows }}">
-            {{ start|current_page:rows }}
+          <button class="btn btn-default pag-buttons__list-link--selected" 
+                  data-start="{{ search_form.start }}" 
+                  aria-label="page {{ the_current_page }}">
+            {{ the_current_page }}
           </button>
         </li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ start|add:rows }}" aria-label="page {{ start|current_page:rows|add:1 }}">
-            {{ start|current_page:rows|add:1 }}
+          <button class="btn btn-default" 
+                  data-start="{{ search_form.start|add:search_form.rows }}" 
+                  aria-label="page {{ the_current_page|add:1 }}">
+            {{ the_current_page|add:1 }}
           </button>
         </li>
         
         <li class="pag-buttons__list-item">&#8230;</li>
         <li class="pag-buttons__list-item">
-          <button class="btn btn-default" data-start="{{ pages|subtract:1|multiply:rows }}" aria-label="page {{ pages }}">{{ pages }}</button>
+          <button class="btn btn-default" 
+                  data-start="{{ pages|subtract:1|multiply:search_form.rows }}" 
+                  aria-label="page {{ pages }}">
+                {{ pages }}
+          </button>
         </li>
       {% endif %}
+      {% endwith %}
     {% endif %}
         
     <!-- next button -->
-    {% if start|add:rows < numFound %}
-      <li class="pag-buttons__list-item"><a class="btn btn-default button__next" aria-label="next page" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}">Next <i class="fa fa-caret-right fa-lg"></i></a></li>
-    {% endif %}
+    {% with search_form.start|add:search_form.rows as next_page %}
+      {% if next_page < numFound %}
+        <li class="pag-buttons__list-item">
+          <a class="btn btn-default button__next" 
+             aria-label="next page" 
+             data-start="{{ next_page }}" 
+             href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ next_page }}">
+              Next <i class="fa fa-caret-right fa-lg"></i>
+          </a>
+        </li>
+     {% endif %}
+    {% endwith %}    
     
-    
-    <!-- <option value="{% widthratio page 1 rows %}" {% if start == page|multiply:rows %}selected{% endif %}>{{ page|add:"1" }}</option>
+    <!-- <option value="{% widthratio page 1 search_form.rows %}" {% if search_form.start == page|multiply:search_form.rows %}selected{% endif %}>{{ page|add:"1" }}</option>
     
     <li class="pag-buttons__list-item"><a class="btn btn-default pag-buttons__list-link - - selected" href="">1</a></li>
     <li class="pag-buttons__list-item"><a class="btn btn-default" href="">2</a></li>

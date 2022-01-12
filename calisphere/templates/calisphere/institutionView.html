@@ -20,7 +20,7 @@
       </li>
       {% if repository_id and uc_institution %}
       <li>
-        <a href="{% url 'calisphere:campusView' uc_institution.0.slug 'collections' %}" data-pjax="js-pageContent">{{ uc_institution.0.name }}</a>
+        <a href="{% url 'calisphere:campusCollections' uc_institution.0.slug %}" data-pjax="js-pageContent">{{ uc_institution.0.name }}</a>
       </li>
       {% endif %}
     </ul>

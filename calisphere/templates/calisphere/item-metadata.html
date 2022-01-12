@@ -34,7 +34,7 @@
       <dd class="meta-block__defin" itemprop="provider">
         {% for repository in item.parsed_repository_data %}
           <a
-            href="{% url 'calisphere:repositoryView' repository.id 'collections' %}"
+            href="{% url 'calisphere:repositoryCollections' repository.id %}"
             data-pjax="js-pageContent"
             data-ga-code="{{ repository.ga_code }}"
             data-ga-dim2="{{ repository.slug }}"

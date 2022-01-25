@@ -21,14 +21,14 @@
         </div>
         <!-- Begin Filter Component -->
         {% block filters %}
-        {% if filters|dictionary_length > 0 or rq|length > 0 %}<div class="filter">
+        {% if filters|dictionary_length > 0 or search_form.rq|length > 0 %}<div class="filter">
 
           <span class="filter__note">Filters you've selected:</span>
 
           {% for filter_type in filters %}
             {% for filter in filters|get_item:filter_type %}
-              {% if filter_type == 'collection_url' or filter_type == 'repository_url' %}
-                <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{% if filter_type == 'collection_url' %}c-{% else %}r-{% endif %}{{ filter.id }}">{% if 'campus' in filter and filter.campus|length > 0 %}{{ filter.campus }}, {% endif %}{{ filter.name }}<i class="fa fa-close button__close-icon"></i>
+              {% if filter_type == 'collection_data' or filter_type == 'repository_data' %}
+                <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{% if filter_type == 'collection_data' %}c-{% else %}r-{% endif %}{{ filter.id }}">{% if 'campus' in filter and filter.campus|length > 0 %}{{ filter.campus }}, {% endif %}{{ filter.name }}<i class="fa fa-close button__close-icon"></i>
                 </button>
               {% else %}
                 <button type="button" class="btn btn-default btn-xs filter-pill button__close js-filter-pill" data-slug="{{ filter|slugify }}">{{ filter }}<i class="fa fa-close button__close-icon"></i>
@@ -37,7 +37,7 @@
             {% endfor %}
           {% endfor %}
 
-          {% for refine in rq %}
+          {% for refine in search_form.rq %}
             <input form="js-facet" type="text" class="display-none" name="rq" value="{{ refine }}">
             <button type="button" class="btn btn-default btn-xs js-refine-filter-pill button__close" data-slug="{{ refine }}">{{ refine }}<i class="fa fa-close button__close-icon"></i>
             </button>
@@ -87,10 +87,10 @@
         <!-- TODO: facets.collection_name|length is only accurate if no collection filters have been applied -->
         <h2 class="text__collections-heading">{% block objectsFound %}{{ numFound|intcomma }} item{{ numFound|pluralize }} found in
           <a href="#related-coll">
-            {% if filters|get_item:'collection_url'|length == 0 %}
+            {% if filters|get_item:'collection_data'|length == 0 %}
               {{ facets.collection_data|length }} collection{{ facets.collection_data|pluralize }}
             {% else %}
-              {{ filters|get_item:'collection_url'|length }} collection{{ filters|get_item:'collection_url'|pluralize }}
+              {{ filters|get_item:'collection_data'|length }} collection{{ filters|get_item:'collection_data'|pluralize }}
             {% endif %}
           </a>{% endblock %}
         </h2>
@@ -105,11 +105,11 @@
 
           <div class="thumblist-toggle">
             <label for="view_format" aria-hidden="true" class="display-none">View Format</label>
-            <input form="js-facet" type="text" class="display-none" id="view_format" name="view_format" value="{{ view_format }}" aria-hidden="true">
-            <button id="thumbnails" class="btn btn-link thumblist-toggle__thumbnails{% if view_format == 'thumbnails' %}--selected{% endif %}">
+            <input form="js-facet" type="text" class="display-none" id="view_format" name="view_format" value="{{ search_form.view_format }}" aria-hidden="true">
+            <button id="thumbnails" class="btn btn-link thumblist-toggle__thumbnails{% if search_form.view_format == 'thumbnails' %}--selected{% endif %}">
               <span class="fa fa-th-large"></span>Thumbnails
             </button>
-            <button id="list" class="btn btn-link thumblist-toggle__list{% if view_format == 'list' %}--selected{% endif %}"><span class="fa fa-th-list"></span>List</button>
+            <button id="list" class="btn btn-link thumblist-toggle__list{% if search_form.view_format == 'list' %}--selected{% endif %}"><span class="fa fa-th-list"></span>List</button>
           </div>
 
           <!-- End Toggle Component -->
@@ -120,42 +120,46 @@
 
         <!-- Begin Thumbnail and List View Components -->
 
-        {% if view_format == "thumbnails" %}
+        {% if search_form.view_format == "thumbnails" %}
           {% include "calisphere/item-thumb.html" %}
-        {% elif view_format == "list" %}
+        {% elif search_form.view_format == "list" %}
           {% include "calisphere/list-results.html" %}
         {% endif %}
 
         <label for="start" aria-hidden="true" class="display-none">Current Set Number</label>
-        <input form="js-facet" type="text" class="display-none" id="start" name="start" value="{{ start }}" aria-hidden="true">
+        <input form="js-facet" type="text" class="display-none" id="start" name="start" value="{{ search_form.start }}" aria-hidden="true">
 
         <!-- End Thumbnail and List View Components -->
 
         <div class="row">
           <div class="pag-dropdown">
 
-            {% if start|subtract:rows >= 0 %}
-              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" data-start="{{ start|subtract:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|subtract:rows }}"><span class="fa fa-caret-left fa-lg"></span></a>
+            {% with search_form.start|subtract:search_form.rows as prev_page %}
+            {% if prev_page >= 0 %}
+              <a class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" data-start="{{ prev_page }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ prev_page }}"><span class="fa fa-caret-left fa-lg"></span></a>
             {% else %}
               <button type="button" class="js-prev btn btn-link pag-dropdown__arrow-icon" aria-label="previous set" disabled><span class="fa fa-caret-left fa-lg"></span></button>
             {% endif %}
+            {% endwith %}
 
             <label for="bottom-start-dropdown" class="sr-only">Current Set Number</label>
             <select class="pag-dropdown__select--unstyled" form="js-facet" id="bottom-start-dropdown">
               {% for page in pages|get_range %}
-              <option value="{% widthratio page 1 rows %}" {% if start|add:0 >= page|multiply:rows|add:0 and start|add:0 < page|add:1|multiply:rows|add:0 %}selected{% endif %}>{{ page|add:"1" }}</option>
+              <option value="{% widthratio page 1 search_form.rows %}" {% if search_form.start|add:0 >= page|multiply:search_form.rows|add:0 and search_form.start|add:0 < page|add:1|multiply:search_form.rows|add:0 %}selected{% endif %}>{{ page|add:"1" }}</option>
               {% endfor %}
             </select>
 
             <span class="pag-dropdown__total-number">of {{ pages }}</span>
 
-            {% if start|add:rows < numFound %}
-              <a class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" data-start="{{ start|add:rows }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ start|add:rows }}">
+            {% with search_form.start|add:search_form.rows as next_page %}
+            {% if next_page < numFound %}
+              <a class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" data-start="{{ next_page }}" href="{{ form_action }}?{% if q %}q={{ q }}&{% endif %}start={{ next_page }}">
                 <span class="fa fa-caret-right fa-lg"></span>
               </a>
             {% else %}
               <button type="button" class="js-next btn btn-link pag-dropdown__arrow-icon" aria-label="next set" disabled><span class="fa fa-caret-right fa-lg"></span></button>
             {% endif %}
+            {% endwith %}
 
   		    </div>
 

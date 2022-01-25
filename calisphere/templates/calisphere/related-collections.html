@@ -15,7 +15,7 @@
       <!-- if we're coming from an institution or campus page -->
       {% elif referral == 'institution' or referral == 'campus' %}
         <!-- if we've searched from an institution or campus page -->
-        {% if q or rq or filters or filters|dictionary_length > 0 %}
+        {% if q or search_form.rq or filters or filters|dictionary_length > 0 %}
           <strong>Collections</strong> containing your search results ({{ num_related_collections }} found)
         <!-- if we're just arriving from an institution or campus page item listing -->
         {% else %}
@@ -29,7 +29,7 @@
     <!-- if we're on a repository or campus page -->
     {% elif repository_id or campus_slug %}
       <!-- if we've performed a search -->
-      {% if q or rq or filters or filters|dictionary_length > 0 %}
+      {% if q or search_form.rq or filters or filters|dictionary_length > 0 %}
         <!-- if we've explicitly selected a single collection from the facet sidebar -->
         {% if filters.collection_url|length == 1 %}
           Go to collection:
@@ -62,30 +62,30 @@
             {% for item in items %}
             {% if forloop.counter <= 3 %}
             <div class="related-coll__thumbnail-container{{ forloop.counter }}">
-              {% if 'reference_image_md5' in item and 'type_ss' in item %}
+              {% if 'reference_image_md5' in item and 'type' in item %}
                 <img
                 src="{{ thumbnailUrl }}crop/300x300/{{ item.reference_image_md5 }}"
                 class="thumbnail__image"
                 alt="">
 
-                {% if item.type_ss.0|lower == "moving image" %}
+                {% if item.type.0|lower == "moving image" %}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-play-circle-o"></div>
-                {% elif item.type_ss.0|lower == "sound"%}
+                {% elif item.type.0|lower == "sound"%}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-volume-up"></div>
-                {# elif item.type_ss.0|lower == "text"#}
+                {# elif item.type.0|lower == "text"#}
                 <!-- <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}- -large{% endif %} fa-file-text-o"></div> -->
-                {% elif item.type_ss.0|lower == "dataset" %}
+                {% elif item.type.0|lower == "dataset" %}
                 <div class="related-coll__overlay-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
                 {% endif %}
 
               {% else %}
-                {% if item.type_ss.0|lower == "moving image" %}
+                {% if item.type.0|lower == "moving image" %}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-play-circle-o"></div>
-                {% elif item.type_ss.0|lower == "sound"%}
+                {% elif item.type.0|lower == "sound"%}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-volume-up"></div>
-                {% elif item.type_ss.0|lower == "text"%}
+                {% elif item.type.0|lower == "text"%}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-file-text-o"></div>
-                {% elif item.type_ss.0|lower == "dataset" %}
+                {% elif item.type.0|lower == "dataset" %}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
                 {% endif %}
               {% endif %}
@@ -103,15 +103,15 @@
     </div>
   {% endfor %}
 
-  {% if rc_page > 0 %}
-    <button class="btn btn-link related-coll__prev-button js-rc-page" data-rc_page="{{ rc_page|subtract:1 }}">
+  {% if search_form.rc_page > 0 %}
+    <button class="btn btn-link related-coll__prev-button js-rc-page" data-rc_page="{{ search_form.rc_page|subtract:1 }}">
       <span class="fa fa-caret-left"></span>
       <abbr title="Previous">Prev</abbr>
     </button>
   {% endif %}
 
-  {% if rc_page|multiply:3|add:3 < num_related_collections %}
-  <button class="btn btn-link related-coll__next-button js-rc-page" data-rc_page="{{ rc_page|add:1 }}">
+  {% if search_form.rc_page|multiply:3|add:3 < num_related_collections %}
+  <button class="btn btn-link related-coll__next-button js-rc-page" data-rc_page="{{ search_form.rc_page|add:1 }}">
     Next
     <span class="fa fa-caret-right"></span>
   </button>

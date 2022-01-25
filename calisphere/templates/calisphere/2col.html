@@ -1,0 +1,25 @@
+{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+{% load calisphere-extras %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block page-metadata %}
+{% include "calisphere/microdata.html" with title=q  description='' %}
+{% endblock %}
+
+{% block content %}
+
+    {% block pageTitle %}<h1>Search Results for "<strong>{{ q }}</strong>"</h1>{% endblock %}
+
+    {% block additionalInfo %}{% endblock %}
+
+    <div class="col-md-3 layout-col__2">
+      {% block sidebar %}
+      {% endblock %}
+    </div>
+
+    <div class="col-md-9 layout-col__3">
+      {% block mainContent %}
+      {% endblock %}
+    </div>
+{% endblock %}

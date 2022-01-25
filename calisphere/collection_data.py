@@ -9,18 +9,25 @@ from collections import namedtuple
 import string
 import random
 from .cache_retry import json_loads_url
+from .item_manager import ItemManager
 from django.core.cache import cache
 from django.conf import settings
 import time
+import re
 
-CollectionLink = namedtuple('CollectionLink', 'url, label')
+CollectionLink = namedtuple('CollectionLink', 'url, label, id')
+
+col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
+             r'(?P<id>\d*)/?')
+col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 
 class CollectionManager(object):
     """ manage collection information that is parsed from solr facets """
 
-    def __init__(self, solr_url, solr_key):
-        cache_key = 'collection-manager'  # won't vary except on djano restart
+    def __init__(self, index):
+        self.index = index
+        cache_key = f'collection-manager-{index}'  # won't vary except on djano restart
         saved = cache.get(cache_key)
         if saved:
             # got this cached
@@ -33,24 +40,22 @@ class CollectionManager(object):
             self.shuffled = saved['shuffled']  # For the collections explore
             self.total_objects = saved.get('total_objects', 850000)
         else:
-            # look it up from solr
-            url = (
-                '{0}/query?facet.field=collection_data&facet=on&rows=0&facet.limit=-1&facet.mincount=1'
-                .format(solr_url))
-            req = urllib.request.Request(url, None,
-                                         {'X-Authentication-Token': solr_key})
+            # look it up from the index
+            collections_query = {
+                'facets': ['collection_data']
+            }
+
             save = {}
-            solr_data = json_loads_url(req)
-            save['data'] = self.data = solr_data['facet_counts'][
-                'facet_fields']['collection_data'][::2]
+            index_data = ItemManager(index).search(collections_query)
+            save['data'] = self.data = list(index_data.facet_counts[
+                'facet_fields']['collection_data'].keys())
             self.parse()
             save['parsed'] = self.parsed
             save['names'] = self.names
             save['split'] = self.split
             save['no_collections'] = self.no_collections
             save['shuffled'] = self.shuffled
-            save['total_objects'] = self.total_objects = solr_data['response'][
-                'numFound']
+            save['total_objects'] = self.total_objects = index_data.numFound
             cache.set(cache_key, save, settings.DJANGO_CACHE_TIMEOUT)
 
     def parse(self):
@@ -59,8 +64,17 @@ class CollectionManager(object):
                 {ord(c): None
                  for c in string.punctuation}).upper()
 
-        self.parsed = sorted(
-            [CollectionLink(*x.rsplit('::')) for x in self.data], key=sort_key)
+        parsed = []
+        for x in self.data:
+            if self.index == "solr":
+                cd = x.rsplit('::')
+                cd.append(re.match(
+                    col_regex, cd[0]).group('id'))
+            elif self.index == "es":
+                cd = x.rsplit('::')[::-1]
+                cd.insert(0, col_template.format(cd[1]))
+            parsed.append(CollectionLink(*cd))
+        self.parsed = sorted(parsed, key=sort_key)
 
         split_collections = {'num': [], 'a': []}
         names = {}
@@ -81,6 +95,11 @@ class CollectionManager(object):
                             split_collections[current_char] = []
                         split_collections[current_char].append(collection_link)
                     break
+
+        while(current_char <= 'z'):
+            current_char = chr(ord(current_char) + 1)
+            split_collections[current_char] = []
+
         self.split = split_collections
         self.names = names
 

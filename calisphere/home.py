@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.views.decorators.gzip import gzip_page
 from django.utils.decorators import method_decorator
 from django.contrib.humanize.templatetags.humanize import intcomma
-from django.conf import settings
 from calisphere.collection_data import CollectionManager
 
 import json
@@ -23,11 +22,10 @@ class HomeView(TemplateView):
         this_dir = os.path.dirname(os.path.realpath(__file__))
         this_data = os.path.join(this_dir, 'home-data.json')
         self.home_data = json.loads(open(this_data).read())
-        solr_collections = CollectionManager(settings.SOLR_URL,
-                                             settings.SOLR_API_KEY)
+        indexed_collections = CollectionManager("solr")
         self.total_objects = intcomma(
             int(
-                math.floor((int(solr_collections.total_objects) - 1) / 25000) *
+                math.floor((int(indexed_collections.total_objects) - 1) / 25000) *
                 25000))
 
     @method_decorator(gzip_page)

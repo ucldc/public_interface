@@ -165,7 +165,7 @@ Permalink: {{ permalink }}</textarea>
         <p><strong>Please use this item responsibly.</strong> Check the rights information for this item to see if it has copyright restrictions. Note that even if the item is protected by copyright, you may be able to use it for educational, research, or other purposes. To learn more, read Calisphere's <a href="{% url 'calisphere:termsOfUse' %}">terms of use.</a></p>
         <p><strong>Do you need a bigger file?</strong> {% if item.contentFile.format == 'image' %}The file available on this site is {{ item.contentFile.size.width }} x {{ item.contentFile.size.height }} px. {% endif %}To obtain an alternate file type or higher resolution copy, please
           <!-- add contactFlag conditional here -->
-          <a href="{% url 'calisphere:repositoryView' item.parsed_repository_data.0.id 'collections' %}"
+          <a href="{% url 'calisphere:repositoryCollections' item.parsed_repository_data.0.id %}"
           >contact the owning institution.</a>
         </p>
       </div>
@@ -199,7 +199,7 @@ Permalink: {{ permalink }}</textarea>
     <a class="btn btn-xs button__contact-owner" {% if contactFlag == 'email' %}
       href="javascript: void(0)" data-toggle="modal" data-target="#contactOwnerModal"
       {% else %}
-      href="{% url 'calisphere:repositoryView' item.parsed_repository_data.0.id 'collections' %}"
+      href="{% url 'calisphere:repositoryCollections' item.parsed_repository_data.0.id %}"
       data-pjax="js-pageContent"
       {% endif %}>
       <span class="fa fa-envelope"></span>

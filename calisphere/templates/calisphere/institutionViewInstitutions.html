@@ -18,7 +18,7 @@
 
       <!-- Begin Search Within Field -->
       <!-- <div class="search-collection">
-        <form id="js-searchInstitution" action="{% url 'calisphere:campusView' campus_slug 'items' %}" method="get">
+        <form id="js-searchInstitution" action="{% url 'calisphere:campusSearch' campus_slug %}" method="get">
           <label for="search-collection__field" class="search-collection__label">Search {% if repository_id and uc_institution %}{{ uc_institution.0.name }}, {% endif %}{{ institution.name }}</label>
           <div class="input-group">
             <input id="search-collection__field" type="search" name="rq" class="form-control search-collection__field" form="js-facet">
@@ -49,7 +49,7 @@
 
     <ul class="inst-contrib__list">
       {% for institution in institutions %}
-          <li class="inst-contrib__list-item"><a href="{% url 'calisphere:repositoryView' institution.id 'collections' %}" data-pjax="js-pageContent">{{ institution.name }}</a></li>
+          <li class="inst-contrib__list-item"><a href="{% url 'calisphere:repositoryCollections' institution.id %}" data-pjax="js-pageContent">{{ institution.name }}</a></li>
       {% endfor %}
     </ul>
 

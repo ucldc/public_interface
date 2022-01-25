@@ -4,7 +4,7 @@
   <ul>
   {% if item.parsed_repository_data %}
     <li>
-      <a href="{% url 'calisphere:repositoryView' item.parsed_repository_data.0.id 'collections' %}" data-pjax="js-pageContent">
+      <a href="{% url 'calisphere:repositoryCollections' item.parsed_repository_data.0.id %}" data-pjax="js-pageContent">
       {% if item.parsed_repository_data.0.campus %}{{ item.parsed_repository_data.0.campus }}, {% endif %}
       {{ item.parsed_repository_data.0.name }}
       </a>

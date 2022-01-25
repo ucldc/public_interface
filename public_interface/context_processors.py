@@ -17,6 +17,10 @@ def settings(request):
         if len(query_string) > 0:
             permalink = '?'.join([permalink, query_string.urlencode()])
 
+    multiple_indexes = False
+    if settings.ES_HOST and settings.ES_USER and settings.ES_PASS:
+        multiple_indexes = True
+
     return {
         'thumbnailUrl': settings.THUMBNAIL_URL,
         'devMode': settings.UCLDC_DEVEL,
@@ -27,6 +31,7 @@ def settings(request):
         'gaSiteCode': settings.GA_SITE_CODE,
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
         'permalink': permalink,
+        'multiple_indexes': multiple_indexes,
         'q': '',
         'page': None,
         'meta_image': None,

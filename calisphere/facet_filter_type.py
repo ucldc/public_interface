@@ -3,133 +3,76 @@ import operator
 
 from django.apps import apps
 from django.conf import settings
-from .cache_retry import SOLR_select, SOLR_raw, json_loads_url
+from .cache_retry import json_loads_url
 from calisphere.collection_data import CollectionManager
 
 # FACETS are retrieved from Solr for a user to potentially FILTER on
 # FILTERS are FACETS that have been selected by the user already
-# We use more robust solr fields for a FACET (_data)
-# so we don't have to hit registry for a repository name just to enumerate available FACETS
-# We use more specific solr fields for a FILTER (_url)
-# so if there is a change in some of the robust data and a harvest hasn't been run (ie - a collection name changes)
-# the FILTER still works
+# We use more robust solr fields for a FACET (_data) so we don't have
+# to hit registry for a repository name just to enumerate available FACETS
+# We use more specific solr fields for a FILTER (_url) so if there is a
+# change in some of the robust data and a harvest hasn't been run
+# (ie - a collection name changes) the FILTER still works
 
-def getCollectionData(collection_data=None, collection_id=None):
-    collection = {}
-    if collection_data:
-        parts = collection_data.split('::')
-        collection['url'] = parts[0] if len(parts) >= 1 else ''
-        collection['name'] = parts[1] if len(parts) >= 2 else ''
-        collection_api_url = re.match(
-            r'^https://registry\.cdlib\.org/api/v1/collection/(?P<url>\d*)/?',
-            collection['url'])
-        if collection_api_url is None:
-            print('no collection api url:')
-            collection['id'] = ''
-        else:
-            collection['id'] = collection_api_url.group('url')
-    elif collection_id:
-        solr_collections = CollectionManager(settings.SOLR_URL,
-                                             settings.SOLR_API_KEY)
-        collection[
-            'url'] = "https://registry.cdlib.org/api/v1/collection/{0}/".format(
-                collection_id)
-        collection['id'] = collection_id
-        collection_details = json_loads_url("{0}?format=json".format(
-            collection['url']))
-
-        collection['name'] = solr_collections.names.get(
-            collection['url']) or collection_details.get(
-                'name', '[no collection name]')
-
-        collection['local_id'] = collection_details.get('local_id')
-        collection['slug'] = collection_details.get('slug')
-    return collection
+col_regex = (
+    r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?')
+col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
+repo_regex = (
+    r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
+repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
-def getRepositoryData(repository_data=None,
-                      repository_id=None,
-                      repository_url=None):
-    """ supply either `repository_data` from solr or the `repository_id` or `repository_url`
-        all the reset will be looked up and filled in
-    """
-    app = apps.get_app_config('calisphere')
-    repository = {}
-    repository_details = {}
-    if not (repository_data) and not (repository_id) and repository_url:
-        repository_id = re.match(
-            r'https://registry\.cdlib\.org/api/v1/repository/(?P<repository_id>\d*)/?',
-            repository_url).group('repository_id')
-    if repository_data:
-        parts = repository_data.split('::')
-        repository['url'] = parts[0] if len(parts) >= 1 else ''
-        repository['name'] = parts[1] if len(parts) >= 2 else ''
-        repository['campus'] = parts[2] if len(parts) >= 3 else ''
-
-        repository_api_url = re.match(
-            r'^https://registry\.cdlib\.org/api/v1/repository/(?P<url>\d*)/',
-            repository['url'])
-        if repository_api_url is None:
-            print('no repository api url')
-            repository['id'] = ''
-        else:
-            repository['id'] = repository_api_url.group('url')
-            repository_details = app.registry.repository_data.get(
-                int(repository['id']), {})
-    elif repository_id:
-        repository[
-            'url'] = "https://registry.cdlib.org/api/v1/repository/{0}/".format(
-                repository_id)
-        repository['id'] = repository_id
-        repository_details = app.registry.repository_data.get(
-            int(repository_id), None)
-        repository['name'] = repository_details['name']
-        if repository_details['campus']:
-            repository['campus'] = repository_details['campus'][0]['name']
-        else:
-            repository['campus'] = ''
-    # details needed for stats
-    repository['ga_code'] = repository_details.get(
-        'google_analytics_tracking_code', None)
-
-    production_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
-    if production_aeon:
-        repository['aeon_url'] = repository_details.get('aeon_prod', None)
-    else:
-        repository['aeon_url'] = repository_details.get('aeon_test', None)
-    parent = repository_details['campus']
-    pslug = ''
-    if len(parent):
-        pslug = '{0}-'.format(parent[0].get('slug', None))
-    repository['slug'] = pslug + repository_details.get('slug', None)
-    return repository
+def solr_escape(text):
+    return text.replace('?', '\\?').replace('"', '\\"')
 
 
 class FacetFilterType(object):
-    def __init__(self, facet_solr_name, display_name, filter_solr_name, sort_by='count', faceting_allowed=True):
-        self.facet = facet_solr_name
-        self.display_name = display_name
-        self.filter = filter_solr_name
-        self.sort_by = sort_by    # 'count' or 'value'
-        self.faceting_allowed = faceting_allowed
+    form_name = ''
+    facet_field = ''
+    display_name = ''
+    filter_field = ''
+    sort_by = 'count'
+    faceting_allowed = True
 
-    def filter_transform(self, filterVal):
-        return filterVal
+    def __init__(self,
+                 request):
+        if request is not None:
+            self.form_context = request.getlist(self.form_name)
+            self.set_query()
 
-    def facet_transform(self, facetVal):
-        return facetVal
+    def set_query(self):
+        selected_filters = self.form_context
+        self.query = []
+        self.basic_query = {}
+        if len(selected_filters) > 0:
+            query = list([
+                '{0}: "{1}"'.format(self.filter_field,
+                                    solr_escape(
+                                        self.filter_transform(val)))
+                for val in selected_filters
+            ])
+            self.query = " OR ".join(query)
+            self.basic_query = {self.filter_field: [
+                self.filter_transform(v) for v in selected_filters]}
 
-    def filter_display(self, filterVal):
-        return filterVal
+    def filter_transform(self, filter_val):
+        return filter_val
 
-    def process_facets(self, facets, filter_params, sort_override=None):
-        filters = list(map(self.filter_transform, filter_params))
+    def facet_transform(self, facet_val):
+        return facet_val
 
-        #remove facets with count of zero
+    def filter_display(self, filter_val):
+        return filter_val
+
+    def process_facets(self, facets, sort_override=None):
+        filters = list(map(self.filter_transform, self.form_context))
+
+        # remove facets with count of zero
         display_facets = dict(
-            (facet, count) for facet, count in list(facets.items()) if count != 0)
+            (facet, count) for facet, count in list(
+                facets.items()) if count != 0)
 
-        #sort facets by value of sort_by - either count or value
+        # sort facets by value of sort_by - either count or value
         sort_by = sort_override if sort_override else self.sort_by
         if sort_by == 'value':
             display_facets = sorted(
@@ -140,23 +83,17 @@ class FacetFilterType(object):
                 key=operator.itemgetter(1),
                 reverse=True)
 
-        #append selected filters even if they have a count of 0
+        # append selected filters even if they have a count of 0
         for f in filters:
             if not any(f in facet[0] for facet in display_facets):
-                if self.facet == 'collection_data':
-                    api_url = re.match(
-                        r'^https://registry\.cdlib\.org/api/v1/collection/(?P<id>\d*)/?',
-                    f)
-                    collection = getCollectionData(
-                        collection_id=api_url.group('id'))
+                if self.form_name == 'collection_data':
+                    api_url = re.match(col_regex, f)
+                    collection = self.filter_display(api_url.group('id'))
                     display_facets.append(("{}::{}".format(
                         collection.get('url'), collection.get('name')), 0))
-                elif self.facet == 'repository_data':
-                    api_url = re.match(
-                        r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?',
-                    f)
-                    repository = getRepositoryData(
-                        repository_id=api_url.group('id'))
+                elif self.form_name == 'repository_data':
+                    api_url = re.match(repo_regex, f)
+                    repository = self.repo_from_id(api_url.group('id'))
                     display_facets.append(("{}::{}".format(
                         repository.get('url'), repository.get('name')), 0))
                 else:
@@ -165,34 +102,265 @@ class FacetFilterType(object):
         return display_facets
 
     def __str__(self):
-        return f'FacetFilterTypeClass: {self.facet}'
+        return f'FacetFilterTypeClass: {self.facet_field}'
 
     def __getitem__(self, key):
         return getattr(self, key)
 
-class RepositoryFacetFilterType(FacetFilterType):
-    def filter_transform(self, repositoryId):
-        repository_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
-        return repository_template.format(repositoryId)
 
-    def facet_transform(self, facetVal):
-        return getRepositoryData(repository_data=facetVal)
+class ESFacetFilterType(FacetFilterType):
+    def set_query(self):
+        selected_filters = self.form_context
+        self.query = {}
+        self.basic_query = {}
+        if len(selected_filters) > 0:
+            self.query = {
+                "terms": {
+                    self.filter_field: selected_filters
+                }
+            }
+            self.basic_query = {self.filter_field: selected_filters}
 
-    def filter_display(self, filterVal):
-        repository = getRepositoryData(repository_id=filterVal)
+    def process_facets(self, facets, sort_override=None):
+        filters = list(map(self.filter_transform, self.form_context))
+
+        # remove facets with count of zero
+        display_facets = dict(
+            (facet, count) for facet, count in list(
+                facets.items()) if count != 0)
+
+        # sort facets by value of sort_by - either count or value
+        sort_by = sort_override if sort_override else self.sort_by
+        if sort_by == 'value':
+            display_facets = sorted(
+                iter(list(display_facets.items())), key=operator.itemgetter(0))
+        elif sort_by == 'count':
+            display_facets = sorted(
+                iter(list(display_facets.items())),
+                key=operator.itemgetter(1),
+                reverse=True)
+
+        # append selected filters even if they have a count of 0
+        for f in filters:
+            if not any(f in facet[0] for facet in display_facets):
+                if self.form_name == 'collection_data':
+                    collection = self.filter_display(f)
+                    display_facets.append(("{}::{}".format(
+                        collection.get('id'), collection.get('name')), 0))
+                elif self.form_name == 'repository_data':
+                    repository = self.repo_from_id(f)
+                    display_facets.append(("{}::{}".format(
+                        repository.get('id'), repository.get('name')), 0))
+                else:
+                    display_facets.append((f, 0))
+
+        return display_facets
+
+
+class RelationFF(FacetFilterType):
+    form_name = 'relation_ss'
+    facet_field = 'relation_ss'
+    display_name = 'Relation'
+    filter_field = 'relation_ss'
+    sort_by = 'value'
+    faceting_allowed = False
+
+
+class ESRelationFF(ESFacetFilterType):
+    form_name = 'relation_ss'
+    facet_field = 'relation'
+    display_name = 'Relation'
+    filter_field = 'relation.keyword'
+    sort_by = 'value'
+    faceting_allowed = False
+
+
+class TypeFF(FacetFilterType):
+    form_name = 'type_ss'
+    facet_field = 'type_ss'
+    display_name = 'Type of Item'
+    filter_field = 'type_ss'
+
+
+class ESTypeFF(ESFacetFilterType):
+    form_name = 'type_ss'
+    facet_field = 'type'
+    display_name = 'Type of Item'
+    filter_field = 'type.keyword'
+
+
+class DecadeFF(FacetFilterType):
+    form_name = 'facet_decade'
+    facet_field = 'facet_decade'
+    display_name = 'Decade'
+    filter_field = 'facet_decade'
+    sort_by = 'value'
+
+
+class ESDecadeFF(ESFacetFilterType):
+    form_name = 'facet_decade'
+    facet_field = 'date'
+    display_name = 'Decade'
+    filter_field = 'date.keyword'
+    sort_by = 'value'
+
+
+class RepositoryFF(FacetFilterType):
+    form_name = 'repository_data'
+    facet_field = 'repository_data'
+    display_name = 'Contributing Institution'
+    filter_field = 'repository_url'
+
+    def filter_transform(self, repository_id):
+        return repo_template.format(repository_id)
+
+    def facet_transform(self, facet_val):
+        url = facet_val.split('::')[0]
+        repo_id = re.match(repo_regex, url).group('id')
+        return self.repo_from_id(repo_id)
+
+    def filter_display(self, filter_val):
+        repository = self.repo_from_id(filter_val)
         repository.pop('local_id', None)
         return repository
 
-class CollectionFacetFilterType(FacetFilterType):
-    def filter_transform(self, collectionId):
-        collection_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
-        return collection_template.format(collectionId)
+    def repo_from_id(self, repo_id):
+        app = apps.get_app_config('calisphere')
+        repo = {
+            'url': repo_template.format(repo_id),
+            'id': repo_id
+        }
+        repo_details = app.registry.repository_data.get(int(repo['id']), {})
+        repo['name'] = repo_details.get('name', None)
+        repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
 
-    def facet_transform(self, facetVal):
-        return getCollectionData(collection_data=facetVal)
+        prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+        if prod_aeon:
+            repo['aeon_url'] = repo_details.get('aeon_prod', None)
+        else:
+            repo['aeon_url'] = repo_details.get('aeon_test', None)
 
-    def filter_display(self, filterVal):
-        collection = getCollectionData(collection_id=filterVal)
-        collection.pop('local_id', None)
-        collection.pop('slug', None)
+        parent = repo_details['campus']
+        pslug = ''
+        if len(parent):
+            pslug = '{0}-'.format(parent[0].get('slug', None))
+        repo['slug'] = pslug + repo_details.get('slug', None)
+
+        return repo
+
+
+class ESRepositoryFF(ESFacetFilterType):
+    form_name = 'repository_data'
+    facet_field = 'repository_data'
+    display_name = 'Contributing Institution'
+    filter_field = 'repository_ids'
+
+    def facet_transform(self, facet_val):
+        repo_id = facet_val.split('::')[0]
+        return self.repo_from_id(repo_id)
+
+    def filter_display(self, filter_val):
+        repository = self.repo_from_id(filter_val)
+        repository.pop('local_id', None)
+        return repository
+
+    def repo_from_id(self, repo_id):
+        app = apps.get_app_config('calisphere')
+        repo = {
+            'url': repo_template.format(repo_id),
+            'id': repo_id
+        }
+        repo_details = app.registry.repository_data.get(int(repo['id']), {})
+        repo['name'] = repo_details.get('name', None)
+        repo['ga_code'] = repo_details.get('google_analytics_tracking_code', None)
+
+        prod_aeon = settings.UCLDC_FRONT == 'https://calisphere.org/'
+        if prod_aeon:
+            repo['aeon_url'] = repo_details.get('aeon_prod', None)
+        else:
+            repo['aeon_url'] = repo_details.get('aeon_test', None)
+
+        parent = repo_details['campus']
+        pslug = ''
+        if len(parent):
+            pslug = '{0}-'.format(parent[0].get('slug', None))
+        repo['slug'] = pslug + repo_details.get('slug', None)
+
+        return repo
+
+
+class CollectionFF(FacetFilterType):
+    form_name = 'collection_data'
+    facet_field = 'collection_data'
+    display_name = 'Collection'
+    filter_field = 'collection_url'
+
+    def filter_transform(self, collection_id):
+        return col_template.format(collection_id)
+
+    def facet_transform(self, collection_data):
+        parts = collection_data.split('::')
+        collection = {
+            'url': parts[0] if len(parts) >= 1 else '',
+            'name': parts[1] if len(parts) >= 2 else ''
+        }
+        collection_api_url = re.match(col_regex, collection['url'])
+        if collection_api_url is None:
+            print('no collection api url:')
+            collection['id'] = ''
+        else:
+            collection['id'] = collection_api_url.group('id')
+
+        return collection
+
+    def filter_display(self, collection_id):
+        indexed_collections = CollectionManager("solr")
+        collection = {
+            'url': col_template.format(collection_id),
+            'id': collection_id
+        }
+
+        collection['name'] = indexed_collections.names.get(
+            collection['url'])
+
+        if not collection['name']:
+            collection_details = json_loads_url("{0}?format=json".format(
+                collection['url']))
+            collection['name'] = collection_details.get(
+                'name', '[no collection name]')
+
+        return collection
+
+
+class ESCollectionFF(ESFacetFilterType):
+    form_name = 'collection_data'
+    facet_field = 'collection_data'
+    display_name = 'Collection'
+    filter_field = 'collection_ids'
+
+    def facet_transform(self, collection_data):
+        parts = collection_data.split('::')
+        collection = {
+            'url': col_template.format(parts[0]),
+            'id': parts[0],
+            'name': parts[1]
+        }
+        return collection
+
+    def filter_display(self, collection_id):
+        indexed_collections = CollectionManager("es")
+        collection = {
+            'url': col_template.format(collection_id),
+            'id': collection_id
+        }
+
+        collection['name'] = indexed_collections.names.get(
+            collection['url'])
+
+        if not collection['name']:
+            collection_details = json_loads_url("{0}?format=json".format(
+                collection['url']))
+            collection['name'] = collection_details.get(
+                'name', '[no collection name]')
+
         return collection

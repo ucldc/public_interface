@@ -1,4 +1,4 @@
-{% extends "calisphere/searchResults.html" %}
+{% extends "calisphere/2col.html" %}
 {% load calisphere-extras %}
 {% load staticfiles %}
 {% load humanize %}
@@ -40,13 +40,13 @@
           {% for repository in collection.repository %}
             {% if 'campus' in repository and repository.campus.0.name %}
               <a
-                href="{% url 'calisphere:campusView' repository.campus.0.slug 'collections' %}"
+                href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
                 class="collection-intro__institution-heading-link"
                 data-pjax="js-pageContent"
               >{{ repository.campus.0.name }}</a>,
             {% endif %}
             <a
-              href="{% url 'calisphere:repositoryView' repository.resource_id 'collections' %}"
+              href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
               class="collection-intro__institution-heading-link"
               data-pjax="js-pageContent"
               data-ga-code="{{ repository.google_analytics_tracking_code }}"
@@ -83,162 +83,159 @@
 {% endblock %}
 
 {% block sidebar %}
-<div class="row">
-  <div class="col-sm-6 col-md-12">
-    <div class="button__institution-tabs-container">
-      <a class="button__institution-tab-collections"
-      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
-        Browse collection
-      </a>
-      <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
-        Search this collection
+  <div class="row">
+    <div class="col-sm-6 col-md-12">
+      <div class="button__institution-tabs-container">
+        <a class="button__institution-tab-collections"
+        href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+          Browse collection
+        </a>
+        <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+          Search this collection
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-12">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+        <span class="fa fa-angle-left fa-lg fa-fw"></span>
+        Browse Collection
       </a>
     </div>
+    <div class="col-sm-6 col-md-12">
+      {% include "calisphere/collections/collectionSnapshot.html" %}
+    </div>
   </div>
-  <div class="col-sm-6 col-md-12">
-    <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
-      <span class="fa fa-angle-left fa-lg fa-fw"></span>
-      Browse Collection
-    </a>
-  </div>
-  <div class="col-sm-6 col-md-12">
-    {% include "calisphere/collections/collectionSnapshot.html" %}
-  </div>
-</div>
 {% endblock %}
 
-{% block filters %}{% endblock %}
-
 {% block mainContent %}
-<h2 class="text__institution-heading2">{{ unique|intcomma }} {{ facet.display|title }}{{ unique|pluralize }} in this Collection</h2>
-<!-- <p>There are {{ unique|intcomma }} unique {{facet}}{{ unique|pluralize }} used in this collection of {{ records|intcomma }} items. For each {{facet}} cluster, the number in parentheses shows how many items share that {{facet}}. <strong>{{ facet|title }} Uniqueness Rating: {{ ratio }}%</strong></p> -->
-<div class="collection-cluster-form">
-  <form id="js-collectionFacetForm" action="{{ form_action }}">
-    {% if view_format == 'grid' %}
-    <button id="grid" class="btn btn-link js-view_format-toggle">
-      <span class="fa fa-th-large"></span> Grid
-    </button>
-    <button id="list" class="btn btn-link thumblist-toggle__list js-view_format-toggle">
-      <span class="fa fa-th-list"></span> List
-    </button>
-    {% else %}
-    <button id="grid" class="btn btn-link thumblist-toggle__thumbnails js-view_format-toggle">
-      <span class="fa fa-th-large"></span> Grid
-    </button>
-    <button id="list" class="btn btn-link js-view_format-toggle">
-      <span class="fa fa-th-list"></span> List
-    </button>
-    {% endif %}
-    <input type="hidden" name="view_format" value="{{ view_format }}">
-
-    <select name="sort" id="js-sort-selector" class="collection-cluster-form__sort-selector">
-      <option {% if sort == "largestFirst" %}selected{% endif %} value="largestFirst">
-        Largest item count first
-      </option>
-      <option {% if sort == "smallestFirst" %}selected{% endif %} value="smallestFirst">
-        Smallest item count first
-      </option>
-      <option {% if sort == "az" %}selected{% endif %} value="az">
-        A-Z
-      </option>
-      <option {% if sort == "za" %}selected{% endif %} value="za">
-        Z-A
-      </option>
-    </select>
-
-    {% if view_format == 'grid' %}
-      Viewing {{ page_info.start }} - {% if page_info.end < unique %}{{ page_info.end }}{% else %}{{ unique }}{% endif %} of {{ unique|intcomma }}
-      {% if page_info.start > 1 %}
-        <a class="btn btn-link pag-dropdown__arrow-icon"
-          aria-label="previous set"
-          href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|subtract:1 }}" data-pjax="js-pageContent">
-            <span class="fa fa-caret-left fa-lg">
-        </a>
+  <h2 class="text__institution-heading2">{{ unique|intcomma }} {{ facet.display|title }}{{ unique|pluralize }} in this Collection</h2>
+  <!-- <p>There are {{ unique|intcomma }} unique {{facet}}{{ unique|pluralize }} used in this collection of {{ records|intcomma }} items. For each {{facet}} cluster, the number in parentheses shows how many items share that {{facet}}. <strong>{{ facet|title }} Uniqueness Rating: {{ ratio }}%</strong></p> -->
+  <div class="collection-cluster-form">
+    <form id="js-collectionFacetForm" action="{{ form_action }}">
+      {% if view_format == 'grid' %}
+      <button id="grid" class="btn btn-link js-view_format-toggle">
+        <span class="fa fa-th-large"></span> Grid
+      </button>
+      <button id="list" class="btn btn-link thumblist-toggle__list js-view_format-toggle">
+        <span class="fa fa-th-list"></span> List
+      </button>
       {% else %}
-        <button class="btn btn-link pag-dropdown__arrow-icon"
-          type="button" aria-label="previous set" disabled>
-            <span class="fa fa-caret-left fa-lg"></span>
-        </button>
+      <button id="grid" class="btn btn-link thumblist-toggle__thumbnails js-view_format-toggle">
+        <span class="fa fa-th-large"></span> Grid
+      </button>
+      <button id="list" class="btn btn-link js-view_format-toggle">
+        <span class="fa fa-th-list"></span> List
+      </button>
       {% endif %}
-      {% if page_info.end < unique %}
-        <a class="btn btn-link pag-dropdown__arrow-icon"
-          aria-label="next set"
-          href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|add:1 }}" data-pjax="js-pageContent">
-            <span class="fa fa-caret-right fa-lg">
-        </a>
-      {% else %}
-        <button class="btn btn-link pag-dropdown__arrow-icon"
-          type="button" aria-label="next set" disabled>
-            <span class="fa fa-caret-right fa-lg"></span>
-        </button>
+      <input type="hidden" name="view_format" value="{{ view_format }}">
+
+      <select name="sort" id="js-sort-selector" class="collection-cluster-form__sort-selector">
+        <option {% if sort == "largestFirst" %}selected{% endif %} value="largestFirst">
+          Largest item count first
+        </option>
+        <option {% if sort == "smallestFirst" %}selected{% endif %} value="smallestFirst">
+          Smallest item count first
+        </option>
+        <option {% if sort == "az" %}selected{% endif %} value="az">
+          A-Z
+        </option>
+        <option {% if sort == "za" %}selected{% endif %} value="za">
+          Z-A
+        </option>
+      </select>
+
+      {% if view_format == 'grid' %}
+        Viewing {{ page_info.start }} - {% if page_info.end < unique %}{{ page_info.end }}{% else %}{{ unique }}{% endif %} of {{ unique|intcomma }}
+        {% if page_info.start > 1 %}
+          <a class="btn btn-link pag-dropdown__arrow-icon"
+            aria-label="previous set"
+            href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|subtract:1 }}" data-pjax="js-pageContent">
+              <span class="fa fa-caret-left fa-lg">
+          </a>
+        {% else %}
+          <button class="btn btn-link pag-dropdown__arrow-icon"
+            type="button" aria-label="previous set" disabled>
+              <span class="fa fa-caret-left fa-lg"></span>
+          </button>
+        {% endif %}
+        {% if page_info.end < unique %}
+          <a class="btn btn-link pag-dropdown__arrow-icon"
+            aria-label="next set"
+            href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|add:1 }}" data-pjax="js-pageContent">
+              <span class="fa fa-caret-right fa-lg">
+          </a>
+        {% else %}
+          <button class="btn btn-link pag-dropdown__arrow-icon"
+            type="button" aria-label="next set" disabled>
+              <span class="fa fa-caret-right fa-lg"></span>
+          </button>
+        {% endif %}
+
+
       {% endif %}
+    </form>
+  </div>
 
-
-    {% endif %}
-  </form>
-</div>
-
-{% if view_format == 'grid' %}
-<div class="row">
-  {% for value in values %}
-    <div class="col-xs-6 col-sm-6 col-md-3">
-      <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">
-      <div class="cluster-container">
-        <div class="cluster-thumbnail__container">
-          {% for thumb in value.thumbnails %}
-            {% if forloop.counter0 == 1 %}
-            <div class="cluster-thumbnail__container2">
-            {% endif %}
-
-            <div class="cluster-thumbnail__{{forloop.counter0}}"
-              style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
-
-              {% if 'reference_image_md5' in thumb %}
-                {% if thumb.type_ss.0|lower == "moving image" %}
-                <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
-                {% elif thumb.type_ss.0|lower == "sound"%}
-                <div class="thumbnail__overlay-icon fa-volume-up"></div>
-                {# elif thumb.type_ss.0|lower == "text" #}
-                <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
-                {% elif thumb.type_ss.0|lower == "dataset" %}
-                <div class="thumbnail__overlay-icon fa-bar-chart"></div>
-                {% endif %}
-
-              {% else %}
-                {% if thumb.type_ss.0|lower == "moving image" %}
-                <div class="thumbnail__tile-icon fa-play-circle-o"></div>
-                {% elif thumb.type_ss.0|lower == "sound"%}
-                <div class="thumbnail__tile-icon fa-volume-up"></div>
-                {% elif thumb.type_ss.0|lower == "text"%}
-                <div class="thumbnail__tile-icon fa-file-text-o"></div>
-                {% elif thumb.type_ss.0|lower == "dataset" %}
-                <div class="thumbnail__tile-icon fa-bar-chart"></div>
-                {% elif thumb.type_ss.0|lower == "image" %}
-                <div class="thumbnail__tile-icon fa-picture-o"></div>
-                {% endif %}
+  {% if view_format == 'grid' %}
+  <div class="row">
+    {% for value in values %}
+      <div class="col-xs-6 col-sm-6 col-md-3">
+        <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">
+        <div class="cluster-container">
+          <div class="cluster-thumbnail__container">
+            {% for thumb in value.thumbnails %}
+              {% if forloop.counter0 == 1 %}
+              <div class="cluster-thumbnail__container2">
               {% endif %}
 
+              <div class="cluster-thumbnail__{{forloop.counter0}}"
+                style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
+
+                {% if 'reference_image_md5' in thumb %}
+                  {% if thumb.type_ss.0|lower == "moving image" %}
+                  <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
+                  {% elif thumb.type_ss.0|lower == "sound"%}
+                  <div class="thumbnail__overlay-icon fa-volume-up"></div>
+                  {# elif thumb.type_ss.0|lower == "text" #}
+                  <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
+                  {% elif thumb.type_ss.0|lower == "dataset" %}
+                  <div class="thumbnail__overlay-icon fa-bar-chart"></div>
+                  {% endif %}
+
+                {% else %}
+                  {% if thumb.type_ss.0|lower == "moving image" %}
+                  <div class="thumbnail__tile-icon fa-play-circle-o"></div>
+                  {% elif thumb.type_ss.0|lower == "sound"%}
+                  <div class="thumbnail__tile-icon fa-volume-up"></div>
+                  {% elif thumb.type_ss.0|lower == "text"%}
+                  <div class="thumbnail__tile-icon fa-file-text-o"></div>
+                  {% elif thumb.type_ss.0|lower == "dataset" %}
+                  <div class="thumbnail__tile-icon fa-bar-chart"></div>
+                  {% elif thumb.type_ss.0|lower == "image" %}
+                  <div class="thumbnail__tile-icon fa-picture-o"></div>
+                  {% endif %}
+                {% endif %}
+
+              </div>
+            {% endfor %}
+
+            {% if value.thumbnails|length > 1 %}
             </div>
-          {% endfor %}
+            {% endif %}
 
-          {% if value.thumbnails|length > 1 %}
           </div>
-          {% endif %}
-
+          <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }}</a> ({{value.count|intcomma}})
         </div>
-        <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }}</a> ({{value.count|intcomma}})
+        </a>
       </div>
-      </a>
-    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  {% for value in values %}
+  <div>
+    <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent"> {{ value.label }}</a>
+    ({{ value.count|intcomma }})
+  </div>
   {% endfor %}
-</div>
-{% else %}
-{% for value in values %}
-<div>
-  <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent"> {{ value.label }}</a>
-  ({{ value.count|intcomma }})
-</div>
-{% endfor %}
-{% endif %}
-
+  {% endif %}
 {% endblock %}

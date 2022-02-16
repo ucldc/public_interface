@@ -1,5 +1,5 @@
 const del = require('del');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const sassLint = require('gulp-sass-lint');
 const postcss = require('gulp-postcss');
 const sourcemaps = require('gulp-sourcemaps');

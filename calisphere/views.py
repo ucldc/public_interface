@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
 from django.http import Http404, HttpResponse, QueryDict
+from django.template.defaultfilters import urlize
 from . import constants
 from .cache_retry import json_loads_url
 from .item_manager import ItemManager
@@ -12,7 +13,7 @@ from .search_form import (SearchForm, ESSearchForm, solr_escape,
                           CarouselForm, ESCarouselForm,
                           CollectionCarouselForm, ESCollectionCarouselForm,
                           CampusCarouselForm, ESCampusCarouselForm,
-                          CampusForm, ESCampusForm)
+                          CampusForm, ESCampusForm, solr_escape)
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository, Campus
 from .facet_filter_type import CollectionFF
@@ -222,6 +223,7 @@ def item_view(request, item_id=''):
     item['parsed_collection_data'] = []
     item['parsed_repository_data'] = []
     item['institution_contact'] = []
+    item['relation_links'] = []
     related_collections = []
     for col_id in item.get('collection_ids'):
         collection = Collection(col_id, index)
@@ -234,6 +236,25 @@ def item_view(request, item_id=''):
         repo = Repository(repo_id, index)
         item['parsed_repository_data'].append(repo.get_repo_data())
         item['institution_contact'].append(repo.get_contact_info())
+
+    for relation in item.get('relation', []):
+        if urlize(relation, autoescape=False) == relation:
+            item['relation_links'].append({
+                'label': relation,
+                'uri': (reverse(
+                    'calisphere:collectionView',
+                    kwargs={
+                        'collection_id': item.get('collection_ids')[0],
+                    }) +
+                    f"?relation_ss={solr_escape(relation)}")
+                })
+        else:
+            item['relation_links'].append({
+                'label': relation,
+                'uri': 'urlize'
+            })
+    if len(item['relation_links']) == 0:
+        del item['relation_links']
 
     meta_image = False
     if item.get('reference_image_md5', False):

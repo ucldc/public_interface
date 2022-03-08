@@ -141,25 +141,16 @@
 			<dd class="meta-block__defin">{% for source in item.source %}{{ source|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
-    {% if 'relation' in item %}
-			<dt class="meta-block__type">Relation</dt>
-			<dd class="meta-block__defin">{% for relation in item.relation %}
-        {% autoescape off %}
-          {% if relation|urlize == relation %}
-            <a
-              href="{% url 'calisphere:collectionView' item.parsed_collection_data.0.id %}?relation_ss={{ relation }}"
-              data-relation="{{ relation }}"
-              data-pjax="js-pageContent"
-              class="js-relatedCollection"
-            >
-              {{ relation }}
-            </a>
-          {% else %}
-            {{ relation|force_escape|urlize }}
-          {% endif %}
-        {% endautoescape %}
-        <br> {% endfor %}</dd>
-		{% endif %}
+    {% if 'relation_links' in item %}
+      <dt class="meta-block__type">Relation</dt>
+      <dd class="meta-block__defin">{% for relation in item.relation_links %}
+        {% if relation.uri == 'urlize' %}
+          {{ relation.label|urlize }}
+        {% else %}
+          <a href="{{ relation.uri }}" rel="nofollow">{{ relation.label }}</a>
+        {% endif %}
+      <br/>{% endfor %}</dd>
+    {% endif %}
 
     {% if 'provenance' in item %}
 			<dt class="meta-block__type">Provenance</dt>

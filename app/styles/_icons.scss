@@ -7,7 +7,7 @@
 
 // ***** Single Icon Uses ***** //
 
-.icon__external-link:after {
+.icon__external-link:after, .meta-block__list a[href^="http"]:after {
   display: inline-block; // removes the :hover underline (except in IE)
   font-family: FontAwesome;
   content: '\f08e'; // same as .fa-external-link

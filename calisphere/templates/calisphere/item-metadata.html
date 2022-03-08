@@ -2,31 +2,31 @@
 
   <dl class="meta-block__list">
     <dt class="meta-block__type">Title</dt>
-    <dd class="meta-block__defin" itemprop="name">{% for title in item.title %}{{ title }}<br/> {% endfor %}</dd>
+    <dd class="meta-block__defin" itemprop="name">{% for title in item.title %}{{ title|urlize }}<br/> {% endfor %}</dd>
 
     {% if 'alternative_title' in item %}
       <dt class="meta-block__type">Alternative Title</dt>
-      <dd class="meta-block__defin">{% for title in item.alternative_title %}{{ title }} <br> {% endfor %}</dd>
+      <dd class="meta-block__defin">{% for title in item.alternative_title %}{{ title|urlize }} <br> {% endfor %}</dd>
     {% endif %}
 
     {% if 'creator' in item %}
       <dt class="meta-block__type">Creator</dt>
-      <dd class="meta-block__defin" itemprop="creator">{% for creator in item.creator %}{{ creator }} <br> {% endfor %}</dd>
+      <dd class="meta-block__defin" itemprop="creator">{% for creator in item.creator %}{{ creator|urlize }} <br> {% endfor %}</dd>
     {% endif %}
 
     {% if 'contributor' in item %}
       <dt class="meta-block__type">Contributor</dt>
-      <dd class="meta-block__defin" itemprop="contributor">{% for contributor in item.contributor %}{{ contributor }} <br> {% endfor %}</dd>
+      <dd class="meta-block__defin" itemprop="contributor">{% for contributor in item.contributor %}{{ contributor|urlize }} <br> {% endfor %}</dd>
     {% endif %}
 
     {% if 'date' in item %}
       <dt class="meta-block__type">Date Created and/or Issued</dt>
-      <dd class="meta-block__defin" itemprop="dateCreated">{% for date in item.date %}{{ date }} <br> {% endfor %}</dd>
+      <dd class="meta-block__defin" itemprop="dateCreated">{% for date in item.date %}{{ date|urlize }} <br> {% endfor %}</dd>
     {% endif %}
 
     {% if 'publisher' in item %}
       <dt class="meta-block__type">Publication Information</dt>
-      <dd class="meta-block__defin">{% for publisher in item.publisher %}{{ publisher }} <br> {% endfor %}</dd>
+      <dd class="meta-block__defin">{% for publisher in item.publisher %}{{ publisher|urlize }} <br> {% endfor %}</dd>
     {% endif %}
 
     {% if 'parsed_repository_data' in item %}
@@ -63,7 +63,7 @@
       <dt class="meta-block__type">Rights Information</dt>
       <dd class="meta-block__defin">
       {% if 'rights' in item %}
-        {% for rights in item.rights %}{{ rights }} <br>{% endfor %}
+        {% for rights in item.rights %}{{ rights|urlize }} <br>{% endfor %}
       {% endif %}
       {% if 'rights_uri' in item %}
         <a href="{{ item.rights_uri.url }}">{{ item.rights_uri.statement }}</a><br>
@@ -72,97 +72,103 @@
 
     {% if 'rights_holder' in item %}
 			<dt class="meta-block__type">Rights Holder and Contact</dt>
-			<dd class="meta-block__defin" itemprop="copyrightHolder">{% for rights_holder in item.rights_holder %}{{ rights_holder }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin" itemprop="copyrightHolder">{% for rights_holder in item.rights_holder %}{{ rights_holder|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'rights_note' in item %}
 			<dt class="meta-block__type">Rights Notes</dt>
-			<dd class="meta-block__defin">{% for rights_note in item.rights_note %}{{ rights_note }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for rights_note in item.rights_note %}{{ rights_note|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     <!-- rights date is not currently multivalued -->
     {% if 'rights_date' in item %}
 			<dt class="meta-block__type">Date of Copyright</dt>
-			<dd class="meta-block__defin" itemprop="copyrightYear">{{ item.rights_date }} <br> </dd>
+			<dd class="meta-block__defin" itemprop="copyrightYear">{{ item.rights_date|urlize }} <br> </dd>
 		{% endif %}
 
     {% if 'description' in item %}
 			<dt class="meta-block__type">Description</dt>
-			<dd class="meta-block__defin" itemprop="description">{% for description in item.description %}{{ description }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin" itemprop="description">{% for description in item.description %}{{ description|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'type' in item %}
 			<dt class="meta-block__type">Type</dt>
-			<dd class="meta-block__defin">{% for type in item.type %}{{ type }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for type in item.type %}{{ type|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'format' in item %}
 			<dt class="meta-block__type">Format</dt>
-			<dd class="meta-block__defin">{% for format in item.format %}{{ format }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for format in item.format %}{{ format|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'genre' in item %}
 			<dt class="meta-block__type">Form/Genre</dt>
-			<dd class="meta-block__defin" itemprop="genre">{% for genre in item.genre %}{{ genre }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin" itemprop="genre">{% for genre in item.genre %}{{ genre|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'extent' in item %}
 			<dt class="meta-block__type">Extent</dt>
-			<dd class="meta-block__defin">{% for extent in item.extent %}{{ extent }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for extent in item.extent %}{{ extent|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'identifier' in item %}
 			<dt class="meta-block__type">Identifier</dt>
-			<dd class="meta-block__defin">{% for identifier in item.identifier %}{{ identifier }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for identifier in item.identifier %}{{ identifier|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'language' in item %}
 			<dt class="meta-block__type">Language</dt>
-			<dd class="meta-block__defin" itemprop="inLanguage">{% for language in item.language %}{{ language }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin" itemprop="inLanguage">{% for language in item.language %}{{ language|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'subject' in item %}
       <dt class="meta-block__type">Subject</dt>
-			<dd class="meta-block__defin" itemprop="about">{% for subject in item.subject %}{{ subject }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin" itemprop="about">{% for subject in item.subject %}{{ subject|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'temporal' in item %}
 			<dt class="meta-block__type">Time Period</dt>
-			<dd class="meta-block__defin">{% for temporal in item.temporal %}{{ temporal }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for temporal in item.temporal %}{{ temporal|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'coverage' in item %}
 			<dt class="meta-block__type">Place</dt>
-			<dd class="meta-block__defin">{% for coverage in item.coverage %}{{ coverage }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for coverage in item.coverage %}{{ coverage|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'source' in item %}
 			<dt class="meta-block__type">Source</dt>
-			<dd class="meta-block__defin">{% for source in item.source %}{{ source }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for source in item.source %}{{ source|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'relation' in item %}
 			<dt class="meta-block__type">Relation</dt>
 			<dd class="meta-block__defin">{% for relation in item.relation %}
-        <a
-          href="{% url 'calisphere:collectionView' item.parsed_collection_data.0.id %}?relation_ss={{ relation }}"
-          data-relation="{{ relation }}"
-          data-pjax="js-pageContent"
-          class="js-relatedCollection"
-        >
-        {{ relation }}
-        </a>
+        {% autoescape off %}
+          {% if relation|urlize == relation %}
+            <a
+              href="{% url 'calisphere:collectionView' item.parsed_collection_data.0.id %}?relation_ss={{ relation }}"
+              data-relation="{{ relation }}"
+              data-pjax="js-pageContent"
+              class="js-relatedCollection"
+            >
+              {{ relation }}
+            </a>
+          {% else %}
+            {{ relation|force_escape|urlize }}
+          {% endif %}
+        {% endautoescape %}
         <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'provenance' in item %}
 			<dt class="meta-block__type">Provenance</dt>
-			<dd class="meta-block__defin">{% for provenance in item.provenance %}{{ provenance }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for provenance in item.provenance %}{{ provenance|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'location' in item %}
 			<dt class="meta-block__type">Location</dt>
-			<dd class="meta-block__defin">{% for location in item.location %}{{ location }} <br> {% endfor %}</dd>
+			<dd class="meta-block__defin">{% for location in item.location %}{{ location|urlize }} <br> {% endfor %}</dd>
 		{% endif %}
 
     {% if 'transcription' in item %}

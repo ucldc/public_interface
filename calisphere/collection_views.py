@@ -151,9 +151,10 @@ class Collection(object):
     def _parse_custom_facets(self):
         custom_facets = []
         if self.details.get('custom_facet'):
-            for custom_facet in self.details.get('custom_facet'):
+            for custom_facet in self.details.get('custom_facet', []):
                 facet_field = custom_facet['facet_field']
                 if self.index == 'es':
+                    # TODO: check that `sort_by` works as expected!
                     custom_facets.append(
                         type(
                             f"{facet_field}Class",
@@ -165,7 +166,7 @@ class Collection(object):
                                 'display_name': custom_facet['label'],
                                 'filter_field': (
                                     f"{custom_facet['facet_field'][:-3]}.keyword"),
-                                'sort_by': 'count',
+                                'sort_by': custom_facet['sort_by'],
                                 'faceting_allowed': True
                             }
                         )
@@ -180,7 +181,7 @@ class Collection(object):
                                 'facet_field': custom_facet['facet_field'],
                                 'display_name': custom_facet['label'],
                                 'filter_field': custom_facet['facet_field'],
-                                'sort_by': 'count',
+                                'sort_by': custom_facet['sort_by'],
                                 'faceting_allowed': True
                             }
                         )

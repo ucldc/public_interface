@@ -13,7 +13,7 @@ from .search_form import (SearchForm, ESSearchForm, solr_escape,
                           CarouselForm, ESCarouselForm,
                           CollectionCarouselForm, ESCollectionCarouselForm,
                           CampusCarouselForm, ESCampusCarouselForm,
-                          CampusForm, ESCampusForm, solr_escape)
+                          CampusForm, ESCampusForm)
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository, Campus
 from .facet_filter_type import CollectionFF
@@ -246,7 +246,8 @@ def item_view(request, item_id=''):
                     kwargs={
                         'collection_id': item.get('collection_ids')[0],
                     }) +
-                    f"?relation_ss={solr_escape(relation)}")
+                    "?relation_ss=" +
+                    urllib.parse.quote(solr_escape(relation)))
                 })
         else:
             item['relation_links'].append({

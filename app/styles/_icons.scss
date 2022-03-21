@@ -15,6 +15,15 @@
   margin: 0 0 0 0.5em;
 }
 
+.meta-block__list a[href^="mailto"]:after {
+	display: inline-block;
+	font-family: FontAwesome;
+	content: '\f003';
+	// content: '\f0e0';
+	color: #000;
+	margin: 0 0 0 0.5em;
+}
+
 .icon__image-set {
 	
 	.fa-picture-o:last-child {

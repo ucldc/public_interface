@@ -1,13 +1,13 @@
 {% load calisphere-extras %}
 <dd class="meta-block__defin">
 {% if value|is_string %}
-{{ value }}
+{{ value|urlize }}
 {% else %}
 {% for v in value %}
   {% if v.text %}
-    {{ v.text }}
+    {{ v.text|urlize }}
   {% else %}
-    {{ v }}
+    {{ v|urlize }}
   {% endif %} <br> {% endfor %}
 {% endif %}
 </dd>

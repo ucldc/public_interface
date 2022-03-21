@@ -7,12 +7,21 @@
 
 // ***** Single Icon Uses ***** //
 
-.icon__external-link:after {
+.icon__external-link:after, .meta-block__list a[href^="http"]:after {
   display: inline-block; // removes the :hover underline (except in IE)
   font-family: FontAwesome;
   content: '\f08e'; // same as .fa-external-link
   color: #000;
   margin: 0 0 0 0.5em;
+}
+
+.meta-block__list a[href^="mailto"]:after {
+	display: inline-block;
+	font-family: FontAwesome;
+	content: '\f003';
+	// content: '\f0e0';
+	color: #000;
+	margin: 0 0 0 0.5em;
 }
 
 .icon__image-set {

@@ -15,7 +15,7 @@
   margin: 0 0 0 0.5em;
 }
 
-.meta-block__list a[href^="mailto"]:after {
+a[href^="mailto"]:after {
 	display: inline-block;
 	font-family: FontAwesome;
 	content: '\f003';

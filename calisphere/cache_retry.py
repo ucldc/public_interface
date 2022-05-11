@@ -20,11 +20,6 @@ from typing import Dict, List, Tuple
 
 requests.packages.urllib3.disable_warnings()
 
-from aws_xray_sdk.core import patch
-
-if hasattr(settings, 'XRAY_RECORDER'):
-    patch(('requests', ))
-
 SOLR_DEFAULTS = {
     'mm': '100%',
     'pf3': 'title',

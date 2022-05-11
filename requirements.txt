@@ -20,3 +20,4 @@ django-feature-policy==3.0.0
 boto3==1.12.25
 python-magic==0.4.15
 elasticsearch==7.13.4
+Pillow==9.1.0

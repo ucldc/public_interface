@@ -8,7 +8,7 @@ requests==2.21.0
 whitenoise==3.3.0
 markdown==2.6.8
 # https://github.com/ucldc/md5s3stash/archive/master.zip#egg=md5s3stash
-https://github.com/amywieliczka/md5s3stash/archive/python3.zip#egg=md5s3stash
+https://github.com/ucldc/md5s3stash/archive/python3.zip#egg=md5s3stash
 django-redis==4.7.0
 redis==2.10.5
 hiredis==0.2.0
@@ -19,7 +19,5 @@ aws-xray-sdk==0.93
 django-recaptcha2==1.4.1
 django-feature-policy==3.0.0
 boto3==1.12.25
-pilbox==1.3.4
-Pillow==5.2.0
 python-magic==0.4.15
 elasticsearch==7.13.4

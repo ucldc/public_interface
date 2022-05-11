@@ -23,6 +23,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         manual_params = {
             'rows': 0,
             'fq': 'collection_url: "' + collection.url + '"',
+            'start': None,
         }
         self.assertEqual(solr_params, manual_params)
 
@@ -44,6 +45,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
             'facet_limit': '-1',
             'facet_mincount': 1,
             'facet_sort': 'count',
+            'start': None,
         }
         self.assertEqual(encoded, manual_params)
 
@@ -75,7 +77,8 @@ class CollectionQueriesTestCase(unittest.TestCase):
                 'title, collection_url, type_ss'),
             'sort': 'sort_title asc',
             'rows': 6,
-            'fq': ['collection_url: "' + collection.url + '"', 'type_ss: \"image\"']
+            'fq': ['collection_url: "' + collection.url + '"', 'type_ss: \"image\"'],
+            'start': None,
         }
         self.assertEqual(solr_params_encoded, search_terms)
 
@@ -113,7 +116,8 @@ class CollectionQueriesTestCase(unittest.TestCase):
             'fl': (
                 'collection_data, reference_image_md5, '
                 'url_item, id, title, type_ss'
-            )
+            ),
+            'start': None,
         }
         self.assertEqual(solr_params_encoded, rc_params)
 
@@ -141,7 +145,8 @@ class CollectionQueriesTestCase(unittest.TestCase):
                 'fq': [
                     'collection_url: "' + collection.url + '"',
                     f'{facet}_ss: "{escaped_cluster_value}"'
-                ]
+                ],
+                'start': None,
             }
         self.assertEqual(solr_params, thumb_params)
 
@@ -162,7 +167,8 @@ class CollectionQueriesTestCase(unittest.TestCase):
             'rows': 3,
             'fl': 'reference_image_md5, type_ss',
             'fq': ['collection_url: "' + collection.url + '"',
-                   f'{facet}_ss: "{escaped_cluster_value}"']
+                   f'{facet}_ss: "{escaped_cluster_value}"'],
+            'start': None,
         }
         self.assertEqual(solr_params, thumb_params)
 
@@ -180,7 +186,8 @@ class InstitutionQueriesTestCase(unittest.TestCase):
             'facet': 'true',
             'facet_mincount': 1,
             'facet_field': ['repository_url'],
-            'facet_limit': '-1'
+            'facet_limit': '-1',
+            'start': None,
         }
         self.assertEqual(solr_params, repositories_query)
 
@@ -196,7 +203,8 @@ class InstitutionQueriesTestCase(unittest.TestCase):
             "facet": 'true',
             "facet_mincount": 1,
             "facet_field": ['repository_url'],
-            "facet_limit": '-1'
+            "facet_limit": '-1',
+            'start': None,
         }
         self.assertEqual(solr_params, repositories_query)
 
@@ -215,7 +223,8 @@ class InstitutionQueriesTestCase(unittest.TestCase):
             'facet_mincount': 1,
             'facet_limit': '-1',
             'facet_field': ['sort_collection_data'],
-            'facet_sort': 'index'
+            'facet_sort': 'index',
+            'start': None,
         }
         self.assertEqual(solr_params, collections_params)
 
@@ -232,7 +241,8 @@ class InstitutionQueriesTestCase(unittest.TestCase):
             'facet': 'true',
             'facet_mincount': 1,
             'facet_limit': '-1',
-            'facet_field': ['repository_data']
+            'facet_field': ['repository_data'],
+            'start': None,
         }
         self.assertEqual(solr_params, institutions_search)
 
@@ -248,7 +258,8 @@ class CollectionDataQueriesTestCase(unittest.TestCase):
             'facet': 'true',
             'rows': 0,
             'facet_limit': '-1',
-            'facet_mincount': 1
+            'facet_mincount': 1,
+            'start': None,
         }
         self.assertEqual(solr_params, collections_query)
 
@@ -267,7 +278,8 @@ class ViewQueriesTestCase(unittest.TestCase):
         solr_params = query_encode(**solr_params)
         old_id_search = {
             'q': 'harvest_id_s:*{}'.format(_fixid(item_id)),
-            'rows': 10
+            'rows': 10,
+            'start': None,
         }
         self.assertEqual(solr_params, old_id_search)
 
@@ -277,7 +289,7 @@ class ViewQueriesTestCase(unittest.TestCase):
         solr_params = {
             "filters": [{'collection_url': [collection_url]}],
             "facets": [facet],
-            "facet_sort": "count"
+            "facet_sort": "count",
         }
         solr_params = query_encode(**solr_params)
 
@@ -289,6 +301,7 @@ class ViewQueriesTestCase(unittest.TestCase):
             'facet_limit': '-1',
             'facet_mincount': 1,
             'facet_sort': 'count',
+            'start': None,
         }
         self.assertEqual(solr_params, collection_facet_query)
 

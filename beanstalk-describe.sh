@@ -3,7 +3,7 @@
 set -e
 
 region='us-west-2'
-appname='ucldc-django-west'
+appname='csphere2'
 
 echo ""
 echo "'--version-label's (last 20 version names already used)"

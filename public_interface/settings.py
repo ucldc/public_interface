@@ -207,7 +207,7 @@ if os.environ.get(
         'RDS_DB_NAME') and not os.environ.get('UCLDC_EXHIBITIONS_DATA'):
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.mysql',
             'CONN_MAX_AGE': 60 * 60,  # in seconds
             'HOST': os.environ.get('RDS_HOSTNAME'),
             'NAME': os.environ.get('RDS_DB_NAME'),

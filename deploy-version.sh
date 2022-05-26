@@ -27,7 +27,7 @@ set -u
 DIR=ucldc-django-beanstalk
 BUCKET=ucldc-private-files
 REGION=us-west-2
-APPNAME=ucldc-django-west
+APPNAME=csphere2
 
 # make sure environment actually exists
 env_exists=$(aws elasticbeanstalk describe-environments \
@@ -46,7 +46,7 @@ ZIP="ucldc-$1.zip"
 gulp
 
 # package app and upload
-zip $ZIP -r calisphere/ load-content.sh fetch-redirects.sh manage.py off_csphere.txt public_interface/ test/ requirements.txt README.md .ebextensions/ dist/ exhibits/ fixtures/
+zip $ZIP -r calisphere/ manage.py off_csphere.txt Procfile public_interface/ test/ requirements.txt README.md .ebextensions/ .platform/ dist/ exhibits/ fixtures/
 aws s3 cp $ZIP s3://$BUCKET/$DIR/$ZIP
 aws elasticbeanstalk create-application-version \
   --application-name $APPNAME \

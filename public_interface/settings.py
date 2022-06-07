@@ -1,5 +1,4 @@
 import subprocess
-import requests
 
 """
 Django settings for public_interface project.
@@ -109,12 +108,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-EC2_PRIVATE_IP = None
-try:
-    result = subprocess.check_output(["ec2-metadata", "--local-ipv4"]).decode("utf-8")
-    EC2_PRIVATE_IP = result.split(":")[1].strip()
-except requests.exceptions.RequestException:
-    pass
+result = subprocess.check_output(["ec2-metadata", "--local-ipv4"]).decode("utf-8")
+EC2_PRIVATE_IP = result.split(":")[1].strip()
 
 if EC2_PRIVATE_IP:
     ALLOWED_HOSTS.append(EC2_PRIVATE_IP)

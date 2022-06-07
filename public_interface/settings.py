@@ -108,8 +108,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-result = subprocess.check_output(["ec2-metadata", "--local-ipv4"]).decode("utf-8")
-EC2_PRIVATE_IP = result.split(":")[1].strip()
+EC2_PRIVATE_IP = None
+try:
+    result = subprocess.check_output(["ec2-metadata", "--local-ipv4"]).decode("utf-8")
+    EC2_PRIVATE_IP = result.split(":")[1].strip()
+except FileNotFoundError:
+    pass
 
 if EC2_PRIVATE_IP:
     ALLOWED_HOSTS.append(EC2_PRIVATE_IP)

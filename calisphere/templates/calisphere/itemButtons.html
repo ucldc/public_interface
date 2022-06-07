@@ -134,11 +134,14 @@ Permalink: {{ permalink }}</textarea>
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="requestModalTitle">Order Duplication</h4>
+        <h4 class="modal-title" id="requestModalTitle">Request {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' %}Item{% else %}{{ item.type.0|title }}{% endif %}</h4>
       </div>
       <div class="modal-body">
         <p>
-          Duplication orders must be made through the {{ repository.name }}{% if repository.campus %} ({{ repository.campus }}){% endif %} request system, Aeon. Click the button below to order a copy of the item by signing up for an Aeon account or logging in to your existing account.
+          Requests for a digital copy can be submitted through the {{ repository.name }}{% if repository.campus %} ({{ repository.campus }}){% endif %} request system, Aeon.
+        </p>
+        <p>
+          Click the button below to submit your request. Please note that you will need to create an Aeon account or log in to your existing account.
         </p>
       </div>
       <div class="modal-footer">
@@ -212,7 +215,7 @@ Permalink: {{ permalink }}</textarea>
     <button type="button" class="btn btn-xs obj-buttons__download-image" 
       id="js-requestModal" data-toggle="modal" data-target="#requestModal"
       data-label="{% if 'structMap' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}">
-      Order {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' %}Item{% else %}{{ item.type.0|title }}{% endif %}
+      Request {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' %}Item{% else %}{{ item.type.0|title }}{% endif %}
     </button>
   </div>
   {% endif %}

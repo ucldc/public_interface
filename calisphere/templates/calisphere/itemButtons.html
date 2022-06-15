@@ -148,7 +148,7 @@ Permalink: {{ permalink }}</textarea>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <a type="button" class="btn btn-primary" id="js-requestBtn"
         data-label="{% if 'structMap' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}"
-        href="{{ repository.aeon_url }}&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.collection_name.0 }}: {{ item.title.0 }}&ItemInfo1={{ item.title.0 }}">Order item through Aeon</a>
+        href="{{ repository.aeon_url }}&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.collection_name.0 }}: {{ item.title.0 }}&ItemInfo1={{ item.title.0 }}">Request item through Aeon</a>
       </div>
     </div>
   </div>

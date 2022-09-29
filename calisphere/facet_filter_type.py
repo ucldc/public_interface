@@ -242,9 +242,12 @@ class RepositoryFF(FacetFilterType):
 
         parent = repo_details['campus']
         pslug = ''
+        pname = ''
         if len(parent):
-            pslug = '{0}-'.format(parent[0].get('slug', None))
+            pslug = f"{parent[0].get('slug', None)}-"
+            pname = f"{parent[0].get('name', '')} "
         repo['slug'] = pslug + repo_details.get('slug', None)
+        repo['name'] = pname + repo_details.get('name', None)
 
         return repo
 

@@ -54,6 +54,8 @@ aws elasticbeanstalk create-application-version \
   --source-bundle S3Bucket=$BUCKET,S3Key=$DIR/$ZIP \
   --version-label "$1"
 
+mv $ZIP deployments/$ZIP
+
 # deploy app to a running environment
 aws elasticbeanstalk update-environment \
   --environment-name "$2" \

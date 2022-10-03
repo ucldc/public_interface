@@ -27,7 +27,7 @@
   </nav>
 
   <h1 id="js-institution" {%if campus_slug%}data-campus="{{ campus_slug }}"{% else %}data-institution="{{ repository_id }}"{% endif %} data-referralName="{{ institution.name }}">
-    {{ institution.name }}
+    {% if uc_institution %}{{ uc_institution.0.name }} {% endif %}{{ institution.name }}
   </h1>
 {% endblock %}
 
@@ -102,7 +102,7 @@
       <div class="col-md-6">
         {% if contact_information.description %}
           <p class="institution-intro__description" itemprop="description">
-            {{ contact_information.description|urlize }}
+            {{ contact_information.description|linebreaksbr|urlize }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>
         {% endif %}

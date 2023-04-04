@@ -34,20 +34,34 @@
   </head>
   <body>
     {% if multiple_indexes %}
-    <div class="container-fluid" 
-         style="background-color: lightgray; padding: 10px 20px">
+    <div class="container-fluid rikolti-bar">
       <i class="fa fa-exclamation-circle"></i>
-      This is a development feature for <a href="https://github.com/ucldc/rikolti/wiki">Rikolti</a>, Calisphere's new harvesting infrastructure - Currently Viewing Results From: <b><i>{{ request.session.index }}</i></b>
+      This is a development feature for 
+      <a href="https://github.com/ucldc/rikolti/wiki">
+        Rikolti
+      </a>, Calisphere's new harvesting infrastructure.
+      <span class="btn rikolti-highlight">
+        Currently Viewing Results From: 
+        <b><i>
+          {% if request.session.index == "es" %}
+            New Index
+          {% else %}
+            Legacy index
+          {% endif %}
+        </i></b>
+      </span>
       <a 
         href="{% url 'calisphere:select_index' 'solr' %}?next={{ request.get_full_path }}" 
-        class="btn" 
-        style="border-color: black; margin-left: 10px;">Legacy Solr Index</a>
+        class="btn rikolti-btn">
+        View Legacy Index
+      </a>
       <a 
         href="{% url 'calisphere:select_index' 'es' %}?next={{ request.get_full_path }}" 
-        class="btn" 
-        style="border-color: black; margin-left: 10px;">New ElasticSearch Index</a>
-      
+        class="btn rikolti-btn">
+        Preview New Index
+      </a>
     </div>
+    <div class="container-fluid"></div>
     {% endif %}
     <div class="container-fluid">
       <a href="#js-pageContent" class="skipnav">Skip to main content</a>

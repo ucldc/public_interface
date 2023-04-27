@@ -282,10 +282,9 @@ var on_ready_pjax_end_handler = function() {
   /* globals ga: false, _paq: false */
   /* jshint latedef: false */
   if (typeof _paq !== 'undefined') {
-    var dimensions = get_cali_ga_dimensions();
     _paq.push(['setCustomUrl', window.location.href]);
     _paq.push(['setDocumentTitle', document.title]);
-    _paq.push(['trackPageView', document.title, dimensions]);
+    _paq.push(['trackPageView', document.title, get_cali_ga_dimensions()]);
     _paq.push(['enableLinkTracking']);
   }
   if (typeof ga !== 'undefined') {

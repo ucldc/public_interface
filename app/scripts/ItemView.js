@@ -1,4 +1,4 @@
-/*global Backbone, DISQUS, ga, get_cali_ga_dimensions, get_inst_ga_dimensions */
+/*global Backbone, DISQUS, ga, _paq, get_cali_ga_dimensions, get_inst_ga_dimensions */
 /*exported ItemView */
 
 'use strict';

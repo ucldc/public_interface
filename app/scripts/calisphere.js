@@ -117,6 +117,42 @@ $(document).ready(function() {
       return false;
     });
   }
+  if (typeof _paq !== 'undefined' ) {
+    var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
+    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
+    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
+    $('body').on('click', outboundSelector, function() {
+      var url = '';
+      if($(this).attr('href')) {
+        url = $(this).attr('href');
+      } else if($(this).attr('onclick')) {
+        var c = $(this).attr('onclick');
+        url = c.slice(15, c.length-2);
+      }
+
+      var dimensions = get_cali_ga_dimensions();
+      hitCallback = timeoutGACallback(function(){
+        // click captured and tracked, send the user along
+        document.location = url;
+      })
+      // https://developer.matomo.org/guides/tracking-javascript-guide#tracking-a-custom-dimension-for-one-specific-action-only
+      _paq.push(['trackEvent', 'outbound', 'click', url,
+        undefined, dimensions, hitCallback]);
+      return false;
+    });
+
+    $('.button__contact-owner').on('click', function() {
+      var url = $(this).attr('href');
+
+      var dimensions = get_cali_ga_dimensions();
+      hitCallback = timeoutGACallback(function() {
+        document.location = url;
+      });
+      _paq.push(['trackEvent', 'buttons', 'contact', url,
+        undefined, dimensions, hitCallback]);
+      return false;
+    });
+  }
   // ***********************************
 
   // Add banner notice for users without session storage
@@ -249,6 +285,13 @@ var on_ready_pjax_end_handler = function() {
   // send google analytics on pjax pages 
   /* globals ga: false */
   /* jshint latedef: false */
+  if (typeof _paq !== 'undefined') {
+    var dimensions = get_cali_ga_dimensions();
+    _paq.push(['setCustomUrl', window.location.href]);
+    _paq.push(['setDocumentTitle', document.title]);
+    _paq.push(['trackPageView', document.title, dimensions]);
+    _paq.push(['enableLinkTracking']);
+  }
   if (typeof ga !== 'undefined') {
     var dimensions = get_cali_ga_dimensions();
     ga('caliga.set', 'location', window.location.href);

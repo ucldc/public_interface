@@ -212,5 +212,9 @@
       ga('caliga.set', 'location', window.location.href);
       ga('caliga.send', 'event', 'error', '404', 'source: django');
     }
+    if (typeof _paq !== 'undefined') {
+      _paq.push(['setCustomUrl', window.location.href]);
+      _paq.push(['trackEvent', 'error', '404', 'source: django']);
+    }
   </script>
 </html>

@@ -30,6 +30,7 @@ def settings(request):
         'ucldcNuxeoThumbs': settings.UCLDC_NUXEO_THUMBS,
         'gaSiteCode': settings.GA_SITE_CODE,
         'ga4SiteCode': settings.GA4_SITE_CODE,
+        'matomoSiteCode': settings.MATOMO_SITE_CODE,
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
         'permalink': permalink,
         'multiple_indexes': multiple_indexes,

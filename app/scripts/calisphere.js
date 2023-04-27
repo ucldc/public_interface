@@ -82,10 +82,11 @@ $(document).ready(function() {
   // based on https://support.google.com/analytics/answer/1136920?hl=en
   // We capture the click handler on outbound links and the contact owner button
 
+  var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
+  outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
+  outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
+
   if (typeof ga !== 'undefined') {
-    var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
-    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
-    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
     $('body').on('click', outboundSelector, function() {
       var url = '';
       if($(this).attr('href')) {
@@ -118,9 +119,6 @@ $(document).ready(function() {
     });
   }
   if (typeof _paq !== 'undefined' ) {
-    var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
-    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
-    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
     $('body').on('click', outboundSelector, function() {
       var url = '';
       if($(this).attr('href')) {
@@ -130,26 +128,24 @@ $(document).ready(function() {
         url = c.slice(15, c.length-2);
       }
 
-      var dimensions = get_cali_ga_dimensions();
-      hitCallback = timeoutGACallback(function(){
-        // click captured and tracked, send the user along
-        document.location = url;
-      })
       // https://developer.matomo.org/guides/tracking-javascript-guide#tracking-a-custom-dimension-for-one-specific-action-only
       _paq.push(['trackEvent', 'outbound', 'click', url,
-        undefined, dimensions, hitCallback]);
+        undefined, get_cali_ga_dimensions(), 
+        timeoutGACallback(function(){
+          // click captured and tracked, send the user along
+          document.location = url;
+        })]);
       return false;
     });
 
     $('.button__contact-owner').on('click', function() {
       var url = $(this).attr('href');
 
-      var dimensions = get_cali_ga_dimensions();
-      hitCallback = timeoutGACallback(function() {
-        document.location = url;
-      });
       _paq.push(['trackEvent', 'buttons', 'contact', url,
-        undefined, dimensions, hitCallback]);
+        undefined, get_cali_ga_dimensions(), 
+        timeoutGACallback(function() {
+          document.location = url;
+        })]);
       return false;
     });
   }
@@ -283,7 +279,7 @@ var cluster_search = function(col_id, facet_field) {
 
 var on_ready_pjax_end_handler = function() {
   // send google analytics on pjax pages 
-  /* globals ga: false */
+  /* globals ga: false, _paq: false */
   /* jshint latedef: false */
   if (typeof _paq !== 'undefined') {
     var dimensions = get_cali_ga_dimensions();

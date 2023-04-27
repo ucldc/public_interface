@@ -61,8 +61,10 @@ var ItemView = Backbone.View.extend({
         break;
     }
     if (typeof _paq !== 'undefined') {
-      var dimensions = get_cali_ga_dimensions();
-      _paq.push(['trackEvent', category, action, label, undefined, dimensions]);
+      _paq.push([
+        'trackEvent', category, action, 
+        label, undefined, get_cali_ga_dimensions()
+      ]);
     }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
@@ -99,12 +101,11 @@ var ItemView = Backbone.View.extend({
 
   carouselAfterChange: function(e, slick) {
     if (typeof _paq !== 'undefined') {
-      var dimensions = get_cali_ga_dimensions();
       _paq.push(['trackEvent',
         'related content',
         'paginate items',
         $('.carousel__search-results').data('set'),
-        undefined, dimensions]);
+        undefined, get_cali_ga_dimensions()]);
     }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
@@ -180,12 +181,11 @@ var ItemView = Backbone.View.extend({
 
   exhibitCarouselBeforeChange: function() {
     if (typeof _paq !== 'undefined') {
-      var dimensions = get_cali_ga_dimensions();
       _paq.push(['trackEvent',
         'related content',
         'paginate exhibitions',
         $('.carousel__search-results').data('set'),
-        undefined, dimensions]);
+        undefined, get_cali_ga_dimensions()]);
     }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
@@ -199,12 +199,11 @@ var ItemView = Backbone.View.extend({
 
   goToExhibition: function() {
     if (typeof _paq !== 'undefined') {
-      var dimensions = get_cali_ga_dimensions();
       _paq.push(['trackEvent',
         'related content',
         'select exhibition',
         $('.carousel__search-results').data('set'),
-        undefined, dimensions]);
+        undefined, get_cali_ga_dimensions()]);
     }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
@@ -252,12 +251,11 @@ var ItemView = Backbone.View.extend({
 
     if ($(e.currentTarget).data('item_number') !== undefined) {
       if (typeof _paq !== 'undefined') {
-        var dimensions = get_cali_ga_dimensions();
         _paq.push(['trackEvent',
           'related content',
           'select item',
           $('.carousel__search-results').data('set'),
-          undefined, dimensions]);
+          undefined, get_cali_ga_dimensions()]);
       }
       if (typeof ga !== 'undefined') {
         var dimensions = get_cali_ga_dimensions();
@@ -300,12 +298,11 @@ var ItemView = Backbone.View.extend({
     delete data_params.itemNumber;
     if (e !== undefined) {
       if (typeof _paq !== 'undefined') {
-        var dimensions = get_cali_ga_dimensions();
         _paq.push(['trackEvent',
           'related content',
           'paginate collections',
           $('.carousel__search-results').data('set'),
-          undefined, dimensions]);
+          undefined, get_cali_ga_dimensions()]);
       }
       if (typeof ga !== 'undefined') {
         var dimensions = get_cali_ga_dimensions();
@@ -384,12 +381,11 @@ var ItemView = Backbone.View.extend({
       });
     } else {
       if (typeof _paq !== 'undefined') {
-        var dimensions = get_cali_ga_dimensions();
         _paq.push(['trackEvent',
           'related content',
           'select collection',
           $('.carousel__search-results').data('set'),
-          undefined, dimensions]);
+          undefined, get_cali_ga_dimensions()]);
       }
       if (typeof ga !== 'undefined') {
         var dimensions = get_cali_ga_dimensions();

@@ -82,10 +82,11 @@ $(document).ready(function() {
   // based on https://support.google.com/analytics/answer/1136920?hl=en
   // We capture the click handler on outbound links and the contact owner button
 
+  var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
+  outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
+  outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
+
   if (typeof ga !== 'undefined') {
-    var outboundSelector = 'a[href^="http://"], a[href^="https://"]';
-    outboundSelector += ', button[onclick^="location.href\=\'http\:\/\/"]';
-    outboundSelector += ', button[onclick^="location.href\=\'https\:\/\/"]';
     $('body').on('click', outboundSelector, function() {
       var url = '';
       if($(this).attr('href')) {
@@ -114,6 +115,37 @@ $(document).ready(function() {
         document.location = url;
       });
       ga('caliga.send', 'event', 'buttons', 'contact', url, fieldsObject);
+      return false;
+    });
+  }
+  if (typeof _paq !== 'undefined' ) {
+    $('body').on('click', outboundSelector, function() {
+      var url = '';
+      if($(this).attr('href')) {
+        url = $(this).attr('href');
+      } else if($(this).attr('onclick')) {
+        var c = $(this).attr('onclick');
+        url = c.slice(15, c.length-2);
+      }
+
+      // https://developer.matomo.org/guides/tracking-javascript-guide#tracking-a-custom-dimension-for-one-specific-action-only
+      _paq.push(['trackEvent', 'outbound', 'click', url,
+        undefined, get_cali_ga_dimensions(), 
+        timeoutGACallback(function(){
+          // click captured and tracked, send the user along
+          document.location = url;
+        })]);
+      return false;
+    });
+
+    $('.button__contact-owner').on('click', function() {
+      var url = $(this).attr('href');
+
+      _paq.push(['trackEvent', 'buttons', 'contact', url,
+        undefined, get_cali_ga_dimensions(), 
+        timeoutGACallback(function() {
+          document.location = url;
+        })]);
       return false;
     });
   }
@@ -247,8 +279,14 @@ var cluster_search = function(col_id, facet_field) {
 
 var on_ready_pjax_end_handler = function() {
   // send google analytics on pjax pages 
-  /* globals ga: false */
+  /* globals ga: false, _paq: false */
   /* jshint latedef: false */
+  if (typeof _paq !== 'undefined') {
+    _paq.push(['setCustomUrl', window.location.href]);
+    _paq.push(['setDocumentTitle', document.title]);
+    _paq.push(['trackPageView', document.title, get_cali_ga_dimensions()]);
+    _paq.push(['enableLinkTracking']);
+  }
   if (typeof ga !== 'undefined') {
     var dimensions = get_cali_ga_dimensions();
     ga('caliga.set', 'location', window.location.href);

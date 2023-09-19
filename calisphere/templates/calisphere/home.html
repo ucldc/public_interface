@@ -22,6 +22,12 @@
       document.getElementsByTagName('html')[0].classList.remove('no-jquery');
     </script>
     {% include "calisphere/ga_site_code.html" %}
+    <script>
+      if (typeof _paq !== 'undefined') {
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+      }
+    </script>
   </head>
   <body>
 

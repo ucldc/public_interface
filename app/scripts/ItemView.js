@@ -1,4 +1,4 @@
-/*global Backbone, DISQUS, ga, get_cali_ga_dimensions, get_inst_ga_dimensions */
+/*global Backbone, DISQUS, ga, _paq, get_cali_ga_dimensions, get_inst_ga_dimensions */
 /*exported ItemView */
 
 'use strict';
@@ -60,6 +60,12 @@ var ItemView = Backbone.View.extend({
         action = 'open request modal';
         break;
     }
+    if (typeof _paq !== 'undefined') {
+      _paq.push([
+        'trackEvent', category, action, 
+        label, undefined, get_cali_ga_dimensions()
+      ]);
+    }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
@@ -94,6 +100,13 @@ var ItemView = Backbone.View.extend({
   },
 
   carouselAfterChange: function(e, slick) {
+    if (typeof _paq !== 'undefined') {
+      _paq.push(['trackEvent',
+        'related content',
+        'paginate items',
+        $('.carousel__search-results').data('set'),
+        undefined, get_cali_ga_dimensions()]);
+    }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
@@ -167,6 +180,13 @@ var ItemView = Backbone.View.extend({
   },
 
   exhibitCarouselBeforeChange: function() {
+    if (typeof _paq !== 'undefined') {
+      _paq.push(['trackEvent',
+        'related content',
+        'paginate exhibitions',
+        $('.carousel__search-results').data('set'),
+        undefined, get_cali_ga_dimensions()]);
+    }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
@@ -178,6 +198,13 @@ var ItemView = Backbone.View.extend({
   },
 
   goToExhibition: function() {
+    if (typeof _paq !== 'undefined') {
+      _paq.push(['trackEvent',
+        'related content',
+        'select exhibition',
+        $('.carousel__search-results').data('set'),
+        undefined, get_cali_ga_dimensions()]);
+    }
     if (typeof ga !== 'undefined') {
       var dimensions = get_cali_ga_dimensions();
       ga('caliga.send', 'event',
@@ -223,6 +250,13 @@ var ItemView = Backbone.View.extend({
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
     if ($(e.currentTarget).data('item_number') !== undefined) {
+      if (typeof _paq !== 'undefined') {
+        _paq.push(['trackEvent',
+          'related content',
+          'select item',
+          $('.carousel__search-results').data('set'),
+          undefined, get_cali_ga_dimensions()]);
+      }
       if (typeof ga !== 'undefined') {
         var dimensions = get_cali_ga_dimensions();
         ga('caliga.send', 'event',
@@ -263,6 +297,13 @@ var ItemView = Backbone.View.extend({
     // don't need carousel specific item data for the related collections
     delete data_params.itemNumber;
     if (e !== undefined) {
+      if (typeof _paq !== 'undefined') {
+        _paq.push(['trackEvent',
+          'related content',
+          'paginate collections',
+          $('.carousel__search-results').data('set'),
+          undefined, get_cali_ga_dimensions()]);
+      }
       if (typeof ga !== 'undefined') {
         var dimensions = get_cali_ga_dimensions();
         ga('caliga.send', 'event',
@@ -339,6 +380,13 @@ var ItemView = Backbone.View.extend({
         traditional: true
       });
     } else {
+      if (typeof _paq !== 'undefined') {
+        _paq.push(['trackEvent',
+          'related content',
+          'select collection',
+          $('.carousel__search-results').data('set'),
+          undefined, get_cali_ga_dimensions()]);
+      }
       if (typeof ga !== 'undefined') {
         var dimensions = get_cali_ga_dimensions();
         ga('caliga.send', 'event',

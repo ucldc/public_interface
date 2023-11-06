@@ -6,4 +6,4 @@ ls -la
 python manage.py collectstatic --noinput
 echo "starting site maps";
 python manage.py calisphere_refresh_sitemaps --settings public_interface.settings
-la -la static_root
+ls -la static_root

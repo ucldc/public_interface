@@ -18,8 +18,6 @@ def settings(request):
             permalink = '?'.join([permalink, query_string.urlencode()])
 
     multiple_indexes = False
-    if settings.ES_HOST and settings.ES_USER and settings.ES_PASS:
-        multiple_indexes = True
 
     return {
         'thumbnailUrl': settings.THUMBNAIL_URL,

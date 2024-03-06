@@ -54,7 +54,7 @@ class SearchForm(object):
         ff.CollectionFF
     ]
     # default search index
-    index = 'solr'
+    index = 'es'
 
     def __init__(self, request):
         """initialize the SearchForm from a QueryDict, set defaults

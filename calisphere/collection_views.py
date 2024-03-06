@@ -321,7 +321,7 @@ class Collection(object):
                 {TypeFF.filter_field: ["image"]}
             ],
             "result_fields": [
-                "reference_image_md5",
+                "thumbnail",
                 "url_item",
                 "id",
                 "title",

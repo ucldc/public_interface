@@ -1,4 +1,4 @@
-""" logic for cache / retry for solr and JSON from registry
+""" logic for cache / retry for es (opensearch) and JSON from registry
 """
 
 from future import standard_library
@@ -8,6 +8,7 @@ from django.conf import settings
 from collections import namedtuple
 import urllib.request
 import urllib.error
+from urllib.parse import urlparse
 from retrying import retry
 import requests
 import pickle
@@ -38,8 +39,7 @@ ESItem = namedtuple(
 
 def es_search(body):
     results = elastic_client.search(
-        index="calisphere-items", body=body)
-
+        index=settings.ES_ALIAS, body=json.dumps(body))
     aggs = results.get('aggregations')
     facet_counts = {'facet_fields': {}}
     if aggs:
@@ -70,17 +70,15 @@ def es_search_nocache(**kwargs):
 
 
 def es_get(item_id):
-    item_search = elastic_client.get(
-        index="calisphere-items", id=item_id)
-    found = item_search['found']
-    item = item_search['_source']
+    # cannot use Elasticsearch.get() for multi-index alias
+    body = {'query': {'match': {'_id': item_id}}}
+    item_search = elastic_client.search(
+        index=settings.ES_ALIAS, body=json.dumps(body))
+    found = item_search['hits']['total']['value']
+    item = item_search['hits']['hits'][0]['_source']
 
-    # make it look a little more like solr
-    item.pop('word_bucket')
-    item['title'] = [item['title']]
-    item['type'] = [item['type']]
-    item['source'] = [item['source']]
-    item['location'] = [item['location']]
+    item['collection_ids'] = item.get('collection_url')
+    item['repository_ids'] = item.get('repository_url')
 
     results = ESItem(found, item, item_search)
     return results

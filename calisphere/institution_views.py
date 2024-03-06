@@ -178,7 +178,7 @@ class Campus(object):
             self.contact_info = ''
 
         if index == 'es':
-            self.basic_filter = {'campus_ids': [self.id]}
+            self.basic_filter = {'campus_url': [self.id]}
         else:
             self.basic_filter = {'campus_url': [self.url]}
 
@@ -213,7 +213,7 @@ class Repository(object):
                 self.featured_image = feat[0].get('featuredImage')
 
         if index == 'es':
-            self.basic_filter = {'repository_ids': [self.id]}
+            self.basic_filter = {'repository_url': [self.id]}
         else:
             self.basic_filter = {'repository_url': [self.url]}
 

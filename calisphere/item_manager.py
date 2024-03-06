@@ -1,17 +1,18 @@
-from .cache_retry import search_solr, SOLR_get, SOLR_mlt
+from .es_cache_retry import search_es, es_get, es_mlt
+
 try:
-    from .es_cache_retry import search_es, es_get, es_mlt
-    ES = True
+    from .cache_retry import search_solr, SOLR_get, SOLR_mlt
+    SOLR = True
 except ImportError:
-    ES = False
+    SOLR = False
 
 
 class ItemManager(object):
     def __init__(self, index='solr'):
-        if ES is True:
+        if SOLR is True:
             self.index = index
         else:
-            self.index = 'solr'
+            self.index = 'es'
 
     def search(self, query):
         if self.index == "solr":
@@ -34,5 +35,4 @@ class ItemManager(object):
         else:
             results = SOLR_mlt(item_id)
         return results
-
 

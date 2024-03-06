@@ -44,6 +44,7 @@ SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
 ES_HOST = getenv('ES_HOST', '')
 ES_USER = getenv('ES_USER', '')
 ES_PASS = getenv('ES_PASS', '')
+ES_ALIAS = getenv('ES_ALIAS', '')
 
 
 UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')

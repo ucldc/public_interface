@@ -186,7 +186,7 @@ def query_encode(query_string: str = None,
                 es_params['query'] = es_filters[0]
 
     if facets:
-        exceptions = ['collection_ids', 'repository_ids', 'campus_ids']
+        exceptions = ['collection_url', 'repository_url', 'campus_url']
         aggs = {}
         for facet in facets:
             if facet in exceptions or facet[-8:] == '.keyword':

@@ -37,10 +37,7 @@ def process_sort_collection_data(string):
     if '::' in string:
         return string.split('::', 2)
     else:
-        part1, remainder = string.split(':', 1)
-        part2, part3 = remainder.rsplit(':https:')
-        return [part1, part2, 'https:{}'.format(part3)]
-
+        return string.split(':')
 
 @cache_by_session_state
 def campus_directory(request):

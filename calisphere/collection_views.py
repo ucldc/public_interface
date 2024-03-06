@@ -26,7 +26,7 @@ col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 @cache_by_session_state
 def collections_directory(request):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     indexed_collections = CollectionManager(index)
     collections = []
 
@@ -60,7 +60,7 @@ def collections_directory(request):
 
 @cache_by_session_state
 def collections_az(request, collection_letter):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     indexed_collections = CollectionManager(index)
     collections_list = indexed_collections.split[collection_letter.lower()]
 
@@ -106,7 +106,7 @@ def collections_titles(request):
             'calisphere:collectionView',
             kwargs={'collection_id': id})
 
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     collections = CollectionManager(index)
     data = [{
         'uri': djangoize(id),
@@ -420,7 +420,7 @@ class Collection(object):
 
 @cache_by_session_state
 def collection_search(request, collection_id):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
 
     collection = Collection(collection_id, index)
 
@@ -461,7 +461,7 @@ def collection_search(request, collection_id):
 
 @cache_by_session_state
 def collection_facet(request, collection_id, facet):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     collection = Collection(collection_id, index)
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
@@ -541,7 +541,7 @@ def collection_facet(request, collection_id, facet):
 
 @cache_by_session_state
 def collection_facet_json(request, collection_id, facet):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
 
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
@@ -559,7 +559,7 @@ def collection_facet_json(request, collection_id, facet):
 
 @cache_by_session_state
 def collection_facet_value(request, collection_id, cluster, cluster_value):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     collection = Collection(collection_id, index)
 
     cluster_type = [tup for tup in collection.custom_schema_facets
@@ -613,7 +613,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
 
 @cache_by_session_state
 def collection_metadata(request, collection_id):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     collection = Collection(collection_id, index)
     summary_data = collection.get_summary_data()
 
@@ -660,7 +660,7 @@ def get_cluster_thumbnails(collection, facet, facet_value, index):
 
 @cache_by_session_state
 def collection_browse(request, collection_id):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     collection = Collection(collection_id, index)
     facet_sets = collection.get_facet_sets()
 

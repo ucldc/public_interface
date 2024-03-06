@@ -44,7 +44,7 @@ def process_sort_collection_data(string):
 
 @cache_by_session_state
 def campus_directory(request):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     repo_query = {"facets": ['repository_url']}
     repo_search = ItemManager(index).search(repo_query)
 
@@ -83,7 +83,7 @@ def campus_directory(request):
 
 @cache_by_session_state
 def statewide_directory(request):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     repo_query = {"facets": ['repository_url']}
 
     repo_search = ItemManager(index).search(repo_query)
@@ -344,7 +344,7 @@ def institution_collections(request, institution, index):
 
 @cache_by_session_state
 def repository_search(request, repository_id):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
 
     institution = Repository(repository_id, index)
     if index == 'es':
@@ -371,7 +371,7 @@ def repository_search(request, repository_id):
 
 @cache_by_session_state
 def repository_collections(request, repository_id):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
 
     institution = Repository(repository_id, index)
 
@@ -398,7 +398,7 @@ def repository_collections(request, repository_id):
 
 @cache_by_session_state
 def campus_search(request, campus_slug):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
     institution = Campus(campus_slug, index)
     if index == 'es':
         form = ESCampusForm(request.GET.copy(), institution)
@@ -422,7 +422,7 @@ def campus_search(request, campus_slug):
 
 @cache_by_session_state
 def campus_collections(request, campus_slug):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
 
     institution = Campus(campus_slug, index)
 
@@ -447,7 +447,7 @@ def campus_collections(request, campus_slug):
 
 @cache_by_session_state
 def campus_institutions(request, campus_slug):
-    index = request.session.get("index", "solr")
+    index = request.session.get("index", "es")
 
     institution = Campus(campus_slug, index)
 

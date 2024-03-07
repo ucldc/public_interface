@@ -186,7 +186,9 @@ def query_encode(query_string: str = None,
                 es_params['query'] = es_filters[0]
 
     if facets:
-        exceptions = ['collection_url', 'repository_url', 'campus_url']
+        # TODO tidy this up when we settle on a field type for these
+        #exceptions = ['repository_url', 'collection_url', 'campus_url']
+        exceptions = []
         aggs = {}
         for facet in facets:
             if facet in exceptions or facet[-8:] == '.keyword':
@@ -205,7 +207,6 @@ def query_encode(query_string: str = None,
                 aggs[facet]["terms"]["order"] = facet_sort
         # regarding 'size' parameter here and getting back all the facet values
         # please see: https://github.com/elastic/elasticsearch/issues/18838
-
         es_params.update({"aggs": aggs})
 
     if result_fields:

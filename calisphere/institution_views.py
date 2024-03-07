@@ -334,7 +334,7 @@ def institution_collections(request, institution, index):
         collection_parts = process_sort_collection_data(
             related_collection)
         if index == 'es':
-            col_id = collection_parts[2]
+            col_id = collection_parts[-1]
         else:
             col_id = re.match(col_regex, collection_parts[2]).group('id')
         try:

@@ -68,12 +68,11 @@ def es_search(body):
     return results
 
 def get_thumbnail_key(metadata):
-    if metadata.get('thumbnail'):
-        path = metadata['thumbnail'].get('path')
-        if path.startswith('s3://'):
-            uri_path = urlparse(path).path
-            key_parts = uri_path.split('/')[2:]
-            return '/'.join(key_parts)
+    path = metadata.get('thumbnail','').get('path','')
+    if path.startswith('s3://'):
+        uri_path = urlparse(path).path
+        key_parts = uri_path.split('/')[2:]
+        return '/'.join(key_parts)
 
 def es_search_nocache(**kwargs):
     return es_search(kwargs)
@@ -199,7 +198,9 @@ def query_encode(query_string: str = None,
                 es_params['query'] = es_filters[0]
 
     if facets:
-        exceptions = ['repository_url', 'collection_url', 'campus_url']
+        # TODO tidy this up when we settle on a field type for these
+        #exceptions = ['repository_url', 'collection_url', 'campus_url']
+        exceptions = []
         aggs = {}
         for facet in facets:
             if facet in exceptions or facet[-8:] == '.keyword':
@@ -218,7 +219,6 @@ def query_encode(query_string: str = None,
                 aggs[facet]["terms"]["order"] = facet_sort
         # regarding 'size' parameter here and getting back all the facet values
         # please see: https://github.com/elastic/elasticsearch/issues/18838
-
         es_params.update({"aggs": aggs})
 
     if result_fields:

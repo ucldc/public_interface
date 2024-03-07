@@ -568,7 +568,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     if not cluster_type:
         raise Http404("{} is not a valid facet".format(cluster))
 
-    form = CollectionForm(request.GET.copy(), collection)
+    form = ESCollectionForm(request.GET.copy(), collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
     escaped_cluster_value = solr_escape(parsed_cluster_value)

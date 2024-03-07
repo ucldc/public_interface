@@ -8,7 +8,7 @@ from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
 from .cache_retry import json_loads_url
 from .item_manager import ItemManager
-from .search_form import CollectionForm, solr_escape
+from .search_form import CollectionForm, ESCollectionForm, solr_escape
 from builtins import range
 from .decorators import cache_by_session_state
 
@@ -424,7 +424,10 @@ def collection_search(request, collection_id):
 
     collection = Collection(collection_id, index)
 
-    form = CollectionForm(request.GET.copy(), collection)
+    if index == 'solr':
+        form = CollectionForm(request.GET.copy(), collection)
+    else:
+        form = ESCollectionForm(request.GET.copy(), collection)
     results = ItemManager(index).search(form.get_query())
     filter_display = form.filter_display()
 
@@ -568,7 +571,10 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     if not cluster_type:
         raise Http404("{} is not a valid facet".format(cluster))
 
-    form = CollectionForm(request.GET.copy(), collection)
+    if index == 'solr':
+        form = CollectionForm(request.GET.copy(), collection)
+    else:
+        form = ESCollectionForm(request.GET.copy(), collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
     escaped_cluster_value = solr_escape(parsed_cluster_value)

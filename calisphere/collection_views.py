@@ -8,7 +8,7 @@ from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
 from .cache_retry import json_loads_url
 from .item_manager import ItemManager
-from .search_form import CollectionForm, solr_escape
+from .search_form import ESCollectionForm, solr_escape
 from builtins import range
 from .decorators import cache_by_session_state
 
@@ -424,7 +424,7 @@ def collection_search(request, collection_id):
 
     collection = Collection(collection_id, index)
 
-    form = CollectionForm(request.GET.copy(), collection)
+    form = ESCollectionForm(request.GET.copy(), collection)
     results = ItemManager(index).search(form.get_query())
     filter_display = form.filter_display()
 

@@ -68,11 +68,12 @@ def es_search(body):
     return results
 
 def get_thumbnail_key(metadata):
-    path = metadata.get('thumbnail','').get('path','')
-    if path.startswith('s3://'):
-        uri_path = urlparse(path).path
-        key_parts = uri_path.split('/')[2:]
-        return '/'.join(key_parts)
+    if metadata.get('thumbnail'):
+        path = metadata['thumbnail'].get('path')
+        if path.startswith('s3://'):
+            uri_path = urlparse(path).path
+            key_parts = uri_path.split('/')[2:]
+            return '/'.join(key_parts)
 
 def es_search_nocache(**kwargs):
     return es_search(kwargs)

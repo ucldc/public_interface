@@ -52,9 +52,6 @@ def es_search(body):
 
     for result in results['hits']['hits']:
         metadata = result.pop('_source')
-        metadata['title'] = [metadata.get('title')]
-        metadata['type'] = [metadata.get('type')]
-        metadata['type_ss'] = [metadata.get('type')]
         thumbnail_key = get_thumbnail_key(metadata)
         if thumbnail_key:
             metadata['reference_image_md5'] = thumbnail_key

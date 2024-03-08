@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponse, QueryDict
 from django.template.defaultfilters import urlize
 from . import constants
-from .cache_retry import json_loads_url
+from .es_cache_retry import json_loads_url
 from .item_manager import ItemManager
 
 from .search_form import (SearchForm, ESSearchForm, solr_escape, 
@@ -54,11 +54,12 @@ def select_index(request, index):
     return redirect(next_page.path + f"?{query}")
 
 
-def get_hosted_content_file(structmap):
+def get_hosted_content_file(item):
     content_file = ''
-    if structmap['format'] == 'image':
-        iiif_url = '{}{}/info.json'.format(settings.UCLDC_IIIF,
-                                           structmap['id'])
+    media_data = item.get('media')
+    media_path = media_data.get('path','')
+    if media_path.startswith('s3://rikolti-content/jp2'):
+        iiif_url = f"{settings.UCLDC_IIIF}{media_data['media_key']}/info.json"
         if iiif_url.startswith('//'):
             iiif_url = ''.join(['http:', iiif_url])
         iiif_info = json_loads_url(iiif_url)
@@ -84,25 +85,27 @@ def get_hosted_content_file(structmap):
             'size': access_size,
             'url': access_url
         }
-    if structmap['format'] == 'file':
-        content_file = {
-            'id': structmap['id'],
-            'format': 'file',
-        }
-    if structmap['format'] == 'video':
-        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
-        content_file = {
-            'id': structmap['id'],
-            'format': 'video',
-            'url': access_url
-        }
-    if structmap['format'] == 'audio':
-        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
-        content_file = {
-            'id': structmap['id'],
-            'format': 'audio',
-            'url': access_url
-        }
+    if media_path.startswith('s3://rikolti-content/media'):
+        if media_path.endswith('pdf'):
+            thumbnail = item.get('thumbnail')
+            content_file = {
+                'id': f"thumbnails/{item.get('reference_image_md5')}",
+                'format': 'file',
+            }
+        if media_path.endswith('mp3'):
+            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media_data['media_key']}"
+            content_file = {
+                'id': f"thumbnails/{item.get('reference_image_md5')}",
+                'format': 'audio',
+                'url': access_url
+            }
+        if media_path.endswith('mp4'):
+            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media_data['media_key']}"
+            content_file = {
+                'id': f"thumbnails/{item.get('reference_image_md5')}",
+                'format': 'video',
+                'url': access_url
+            }
 
     return content_file
 
@@ -152,20 +155,16 @@ def item_view(request, item_id=''):
     if 'reference_image_dimensions' in item:
         split_ref = item['reference_image_dimensions'].split(':')
         item['reference_image_dimensions'] = split_ref
-    if 'structmap_url' in item and len(item['structmap_url']) >= 1:
+    #if 'structmap_url' in item and len(item['structmap_url']) >= 1:
+    if 'media' in item:
         item['harvest_type'] = 'hosted'
-        structmap_url = item['structmap_url'].replace(
-            's3://static', 'https://s3.amazonaws.com/static')
-        media_json = json_loads_url(structmap_url)
-
-        media_data = None
 
         # simple object
-        if 'structMap' not in media_json:
-            if 'format' in media_json:
-                media_data = media_json
+        if 'children' not in item:
+            item['contentFile'] = get_hosted_content_file(item)
 
         # complex object
+        '''
         if 'structMap' in media_json:
             # complex object
             if order and 'structMap' in media_json:
@@ -205,8 +204,7 @@ def item_view(request, item_id=''):
             item['has_fixed_thumb'] = False
             if 'reference_image_md5' in item:
                 item['has_fixed_thumb'] = True
-
-        item['contentFile'] = get_hosted_content_file(media_data)
+        '''
     else:
         item['harvest_type'] = 'harvested'
         if 'url_item' in item:

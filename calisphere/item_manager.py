@@ -1,8 +1,6 @@
 from .es_cache_retry import search_es, es_get, es_mlt
 
 class ItemManager(object):
-    def __init__(self, index='es'):
-        self.index = index
 
     def search(self, query):
         return search_es(query)

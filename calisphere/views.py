@@ -8,12 +8,12 @@ from . import constants
 from .es_cache_retry import json_loads_url
 from .item_manager import ItemManager
 
-from .search_form import (SearchForm, ESSearchForm, solr_escape, 
-                          CollectionFacetValueForm, ESCollectionFacetValueForm,
-                          CarouselForm, ESCarouselForm,
-                          CollectionCarouselForm, ESCollectionCarouselForm,
-                          CampusCarouselForm, ESCampusCarouselForm,
-                          CampusForm, ESCampusForm)
+from .search_form import (ESSearchForm, solr_escape,
+                          ESCollectionFacetValueForm,
+                          ESCarouselForm,
+                          ESCollectionCarouselForm,
+                          ESCampusCarouselForm,
+                          ESCampusForm)
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository, Campus
 from .facet_filter_type import CollectionFF
@@ -129,10 +129,9 @@ def get_component(media_json, order):
 
 @cache_by_session_state
 def item_view(request, item_id=''):
-    index = request.session.get('index', 'es')
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
 
-    item_search = ItemManager(index).get(item_id)
+    item_search = ItemManager().get(item_id)
     order = request.GET.get('order')
 
     if not item_search:
@@ -144,7 +143,7 @@ def item_view(request, item_id=''):
             "query_string": f"harvest_id_s:*{_fixid(item_id)}",
             "rows": 10
         }
-        old_id_search = ItemManager(index).search(old_id_query)
+        old_id_search = ItemManager().search(old_id_query)
         if old_id_search.numFound:
             return redirect('calisphere:itemView',
                             old_id_search.results[0]['id'])
@@ -224,14 +223,14 @@ def item_view(request, item_id=''):
     item['relation_links'] = []
     related_collections = []
     for col_id in item.get('collection_ids'):
-        collection = Collection(col_id, index)
+        collection = Collection(col_id)
         item['parsed_collection_data'].append(collection.item_view())
         if not from_item_page:
             lockup_data = collection.get_lockup(f'id:"{item_id}"')
             related_collections.append(lockup_data)
 
     for repo_id in item.get('repository_ids'):
-        repo = Repository(repo_id, index)
+        repo = Repository(repo_id)
         item['parsed_repository_data'].append(repo.get_repo_data())
         item['institution_contact'].append(repo.get_contact_info())
 
@@ -287,7 +286,7 @@ def item_view(request, item_id=''):
 
     if not from_item_page:
         carousel_search_results, carousel_num_found = item_view_carousel_mlt(
-            item_id, index)
+            item_id)
 
         template = "calisphere/itemView.html"
         context = {
@@ -311,16 +310,12 @@ def item_view(request, item_id=''):
 
 @cache_by_session_state
 def search(request):
-    index = request.session.get('index', 'es')
     if len(request.GET.getlist('q')) <= 0:
         return redirect('calisphere:home')
 
-    if index == 'es':
-        form = ESSearchForm(request.GET.copy())
-    else:
-        form = SearchForm(request.GET.copy())
+    form = ESSearchForm(request.GET.copy())
 
-    results = ItemManager(index).search(form.get_query())
+    results = ItemManager().search(form.get_query())
     facets = form.get_facets(results.facet_counts['facet_fields'])
     filter_display = form.filter_display()
 
@@ -330,7 +325,7 @@ def search(request):
 
     num_related_collections = len(rc_ids)
     related_collections = get_rc_from_ids(
-        rc_ids, form.rc_page, form.query_string, index)
+        rc_ids, form.rc_page, form.query_string)
 
     context = {
         'facets': facets,
@@ -350,8 +345,8 @@ def search(request):
     return render(request, 'calisphere/searchResults.html', context)
 
 
-def item_view_carousel_mlt(item_id, index):
-    carousel_search = ItemManager(index).more_like_this(item_id)
+def item_view_carousel_mlt(item_id):
+    carousel_search = ItemManager().more_like_this(item_id)
     if carousel_search.numFound == 0:
         return None, None
         # raise Http404('No object with id "' + item_id + '" found.')
@@ -363,42 +358,32 @@ def item_view_carousel_mlt(item_id, index):
 
 @cache_by_session_state
 def item_view_carousel(request):
-    index = request.session.get('index', 'es')
     item_id = request.GET.get('itemId')
     if item_id is None:
         raise Http404("No item id specified")
 
     referral = request.GET.get('referral')
     link_back_id = ''
-    if index == 'es':
-        form = ESCarouselForm(request.GET.copy())
-    else:
-        form = CarouselForm(request.GET.copy())
+    form = ESCarouselForm(request.GET.copy())
 
     if referral == 'institution':
         link_back_id = request.GET.get('repository_data', None)
     if referral == 'collection':
         link_back_id = request.GET.get('collection_data', None)
-        collection = Collection(link_back_id, index)
-        if index == 'es':
-            form = ESCollectionCarouselForm(request.GET.copy(), collection)
-        else:
-            form = CollectionCarouselForm(request.GET.copy(), collection)
+        collection = Collection(link_back_id)
+        form = ESCollectionCarouselForm(request.GET.copy(), collection)
     if referral == 'campus':
         link_back_id = request.GET.get('campus_slug', None)
-        if index == 'es':
-            form = ESCampusCarouselForm(request.GET.copy(), Campus(link_back_id, index))
-        else:
-            form = CampusCarouselForm(request.GET.copy(), Campus(link_back_id, index))
+        form = ESCampusCarouselForm(request.GET.copy(), Campus(link_back_id))
 
     carousel_params = form.get_query()
 
     # if no query string or filters, do a "more like this" search
     if not form.query_string and not carousel_params.get('filters'):
-        search_results, num_found = item_view_carousel_mlt(item_id, index)
+        search_results, num_found = item_view_carousel_mlt(item_id)
     else:
         try:
-            carousel_search = ItemManager(index).search(carousel_params)
+            carousel_search = ItemManager().search(carousel_params)
         except HTTPError as e:
             # https://stackoverflow.com/a/19384641/1763984
             print((request.get_full_path()))
@@ -436,19 +421,12 @@ repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
 def get_related_collections(request):
-    index = request.session.get('index', 'es')
-    if index == 'es':
-        form = ESSearchForm(request.GET.copy())
-    else:
-        form = SearchForm(request.GET.copy())
+    form = ESSearchForm(request.GET.copy())
     field = CollectionFF(request.GET.copy())
 
     if request.GET.get('campus_slug'):
         slug = request.GET.get('campus_slug')
-        if index == 'es':
-            form = ESCampusForm(request.GET.copy(), Campus(slug, index))
-        else:
-            form = CampusForm(request.GET.copy(), Campus(slug, index))
+        form = ESCampusForm(request.GET.copy(), Campus(slug))
 
     rc_params = form.get_query([field])
     rc_params['rows'] = 0
@@ -459,7 +437,7 @@ def get_related_collections(request):
             rc_params['query_string'] = form.query_string = (
                 f"id:{request.GET.get('itemId')}")
 
-    related_collections = ItemManager(index).search(rc_params)
+    related_collections = ItemManager().search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
         CollectionFF.facet_field]
 
@@ -475,12 +453,9 @@ def get_related_collections(request):
         if len(related_collections) <= i or not related_collections[i]:
             break
 
-        if index == 'es':
-            col_id = related_collections[i].split('::')[0]
-        else:
-            col_id = (re.match(
-                col_regex, related_collections[i].split('::')[0]).group('id'))
-        collection = Collection(col_id, index)
+        col_id = related_collections[i].split('::')[0]
+
+        collection = Collection(col_id)
         lockup_data = collection.get_lockup(rc_params['query_string'])
         three_related_collections.append(lockup_data)
 
@@ -532,7 +507,6 @@ def related_exhibitions(request):
 
 @cache_by_session_state
 def report_collection_facet(request, collection_id, facet):
-    index = request.session.get('index', 'es')
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
     collection_url = col_template.format(collection_id)
@@ -544,24 +518,15 @@ def report_collection_facet(request, collection_id, facet):
         repository['resource_id'] = repository.get('resource_uri').split(
             '/')[-2]
 
-    if index == 'es':
-        facet_params = {
-            "filters": [{'collection_ids': [collection_id]}],
-            "facets": [facet]
-        }
-    else:
-        facet_params = {
-            "filters": [{'collection_url': [collection_url]}],
-            "facets": [facet]
-        }
-    facet_search = ItemManager(index).search(facet_params)
+    facet_params = {
+        "filters": [{'collection_ids': [collection_id]}],
+        "facets": [facet]
+    }
 
-    if index == 'es':
-        values = facet_search.facet_counts.get(
-            'facet_fields').get('{}'.format(facet))
-    else:
-        values = facet_search.facet_counts.get(
-            'facet_fields').get('{}_ss'.format(facet))
+    facet_search = ItemManager().search(facet_params)
+
+    values = facet_search.facet_counts.get(
+        'facet_fields').get('{}'.format(facet))
 
     if not values:
         raise Http404("{0} has no values".format(facet))
@@ -591,8 +556,7 @@ def report_collection_facet(request, collection_id, facet):
 
 @cache_by_session_state
 def report_collection_facet_value(request, collection_id, facet, facet_value):
-    index = request.session.get('index', 'es')
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
     collection_details = collection.details
 
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
@@ -601,10 +565,8 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
     escaped_facet_value = solr_escape(parsed_facet_value)
 
-    if index == 'es':
-        form = ESCollectionFacetValueForm(request.GET.copy(), collection)
-    else:
-        form = CollectionFacetValueForm(request.GET.copy(), collection)
+    form = ESCollectionFacetValueForm(request.GET.copy(), collection)
+
     filter_params = form.get_query()
     query_string = f"{facet}:\"{escaped_facet_value}\""
 
@@ -613,7 +575,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
     else:
         filter_params['query_string'] = query_string
 
-    filter_search = ItemManager(index).search(filter_params)
+    filter_search = ItemManager().search(filter_params)
 
     collection_name = collection_details.get('name')
 

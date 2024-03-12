@@ -25,7 +25,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
             if issubclass(site, RegularDjangoSitemap):
                 parts.extend(self.write_data_regular(section, site))
             elif section == 'items':
-                collections = CollectionManager("solr").parsed
+                collections = CollectionManager().parsed
                 for collection in collections:
                     parts.extend(self.write_data_fast(
                         f"collection_{collection.id}", site, collection.url))

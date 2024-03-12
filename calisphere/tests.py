@@ -14,7 +14,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         pass
 
     def test_get_item_count(self):
-        collection = Collection(466, 'solr')
+        collection = Collection(466)
         solr_params = {
             "filters": [collection.basic_filter],
             "rows": 0
@@ -27,7 +27,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, manual_params)
 
     def test_get_facets(self):
-        collection = Collection(466, 'solr')
+        collection = Collection(466)
         facet_fields = collection.custom_schema_facets
         solr_params = {
             "filters": [collection.basic_filter],
@@ -48,7 +48,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         self.assertEqual(encoded, manual_params)
 
     def test_get_mosaic(self):
-        collection = Collection(466, 'solr')
+        collection = Collection(466)
         solr_params = {
             "query_string": "*:*",
             "filters": [
@@ -89,7 +89,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, search_terms)
 
     def test_get_lockup(self):
-        collection = Collection(466, 'solr')
+        collection = Collection(466)
         keyword_query = "welcome"
 
         solr_params = {
@@ -123,7 +123,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params_encoded, rc_params)
 
     def test_collection_facet_thumb_params(self):
-        collection = Collection(466, 'solr')
+        collection = Collection(466)
         facet = "date"
         escaped_cluster_value = "October 17-18, 1991"
         solr_params = {
@@ -146,7 +146,7 @@ class CollectionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, thumb_params)
 
     def test_get_cluster_thumbnails(self):
-        collection = Collection(466, 'solr')
+        collection = Collection(466)
         escaped_cluster_value = "AIDS (Disease)"
         facet = "subject"
         solr_params = {
@@ -201,7 +201,7 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, repositories_query)
 
     def test_institution_collections(self):
-        institution = Repository(25, 'solr')
+        institution = Repository(25)
         solr_params = {
             'filters': [institution.basic_filter],
             'facets': ['sort_collection_data'],
@@ -220,7 +220,7 @@ class InstitutionQueriesTestCase(unittest.TestCase):
         self.assertEqual(solr_params, collections_params)
 
     def test_campus_institutions(self):
-        institution = Campus('UCI', 'solr')
+        institution = Campus('UCI')
         solr_params = {
             'filters': [institution.basic_filter],
             'facets': ['repository_data']

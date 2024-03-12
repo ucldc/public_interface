@@ -26,15 +26,14 @@ col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 
 @cache_by_session_state
 def collections_directory(request):
-    index = request.session.get("index", "es")
-    indexed_collections = CollectionManager(index)
+    indexed_collections = CollectionManager()
     collections = []
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
 
     for col in indexed_collections.shuffled[(page - 1) * 10:page * 10]:
         try:
-            collections.append(Collection(col.id, index).get_mosaic())
+            collections.append(Collection(col.id).get_mosaic())
         except Http404:
             continue
 
@@ -60,8 +59,7 @@ def collections_directory(request):
 
 @cache_by_session_state
 def collections_az(request, collection_letter):
-    index = request.session.get("index", "es")
-    indexed_collections = CollectionManager(index)
+    indexed_collections = CollectionManager()
     collections_list = indexed_collections.split[collection_letter.lower()]
 
     page = int(request.GET['page']) if 'page' in request.GET else 1
@@ -70,7 +68,7 @@ def collections_az(request, collection_letter):
     collections = []
     for col in collections_list[(page - 1) * 10:page * 10]:
         try:
-            collections.append(Collection(col.id, index).get_mosaic())
+            collections.append(Collection(col.id).get_mosaic())
         except Http404:
             continue
 
@@ -106,8 +104,7 @@ def collections_titles(request):
             'calisphere:collectionView',
             kwargs={'collection_id': id})
 
-    index = request.session.get("index", "es")
-    collections = CollectionManager(index)
+    collections = CollectionManager()
     data = [{
         'uri': djangoize(id),
         'title': title
@@ -129,10 +126,9 @@ def collections_search(request):
 
 class Collection(object):
 
-    def __init__(self, collection_id, index):
+    def __init__(self, collection_id):
         self.id = collection_id
         self.url = col_template.format(collection_id)
-        self.index = index
         self.details = json_loads_url(f"{self.url}?format=json")
         if not self.details:
             raise Http404(f"{collection_id} does not exist.")
@@ -143,58 +139,36 @@ class Collection(object):
         self.custom_facets = self._parse_custom_facets()
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
-        if index == 'es':
-            self.basic_filter = {'collection_url': [self.id]}
-        else:
-            self.basic_filter = {'collection_url': [self.url]}
+
+        self.basic_filter = {'collection_url': [self.id]}
 
     def _parse_custom_facets(self):
         custom_facets = []
         for custom_facet in self.details.get('custom_facet', []):
             facet_field = custom_facet['facet_field']
-            if self.index == 'es':
-                # TODO: check that `sort_by` works as expected!
-                custom_facets.append(
-                    type(
-                        f"{facet_field}Class",
-                        (FacetFilterType, ),
-                        {
-                            'form_name': custom_facet['facet_field'],
-                            'facet_field': (
-                                f"{custom_facet['facet_field'][:-3]}.keyword"),
-                            'display_name': custom_facet['label'],
-                            'filter_field': (
-                                f"{custom_facet['facet_field'][:-3]}.keyword"),
-                            'sort_by': custom_facet['sort_by'],
-                            'faceting_allowed': True
-                        }
-                    )
+            # TODO: check that `sort_by` works as expected!
+            custom_facets.append(
+                type(
+                    f"{facet_field}Class",
+                    (FacetFilterType, ),
+                    {
+                        'form_name': custom_facet['facet_field'],
+                        'facet_field': (
+                            f"{custom_facet['facet_field'][:-3]}.keyword"),
+                        'display_name': custom_facet['label'],
+                        'filter_field': (
+                            f"{custom_facet['facet_field'][:-3]}.keyword"),
+                        'sort_by': custom_facet['sort_by'],
+                        'faceting_allowed': True
+                    }
                 )
-            else:
-                custom_facets.append(
-                    type(
-                        f"{facet_field}Class",
-                        (FacetFilterType, ),
-                        {
-                            'form_name': custom_facet['facet_field'],
-                            'facet_field': custom_facet['facet_field'],
-                            'display_name': custom_facet['label'],
-                            'filter_field': custom_facet['facet_field'],
-                            'sort_by': custom_facet['sort_by'],
-                            'faceting_allowed': True
-                        }
-                    )
-                )
+            )
 
         return custom_facets
 
     def _generate_custom_schema_facets(self):
-        if self.index == 'es':
-            custom_schema_facets = [fd for fd in constants.UCLDC_ES_SCHEMA_FACETS
-                                    if fd.facet != 'spatial']
-        else:
-            custom_schema_facets = [fd for fd in constants.UCLDC_SOLR_SCHEMA_FACETS
-                                    if fd.facet != 'spatial']
+        custom_schema_facets = [fd for fd in constants.UCLDC_ES_SCHEMA_FACETS
+                                if fd.facet != 'spatial']
 
         # Use a registry-specified display name over constants.py display name
         if self.custom_facets:
@@ -228,7 +202,7 @@ class Collection(object):
             "filters": [self.basic_filter],
             "rows": 0
         }
-        item_count_search = ItemManager(self.index).search(item_query)
+        item_count_search = ItemManager().search(item_query)
         self.item_count = item_count_search.numFound
         return self.item_count
 
@@ -270,7 +244,7 @@ class Collection(object):
             "rows": 0,
             "facets": [ff.field for ff in facet_fields]
         }
-        facet_search = ItemManager(self.index).search(facet_query)
+        facet_search = ItemManager().search(facet_query)
         self.item_count = facet_search.numFound
 
         facets = []
@@ -309,10 +283,7 @@ class Collection(object):
             else:
                 repositories.append(repository['name'])
 
-        if self.index == 'es':
-            sort = ("sort_title.keyword", "asc")
-        else:
-            sort = ("sort_title", "asc")
+        sort = ("sort_title.keyword", "asc")
 
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
@@ -331,13 +302,13 @@ class Collection(object):
             "sort": sort,
             "rows": 6
         }
-        display_items = ItemManager(self.index).search(search_terms)
+        display_items = ItemManager().search(search_terms)
         items = display_items.results
 
         search_terms['filters'].pop(1)
         search_terms['exclude'] = [{TypeFF.filter_field: ["image"]}]
 
-        ugly_display_items = ItemManager(self.index).search(search_terms)
+        ugly_display_items = ItemManager().search(search_terms)
         # if there's not enough image items, get some non-image
         # items for the mosaic preview
         if len(items) < 6:
@@ -366,13 +337,13 @@ class Collection(object):
             ],
             "rows": 3,
         }
-        collection_items = ItemManager(self.index).search(rc_params)
+        collection_items = ItemManager().search(rc_params)
         collection_items = collection_items.results
 
         if len(collection_items) < 3:
             # redo the query without any search terms
             rc_params.pop('query_string')
-            collection_items_no_query = ItemManager(self.index).search(rc_params)
+            collection_items_no_query = ItemManager().search(rc_params)
             collection_items += collection_items_no_query.results
 
         if len(collection_items) <= 0:
@@ -420,12 +391,10 @@ class Collection(object):
 
 @cache_by_session_state
 def collection_search(request, collection_id):
-    index = request.session.get("index", "es")
-
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
 
     form = ESCollectionForm(request.GET.copy(), collection)
-    results = ItemManager(index).search(form.get_query())
+    results = ItemManager().search(form.get_query())
     filter_display = form.filter_display()
 
     if settings.UCLDC_FRONT == 'https://calisphere.org/':
@@ -461,8 +430,7 @@ def collection_search(request, collection_id):
 
 @cache_by_session_state
 def collection_facet(request, collection_id, facet):
-    index = request.session.get("index", "es")
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
@@ -503,7 +471,7 @@ def collection_facet(request, collection_id, facet):
                 "result_fields": ["reference_image_md5, type_ss"],
                 "rows": 3
             }
-            thumbs = ItemManager(index).search(thumb_params)
+            thumbs = ItemManager().search(thumb_params)
             value['thumbnails'] = thumbs.results
 
         context.update({
@@ -541,12 +509,10 @@ def collection_facet(request, collection_id, facet):
 
 @cache_by_session_state
 def collection_facet_json(request, collection_id, facet):
-    index = request.session.get("index", "es")
-
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} is not a valid facet".format(facet))
 
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
     facet_type = [tup for tup in collection.custom_schema_facets
                   if tup.facet == facet][0]
 
@@ -559,8 +525,7 @@ def collection_facet_json(request, collection_id, facet):
 
 @cache_by_session_state
 def collection_facet_value(request, collection_id, cluster, cluster_value):
-    index = request.session.get("index", "es")
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
 
     cluster_type = [tup for tup in collection.custom_schema_facets
                     if tup.facet == cluster][0]
@@ -575,7 +540,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
     extra_filter = {cluster_type.field: [escaped_cluster_value]}
 
     form.implicit_filter.append(extra_filter)
-    results = ItemManager(index).search(form.get_query())
+    results = ItemManager().search(form.get_query())
 
     if results.numFound == 1:
         return redirect('calisphere:itemView', results.results[0]['id'])
@@ -613,8 +578,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
 
 @cache_by_session_state
 def collection_metadata(request, collection_id):
-    index = request.session.get("index", "es")
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
     summary_data = collection.get_summary_data()
 
     context = {
@@ -634,7 +598,7 @@ def collection_metadata(request, collection_id):
         request, 'calisphere/collections/collectionMetadata.html', context)
 
 
-def get_cluster_thumbnails(collection, facet, facet_value, index):
+def get_cluster_thumbnails(collection, facet, facet_value):
     escaped_cluster_value = solr_escape(facet_value)
     thumb_params = {
         'filters': [
@@ -644,7 +608,7 @@ def get_cluster_thumbnails(collection, facet, facet_value, index):
         'result_fields': ['reference_image_md5', 'type'],
         'rows': 3
     }
-    thumbs = ItemManager(index).search(thumb_params)
+    thumbs = ItemManager().search(thumb_params)
     return thumbs.results
 
 # average 'best case': http://127.0.0.1:8000/collections/27433/browse/
@@ -660,8 +624,7 @@ def get_cluster_thumbnails(collection, facet, facet_value, index):
 
 @cache_by_session_state
 def collection_browse(request, collection_id):
-    index = request.session.get("index", "es")
-    collection = Collection(collection_id, index)
+    collection = Collection(collection_id)
     facet_sets = collection.get_facet_sets()
 
     if len(facet_sets) == 0:
@@ -671,8 +634,7 @@ def collection_browse(request, collection_id):
         facet_set['thumbnails'] = get_cluster_thumbnails(
             collection,
             facet_set['facet_field'],
-            facet_set['values'][0]['label'],
-            index
+            facet_set['values'][0]['label']
         )
 
     context = {
@@ -692,7 +654,7 @@ def collection_browse(request, collection_id):
         request, 'calisphere/collections/collectionBrowse.html', context)
 
 
-def get_rc_from_ids(rc_ids, rc_page, keyword_query, index):
+def get_rc_from_ids(rc_ids, rc_page, keyword_query):
     # get three items for each related collection
     three_related_collections = []
     rc_page = int(rc_page)
@@ -700,7 +662,7 @@ def get_rc_from_ids(rc_ids, rc_page, keyword_query, index):
         if len(rc_ids) <= i or not rc_ids[i]:
             break
 
-        collection = Collection(rc_ids[i], index)
+        collection = Collection(rc_ids[i])
         lockup_data = collection.get_lockup(keyword_query)
         three_related_collections.append(lockup_data)
 

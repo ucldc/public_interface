@@ -53,8 +53,6 @@ class SearchForm(object):
         ff.RepositoryFF,
         ff.CollectionFF
     ]
-    # default search index
-    index = 'es'
 
     def __init__(self, request):
         """initialize the SearchForm from a QueryDict, set defaults
@@ -174,7 +172,7 @@ class SearchForm(object):
                 facet_params = self.get_query([fft])
                 fft.basic_query = exclude_filter
 
-                facet_search = ItemManager(self.index).search(facet_params)
+                facet_search = ItemManager().search(facet_params)
 
                 result_facets[fft.facet_field] = (
                     facet_search.facet_counts['facet_fields']
@@ -213,7 +211,6 @@ class ESSearchForm(SearchForm):
         ff.ESRepositoryFF,
         ff.ESCollectionFF
     ]
-    index = 'es'
 
 
 class CampusForm(SearchForm):
@@ -232,7 +229,6 @@ class ESCampusForm(CampusForm):
         ff.ESRepositoryFF,
         ff.ESCollectionFF
     ]
-    index = 'es'
 
 
 class RepositoryForm(SearchForm):
@@ -258,7 +254,6 @@ class ESRepositoryForm(RepositoryForm):
         ff.ESDecadeFF,
         ff.ESCollectionFF
     ]
-    index = 'es'
 
 
 class CollectionForm(SearchForm):
@@ -294,7 +289,6 @@ class ESCollectionForm(CollectionForm):
         ff.ESTypeFF,
         ff.ESDecadeFF
     ]
-    index = 'es'
 
 
 class CarouselForm(SearchForm):
@@ -325,7 +319,6 @@ class ESCarouselForm(CarouselForm):
         ff.ESRepositoryFF,
         ff.ESCollectionFF
     ]
-    index = 'es'
 
 
 class CollectionCarouselForm(CarouselForm):
@@ -361,7 +354,6 @@ class ESCollectionCarouselForm(CollectionCarouselForm):
         ff.ESRepositoryFF,
         ff.ESCollectionFF
     ]
-    index = 'es'
 
 
 class CampusCarouselForm(CarouselForm):
@@ -385,7 +377,6 @@ class ESCampusCarouselForm(CampusCarouselForm):
         ff.ESRepositoryFF,
         ff.ESCollectionFF
     ]
-    index = 'es'
 
 
 class AltSortField(SortField):
@@ -412,4 +403,3 @@ class ESCollectionFacetValueForm(CollectionFacetValueForm):
         ff.ESRepositoryFF,
         ff.ESCollectionFF
     ]
-    index = 'es'

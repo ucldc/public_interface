@@ -317,7 +317,7 @@ class CollectionFF(FacetFilterType):
         return collection
 
     def filter_display(self, collection_id):
-        indexed_collections = CollectionManager("solr")
+        indexed_collections = CollectionManager()
         collection = {
             'url': col_template.format(collection_id),
             'id': collection_id
@@ -351,7 +351,7 @@ class ESCollectionFF(ESFacetFilterType):
         return collection
 
     def filter_display(self, collection_id):
-        indexed_collections = CollectionManager("es")
+        indexed_collections = CollectionManager()
         collection = {
             'url': col_template.format(collection_id),
             'id': collection_id

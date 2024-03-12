@@ -3,7 +3,7 @@ import operator
 
 from django.apps import apps
 from django.conf import settings
-from .cache_retry import json_loads_url
+from .es_cache_retry import json_loads_url
 from calisphere.collection_data import CollectionManager
 
 # FACETS are retrieved from Solr for a user to potentially FILTER on

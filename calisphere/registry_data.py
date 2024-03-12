@@ -2,7 +2,7 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import object
 from django.conf import settings
-from .cache_retry import json_loads_url
+from .es_cache_retry import json_loads_url
 import urllib.parse
 
 

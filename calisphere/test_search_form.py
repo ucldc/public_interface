@@ -4,7 +4,7 @@ from .temp import query_encode
 from .collection_views import Collection
 from .institution_views import Repository, Campus
 from . import constants
-from .search_form import SearchForm
+from .search_form import ESSearchForm
 from django.http import QueryDict
 from urllib.parse import urlencode
 
@@ -29,7 +29,7 @@ def solr_query_new(form):
 class SearchFormTestCase(unittest.TestCase):
 
     def build_query(self, test):
-        form = SearchForm(QueryDict(urlencode(test, True)))
+        form = ESSearchForm(QueryDict(urlencode(test, True)))
         search_query = query_encode(**form.query_encode())
         return search_query
 

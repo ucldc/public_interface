@@ -38,9 +38,6 @@ SECRET_KEY = getenv(
     get_random_string(50,
                       'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'))
 
-SOLR_URL = getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
-SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
-
 ES_HOST = getenv('ES_HOST', '')
 ES_USER = getenv('ES_USER', '')
 ES_PASS = getenv('ES_PASS', '')

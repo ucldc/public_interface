@@ -38,6 +38,10 @@ SECRET_KEY = getenv(
     get_random_string(50,
                       'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'))
 
+# remove SOLR settings once exhibits don't need them
+SOLR_URL = ''
+SOLR_API_KEY = ''
+
 ES_HOST = getenv('ES_HOST', '')
 ES_USER = getenv('ES_USER', '')
 ES_PASS = getenv('ES_PASS', '')

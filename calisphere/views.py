@@ -39,21 +39,6 @@ repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<id>\d*)/?')
 
 
-def select_index(request, index):
-    request.session['index'] = index
-    query_dict = request.GET.copy()
-
-    next_page = query_dict.pop('next', ['/'])[0]
-
-    next_page = urllib.parse.urlparse(next_page)
-    query = QueryDict(next_page.query, mutable=True)
-    query.update(query_dict)
-    query['index'] = index      # overwrite any other <index>
-
-    query = query.urlencode()
-    return redirect(next_page.path + f"?{query}")
-
-
 def get_hosted_content_file(item):
     content_file = ''
     media_data = item.get('media')

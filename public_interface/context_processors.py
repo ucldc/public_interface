@@ -17,8 +17,6 @@ def settings(request):
         if len(query_string) > 0:
             permalink = '?'.join([permalink, query_string.urlencode()])
 
-    multiple_indexes = False
-
     return {
         'thumbnailUrl': settings.THUMBNAIL_URL,
         'devMode': settings.UCLDC_DEVEL,
@@ -31,7 +29,6 @@ def settings(request):
         'matomoSiteCode': settings.MATOMO_SITE_CODE,
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
         'permalink': permalink,
-        'multiple_indexes': multiple_indexes,
         'q': '',
         'page': None,
         'meta_image': None,

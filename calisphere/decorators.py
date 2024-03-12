@@ -6,8 +6,7 @@ from django.views.decorators.cache import cache_page
 def cache_by_session_state(func):
     @wraps(func, assigned=available_attrs(func))
     def wrapper(request, *args, **kwargs):
-        index = request.session.get('index', 'es')
         cached = cache_page(
-            60 * 15, key_prefix=index)(func)
+            60 * 15, key_prefix='es')(func)
         return cached(request, *args, **kwargs)
     return wrapper

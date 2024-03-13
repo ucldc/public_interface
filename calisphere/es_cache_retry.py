@@ -124,7 +124,7 @@ def es_mlt(item_id):
                 "fields": [
                     "title.keyword",
                     "collection_data",
-                    "subject.keyword"
+                    "subject.keyword",
                 ],
                 "like": [
                     {"_id": item_id}
@@ -132,7 +132,7 @@ def es_mlt(item_id):
                 "min_term_freq": 1
             }
         },
-        "_source": ["id", "type", "reference_image_md5", "title"],
+        "_source": ["id", "type", "thumbnail", "title"],
         "size": 24
     }
     mlt_results = es_search(es_query)

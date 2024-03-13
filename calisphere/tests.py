@@ -53,15 +53,15 @@ class CollectionQueriesTestCase(unittest.TestCase):
             "query_string": "*:*",
             "filters": [
                 collection.basic_filter,
-                {"type_ss": ["image"]}
+                {"type": ["image"]}
             ],
             "result_fields": [
-                "reference_image_md5",
+                "thumbnail",
                 "url_item",
                 "id",
                 "title",
                 "collection_url",
-                "type_ss"
+                "type"
             ],
             "sort": ("sort_title", "asc"),
             "rows": 6
@@ -71,20 +71,20 @@ class CollectionQueriesTestCase(unittest.TestCase):
         search_terms = {
             'q': '*:*',
             'fl': (
-                'reference_image_md5, url_item, id, '
-                'title, collection_url, type_ss'),
+                'thumbnail, url_item, id, '
+                'title, collection_url, type'),
             'sort': 'sort_title asc',
             'rows': 6,
-            'fq': ['collection_url: "' + collection.url + '"', 'type_ss: \"image\"']
+            'fq': ['collection_url: "' + collection.url + '"', 'type: \"image\"']
         }
         self.assertEqual(solr_params_encoded, search_terms)
 
         solr_params['filters'].pop(1)
-        solr_params['exclude'] = [{"type_ss": ["image"]}]
+        solr_params['exclude'] = [{"type": ["image"]}]
         solr_params = query_encode(**solr_params)
         search_terms['fq'] = [
             'collection_url: "' + collection.url + '"',
-            '(*:* AND -type_ss:\"image\")'
+            '(*:* AND -type:\"image\")'
         ]
         self.assertEqual(solr_params, search_terms)
 
@@ -97,11 +97,11 @@ class CollectionQueriesTestCase(unittest.TestCase):
             'filters': [collection.basic_filter],
             'result_fields': [
                 "collection_data",
-                "reference_image_md5",
+                "thumbnail",
                 "url_item",
                 "id",
                 "title",
-                "type_ss"
+                "type"
             ],
             "rows": 3,
         }
@@ -111,8 +111,8 @@ class CollectionQueriesTestCase(unittest.TestCase):
             'rows': 3,
             'fq': 'collection_url: "' + collection.url + '"',
             'fl': (
-                'collection_data, reference_image_md5, '
-                'url_item, id, title, type_ss'
+                'collection_data, thumbnail, '
+                'url_item, id, title, type'
             )
         }
         self.assertEqual(solr_params_encoded, rc_params)
@@ -131,13 +131,13 @@ class CollectionQueriesTestCase(unittest.TestCase):
                 collection.basic_filter, 
                 {f"{facet}_ss": [escaped_cluster_value]}
             ],
-            "result_fields": ["reference_image_md5, type_ss"],
+            "result_fields": ["thumbnail, type"],
             "rows": 3
         }
         solr_params = query_encode(**solr_params)
         thumb_params = {
                 'rows': 3,
-                'fl': 'reference_image_md5, type_ss',
+                'fl': 'thumbnail, type',
                 'fq': [
                     'collection_url: "' + collection.url + '"',
                     f'{facet}_ss: "{escaped_cluster_value}"'
@@ -154,13 +154,13 @@ class CollectionQueriesTestCase(unittest.TestCase):
                 collection.basic_filter,
                 {f'{facet}_ss': [escaped_cluster_value]}
             ],
-            'result_fields': ['reference_image_md5', 'type_ss'],
+            'result_fields': ['thumbnail', 'type'],
             'rows': 3
         }
         solr_params = query_encode(**solr_params)
         thumb_params = {
             'rows': 3,
-            'fl': 'reference_image_md5, type_ss',
+            'fl': 'thumbnail, type',
             'fq': ['collection_url: "' + collection.url + '"',
                    f'{facet}_ss: "{escaped_cluster_value}"']
         }

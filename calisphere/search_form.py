@@ -302,7 +302,7 @@ class CarouselForm(SearchForm):
         carousel_params['result_fields'] = [
             'id',
             'type',
-            'reference_image_md5',
+            'thumbnail',
             'title'
         ]
         self.filter_query = bool(carousel_params.get('filters'))

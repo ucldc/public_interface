@@ -329,7 +329,7 @@ class Collection(object):
             'filters': [self.basic_filter],
             'result_fields': [
                 "collection_data",
-                "reference_image_md5",
+                "thumbnail",
                 "url_item",
                 "id",
                 "title",
@@ -468,7 +468,7 @@ def collection_facet(request, collection_id, facet):
                     collection.basic_filter, 
                     {facet_type.field: [escaped_cluster_value]}
                 ],
-                "result_fields": ["reference_image_md5, type_ss"],
+                "result_fields": ["thumbnail, type"],
                 "rows": 3
             }
             thumbs = ItemManager().search(thumb_params)

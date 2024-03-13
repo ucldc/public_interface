@@ -81,7 +81,7 @@ class ItemSitemap(object):
         # https://github.com/ucldc/extent_stats/blob/master/calisphere_arks.py
         base_query = {
             'q': '',
-            'fl': 'id,reference_image_md5,timestamp',  # fl = field list
+            'fl': 'id,thumbnail,timestamp',  # fl = field list
             'fq': [self.collection_filter],
             'rows': 1000,
             'sort': 'score desc,id desc',

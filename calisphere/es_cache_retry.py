@@ -54,12 +54,10 @@ def es_search(body):
         metadata = result.pop('_source')
         # TODO replace type_ss with type globally
         metadata['type_ss'] = metadata.get('type')
+        # TODO replace reference_image_md5 globally
         thumbnail_key = get_thumbnail_key(metadata)
         if thumbnail_key:
             metadata['reference_image_md5'] = thumbnail_key
-        media_key = get_media_key(metadata)
-        if media_key:
-            metadata['media']['media_key'] = media_key
         result.update(metadata)
 
     results = ESResults(
@@ -72,14 +70,6 @@ def es_search(body):
 def get_thumbnail_key(metadata):
     if metadata.get('thumbnail'):
         path = metadata['thumbnail'].get('path','')
-        if path.startswith('s3://'):
-            uri_path = urlparse(path).path
-            key_parts = uri_path.split('/')[2:]
-            return '/'.join(key_parts)
-
-def get_media_key(metadata):
-    if metadata.get('media'):
-        path = metadata['media'].get('path','')
         if path.startswith('s3://'):
             uri_path = urlparse(path).path
             key_parts = uri_path.split('/')[2:]
@@ -102,9 +92,6 @@ def es_get(item_id):
     thumbnail_key = get_thumbnail_key(item)
     if thumbnail_key:
         item['reference_image_md5'] = thumbnail_key
-    media_key = get_media_key(item)
-    if media_key:
-        item['media']['media_key'] = media_key
 
     results = ESItem(found, item, item_search)
     return results

@@ -46,8 +46,9 @@ def get_hosted_content_file(item):
     # remove this once all collections have the new schema
     if not media_path:
         media_path = media_data.get('path', '')
+    media_key = get_media_key(media_data)
     if media_data.get('mimetype') == 'image/jp2':
-        iiif_url = f"{settings.UCLDC_FRONT}/iiif/{media_data['media_key']}/info.json"
+        iiif_url = f"{settings.UCLDC_FRONT}/iiif/{media_key}/info.json"
         if iiif_url.startswith('//'):
             iiif_url = ''.join(['http:', iiif_url])
         iiif_info = json_loads_url(iiif_url)
@@ -75,28 +76,36 @@ def get_hosted_content_file(item):
         }
     if media_path.startswith('s3://rikolti-content/media'):
         if media_path.endswith('pdf'):
-            thumbnail = item.get('thumbnail')
             content_file = {
                 'id': item.get('reference_image_md5'),
-                'format': 'file',
+                'media_key': media_key,
+                'format': 'file'
             }
         if media_path.endswith('mp3'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}{media_data['media_key']}"
+            access_url = f"{settings.UCLDC_MEDIA}{media_key}"
             content_file = {
                 'id': item.get('reference_image_md5'),
+                'media_key': media_key,
                 'format': 'audio',
                 'url': access_url
             }
         if media_path.endswith('mp4'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}{media_data['media_key']}"
+            access_url = f"{settings.UCLDC_MEDIA}{media_key}"
             content_file = {
                 'id': item.get('reference_image_md5'),
+                'media_key': media_key,
                 'format': 'video',
                 'url': access_url
             }
 
     return content_file
 
+def get_media_key(media_data):
+    path = media_data.get('path','')
+    if path.startswith('s3://'):
+        uri_path = urllib.parse.urlparse(path).path
+        key_parts = uri_path.split('/')[2:]
+        return '/'.join(key_parts)
 
 def get_component(media_json, order):
     component = media_json['structMap'][order]

@@ -22,7 +22,6 @@ def settings(request):
         'devMode': settings.UCLDC_DEVEL,
         'ucldcImages': settings.UCLDC_IMAGES,
         'ucldcMedia': settings.UCLDC_MEDIA,
-        'ucldcIiif': settings.UCLDC_IIIF,
         'ucldcNuxeoThumbs': settings.UCLDC_NUXEO_THUMBS,
         'gaSiteCode': settings.GA_SITE_CODE,
         'ga4SiteCode': settings.GA4_SITE_CODE,

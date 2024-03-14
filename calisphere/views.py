@@ -44,7 +44,7 @@ def get_hosted_content_file(item):
     media_data = item.get('media')
     media_path = media_data.get('path','')
     if media_path.startswith('s3://rikolti-content/jp2'):
-        iiif_url = f"{settings.UCLDC_IIIF}{media_data['media_key']}/info.json"
+        iiif_url = f"{settings.UCLDC_FRONT}/iiif/{media_data['media_key']}/info.json"
         if iiif_url.startswith('//'):
             iiif_url = ''.join(['http:', iiif_url])
         iiif_info = json_loads_url(iiif_url)

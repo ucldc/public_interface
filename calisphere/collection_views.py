@@ -605,7 +605,7 @@ def get_cluster_thumbnails(collection, facet, facet_value):
             collection.basic_filter,
             {facet.field: [escaped_cluster_value]}
         ],
-        'result_fields': ['reference_image_md5', 'type'],
+        'result_fields': ['thumbnail', 'type'],
         'rows': 3
     }
     thumbs = ItemManager().search(thumb_params)

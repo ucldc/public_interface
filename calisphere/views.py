@@ -48,7 +48,7 @@ def get_hosted_content_file(item):
         media_path = media_data.get('path', '')
     media_key = get_media_key(media_data)
     if media_data.get('mimetype') == 'image/jp2':
-        iiif_url = f"{settings.UCLDC_FRONT}/iiif/{media_key}/info.json"
+        iiif_url = f"{settings.UCLDC_IIIF}{media_key}/info.json"
         if iiif_url.startswith('//'):
             iiif_url = ''.join(['http:', iiif_url])
         iiif_info = json_loads_url(iiif_url)

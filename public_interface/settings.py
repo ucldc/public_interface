@@ -50,6 +50,7 @@ ES_ALIAS = getenv('ES_ALIAS', '')
 
 UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')
 UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
+UCLDC_IIIF = getenv('UCLDC_IIIF', '')
 UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
 UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
                                'https://registry.cdlib.org/')

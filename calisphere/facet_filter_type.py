@@ -339,7 +339,7 @@ class ESCollectionFF(ESFacetFilterType):
     form_name = 'collection_data'
     facet_field = 'collection_data'
     display_name = 'Collection'
-    filter_field = 'collection_ids'
+    filter_field = 'collection_url'
 
     def facet_transform(self, collection_data):
         parts = collection_data.split('::')

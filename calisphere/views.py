@@ -321,6 +321,7 @@ def search(request):
         rc_ids = request.GET.getlist('collection_data')
 
     num_related_collections = len(rc_ids)
+
     related_collections = get_rc_from_ids(
         rc_ids, form.rc_page, form.query_string)
 
@@ -432,7 +433,7 @@ def get_related_collections(request):
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
             rc_params['query_string'] = form.query_string = (
-                f"id:{request.GET.get('itemId')}")
+                f"id:{solr_escape(request.GET.get('itemId'))}")
 
     related_collections = ItemManager().search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
@@ -516,7 +517,7 @@ def report_collection_facet(request, collection_id, facet):
             '/')[-2]
 
     facet_params = {
-        "filters": [{'collection_ids': [collection_id]}],
+        "filters": [{'collection_url': [collection_id]}],
         "facets": [facet]
     }
 

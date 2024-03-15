@@ -5,7 +5,7 @@ from .item_manager import ItemManager
 
 
 def solr_escape(text):
-    return text.replace('?', '\\?').replace('"', '\\"')
+    return text.replace('?', '\\?').replace('"', '\\"').replace(':', '\\:')
 
 
 class SortField(object):
@@ -120,7 +120,6 @@ class SearchForm(object):
         self.query_string = (
             terms[0] if len(terms) == 1 else " AND ".join(terms))
         # qt_string = qt_string.replace('?', '')
-
         try:
             rows = int(self.rows)
             start = int(self.start)

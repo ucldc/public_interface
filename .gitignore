@@ -31,3 +31,4 @@ exhibits
 .pa11yci/screencaptures/
 .python-version
 .venv/
+*.zip

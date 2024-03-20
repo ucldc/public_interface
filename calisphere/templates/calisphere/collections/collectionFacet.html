@@ -192,26 +192,26 @@
                 style="background-image: url({{ thumbnailUrl }}crop/210x210/{{ thumb.reference_image_md5 }})">
 
                 {% if 'reference_image_md5' in thumb %}
-                  {% if thumb.type_ss.0|lower == "moving image" %}
+                  {% if thumb.type.0|lower == "moving image" %}
                   <div class="thumbnail__overlay-icon fa-play-circle-o"></div>
-                  {% elif thumb.type_ss.0|lower == "sound"%}
+                  {% elif thumb.type.0|lower == "sound"%}
                   <div class="thumbnail__overlay-icon fa-volume-up"></div>
-                  {# elif thumb.type_ss.0|lower == "text" #}
+                  {# elif thumb.type.0|lower == "text" #}
                   <!-- <div class="thumbnail__overlay-icon fa-file-text-o"></div> -->
-                  {% elif thumb.type_ss.0|lower == "dataset" %}
+                  {% elif thumb.type.0|lower == "dataset" %}
                   <div class="thumbnail__overlay-icon fa-bar-chart"></div>
                   {% endif %}
 
                 {% else %}
-                  {% if thumb.type_ss.0|lower == "moving image" %}
+                  {% if thumb.type.0|lower == "moving image" %}
                   <div class="thumbnail__tile-icon fa-play-circle-o"></div>
-                  {% elif thumb.type_ss.0|lower == "sound"%}
+                  {% elif thumb.type.0|lower == "sound"%}
                   <div class="thumbnail__tile-icon fa-volume-up"></div>
-                  {% elif thumb.type_ss.0|lower == "text"%}
+                  {% elif thumb.type.0|lower == "text"%}
                   <div class="thumbnail__tile-icon fa-file-text-o"></div>
-                  {% elif thumb.type_ss.0|lower == "dataset" %}
+                  {% elif thumb.type.0|lower == "dataset" %}
                   <div class="thumbnail__tile-icon fa-bar-chart"></div>
-                  {% elif thumb.type_ss.0|lower == "image" %}
+                  {% elif thumb.type.0|lower == "image" %}
                   <div class="thumbnail__tile-icon fa-picture-o"></div>
                   {% endif %}
                 {% endif %}

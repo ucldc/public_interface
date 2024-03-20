@@ -15,24 +15,24 @@
           alt="{{ carousel_item.title.0|truncatewords:12 }}"
           >
 
-          {% if carousel_item.type_ss.0|lower == "moving image" %}
+          {% if carousel_item.type.0|lower == "moving image" %}
           <span class="carousel__overlay-icon fa-play-circle-o"></span>
-          {% elif carousel_item.type_ss.0|lower == "sound"%}
+          {% elif carousel_item.type.0|lower == "sound"%}
           <span class="carousel__overlay-icon fa-volume-up"></span>
-          {# elif carousel_item.type_ss.0|lower == "text"#}
+          {# elif carousel_item.type.0|lower == "text"#}
           <!-- <span class="carousel__overlay-icon fa-file-text-o"></span> -->
-          {% elif carousel_item.type_ss.0|lower == "dataset" %}
+          {% elif carousel_item.type.0|lower == "dataset" %}
           <span class="carousel__overlay-icon fa-bar-chart"></span>
           {% endif %}
 
         {% else %}
-          {% if carousel_item.type_ss.0|lower == "moving image" %}
+          {% if carousel_item.type.0|lower == "moving image" %}
           <span class="carousel__tile-icon fa-play-circle-o"></span>
-          {% elif carousel_item.type_ss.0|lower == "sound"%}
+          {% elif carousel_item.type.0|lower == "sound"%}
           <span class="carousel__tile-icon fa-volume-up"></span>
-          {% elif carousel_item.type_ss.0|lower == "text"%}
+          {% elif carousel_item.type.0|lower == "text"%}
           <span class="carousel__tile-icon fa-file-text-o"></span>
-          {% elif carousel_item.type_ss.0|lower == "dataset" %}
+          {% elif carousel_item.type.0|lower == "dataset" %}
           <span class="carousel__tile-icon fa-bar-chart"></span>
           {% endif %}
         {% endif %}

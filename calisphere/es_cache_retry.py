@@ -17,6 +17,7 @@ import json
 from typing import Dict, List, Tuple
 from aws_xray_sdk.core import patch
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionError as ESConnectionError
 
 requests.packages.urllib3.disable_warnings()
 standard_library.install_aliases()
@@ -37,9 +38,14 @@ ESItem = namedtuple(
     'ESItem', 'found, item, resp')
 
 
-def es_search(body):
-    results = elastic_client.search(
-        index=settings.ES_ALIAS, body=json.dumps(body))
+def es_search(body) -> ESResults:
+    try:
+        results = elastic_client.search(
+            index=settings.ES_ALIAS, body=json.dumps(body))
+    except ESConnectionError as e:
+        raise ConnectionError(
+            f"No OpenSearch connection: {settings.ES_HOST}") from e
+
     aggs = results.get('aggregations')
     facet_counts = {'facet_fields': {}}
     if aggs:
@@ -82,8 +88,12 @@ def es_search_nocache(**kwargs):
 def es_get(item_id):
     # cannot use Elasticsearch.get() for multi-index alias
     body = {'query': {'match': {'_id': item_id}}}
-    item_search = elastic_client.search(
-        index=settings.ES_ALIAS, body=json.dumps(body))
+    try:
+        item_search = elastic_client.search(
+            index=settings.ES_ALIAS, body=json.dumps(body))
+    except ESConnectionError as e:
+        raise ConnectionError(
+            f"No OpenSearch connection: {settings.ES_HOST}") from e
     found = item_search['hits']['total']['value']
     item = item_search['hits']['hits'][0]['_source']
 

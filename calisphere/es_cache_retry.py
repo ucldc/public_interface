@@ -14,7 +14,7 @@ import requests
 import pickle
 import hashlib
 import json
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from aws_xray_sdk.core import patch
 from elasticsearch import Elasticsearch
 
@@ -104,12 +104,18 @@ def es_search_nocache(**kwargs):
     return es_search(kwargs)
 
 
-def es_get(item_id):
+def es_get(item_id: str) -> Optional[ESItem]:
+    # cannot search Elasticsearch with empty string
+    if not item_id:
+        return None
+
     # cannot use Elasticsearch.get() for multi-index alias
     body = {'query': {'match': {'_id': item_id}}}
     item_search = elastic_client.search(
         index=settings.ES_ALIAS, body=json.dumps(body))
     found = item_search['hits']['total']['value']
+    if not found:
+        return None
     item = item_search['hits']['hits'][0]['_source']
 
     item['collection_ids'] = item.get('collection_url')

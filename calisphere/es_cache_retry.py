@@ -14,7 +14,7 @@ import urllib3
 import pickle
 import hashlib
 import json
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from aws_xray_sdk.core import patch
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ESConnectionError
@@ -85,7 +85,11 @@ def es_search_nocache(**kwargs):
     return es_search(kwargs)
 
 
-def es_get(item_id):
+def es_get(item_id: str) -> Optional[ESItem]:
+    # cannot search Elasticsearch with empty string
+    if not item_id:
+        return None
+
     # cannot use Elasticsearch.get() for multi-index alias
     body = {'query': {'match': {'_id': item_id}}}
     try:
@@ -95,6 +99,8 @@ def es_get(item_id):
         raise ConnectionError(
             f"No OpenSearch connection: {settings.ES_HOST}") from e
     found = item_search['hits']['total']['value']
+    if not found:
+        return None
     item = item_search['hits']['hits'][0]['_source']
 
     item['collection_ids'] = item.get('collection_url')

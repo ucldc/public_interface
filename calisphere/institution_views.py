@@ -45,25 +45,16 @@ def process_sort_collection_data(string):
 @cache_by_session_state
 def campus_directory(request):
     index = request.session.get("index", "solr")
-    if index == 'es':
-        repo_query = {
-            "facets": ['repository_url']
-        }
-    else:
-        repo_query = {
-            "facets": ['repository_url']
-        }
+    repo_query = {"facets": ['repository_url']}
     repo_search = ItemManager(index).search(repo_query)
 
     repositories = []
-    if index == 'es':
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_url']
-    else:
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_url']
+    index_repositories = repo_search.facet_counts['facet_fields'][
+        'repository_url']
+
+    if index != 'es':
         index_repositories = [re.match(repo_regex, repo_url).group(
-            'repository_url') for repo_url in index_repositories]
+            'repository_id') for repo_url in index_repositories]
 
     for repo_id in index_repositories:
         repository = Repository(repo_id, index).get_repo_data()
@@ -93,22 +84,13 @@ def campus_directory(request):
 @cache_by_session_state
 def statewide_directory(request):
     index = request.session.get("index", "solr")
-    if index == 'es':
-        repo_query = {
-            "facets": ['repository_url']
-        }
-    else:
-        repo_query = {
-            "facets": ['repository_url']
-        }
+    repo_query = {"facets": ['repository_url']}
 
     repo_search = ItemManager(index).search(repo_query)
-    if index == 'es':
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_url']
-    else:
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_url']
+    index_repositories = repo_search.facet_counts['facet_fields'][
+        'repository_url']
+
+    if index != 'es':
         index_repositories = [re.match(repo_regex, repo_url).group(
             'repository_id') for repo_url in index_repositories]
 

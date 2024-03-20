@@ -113,6 +113,11 @@ def es_get(item_id: str) -> Optional[ESItem]:
     return results
 
 
+def es_get_ids(ids: List[str]) -> ESResults:
+    body = {'query': {'ids': {'values': ids}}}
+    return es_search(body)
+
+
 # create a hash for a cache key
 def kwargs_md5(**kwargs):
     m = hashlib.md5()

@@ -55,9 +55,6 @@ def es_search(body):
         metadata['title'] = [metadata.get('title')]
         metadata['type'] = [metadata.get('type')]
         metadata['type_ss'] = [metadata.get('type')]
-        thumbnail_key = get_thumbnail_key(metadata)
-        if thumbnail_key:
-            metadata['reference_image_md5'] = thumbnail_key
         result.update(metadata)
 
     results = ESResults(
@@ -67,13 +64,6 @@ def es_search(body):
 
     return results
 
-def get_thumbnail_key(metadata):
-    if metadata.get('thumbnail'):
-        path = metadata['thumbnail'].get('path')
-        if path.startswith('s3://'):
-            uri_path = urlparse(path).path
-            key_parts = uri_path.split('/')[2:]
-            return '/'.join(key_parts)
 
 def es_search_nocache(**kwargs):
     return es_search(kwargs)
@@ -89,9 +79,6 @@ def es_get(item_id):
 
     item['collection_ids'] = item.get('collection_url')
     item['repository_ids'] = item.get('repository_url')
-    thumbnail_key = get_thumbnail_key(item)
-    if thumbnail_key:
-        item['reference_image_md5'] = thumbnail_key
 
     results = ESItem(found, item, item_search)
     return results
@@ -199,7 +186,7 @@ def query_encode(query_string: str = None,
                 es_params['query'] = es_filters[0]
 
     if facets:
-        exceptions = ['repository_url', 'collection_url', 'campus_url']
+        exceptions = ['collection_ids', 'repository_ids', 'campus_ids']
         aggs = {}
         for facet in facets:
             if facet in exceptions or facet[-8:] == '.keyword':

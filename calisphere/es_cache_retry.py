@@ -10,7 +10,7 @@ import urllib.request
 import urllib.error
 from urllib.parse import urlparse
 from retrying import retry
-import requests
+import urllib3
 import pickle
 import hashlib
 import json
@@ -19,7 +19,7 @@ from aws_xray_sdk.core import patch
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ESConnectionError
 
-requests.packages.urllib3.disable_warnings()
+urllib3.disable_warnings()
 standard_library.install_aliases()
 
 if hasattr(settings, 'XRAY_RECORDER'):

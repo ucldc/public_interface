@@ -52,6 +52,7 @@ def es_search(body):
 
     for result in results['hits']['hits']:
         metadata = result.pop('_source')
+        # TODO replace type_ss with type globally
         metadata['type_ss'] = metadata.get('type')
         thumbnail_key = get_thumbnail_key(metadata)
         if thumbnail_key:
@@ -222,6 +223,12 @@ def query_encode(query_string: str = None,
 
     if result_fields:
         es_params.update({"_source": result_fields})
+        if 'reference_image_md5' in result_fields:
+            i = result_fields.index('reference_image_md5')
+            result_fields[i] = 'thumbnail'
+        if 'type_ss' in result_fields:
+            i = result_fields.index('type_ss')
+            result_fields[i] = 'type'
 
     # if sort:
     #     es_params.update({

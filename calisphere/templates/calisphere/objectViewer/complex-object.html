@@ -50,12 +50,12 @@
         {% elif component.media.format|lower == "file" %}
           <img
           class="carousel-complex__img"
-          data-lazy="{{ ucldcNuxeoThumbs }}{{ component.id }}"
+          data-lazy="{{ ucldcNuxeoThumbs }}{{ component.thumbnail_key }}"
           alt="{{ component.title.0 }}">
         {% elif component.media.format|lower == "video" %}
           <img
           class="carousel-complex__img"
-          data-lazy="{{ ucldcNuxeoThumbs }}{{ component.id }}"
+          data-lazy="{{ ucldcNuxeoThumbs }}{{ component.thumbnail_key }}"
           alt="{{ component.title.0 }}">
         {% elif component.media.format|lower == "sound" or component.media.format|lower == "audio" %}
           <div class="carousel-complex__thumbnail-container">

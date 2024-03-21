@@ -64,6 +64,17 @@ def es_search(body) -> ESResults:
         thumbnail_key = get_thumbnail_key(metadata)
         if thumbnail_key:
             metadata['reference_image_md5'] = thumbnail_key
+
+        if metadata.get('children'):
+            children = metadata.pop('children')
+            updated_children = []
+            for child in children:
+                thumbnail_key = get_thumbnail_key(child)
+                if thumbnail_key:
+                    child['thumbnail_key'] = thumbnail_key
+                updated_children.append(child)
+            metadata['children'] = updated_children
+
         result.update(metadata)
 
     results = ESResults(
@@ -108,6 +119,16 @@ def es_get(item_id: str) -> Optional[ESItem]:
     thumbnail_key = get_thumbnail_key(item)
     if thumbnail_key:
         item['reference_image_md5'] = thumbnail_key
+
+    if item.get('children'):
+        children = item.pop('children')
+        updated_children = []
+        for child in children:
+            thumbnail_key = get_thumbnail_key(child)
+            if thumbnail_key:
+                child['thumbnail_key'] = thumbnail_key
+            updated_children.append(child)
+        item['children'] = updated_children
 
     results = ESItem(found, item, item_search)
     return results

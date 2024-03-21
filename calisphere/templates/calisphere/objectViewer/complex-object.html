@@ -45,7 +45,7 @@
         {% if component.media.format|lower == "image" %}
           <img
           class="carousel-complex__img"
-          data-lazy="{{ ucldcIiif }}{{ component.id }}/full/,80/0/default.jpg"
+          data-lazy="{{ ucldcNuxeoThumbs }}{{ component.thumbnail_key }}"
           alt="{{ component.title.0 }}">
         {% elif component.media.format|lower == "file" %}
           <img

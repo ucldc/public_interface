@@ -107,23 +107,6 @@ def get_media_key(media_data):
         key_parts = uri_path.split('/')[2:]
         return '/'.join(key_parts)
 
-def get_component(media_json, order):
-    component = media_json['structMap'][order]
-    component['selected'] = True
-    if 'format' in component:
-        media_data = component
-
-    # remove emptry strings from list
-    for k, v in list(component.items()):
-        if isinstance(v, list) and isinstance(v[0], str):
-            component[k] = [
-                name for name in v if name and name.strip()
-            ]
-    component = dict((k, v) for k, v in list(component.items()) if v)
-
-    return component, media_data
-
-
 @cache_by_session_state
 def item_view(request, item_id=''):
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
@@ -151,8 +134,7 @@ def item_view(request, item_id=''):
     if 'reference_image_dimensions' in item:
         split_ref = item['reference_image_dimensions'].split(':')
         item['reference_image_dimensions'] = split_ref
-    #if 'structmap_url' in item and len(item['structmap_url']) >= 1:
-    if 'media' in item:
+    if 'media' in item or 'children' in item:
         item['harvest_type'] = 'hosted'
 
         # simple object
@@ -160,29 +142,33 @@ def item_view(request, item_id=''):
             item['contentFile'] = get_hosted_content_file(item)
 
         # complex object
-        '''
-        if 'structMap' in media_json:
+        if 'children' in item:
             # complex object
-            if order and 'structMap' in media_json:
+            if order:
                 # fetch component object
                 item['selected'] = False
                 item['selectedComponentIndex'] = int(order)
-                component, media_data = get_component(media_json, int(order))
+                component = item['children'][int(order)]
+                media_item = component
                 item['selectedComponent'] = component
             else:
                 item['selected'] = True
-                if 'format' in media_json:
-                    media_data = media_json
+                # get first component with media
+                if item.get('media'):
+                    media_item = item
                 else:
-                    media_data = media_json['structMap'][0]
-            item['contentFile'] = get_hosted_content_file(media_data)
-            item['structMap'] = media_json['structMap']
+                    for child in item['children']:
+                        if child.get('media'):
+                            media_item = child
+                            break
+
+            item['contentFile'] = get_hosted_content_file(media_item)
 
             # single or multi-format object
             formats = [
-                component['format']
-                for component in media_json['structMap']
-                if 'format' in component
+                child['media']['format']
+                for child in item['children']
+                if child.get('media',{}).get('format')
             ]
             item['multiFormat'] = False
             if len(set(formats)) > 1:
@@ -194,13 +180,12 @@ def item_view(request, item_id=''):
                 item['hasComponentCaptions'] = False
 
             # number of components
-            item['componentCount'] = len(media_json['structMap'])
+            item['componentCount'] = len(item['children'])
 
             # has fixed item thumbnail image
             item['has_fixed_thumb'] = False
-            if 'reference_image_md5' in item:
+            if 'thumbnail' in item:
                 item['has_fixed_thumb'] = True
-        '''
     else:
         item['harvest_type'] = 'harvested'
         if 'url_item' in item:

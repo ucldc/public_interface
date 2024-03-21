@@ -40,6 +40,8 @@ SECRET_KEY = getenv(
 
 SOLR_URL = getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
 SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
+EXHIBITS_SOLR_URL = getenv('UCLDC_EXHIBITS_SOLR_URL','http://localhost:8983/solr')
+EXHIBITS_SOLR_API_KEY = getenv('UCLDC_EXHIBITS_SOLR_API_KEY', '')
 
 ES_HOST = getenv('ES_HOST', '')
 ES_USER = getenv('ES_USER', '')

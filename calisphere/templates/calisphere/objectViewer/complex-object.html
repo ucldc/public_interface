@@ -46,17 +46,17 @@
           <img
           class="carousel-complex__img"
           data-lazy="{{ ucldcIiif }}{{ component.id }}/full/,80/0/default.jpg"
-          alt="{{ component.label }}">
+          alt="{{ component.title.0 }}">
         {% elif component.format|lower == "file" %}
           <img
           class="carousel-complex__img"
           data-lazy="{{ ucldcNuxeoThumbs }}{{ component.id }}"
-          alt="{{ component.label }}">
+          alt="{{ component.title.0 }}">
         {% elif component.format|lower == "video" %}
           <img
           class="carousel-complex__img"
           data-lazy="{{ ucldcNuxeoThumbs }}{{ component.id }}"
-          alt="{{ component.label }}">
+          alt="{{ component.title.0 }}">
         {% elif component.format|lower == "sound" or component.format|lower == "audio" %}
           <div class="carousel-complex__thumbnail-container">
             <div class="carousel-complex__tile-icon fa-volume-up"></div>
@@ -73,7 +73,7 @@
       </a>
       {# note that this conditional logic for whether or not to display a caption needs to match the logic for setting the context variable item.hasComponentCaptions in calisphere/views.py -- which is used above to to set the parent div class and determine how to position prev/next arrows on the slick carousel #}
       {% if component.format|lower != "image" %}
-        <div class="carousel-complex__thumbnail-caption">{{ component.label }}</div>
+        <div class="carousel-complex__thumbnail-caption">{{ component.title.0 }}</div>
       {% endif %}
     </div>
   {% endfor %}

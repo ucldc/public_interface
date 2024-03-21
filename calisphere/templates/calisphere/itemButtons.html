@@ -134,7 +134,7 @@ Permalink: {{ permalink }}</textarea>
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="requestModalTitle">Request {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' or item.type.0 == 'physical object' or not item.type %}Digital Copy{% else %}{{ item.type.0|title }}{% endif %}</h4>
+        <h4 class="modal-title" id="requestModalTitle">Request {% if 'children' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' or item.type.0 == 'physical object' or not item.type %}Digital Copy{% else %}{{ item.type.0|title }}{% endif %}</h4>
       </div>
       <div class="modal-body">
         <p>
@@ -147,7 +147,7 @@ Permalink: {{ permalink }}</textarea>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <a type="button" class="btn btn-primary" id="js-requestBtn"
-        data-label="{% if 'structMap' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}"
+        data-label="{% if 'children' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}"
         href="{{ repository.aeon_url }}&CallNumber={{ item.identifier|join:', ' }}&rft.title={{ item.collection_name.0 }}: {{ item.title.0 }}&ItemInfo1={{ item.title.0 }}">Request item through Aeon</a>
       </div>
     </div>
@@ -178,9 +178,9 @@ Permalink: {{ permalink }}</textarea>
           {# {% if 'reference_image_md5' in item %} #}
             <!-- <a type="button" class="btn btn-primary" href="{{ thumbnailUrl }}full/full/{{ item.reference_image_md5 }}" target="_blank">Download</a> -->
           {# {% endif %} #}
-          <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ item.contentFile.url }}" download="{{ item.title.0 }}.jpg" target="_blank" data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
+          <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ item.contentFile.url }}" download="{{ item.title.0 }}.jpg" target="_blank" data-label="{% if 'children' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
         {% elif item.contentFile.format == 'file' or item.contentFile.format == 'audio' or item.contentFile.format == 'video'%}
-          <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ ucldcMedia }}{{ item.contentFile.media_key }}" download target="_blank" data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
+          <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ ucldcMedia }}{{ item.contentFile.media_key }}" download target="_blank" data-label="{% if 'children' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
         {% endif %}
       </div>
     </div>
@@ -188,7 +188,7 @@ Permalink: {{ permalink }}</textarea>
 </div>
 {% endif %}
 
-<div class="obj-buttons{% if 'structMap' in item %}--complex{% endif %}">
+<div class="obj-buttons{% if 'children' in item %}--complex{% endif %}">
 
   <div class="obj-button">
     <a class="btn btn-xs obj-buttons__citation" href="javascript: void(0)" data-toggle="modal" data-target="#citationModal">Get Citation</a>
@@ -214,22 +214,22 @@ Permalink: {{ permalink }}</textarea>
   <div class="obj-button">
     <button type="button" class="btn btn-xs obj-buttons__download-image" 
       id="js-requestModal" data-toggle="modal" data-target="#requestModal"
-      data-label="{% if 'structMap' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}">
-      Request {% if 'structMap' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' or item.type.0 == 'physical object' or not item.type %}Digital Copy{% else %}{{ item.type.0|title }}{% endif %}
+      data-label="{% if 'children' in item %}{{ item.contentFile.format|title }}{% else %}{{ item.type.0|title }}{% endif %}">
+      Request {% if 'children' in item %}{{ item.contentFile.format|title }}{% elif item.type.0 == 'sound' or item.type.0 == 'physical object' or not item.type %}Digital Copy{% else %}{{ item.type.0|title }}{% endif %}
     </button>
   </div>
   {% endif %}
 
   {% if item.harvest_type == 'hosted' %}
-    {% if 'structMap' in item and 'contentFile' in item and item.contentFile.format == 'file' %}
+    {% if 'children' in item and 'contentFile' in item and item.contentFile.format == 'file' %}
     {% else %}
     <div class="obj-button">
       <button type="button" class="btn btn-xs obj-buttons__download-image" 
         id="js-downloadModal" data-toggle="modal" data-target="#downloadModal"
-        data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">
+        data-label="{% if 'children' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">
         <span class="icon__download-image">
           <span class="fa fa-arrow-circle-o-down"></span>
-        </span> Download {% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}
+        </span> Download {% if 'children' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}
       </button>
     </div>
     {% endif %}

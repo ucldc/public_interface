@@ -39,7 +39,7 @@
   </div>
 
   <div class="carousel-complex__item-container {% if item.hasComponentCaptions %}carousel-complex__item-container-tall{% endif %}">
-  {% for component in item.structMap %}
+  {% for component in item.children %}
     <div class="carousel-complex__{% if component.format|lower != "image" and component.format|lower != "file" %}tile{% else %}item{% endif %}{% if 'selected' in component %}--selected{% endif %}">
       <a class="carousel-complex__link js-component-link" data-item_id="{{ forloop.counter0 }}" href="{% url 'calisphere:itemView' item.id %}">
         {% if component.format|lower == "image" %}

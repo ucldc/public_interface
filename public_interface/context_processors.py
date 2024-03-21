@@ -18,11 +18,14 @@ def settings(request):
             permalink = '?'.join([permalink, query_string.urlencode()])
 
     multiple_indexes = False
+    thumbnailUrl = settings.THUMBNAIL_URL
     if settings.SOLR_URL and settings.SOLR_API_KEY:
         multiple_indexes = True
+        if request.session.get('index') == 'solr':
+            thumbnailUrl = settings.THUMBNAIL_URL_SOLR
 
     return {
-        'thumbnailUrl': settings.THUMBNAIL_URL,
+        'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
         'ucldcImages': settings.UCLDC_IMAGES,
         'ucldcMedia': settings.UCLDC_MEDIA,

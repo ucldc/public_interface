@@ -40,28 +40,28 @@
 
   <div class="carousel-complex__item-container {% if item.hasComponentCaptions %}carousel-complex__item-container-tall{% endif %}">
   {% for component in item.children %}
-    <div class="carousel-complex__{% if component.format|lower != "image" and component.format|lower != "file" %}tile{% else %}item{% endif %}{% if 'selected' in component %}--selected{% endif %}">
+    <div class="carousel-complex__{% if component.media.format|lower != "image" and component.media.format|lower != "file" %}tile{% else %}item{% endif %}{% if 'selected' in component %}--selected{% endif %}">
       <a class="carousel-complex__link js-component-link" data-item_id="{{ forloop.counter0 }}" href="{% url 'calisphere:itemView' item.id %}">
-        {% if component.format|lower == "image" %}
+        {% if component.media.format|lower == "image" %}
           <img
           class="carousel-complex__img"
           data-lazy="{{ ucldcIiif }}{{ component.id }}/full/,80/0/default.jpg"
           alt="{{ component.title.0 }}">
-        {% elif component.format|lower == "file" %}
+        {% elif component.media.format|lower == "file" %}
           <img
           class="carousel-complex__img"
           data-lazy="{{ ucldcNuxeoThumbs }}{{ component.id }}"
           alt="{{ component.title.0 }}">
-        {% elif component.format|lower == "video" %}
+        {% elif component.media.format|lower == "video" %}
           <img
           class="carousel-complex__img"
           data-lazy="{{ ucldcNuxeoThumbs }}{{ component.id }}"
           alt="{{ component.title.0 }}">
-        {% elif component.format|lower == "sound" or component.format|lower == "audio" %}
+        {% elif component.media.format|lower == "sound" or component.media.format|lower == "audio" %}
           <div class="carousel-complex__thumbnail-container">
             <div class="carousel-complex__tile-icon fa-volume-up"></div>
           </div>
-        {% elif component.format|lower == "text" or component.format|lower == "file" %}
+        {% elif component.media.format|lower == "text" or component.media.format|lower == "file" %}
           <div class="carousel-complex__thumbnail-container">
             <div class="carousel-complex__tile-icon fa-file-text-o"></div>
           </div>
@@ -72,7 +72,7 @@
         {% endif %}
       </a>
       {# note that this conditional logic for whether or not to display a caption needs to match the logic for setting the context variable item.hasComponentCaptions in calisphere/views.py -- which is used above to to set the parent div class and determine how to position prev/next arrows on the slick carousel #}
-      {% if component.format|lower != "image" %}
+      {% if component.media.format|lower != "image" %}
         <div class="carousel-complex__thumbnail-caption">{{ component.title.0 }}</div>
       {% endif %}
     </div>

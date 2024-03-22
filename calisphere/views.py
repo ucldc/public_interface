@@ -54,6 +54,59 @@ def select_index(request, index):
     return redirect(next_page.path + f"?{query}")
 
 
+def get_solr_hosted_content_file(structmap):
+    content_file = ''
+    if structmap['format'] == 'image':
+        iiif_url = '{}{}/info.json'.format(settings.UCLDC_IIIF,
+                                           structmap['id'])
+        if iiif_url.startswith('//'):
+            iiif_url = ''.join(['http:', iiif_url])
+        iiif_info = json_loads_url(iiif_url)
+        if not iiif_info:
+            return None
+        size = iiif_info.get('sizes', [])[-1]
+        if size['height'] > size['width']:
+            access_size = {
+                'width': ((size['width'] * 1024) // size['height']),
+                'height': 1024
+            }
+            access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
+        else:
+            access_size = {
+                'width': 1024,
+                'height': ((size['height'] * 1024) // size['width'])
+            }
+            access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
+
+        content_file = {
+            'titleSources': iiif_info,
+            'format': 'image',
+            'size': access_size,
+            'url': access_url
+        }
+    if structmap['format'] == 'file':
+        content_file = {
+            'id': structmap['id'],
+            'format': 'file',
+        }
+    if structmap['format'] == 'video':
+        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
+        content_file = {
+            'id': structmap['id'],
+            'format': 'video',
+            'url': access_url
+        }
+    if structmap['format'] == 'audio':
+        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
+        content_file = {
+            'id': structmap['id'],
+            'format': 'audio',
+            'url': access_url
+        }
+
+    return content_file
+
+
 def get_hosted_content_file(item):
     content_file = ''
     media_data = item.get('media')
@@ -127,6 +180,71 @@ def get_component(media_json, order):
     return component, media_data
 
 
+def solr_hosted_object(item, order=None):
+    item['harvest_type'] = 'hosted'
+    structmap_url = item['structmap_url'].replace(
+        's3://static', 'https://s3.amazonaws.com/static')
+    media_json = json_loads_url(structmap_url)
+
+    media_data = None
+
+    # simple object
+    if 'structMap' not in media_json:
+        if 'format' in media_json:
+            media_data = media_json
+
+    # complex object
+    if 'structMap' in media_json:
+        # complex object
+        if order and 'structMap' in media_json:
+            # fetch component object
+            item['selected'] = False
+            item['selectedComponentIndex'] = int(order)
+            component, media_data = get_component(media_json, int(order))
+            item['selectedComponent'] = component
+        else:
+            item['selected'] = True
+            if 'format' in media_json:
+                media_data = media_json
+            else:
+                media_data = media_json['structMap'][0]
+        item['contentFile'] = get_solr_hosted_content_file(media_data)
+        item['structMap'] = media_json['structMap']
+
+        # single or multi-format object
+        formats = [
+            component['format']
+            for component in media_json['structMap']
+            if 'format' in component
+        ]
+        item['multiFormat'] = False
+        if len(set(formats)) > 1:
+            item['multiFormat'] = True
+
+        # carousel has captions or not
+        item['hasComponentCaptions'] = True
+        if all(f == 'image' for f in formats):
+            item['hasComponentCaptions'] = False
+
+        # number of components
+        item['componentCount'] = len(media_json['structMap'])
+
+        # has fixed item thumbnail image
+        item['has_fixed_thumb'] = False
+        if 'reference_image_md5' in item:
+            item['has_fixed_thumb'] = True
+
+    item['contentFile'] = get_solr_hosted_content_file(media_data)
+
+
+def es_hosted_object(item, order=None):
+    item['harvest_type'] = 'hosted'
+
+    # simple object
+    if 'children' not in item:
+        item['contentFile'] = get_hosted_content_file(item)
+
+
 @cache_by_session_state
 def item_view(request, item_id=''):
     index = request.session.get('index', 'es')
@@ -155,56 +273,10 @@ def item_view(request, item_id=''):
     if 'reference_image_dimensions' in item:
         split_ref = item['reference_image_dimensions'].split(':')
         item['reference_image_dimensions'] = split_ref
-    #if 'structmap_url' in item and len(item['structmap_url']) >= 1:
-    if 'media' in item:
-        item['harvest_type'] = 'hosted'
-
-        # simple object
-        if 'children' not in item:
-            item['contentFile'] = get_hosted_content_file(item)
-
-        # complex object
-        '''
-        if 'structMap' in media_json:
-            # complex object
-            if order and 'structMap' in media_json:
-                # fetch component object
-                item['selected'] = False
-                item['selectedComponentIndex'] = int(order)
-                component, media_data = get_component(media_json, int(order))
-                item['selectedComponent'] = component
-            else:
-                item['selected'] = True
-                if 'format' in media_json:
-                    media_data = media_json
-                else:
-                    media_data = media_json['structMap'][0]
-            item['contentFile'] = get_hosted_content_file(media_data)
-            item['structMap'] = media_json['structMap']
-
-            # single or multi-format object
-            formats = [
-                component['format']
-                for component in media_json['structMap']
-                if 'format' in component
-            ]
-            item['multiFormat'] = False
-            if len(set(formats)) > 1:
-                item['multiFormat'] = True
-
-            # carousel has captions or not
-            item['hasComponentCaptions'] = True
-            if all(f == 'image' for f in formats):
-                item['hasComponentCaptions'] = False
-
-            # number of components
-            item['componentCount'] = len(media_json['structMap'])
-
-            # has fixed item thumbnail image
-            item['has_fixed_thumb'] = False
-            if 'reference_image_md5' in item:
-                item['has_fixed_thumb'] = True
-        '''
+    if item.get('structmap_url'):
+        solr_hosted_object(item, order)
+    elif item.get('media'):
+        es_hosted_object(item, order)
     else:
         item['harvest_type'] = 'harvested'
         if 'url_item' in item:

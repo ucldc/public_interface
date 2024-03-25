@@ -76,16 +76,16 @@ def search_by_harvest_id(item_id, indexed_items):
 def item_view(request, item_id=''):
     index = request.session.get('index', 'es')
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
-    order = request.GET.get('order')
+    child_index = request.GET.get('order')
 
     indexed_items = ItemManager(index)
     index_result = indexed_items.get(item_id)
     if not index_result:
         return search_by_harvest_id(item_id, indexed_items)
 
-    item = Record(index_result.item, order, index)
+    item = Record(index_result.item, child_index, index)
     if item.is_hosted():
-        item.display['contentFile'] = item.get_media(order)
+        item.display['contentFile'] = item.get_media(child_index)
 
     item.display['parsed_collection_data'] = [
         c.item_view() for c in item.collections]

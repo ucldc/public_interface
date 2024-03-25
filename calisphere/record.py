@@ -6,37 +6,40 @@ from django.http import Http404
 from .collection_views import Collection
 from .institution_views import Repository
 
+def get_iiif(media_id) -> Dict[str, Any]:
+    iiif_url = f"{settings.UCLDC_IIIF}{media_id}/info.json"
+    if iiif_url.startswith('//'):
+        iiif_url = ''.join(['http:', iiif_url])
+
+    iiif_info = json_loads_url(iiif_url)
+    if not iiif_info:
+        return {}
+    size = iiif_info.get('sizes', [])[-1]
+    if size['height'] > size['width']:
+        access_size = {
+            'width': ((size['width'] * 1024) // size['height']),
+            'height': 1024
+        }
+        access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
+    else:
+        access_size = {
+            'width': 1024,
+            'height': ((size['height'] * 1024) // size['width'])
+        }
+        access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
+
+    return {
+        'titleSources': iiif_info,
+        'size': access_size,
+        'url': access_url
+    }
+
 
 def get_solr_hosted_content_file(structmap):
     content_file = ''
     if structmap['format'] == 'image':
-        iiif_url = '{}{}/info.json'.format(settings.UCLDC_IIIF,
-                                           structmap['id'])
-        if iiif_url.startswith('//'):
-            iiif_url = ''.join(['http:', iiif_url])
-        iiif_info = json_loads_url(iiif_url)
-        if not iiif_info:
-            return None
-        size = iiif_info.get('sizes', [])[-1]
-        if size['height'] > size['width']:
-            access_size = {
-                'width': ((size['width'] * 1024) // size['height']),
-                'height': 1024
-            }
-            access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
-        else:
-            access_size = {
-                'width': 1024,
-                'height': ((size['height'] * 1024) // size['width'])
-            }
-            access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
-
-        content_file = {
-            'titleSources': iiif_info,
-            'format': 'image',
-            'size': access_size,
-            'url': access_url
-        }
+        content_file = {'format': 'image'}
+        content_file.update(get_iiif(structmap['id']))
     if structmap['format'] == 'file':
         content_file = {
             'id': structmap['id'],
@@ -65,32 +68,8 @@ def get_hosted_content_file(item):
     media_data = item.get('media')
     media_path = media_data.get('path','')
     if media_path.startswith('s3://rikolti-content/jp2'):
-        iiif_url = f"{settings.UCLDC_IIIF}{media_data['media_key']}/info.json"
-        if iiif_url.startswith('//'):
-            iiif_url = ''.join(['http:', iiif_url])
-        iiif_info = json_loads_url(iiif_url)
-        if not iiif_info:
-            return None
-        size = iiif_info.get('sizes', [])[-1]
-        if size['height'] > size['width']:
-            access_size = {
-                'width': ((size['width'] * 1024) // size['height']),
-                'height': 1024
-            }
-            access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
-        else:
-            access_size = {
-                'width': 1024,
-                'height': ((size['height'] * 1024) // size['width'])
-            }
-            access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
-
-        content_file = {
-            'titleSources': iiif_info,
-            'format': 'image',
-            'size': access_size,
-            'url': access_url
-        }
+        content_file = {'format': 'image'}
+        content_file.update(get_iiif(media_data['media_key']))
     if media_path.startswith('s3://rikolti-content/media'):
         if media_path.endswith('pdf'):
             thumbnail = item.get('thumbnail')

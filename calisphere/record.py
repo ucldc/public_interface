@@ -141,14 +141,25 @@ class Record(object):
         elif self.index == 'es':
             return 'children' in self.indexed_record
 
-    def has_media(self):
+    def has_media(self, child=None):
         if self.index == 'solr':
-            return 'format' in self.get_media_json()
+            if child:
+                return 'format' in child
+            else:
+                return 'format' in self.get_media_json()
 
     def get_media(self, child_index=None):
         content_file = None
 
-        if (self.has_media() and not child_index):
+        if child_index and self.is_complex():
+            try:
+                child = self.get_children()[int(child_index)]
+            except IndexError:
+                raise Http404(f"Component {child_index} not found")
+            if self.has_media(child) and self.index == 'solr':
+                content_file = get_solr_hosted_content_file(child)
+
+        elif self.has_media():
             if self.index == 'solr':
                 content_file = get_solr_hosted_content_file(self.get_media_json())
             else:
@@ -157,19 +168,9 @@ class Record(object):
                     self.indexed_record.get('reference_image_md5')
                 )
 
-        elif self.is_complex() and child_index:
-            if self.index == 'solr':
-                try:
-                    component = self.get_children()[int(child_index)]
-                except IndexError:
-                    raise Http404(f"Component {child_index} not found")
-                if 'format' in component:
-                    content_file = get_solr_hosted_content_file(component)
-
         elif self.is_complex():
             if self.index == 'solr':
-                media_data = self.get_children()[0]
-                content_file = get_solr_hosted_content_file(media_data)
+                content_file = get_solr_hosted_content_file(self.get_children()[0])
 
         return content_file
 

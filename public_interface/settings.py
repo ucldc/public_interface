@@ -52,8 +52,14 @@ ES_ALIAS = getenv('ES_ALIAS', '')
 
 UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')
 UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
+UCLDC_MEDIA_SOLR = getenv('UCLDC_MEDIA_SOLR', '')
+
 UCLDC_IIIF = getenv('UCLDC_IIIF', '')
+UCLDC_IIIF_SOLR = getenv('UCLDC_IIIF_SOLR', '')
+
 UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
+UCLDC_NUXEO_THUMBS_SOLR = getenv('UCLDC_NUXEO_THUMBS_SOLR', '')
+
 UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
                                'https://registry.cdlib.org/')
 

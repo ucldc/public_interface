@@ -1,4 +1,5 @@
 from copy import deepcopy
+from urllib.parse import quote
 from .es_cache_retry import json_loads_url
 from typing import Any, Dict
 from django.conf import settings
@@ -6,8 +7,12 @@ from django.http import Http404
 from .collection_views import Collection
 from .institution_views import Repository
 
-def get_iiif(media_id) -> Dict[str, Any]:
-    iiif_url = f"{settings.UCLDC_IIIF}{media_id}/info.json"
+def get_iiif(media_id, index) -> Dict[str, Any]:
+    if index == 'solr':
+        iiif_url = f"{settings.UCLDC_IIIF_SOLR}{media_id}/info.json"
+    else:
+        iiif_url = f"{settings.UCLDC_IIIF}{quote(media_id)}/info.json"
+
     if iiif_url.startswith('//'):
         iiif_url = ''.join(['http:', iiif_url])
 
@@ -40,13 +45,13 @@ def get_solr_hosted_content_file(structmap):
     content_file = {'format': format}
 
     if format == 'image':
-        content_file.update(get_iiif(structmap['id']))
+        content_file.update(get_iiif(structmap['id'], 'solr'))
     if format == 'file':
         content_file.update({'id': structmap['id']})
     if format in ['audio', 'video']:
         content_file.update({
             'id': structmap['id'],
-            'url': f"{settings.UCLDC_MEDIA}/{structmap['id']}"
+            'url': f"{settings.UCLDC_MEDIA_SOLR}/{structmap['id']}"
         })
 
     return content_file
@@ -57,7 +62,7 @@ def get_hosted_content_file(media, thumbnail_md5):
     content_file = {'format': format}
 
     if format =='image':
-        content_file.update(get_iiif(media['media_key']))
+        content_file.update(get_iiif(media['media_key'], 'es'))
     if format == 'file':
         content_file.update({'id': f"thumbnails/{thumbnail_md5}"})
     if format in ['audio', 'video']:

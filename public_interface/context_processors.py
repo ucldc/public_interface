@@ -19,18 +19,25 @@ def settings(request):
 
     multiple_indexes = False
     thumbnailUrl = settings.THUMBNAIL_URL
+    iiifUrl = settings.UCLDC_IIIF
+    nuxeoThumbnails = settings.UCLDC_NUXEO_THUMBS
+    mediaUrl = settings.UCLDC_MEDIA
+
     if settings.SOLR_URL and settings.SOLR_API_KEY:
         multiple_indexes = True
         if request.session.get('index') == 'solr':
             thumbnailUrl = settings.THUMBNAIL_URL_SOLR
+            iiifUrl = settings.UCLDC_IIIF_SOLR
+            nuxeoThumbnails = settings.UCLDC_NUXEO_THUMBS_SOLR
+            mediaUrl = settings.UCLDC_MEDIA_SOLR
 
     return {
         'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
         'ucldcImages': settings.UCLDC_IMAGES,
-        'ucldcMedia': settings.UCLDC_MEDIA,
-        'ucldcIiif': settings.UCLDC_IIIF,
-        'ucldcNuxeoThumbs': settings.UCLDC_NUXEO_THUMBS,
+        'ucldcMedia': mediaUrl,
+        'ucldcIiif': iiifUrl,
+        'ucldcNuxeoThumbs': nuxeoThumbnails,
         'gaSiteCode': settings.GA_SITE_CODE,
         'ga4SiteCode': settings.GA4_SITE_CODE,
         'matomoSiteCode': settings.MATOMO_SITE_CODE,

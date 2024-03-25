@@ -96,7 +96,8 @@ class Record(object):
             }
             if child_index:
                 complex_object_display['selectedComponentIndex'] = child_index
-                complex_object_display['selectedComponent'] = self.get_component(int(child_index))
+                complex_object_display['selectedComponent'] = self.get_child_metadata(
+                    int(child_index))
 
             self.display.update(complex_object_display)
 
@@ -152,10 +153,7 @@ class Record(object):
         content_file = None
 
         if child_index and self.is_complex():
-            try:
-                child = self.get_children()[int(child_index)]
-            except IndexError:
-                raise Http404(f"Component {child_index} not found")
+            child = self.get_child(int(child_index))
             if self.has_media(child) and self.index == 'solr':
                 content_file = get_solr_hosted_content_file(child)
 
@@ -170,7 +168,7 @@ class Record(object):
 
         elif self.is_complex():
             if self.index == 'solr':
-                content_file = get_solr_hosted_content_file(self.get_children()[0])
+                content_file = get_solr_hosted_content_file(self.get_child(0))
 
         return content_file
 
@@ -193,24 +191,27 @@ class Record(object):
                 self.children = []
         return self.children
 
+    def get_child(self, index) -> Dict[str, Any]:
+        try:
+            return self.get_children()[index]
+        except IndexError:
+            raise Http404(f"Child {index} not found")
+
     def get_relations(self):
         if self.index == 'solr':
             return self.indexed_record.get('relation', [])
         return []
 
-    def get_component(self, child_index):
-        try:
-            child = self.get_children()[child_index]
-        except IndexError:
-            raise Http404(f"Component {child_index} not found")
+    def get_child_metadata(self, child_index):
+        child = self.get_child(child_index)
 
-        component_display: Dict[str, Any] = {'selected': True}
+        child_display: Dict[str, Any] = {'selected': True}
         # remove emptry strings from child values
         for field, values in child.items():
             if isinstance(values, list) and isinstance(values[0], str):
-                component_display[field] = [
+                child_display[field] = [
                     val for val in values if val and val.strip()
                 ]
-        component_display = dict((k, v) for k, v in list(component_display.items()) if v)
+        child_display = dict((k, v) for k, v in list(child_display.items()) if v)
 
-        return component_display
+        return child_display

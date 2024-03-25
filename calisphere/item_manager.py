@@ -8,7 +8,7 @@ except ImportError:
 
 
 class ItemManager(object):
-    def __init__(self, index='solr'):
+    def __init__(self, index='es'):
         if SOLR is True:
             self.index = index
         else:

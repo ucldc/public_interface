@@ -1,6 +1,8 @@
 from copy import deepcopy
 from .es_cache_retry import json_loads_url
+from typing import Any, Dict
 from django.conf import settings
+from django.http import Http404
 from .collection_views import Collection
 from .institution_views import Repository
 
@@ -114,25 +116,7 @@ def get_hosted_content_file(item):
     return content_file
 
 
-def get_component(media_json, order):
-    component = media_json['structMap'][order]
-    component['selected'] = True
-    if 'format' in component:
-        media_data = component
-
-    # remove emptry strings from list
-    for k, v in list(component.items()):
-        if isinstance(v, list) and isinstance(v[0], str):
-            component[k] = [
-                name for name in v if name and name.strip()
-            ]
-    component = dict((k, v) for k, v in list(component.items()) if v)
-
-    return component, media_data
-
-
 def hosted_object(item, child_index=None, index='es'):
-    component = None
     content_file = None
 
     if (item.has_media() and not child_index):
@@ -143,16 +127,19 @@ def hosted_object(item, child_index=None, index='es'):
 
     elif item.is_complex() and child_index:
         if index == 'solr':
-            component, media_data = get_component(item.get_media_json(), int(child_index))
-            component = component
-            content_file = get_solr_hosted_content_file(media_data)
+            try:
+                component = item.get_children()[int(child_index)]
+            except IndexError:
+                raise Http404(f"Component {child_index} not found")
+            if 'format' in component:
+                content_file = get_solr_hosted_content_file(component)
 
     elif item.is_complex():
         if index == 'solr':
             media_data = item.get_children()[0]
             content_file = get_solr_hosted_content_file(media_data)
 
-    return content_file, component
+    return content_file
 
 
 class Record(object):
@@ -183,6 +170,7 @@ class Record(object):
             }
             if child_index:
                 complex_object_display['selectedComponentIndex'] = child_index
+                complex_object_display['selectedComponent'] = self.get_component(int(child_index))
 
             self.display.update(complex_object_display)
 
@@ -255,3 +243,19 @@ class Record(object):
             return self.indexed_record.get('relation', [])
         return []
 
+    def get_component(self, child_index):
+        try:
+            child = self.get_children()[child_index]
+        except IndexError:
+            raise Http404(f"Component {child_index} not found")
+
+        component_display: Dict[str, Any] = {'selected': True}
+        # remove emptry strings from child values
+        for field, values in child.items():
+            if isinstance(values, list) and isinstance(values[0], str):
+                component_display[field] = [
+                    val for val in values if val and val.strip()
+                ]
+        component_display = dict((k, v) for k, v in list(component_display.items()) if v)
+
+        return component_display

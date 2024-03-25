@@ -85,10 +85,8 @@ def item_view(request, item_id=''):
 
     item = Record(index_result.item, order, index)
     if item.is_hosted():
-        content_file, component = hosted_object(item, order, index)
+        content_file = hosted_object(item, order, index)
         item.display['contentFile'] = content_file
-        if component:
-            item.display['selectedComponent'] = component
 
     item.display['parsed_collection_data'] = [
         c.item_view() for c in item.collections]

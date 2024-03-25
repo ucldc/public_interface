@@ -148,6 +148,11 @@ class Record(object):
                 return 'format' in child
             else:
                 return 'format' in self.get_media_json()
+        elif self.index == 'es':
+            if child:
+                return 'media' in child
+            else:
+                return 'media' in self.indexed_record
 
     def get_media(self, child_index=None):
         content_file = None

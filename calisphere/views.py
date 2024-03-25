@@ -7,6 +7,7 @@ from django.template.defaultfilters import urlize
 from . import constants
 from .es_cache_retry import json_loads_url
 from .item_manager import ItemManager
+from .record import Record
 
 from .search_form import (SearchForm, ESSearchForm, solr_escape, 
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
@@ -180,170 +181,115 @@ def get_component(media_json, order):
     return component, media_data
 
 
-def solr_hosted_object(item, order=None):
-    item['harvest_type'] = 'hosted'
-    structmap_url = item['structmap_url'].replace(
-        's3://static', 'https://s3.amazonaws.com/static')
-    media_json = json_loads_url(structmap_url)
+def hosted_object(item, child_index=None, index='es'):
 
-    media_data = None
-
-    # simple object
-    if 'structMap' not in media_json:
-        if 'format' in media_json:
-            media_data = media_json
-
-    # complex object
-    if 'structMap' in media_json:
-        # complex object
-        if order and 'structMap' in media_json:
-            # fetch component object
-            item['selected'] = False
-            item['selectedComponentIndex'] = int(order)
-            component, media_data = get_component(media_json, int(order))
-            item['selectedComponent'] = component
+    if (item.has_media() and not child_index):
+        if index == 'solr':
+            item.display['contentFile'] = get_solr_hosted_content_file(item.get_media_json())
         else:
-            item['selected'] = True
-            if 'format' in media_json:
-                media_data = media_json
-            else:
-                media_data = media_json['structMap'][0]
-        item['contentFile'] = get_solr_hosted_content_file(media_data)
-        item['structMap'] = media_json['structMap']
+            item.display['contentFile'] = get_hosted_content_file(item.doc)
 
-        # single or multi-format object
-        formats = [
-            component['format']
-            for component in media_json['structMap']
-            if 'format' in component
-        ]
-        item['multiFormat'] = False
-        if len(set(formats)) > 1:
-            item['multiFormat'] = True
+    elif item.is_complex() and child_index:
+        if index == 'solr':
+            component, media_data = get_component(item.get_media_json(), int(child_index))
+            item.display['selectedComponent'] = component
+            item.display['contentFile'] = get_solr_hosted_content_file(media_data)
 
-        # carousel has captions or not
-        item['hasComponentCaptions'] = True
-        if all(f == 'image' for f in formats):
-            item['hasComponentCaptions'] = False
-
-        # number of components
-        item['componentCount'] = len(media_json['structMap'])
-
-        # has fixed item thumbnail image
-        item['has_fixed_thumb'] = False
-        if 'reference_image_md5' in item:
-            item['has_fixed_thumb'] = True
-
-    item['contentFile'] = get_solr_hosted_content_file(media_data)
+    elif item.is_complex():
+        if index == 'solr':
+            media_data = item.get_children()[0]
+            item.display['contentFile'] = get_solr_hosted_content_file(media_data)
 
 
-def es_hosted_object(item, order=None):
-    item['harvest_type'] = 'hosted'
+def search_by_harvest_id(item_id, indexed_items):
+    # second level search
+    def _fixid(id):
+        return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)
 
-    # simple object
-    if 'children' not in item:
-        item['contentFile'] = get_hosted_content_file(item)
+    old_id_query = {
+        "query_string": f"harvest_id_s:*{_fixid(item_id)}",
+        "rows": 10
+    }
+    old_id_search = indexed_items.search(old_id_query)
+    if old_id_search.numFound:
+        return redirect('calisphere:itemView',
+                        old_id_search.results[0]['id'])
+    else:
+        raise Http404("{0} does not exist".format(item_id))
 
 
 @cache_by_session_state
 def item_view(request, item_id=''):
     index = request.session.get('index', 'es')
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
-
-    item_search = ItemManager(index).get(item_id)
     order = request.GET.get('order')
 
-    if not item_search:
-        # second level search
-        def _fixid(id):
-            return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)
+    indexed_items = ItemManager(index)
+    indexed_item = indexed_items.get(item_id)
+    if not indexed_item:
+        return search_by_harvest_id(item_id, indexed_items)
 
-        old_id_query = {
-            "query_string": f"harvest_id_s:*{_fixid(item_id)}",
-            "rows": 10
-        }
-        old_id_search = ItemManager(index).search(old_id_query)
-        if old_id_search.numFound:
-            return redirect('calisphere:itemView',
-                            old_id_search.results[0]['id'])
-        else:
-            raise Http404("{0} does not exist".format(item_id))
+    item = Record(indexed_item.item, order, index)
+    if item.is_hosted():
+        hosted_object(item, order, index)
 
-    item = item_search.item
-    if 'reference_image_dimensions' in item:
-        split_ref = item['reference_image_dimensions'].split(':')
-        item['reference_image_dimensions'] = split_ref
-    if item.get('structmap_url'):
-        solr_hosted_object(item, order)
-    elif item.get('media'):
-        es_hosted_object(item, order)
-    else:
-        item['harvest_type'] = 'harvested'
-        if 'url_item' in item:
-            if item['url_item'].startswith('http://ark.cdlib.org/ark:'):
-                item['oac'] = True
-                item['url_item'] = item['url_item'].replace(
-                    'http://ark.cdlib.org/ark:',
-                    'http://oac.cdlib.org/ark:')
-                item['url_item'] = item['url_item'] + '/?brand=oac4'
-            else:
-                item['oac'] = False
-        # TODO: error handling 'else'
-
-    item['parsed_collection_data'] = []
-    item['parsed_repository_data'] = []
-    item['institution_contact'] = []
-    item['relation_links'] = []
+    parsed_collection_data = []
     related_collections = []
-    for col_id in item.get('collection_ids'):
+    for col_id in item.indexed_record.get('collection_ids'):
         collection = Collection(col_id, index)
-        item['parsed_collection_data'].append(collection.item_view())
+        parsed_collection_data.append(collection.item_view())
         if not from_item_page:
             lockup_data = collection.get_lockup(f'id:"{item_id}"')
             related_collections.append(lockup_data)
+    item.display['parsed_collection_data'] = parsed_collection_data
 
-    for repo_id in item.get('repository_ids'):
+    institution_contact = []
+    parsed_repository_data = []
+    for repo_id in item.indexed_record.get('repository_ids'):
         repo = Repository(repo_id, index)
-        item['parsed_repository_data'].append(repo.get_repo_data())
-        item['institution_contact'].append(repo.get_contact_info())
+        parsed_repository_data.append(repo.get_repo_data())
+        institution_contact.append(repo.get_contact_info())
+    item.display['parsed_repository_data'] = parsed_repository_data
+    item.display['institution_contact'] = institution_contact
 
-    for relation in item.get('relation', []):
+    relation_links = []
+    for relation in item.indexed_record.get('relation', []):
         if urlize(relation, autoescape=False) == relation:
-            item['relation_links'].append({
+            relation_links.append({
                 'label': relation,
                 'uri': (reverse(
                     'calisphere:collectionView',
                     kwargs={
-                        'collection_id': item.get('collection_ids')[0],
+                        'collection_id': item.indexed_record.get('collection_ids')[0],
                     }) +
                     "?relation_ss=" +
                     urllib.parse.quote(solr_escape(relation)))
                 })
         else:
-            item['relation_links'].append({
+            relation_links.append({
                 'label': relation,
                 'uri': 'urlize'
             })
-    if len(item['relation_links']) == 0:
-        del item['relation_links']
+    if relation_links:
+        item.display['relation_links'] = relation_links
 
     meta_image = False
-    if item.get('reference_image_md5', False):
+    if item.indexed_record.get('reference_image_md5', False):
         meta_image = urllib.parse.urljoin(
             settings.UCLDC_FRONT,
             '/crop/999x999/{0}'.format(
-                item['reference_image_md5']),
+                item.indexed_record['reference_image_md5']),
         )
 
-    if item.get('rights_uri'):
-        uri = item.get('rights_uri')
-        item['rights_uri'] = {
+    if item.indexed_record.get('rights_uri'):
+        uri = item.indexed_record.get('rights_uri')
+        item.display['rights_uri'] = {
             'url': uri,
             'statement': constants.RIGHTS_STATEMENTS[uri]
         }
 
     search_results = {'reference_image_md5': None}
-    search_results.update(item)
+    search_results.update(item.display)
 
     num_related_collections = len(related_collections)
 
@@ -351,7 +297,7 @@ def item_view(request, item_id=''):
     context = {
         'q': '',
         'item': search_results,
-        'item_solr_search': item_search.resp,
+        'item_solr_search': indexed_item.resp,
         'meta_image': meta_image,
         'repository_id': None,
         'itemId': None,
@@ -365,7 +311,7 @@ def item_view(request, item_id=''):
         context = {
             'q': '',
             'item': search_results,
-            'item_solr_search': item_search.resp,
+            'item_solr_search': indexed_item.resp,
             'meta_image': meta_image,
             'rc_page': None,
             'related_collections': related_collections,

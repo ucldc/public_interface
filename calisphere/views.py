@@ -7,7 +7,7 @@ from django.template.defaultfilters import urlize
 from . import constants
 from .es_cache_retry import json_loads_url
 from .item_manager import ItemManager
-from .record import Record
+from .record import Record, hosted_object
 
 from .search_form import (SearchForm, ESSearchForm, solr_escape, 
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
@@ -55,152 +55,6 @@ def select_index(request, index):
     return redirect(next_page.path + f"?{query}")
 
 
-def get_solr_hosted_content_file(structmap):
-    content_file = ''
-    if structmap['format'] == 'image':
-        iiif_url = '{}{}/info.json'.format(settings.UCLDC_IIIF,
-                                           structmap['id'])
-        if iiif_url.startswith('//'):
-            iiif_url = ''.join(['http:', iiif_url])
-        iiif_info = json_loads_url(iiif_url)
-        if not iiif_info:
-            return None
-        size = iiif_info.get('sizes', [])[-1]
-        if size['height'] > size['width']:
-            access_size = {
-                'width': ((size['width'] * 1024) // size['height']),
-                'height': 1024
-            }
-            access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
-        else:
-            access_size = {
-                'width': 1024,
-                'height': ((size['height'] * 1024) // size['width'])
-            }
-            access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
-
-        content_file = {
-            'titleSources': iiif_info,
-            'format': 'image',
-            'size': access_size,
-            'url': access_url
-        }
-    if structmap['format'] == 'file':
-        content_file = {
-            'id': structmap['id'],
-            'format': 'file',
-        }
-    if structmap['format'] == 'video':
-        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
-        content_file = {
-            'id': structmap['id'],
-            'format': 'video',
-            'url': access_url
-        }
-    if structmap['format'] == 'audio':
-        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
-        content_file = {
-            'id': structmap['id'],
-            'format': 'audio',
-            'url': access_url
-        }
-
-    return content_file
-
-
-def get_hosted_content_file(item):
-    content_file = ''
-    media_data = item.get('media')
-    media_path = media_data.get('path','')
-    if media_path.startswith('s3://rikolti-content/jp2'):
-        iiif_url = f"{settings.UCLDC_IIIF}{media_data['media_key']}/info.json"
-        if iiif_url.startswith('//'):
-            iiif_url = ''.join(['http:', iiif_url])
-        iiif_info = json_loads_url(iiif_url)
-        if not iiif_info:
-            return None
-        size = iiif_info.get('sizes', [])[-1]
-        if size['height'] > size['width']:
-            access_size = {
-                'width': ((size['width'] * 1024) // size['height']),
-                'height': 1024
-            }
-            access_url = iiif_info['@id'] + "/full/,1024/0/default.jpg"
-        else:
-            access_size = {
-                'width': 1024,
-                'height': ((size['height'] * 1024) // size['width'])
-            }
-            access_url = iiif_info['@id'] + "/full/1024,/0/default.jpg"
-
-        content_file = {
-            'titleSources': iiif_info,
-            'format': 'image',
-            'size': access_size,
-            'url': access_url
-        }
-    if media_path.startswith('s3://rikolti-content/media'):
-        if media_path.endswith('pdf'):
-            thumbnail = item.get('thumbnail')
-            content_file = {
-                'id': f"thumbnails/{item.get('reference_image_md5')}",
-                'format': 'file',
-            }
-        if media_path.endswith('mp3'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media_data['media_key']}"
-            content_file = {
-                'id': f"thumbnails/{item.get('reference_image_md5')}",
-                'format': 'audio',
-                'url': access_url
-            }
-        if media_path.endswith('mp4'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media_data['media_key']}"
-            content_file = {
-                'id': f"thumbnails/{item.get('reference_image_md5')}",
-                'format': 'video',
-                'url': access_url
-            }
-
-    return content_file
-
-
-def get_component(media_json, order):
-    component = media_json['structMap'][order]
-    component['selected'] = True
-    if 'format' in component:
-        media_data = component
-
-    # remove emptry strings from list
-    for k, v in list(component.items()):
-        if isinstance(v, list) and isinstance(v[0], str):
-            component[k] = [
-                name for name in v if name and name.strip()
-            ]
-    component = dict((k, v) for k, v in list(component.items()) if v)
-
-    return component, media_data
-
-
-def hosted_object(item, child_index=None, index='es'):
-
-    if (item.has_media() and not child_index):
-        if index == 'solr':
-            item.display['contentFile'] = get_solr_hosted_content_file(item.get_media_json())
-        else:
-            item.display['contentFile'] = get_hosted_content_file(item.doc)
-
-    elif item.is_complex() and child_index:
-        if index == 'solr':
-            component, media_data = get_component(item.get_media_json(), int(child_index))
-            item.display['selectedComponent'] = component
-            item.display['contentFile'] = get_solr_hosted_content_file(media_data)
-
-    elif item.is_complex():
-        if index == 'solr':
-            media_data = item.get_children()[0]
-            item.display['contentFile'] = get_solr_hosted_content_file(media_data)
-
-
 def search_by_harvest_id(item_id, indexed_items):
     # second level search
     def _fixid(id):
@@ -231,7 +85,10 @@ def item_view(request, item_id=''):
 
     item = Record(index_result.item, order, index)
     if item.is_hosted():
-        hosted_object(item, order, index)
+        content_file, component = hosted_object(item, order, index)
+        item.display['contentFile'] = content_file
+        if component:
+            item.display['selectedComponent'] = component
 
     item.display['parsed_collection_data'] = [
         c.item_view() for c in item.collections]

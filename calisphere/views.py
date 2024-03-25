@@ -7,7 +7,7 @@ from django.template.defaultfilters import urlize
 from . import constants
 from .es_cache_retry import json_loads_url
 from .item_manager import ItemManager
-from .record import Record, hosted_object
+from .record import Record
 
 from .search_form import (SearchForm, ESSearchForm, solr_escape, 
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
@@ -85,8 +85,7 @@ def item_view(request, item_id=''):
 
     item = Record(index_result.item, order, index)
     if item.is_hosted():
-        content_file = hosted_object(item, order, index)
-        item.display['contentFile'] = content_file
+        item.display['contentFile'] = item.get_media(order)
 
     item.display['parsed_collection_data'] = [
         c.item_view() for c in item.collections]

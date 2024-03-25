@@ -225,43 +225,36 @@ def item_view(request, item_id=''):
     order = request.GET.get('order')
 
     indexed_items = ItemManager(index)
-    indexed_item = indexed_items.get(item_id)
-    if not indexed_item:
+    index_result = indexed_items.get(item_id)
+    if not index_result:
         return search_by_harvest_id(item_id, indexed_items)
 
-    item = Record(indexed_item.item, order, index)
+    item = Record(index_result.item, order, index)
     if item.is_hosted():
         hosted_object(item, order, index)
 
-    parsed_collection_data = []
-    related_collections = []
-    for col_id in item.indexed_record.get('collection_ids'):
-        collection = Collection(col_id, index)
-        parsed_collection_data.append(collection.item_view())
-        if not from_item_page:
-            lockup_data = collection.get_lockup(f'id:"{item_id}"')
-            related_collections.append(lockup_data)
-    item.display['parsed_collection_data'] = parsed_collection_data
+    item.display['parsed_collection_data'] = [
+        c.item_view() for c in item.collections]
+    item.display['parsed_repository_data'] = [
+        r.get_repo_data() for r in item.repositories]
+    item.display['institution_contact'] = [
+        r.get_contact_info() for r in item.repositories]
 
-    institution_contact = []
-    parsed_repository_data = []
-    for repo_id in item.indexed_record.get('repository_ids'):
-        repo = Repository(repo_id, index)
-        parsed_repository_data.append(repo.get_repo_data())
-        institution_contact.append(repo.get_contact_info())
-    item.display['parsed_repository_data'] = parsed_repository_data
-    item.display['institution_contact'] = institution_contact
+    related_collections = []
+    if not from_item_page:
+        related_collections = [
+            c.get_lockup(f'id:"{item_id}"') 
+            for c in item.collections
+        ]
 
     relation_links = []
-    for relation in item.indexed_record.get('relation', []):
+    for relation in item.get_relations():
         if urlize(relation, autoescape=False) == relation:
             relation_links.append({
                 'label': relation,
                 'uri': (reverse(
                     'calisphere:collectionView',
-                    kwargs={
-                        'collection_id': item.indexed_record.get('collection_ids')[0],
-                    }) +
+                    kwargs={'collection_id': item.collections[0].id}) +
                     "?relation_ss=" +
                     urllib.parse.quote(solr_escape(relation)))
                 })
@@ -297,7 +290,7 @@ def item_view(request, item_id=''):
     context = {
         'q': '',
         'item': search_results,
-        'item_solr_search': indexed_item.resp,
+        'item_solr_search': index_result.resp,
         'meta_image': meta_image,
         'repository_id': None,
         'itemId': None,
@@ -311,7 +304,7 @@ def item_view(request, item_id=''):
         context = {
             'q': '',
             'item': search_results,
-            'item_solr_search': indexed_item.resp,
+            'item_solr_search': index_result.resp,
             'meta_image': meta_image,
             'rc_page': None,
             'related_collections': related_collections,

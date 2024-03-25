@@ -1,5 +1,7 @@
 from copy import deepcopy
 from .es_cache_retry import json_loads_url
+from .collection_views import Collection
+from .institution_views import Repository
 
 
 class Record(object):
@@ -47,6 +49,15 @@ class Record(object):
                 }
             self.display.update(oac_display)
 
+        self.collections = [
+            Collection(col_id, index) 
+            for col_id in self.indexed_record.get('collection_ids')
+        ]
+        self.repositories = [
+            Repository(repo_id, index) 
+            for repo_id in self.indexed_record.get('repository_ids')
+        ]
+
     def is_hosted(self):
         if self.index == 'solr':
             return bool(self.indexed_record.get('structmap_url'))
@@ -88,4 +99,8 @@ class Record(object):
                 self.children = []
         return self.children
 
+    def get_relations(self):
+        if self.index == 'solr':
+            return self.indexed_record.get('relation', [])
+        return []
 

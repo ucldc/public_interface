@@ -36,60 +36,35 @@ def get_iiif(media_id) -> Dict[str, Any]:
 
 
 def get_solr_hosted_content_file(structmap):
-    content_file = ''
-    if structmap['format'] == 'image':
-        content_file = {'format': 'image'}
+    format = structmap['format']
+    content_file = {'format': format}
+
+    if format == 'image':
         content_file.update(get_iiif(structmap['id']))
-    if structmap['format'] == 'file':
-        content_file = {
+    if format == 'file':
+        content_file.update({'id': structmap['id']})
+    if format in ['audio', 'video']:
+        content_file.update({
             'id': structmap['id'],
-            'format': 'file',
-        }
-    if structmap['format'] == 'video':
-        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
-        content_file = {
-            'id': structmap['id'],
-            'format': 'video',
-            'url': access_url
-        }
-    if structmap['format'] == 'audio':
-        access_url = os.path.join(settings.UCLDC_MEDIA, structmap['id'])
-        content_file = {
-            'id': structmap['id'],
-            'format': 'audio',
-            'url': access_url
-        }
+            'url': f"{settings.UCLDC_MEDIA}/{structmap['id']}"
+        })
 
     return content_file
 
 
 def get_hosted_content_file(media, thumbnail_md5):
-    content_file = ''
-    media_path = media.get('path','')
-    if media_path.startswith('s3://rikolti-content/jp2'):
-        content_file = {'format': 'image'}
-        content_file.update(get_iiif(media['media_key']))
-    if media_path.startswith('s3://rikolti-content/media'):
-        if media_path.endswith('pdf'):
-            content_file = {
-                'id': f"thumbnails/{thumbnail_md5}",
-                'format': 'file',
-            }
-        if media_path.endswith('mp3'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media['media_key']}"
-            content_file = {
-                'id': f"thumbnails/{thumbnail_md5}",
-                'format': 'audio',
-                'url': access_url
-            }
-        if media_path.endswith('mp4'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media['media_key']}"
-            content_file = {
-                'id': f"thumbnails/{thumbnail_md5}",
-                'format': 'video',
-                'url': access_url
-            }
+    format = media.get('format','')
+    content_file = {'format': format}
 
+    if format =='image':
+        content_file.update(get_iiif(media['media_key']))
+    if format == 'file':
+        content_file.update({'id': f"thumbnails/{thumbnail_md5}"})
+    if format in ['audio', 'video']:
+        content_file.update({
+            'id': f"thumbnails/{thumbnail_md5}",
+            'url': f"{settings.UCLDC_NUXEO_THUMBS}media/{media['media_key']}"
+        })
     return content_file
 
 

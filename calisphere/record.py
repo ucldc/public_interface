@@ -63,31 +63,29 @@ def get_solr_hosted_content_file(structmap):
     return content_file
 
 
-def get_hosted_content_file(item):
+def get_hosted_content_file(media, thumbnail_md5):
     content_file = ''
-    media_data = item.get('media')
-    media_path = media_data.get('path','')
+    media_path = media.get('path','')
     if media_path.startswith('s3://rikolti-content/jp2'):
         content_file = {'format': 'image'}
-        content_file.update(get_iiif(media_data['media_key']))
+        content_file.update(get_iiif(media['media_key']))
     if media_path.startswith('s3://rikolti-content/media'):
         if media_path.endswith('pdf'):
-            thumbnail = item.get('thumbnail')
             content_file = {
-                'id': f"thumbnails/{item.get('reference_image_md5')}",
+                'id': f"thumbnails/{thumbnail_md5}",
                 'format': 'file',
             }
         if media_path.endswith('mp3'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media_data['media_key']}"
+            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media['media_key']}"
             content_file = {
-                'id': f"thumbnails/{item.get('reference_image_md5')}",
+                'id': f"thumbnails/{thumbnail_md5}",
                 'format': 'audio',
                 'url': access_url
             }
         if media_path.endswith('mp4'):
-            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media_data['media_key']}"
+            access_url = f"{settings.UCLDC_NUXEO_THUMBS}media/{media['media_key']}"
             content_file = {
-                'id': f"thumbnails/{item.get('reference_image_md5')}",
+                'id': f"thumbnails/{thumbnail_md5}",
                 'format': 'video',
                 'url': access_url
             }
@@ -102,7 +100,10 @@ def hosted_object(item, child_index=None, index='es'):
         if index == 'solr':
             content_file = get_solr_hosted_content_file(item.get_media_json())
         else:
-            content_file = get_hosted_content_file(item.doc)
+            content_file = get_hosted_content_file(
+                item.indexed_record.get('media'), 
+                item.indexed_record.get('reference_image_md5')
+            )
 
     elif item.is_complex() and child_index:
         if index == 'solr':

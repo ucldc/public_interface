@@ -108,6 +108,32 @@ def make_solr_carousel_display(child):
     return child
 
 
+def make_es_carousel_display(child):
+    # label and format are both used by the carousel - they were part
+    # of the media_json schema in the Solr index
+    media_json_schema = {
+        'label': child.get('title', [''])[0],
+        'format': child.get('media', {}).get('format', '')
+    }
+    child.update(media_json_schema)
+
+    format = child.get('media', {}).get('format', '')
+    if format == 'image':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_IIIF }{ quote(child['media']['media_key']) }"
+            "/full/,80/0/default.jpg"
+        )
+    if format == 'file':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS }{ child['thumbnail_key'] }"
+        )
+    if format == 'video':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS }{ child['thumbnail_key'] }"
+        )
+    return child
+
+
 def remove_empty_values(child):
     # remove emptry strings from child values
     child_display: Dict[str, Any] = {}
@@ -249,7 +275,10 @@ class Record(object):
                     self.get_media_json().get('structMap', [])
                 ]
             else:
-                self.children = self.indexed_record.get('children', [])
+                self.children = [
+                    make_es_carousel_display(child) for child in 
+                    self.indexed_record.get('children', [])
+                ]
         return self.children
 
     def get_child(self, index) -> Dict[str, Any]:

@@ -51,10 +51,16 @@ def get_solr_hosted_content_file(structmap):
             'id': structmap['id'],
             'url': f"{settings.UCLDC_NUXEO_THUMBS_SOLR}{structmap['id']}"
         })
-    if format in ['audio', 'video']:
+    if format == 'audio':
         content_file.update({
             'id': structmap['id'],
             'url': f"{settings.UCLDC_MEDIA_SOLR}{structmap['id']}"
+        })
+    if format == 'video':
+        content_file.update({
+            'id': structmap['id'],
+            'url': f"{settings.UCLDC_MEDIA_SOLR}/{structmap['id']}",
+            'poster': f"{settings.UCLDC_NUXEO_THUMBS_SOLR}{structmap['id']}"
         })
 
     return content_file
@@ -71,11 +77,18 @@ def get_hosted_content_file(media, thumbnail_md5):
             'id': f"media/{media['media_key']}",
             'url': f"{settings.UCLDC_NUXEO_THUMBS}thumbnails/{thumbnail_md5}"
         })
-    if format in ['audio', 'video']:
+    if format == 'audio':
         content_file.update({
             'id': f"media/{media['media_key']}",
             'url': f"{settings.UCLDC_MEDIA}media/{media['media_key']}"
         })
+    if format == 'video':
+        content_file.update({
+            'id': f"media/{media['media_key']}",
+            'url': f"{settings.UCLDC_MEDIA}media/{media['media_key']}",
+            'poster': f"{settings.UCLDC_NUXEO_THUMBS}thumbnails/{thumbnail_md5}"
+        })
+
     return content_file
 
 

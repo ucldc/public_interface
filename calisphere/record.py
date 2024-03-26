@@ -73,8 +73,8 @@ def get_hosted_content_file(media, thumbnail_md5):
         })
     if format in ['audio', 'video']:
         content_file.update({
-            'id': f"thumbnails/{thumbnail_md5}",
-            'url': f"{settings.UCLDC_NUXEO_THUMBS}media/{media['media_key']}"
+            'id': f"media/{media['media_key']}",
+            'url': f"{settings.UCLDC_MEDIA}media/{media['media_key']}"
         })
     return content_file
 

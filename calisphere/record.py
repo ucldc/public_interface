@@ -63,6 +63,8 @@ def get_solr_hosted_content_file(structmap):
 
 
 def get_hosted_content_file(media, thumbnail_md5):
+    print(media)
+    print(thumbnail_md5)
     format = media.get('format','')
     content_file = {'format': format}
 
@@ -240,6 +242,10 @@ class Record(object):
             child = self.get_child(int(child_index))
             if self.has_media(child) and self.index == 'solr':
                 content_file = get_solr_hosted_content_file(child)
+            elif self.has_media(child):
+                content_file = get_hosted_content_file(
+                    child['media'], child['thumbnail_key']
+                )
 
         elif self.has_media():
             if self.index == 'solr':
@@ -251,8 +257,14 @@ class Record(object):
                 )
 
         elif self.is_complex():
-            if self.index == 'solr':
+            first_child = self.get_child(0)
+            if self.has_media(first_child) and self.index == 'solr':
                 content_file = get_solr_hosted_content_file(self.get_child(0))
+            elif self.has_media(first_child):
+                content_file = get_hosted_content_file(
+                    self.get_child(0)['media'], 
+                    self.get_child(0)['thumbnail_key']
+                )
 
         return content_file
 

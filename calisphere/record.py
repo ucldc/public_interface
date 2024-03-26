@@ -7,12 +7,7 @@ from django.http import Http404
 from .collection_views import Collection
 from .institution_views import Repository
 
-def get_iiif(media_id, index) -> Dict[str, Any]:
-    if index == 'solr':
-        iiif_url = f"{settings.UCLDC_IIIF_SOLR}{media_id}/info.json"
-    else:
-        iiif_url = f"{settings.UCLDC_IIIF}{quote(media_id)}/info.json"
-
+def get_iiif(iiif_url) -> Dict[str, Any]:
     if iiif_url.startswith('//'):
         iiif_url = ''.join(['http:', iiif_url])
 
@@ -45,7 +40,8 @@ def get_solr_hosted_content_file(structmap):
     content_file = {'format': format}
 
     if format == 'image':
-        content_file.update(get_iiif(structmap['id'], 'solr'))
+        iiif_url = f"{settings.UCLDC_IIIF_SOLR}{structmap['id']}/info.json"
+        content_file.update(get_iiif(iiif_url))
     if format == 'file':
         content_file.update({
             'id': structmap['id'],
@@ -71,21 +67,22 @@ def get_hosted_content_file(media, thumbnail_md5):
     content_file = {'format': format}
 
     if format =='image':
-        content_file.update(get_iiif(media['media_key'], 'es'))
+        iiif_url = f"{settings.UCLDC_IIIF}{quote(media['media_key'])}/info.json"
+        content_file.update(get_iiif(iiif_url))
     if format == 'file':
         content_file.update({
-            'id': f"media/{media['media_key']}",
+            'id': f"media/{quote(media['media_key'])}",
             'url': f"{settings.UCLDC_NUXEO_THUMBS}thumbnails/{thumbnail_md5}"
         })
     if format == 'audio':
         content_file.update({
-            'id': f"media/{media['media_key']}",
-            'url': f"{settings.UCLDC_MEDIA}media/{media['media_key']}"
+            'id': f"media/{quote(media['media_key'])}",
+            'url': f"{settings.UCLDC_MEDIA}media/{quote(media['media_key'])}"
         })
     if format == 'video':
         content_file.update({
-            'id': f"media/{media['media_key']}",
-            'url': f"{settings.UCLDC_MEDIA}media/{media['media_key']}",
+            'id': f"media/{quote(media['media_key'])}",
+            'url': f"{settings.UCLDC_MEDIA}media/{quote(media['media_key'])}",
             'poster': f"{settings.UCLDC_NUXEO_THUMBS}thumbnails/{thumbnail_md5}"
         })
 

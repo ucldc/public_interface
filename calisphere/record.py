@@ -149,7 +149,7 @@ class Record(object):
         if self.index == 'solr':
             return bool(self.indexed_record.get('structmap_url'))
         elif self.index == 'es':
-            return bool(self.indexed_record.get('media'))
+            return bool('nuxeo.nuxeo' in self.indexed_record.get('mapper_type'))
 
     def is_harvested(self):
         return not self.is_hosted()

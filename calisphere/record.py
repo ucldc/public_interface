@@ -89,6 +89,38 @@ def get_hosted_content_file(media, thumbnail_md5):
     return content_file
 
 
+def make_solr_carousel_display(child):
+    format = child.get('format', '').lower()
+    child_id = child['id']
+    if format == 'image':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_IIIF_SOLR }{ child_id }"
+            "/full/,80/0/default.jpg"
+        )
+    if format == 'file':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS_SOLR }{ child_id }"
+        )
+    if format == 'video': 
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS_SOLR }{ child_id }"
+        )
+    return child
+
+
+def remove_empty_values(child):
+    # remove emptry strings from child values
+    child_display: Dict[str, Any] = {}
+    for field, values in child.items():
+        if isinstance(values, list) and isinstance(values[0], str):
+            child_display[field] = [
+                val for val in values if val and val.strip()
+            ]
+    child_display = dict((k, v) for k, v in list(child_display.items()) if v)
+
+    return child_display
+
+
 class Record(object):
     def __init__(self, indexed_record, child_index=None, index='es'):
         self.index = index
@@ -117,8 +149,8 @@ class Record(object):
             }
             if child_index:
                 complex_object_display['selectedComponentIndex'] = child_index
-                complex_object_display['selectedComponent'] = self.get_child_metadata(
-                    int(child_index))
+                complex_object_display['selectedComponent'] = remove_empty_values(
+                    self.get_child(int(child_index))).update({'selected': True})
 
             self.display.update(complex_object_display)
 
@@ -212,9 +244,12 @@ class Record(object):
     def get_children(self):
         if not hasattr(self, 'children'):
             if self.index == 'solr':
-                self.children = self.get_media_json().get('structMap', [])
+                self.children = [
+                    make_solr_carousel_display(child) for child in
+                    self.get_media_json().get('structMap', [])
+                ]
             else:
-                self.children = []
+                self.children = self.indexed_record.get('children', [])
         return self.children
 
     def get_child(self, index) -> Dict[str, Any]:
@@ -227,17 +262,3 @@ class Record(object):
         if self.index == 'solr':
             return self.indexed_record.get('relation', [])
         return []
-
-    def get_child_metadata(self, child_index):
-        child = self.get_child(child_index)
-
-        child_display: Dict[str, Any] = {'selected': True}
-        # remove emptry strings from child values
-        for field, values in child.items():
-            if isinstance(values, list) and isinstance(values[0], str):
-                child_display[field] = [
-                    val for val in values if val and val.strip()
-                ]
-        child_display = dict((k, v) for k, v in list(child_display.items()) if v)
-
-        return child_display

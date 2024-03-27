@@ -241,11 +241,30 @@ def query_encode(query_string: str = None,
                 es_params['query'] = es_filters[0]
 
     if facets:
-        # exceptions = ['collection_url', 'repository_url', 'campus_url']
-        exceptions = []
+        keyword_fields = [
+            'calisphere-id',
+            'id',
+            'campus_name',
+            'campus_data',
+            'campus_url',
+            'campus_id',
+            'collection_name',
+            'collection_data',
+            'collection_url',
+            'collection_id',
+            'sort_collection_data',
+            'repository_name',
+            'repository_data',
+            'repository_url',
+            'repository_id',
+            'rights_uri',
+            'url_item',
+            'fetcher_type',
+            'mapper_type'
+        ]
         aggs = {}
         for facet in facets:
-            if facet in exceptions or facet[-8:] == '.keyword':
+            if facet in keyword_fields or facet[-8:] == '.keyword':
                 field = facet
             else:
                 field = f'{facet}.keyword'
@@ -283,6 +302,7 @@ def query_encode(query_string: str = None,
     es_params.update({'size': rows})
     if start:
         es_params.update({'from': start})
+
     return es_params
 
 

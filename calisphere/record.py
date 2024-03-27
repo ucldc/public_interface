@@ -64,8 +64,6 @@ def get_solr_hosted_content_file(structmap):
 
 
 def get_hosted_content_file(media, thumbnail_md5):
-    print(media)
-    print(thumbnail_md5)
     format = media.get('format','')
     content_file = {'format': format}
 

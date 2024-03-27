@@ -1,7 +1,8 @@
 from copy import deepcopy
+from dataclasses import dataclass
 from urllib.parse import quote
 from .es_cache_retry import json_loads_url
-from typing import Any, Dict
+from typing import Any, Dict, Union, List
 from django.conf import settings
 from django.http import Http404
 from .collection_views import Collection
@@ -149,6 +150,43 @@ def remove_empty_values(child):
     return child_display
 
 
+@dataclass
+class MediaJsonSchema:
+    label: str
+    alternativeTitle: Union[list, str]
+    creator: Union[list, str]
+    contributor: Union[list, str]
+    publisher: Union[list, str]
+    rights: Union[list, str]
+    rightsHolder: Union[list, str]
+    rightsNote: Union[list, str]
+    dateCopyrighted: Union[list, str]
+    description: Union[list, str]
+    type: Union[list, str]
+    format: Union[list, str]
+    genre: Union[list, str]
+    extent: Union[list, str]
+    identifier: Union[list, str]
+    subject: Union[list, str]
+    temporalCoverage: Union[list, str]
+    spatial: Union[list, str]
+    source: Union[list, str]
+    relation: Union[list, str]
+    provenance: Union[list, str]
+    location: Union[list, str]
+    transcription: Union[list, str]
+    date: Union[list, str] 
+    # date can be a list of dictionaries with a key "displayDate"
+    # in this case, we only care about the first dictionary's display date
+    language: List[Dict[str,str]]
+    # language must be a list of dictionaries with a key "iso639_3"
+    # we only care about the first one dictionary's iso639_3
+
+
+def map_es_child_to_media_json_schema(child):
+    return child
+
+
 class Record(object):
     def __init__(self, indexed_record, child_index=None, index='es'):
         self.index = index
@@ -177,8 +215,12 @@ class Record(object):
             }
             if child_index:
                 complex_object_display['selectedComponentIndex'] = child_index
-                complex_object_display['selectedComponent'] = remove_empty_values(
-                    self.get_child(int(child_index))).update({'selected': True})
+                selectedComponent = self.get_child(int(child_index))
+                if self.index == 'es':
+                    selectedComponent = map_es_child_to_media_json_schema(
+                        selectedComponent)
+                selectedComponent.update({'selected': True})
+                complex_object_display['selectedComponent'] = selectedComponent
 
             self.display.update(complex_object_display)
 

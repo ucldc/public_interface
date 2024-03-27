@@ -303,6 +303,7 @@ def query_encode(query_string: str = None,
     if start:
         es_params.update({'from': start})
 
+    es_params.update({'track_total_hits': True})
     return es_params
 
 

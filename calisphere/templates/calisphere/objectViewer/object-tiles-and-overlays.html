@@ -34,7 +34,7 @@
               {% endif %};">
           {% endwith %}
         {% elif item.contentFile.format|lower == 'file' %}
-          <img class="obj__simple-image" src="{{ ucldcNuxeoThumbs }}{{ item.contentFile.id }}" alt="{{ item.title.0 }}">
+          <img class="obj__simple-image" src="{{ item.contentFile.poster }}" alt="{{ item.title.0 }}">
         {% endif %}
 
         {% if item.harvest_type == "harvested" %}

@@ -18,6 +18,7 @@ from typing import Dict, List, Tuple, Optional
 from aws_xray_sdk.core import patch
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ESConnectionError
+from elasticsearch.exceptions import RequestError as ESRequestError
 
 urllib3.disable_warnings()
 standard_library.install_aliases()
@@ -45,6 +46,9 @@ def es_search(body) -> ESResults:
     except ESConnectionError as e:
         raise ConnectionError(
             f"No OpenSearch connection: {settings.ES_HOST}") from e
+    except ESRequestError as e:
+        raise ValueError(
+            f"Bad request: {e}\n{json.dumps(body, indent=2)}") from e
 
     aggs = results.get('aggregations')
     facet_counts = {'facet_fields': {}}
@@ -123,6 +127,10 @@ def es_get(item_id: str) -> Optional[ESItem]:
     except ESConnectionError as e:
         raise ConnectionError(
             f"No OpenSearch connection: {settings.ES_HOST}") from e
+    except ESRequestError as e:
+        raise ValueError(
+            f"Bad request: {e}\n{json.dumps(body, indent=2)}") from e
+
     found = item_search['hits']['total']['value']
     if not found:
         return None

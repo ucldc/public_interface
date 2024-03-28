@@ -49,8 +49,9 @@ ES_USER = getenv('ES_USER', '')
 ES_PASS = getenv('ES_PASS', '')
 ES_ALIAS = getenv('ES_ALIAS', '')
 
+# Homepage images, featured images, campus images, posters
+UCLDC_IMAGES = getenv('UCLDC_IMAGES', '').rstrip('/')
 
-UCLDC_IMAGES = getenv('UCLDC_IMAGES', '')
 UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
 UCLDC_MEDIA_SOLR = getenv('UCLDC_MEDIA_SOLR', '')
 

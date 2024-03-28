@@ -524,6 +524,9 @@ def posters(request):
     poster_data = json.loads(open(this_data).read())
     poster_data = sorted(poster_data.items())
 
+    for _, poster in poster_data:
+        poster['image'] = f"{settings.UCLDC_IMAGES}/{poster['image']}"
+
     return render(request, 'calisphere/posters.html',
                   {'poster_data': poster_data})
 

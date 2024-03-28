@@ -34,7 +34,7 @@ def settings(request):
     return {
         'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
-        'ucldcImages': settings.UCLDC_IMAGES,
+        'ucldcImages': settings.UCLDC_IMAGES,   # still used in microdata.html
         'ucldcMedia': mediaUrl,
         'ucldcIiif': iiifUrl,
         'ucldcNuxeoThumbs': nuxeoThumbnails,

@@ -1,5 +1,5 @@
 from copy import deepcopy
-from dataclasses import dataclass
+import dataclasses
 from urllib.parse import quote
 from .es_cache_retry import json_loads_url
 from typing import Any, Dict, Union, List
@@ -148,7 +148,7 @@ def remove_empty_values(child):
     return child_display
 
 
-@dataclass
+@dataclasses.dataclass
 class MediaJsonSchema:
     label: str
     alternativeTitle: Union[list, str]
@@ -181,7 +181,70 @@ class MediaJsonSchema:
     # we only care about the first one dictionary's iso639_3
 
 
+def analyze_media_json_vs_es_child_fields(child):
+    # Temporary Analysis of MediaJsonSchema fields vs. child.keys()
+    # TODO: Remove this once analysis is complete
+    # get MediaJsonSchema field names and compare to child.keys() 
+    # print fields in MediaJsonSchema that are not in child.keys()
+    # print fields in child.keys() that are not in MediaJsonSchema
+    # and are candidates to map to missing MediaJsonSchema fields
+
+    # Collect Field Name Data
+    media_json_field_names = [
+        f.name for f in dataclasses.fields(MediaJsonSchema)]
+    es_field_names = child.keys()
+
+    # these won't be in media_json
+    known_rikolti_additions = {
+        'collection_name', 'collection_url', 'collection_data', 
+        'sort_collection_data',
+        'repository_name', 'repository_url', 'repository_data', 
+        'campus_name', 'campus_url', 'campus_data',
+        'thumbnail', 'media', 'thumbnail_key', 'carousel_thumbnail',
+        'mapper_type', 'fetcher_type', 
+        'sort_title', 'url_item', 'calisphere-id', 'id'
+    }
+    # these are known mappings
+    known_mappings = {
+        'title': 'label', 
+        'rights_holder': 'rightsHolder', 
+        'alternative_title': 'alternativeTitle'
+    }
+
+    # Start analysis
+    missing_media_json_fields = list(
+        set(media_json_field_names) - set(es_field_names)
+        - set(known_mappings.values())
+    )
+    extra_es_fields = list(
+        set(es_field_names) - set(media_json_field_names)
+        - known_rikolti_additions - set(known_mappings.keys())
+    )
+    print(
+        f"{'>'*72}\n"
+        "Missing media_json fields for this record:\n"
+        f"{missing_media_json_fields}"
+        f"\n{'-'*72}\n"
+        "Extra rikolti fields for this record:\n"
+        "(could these be mapped to any missing fields listed above?)\n"
+        f"{extra_es_fields}"
+        f"\n{'<'*72}\n"
+    )
+
+
 def map_es_child_to_media_json_schema(child):
+    # Map Rikolti Child to the Media Json Schema
+    # TODO: transition to using child schema in the future
+
+    analyze_media_json_vs_es_child_fields(child)
+
+    child['label']  = child.get('title', [''])[0]
+    child['format'] = child.get('media', {}).get('format', '')
+    if child.get('rights_holder'):
+        child['rightsHolder'] = child['rights_holder']
+    if child.get('alternative_title'):
+        child['alternativeTitle'] = child['alternative_title']
+
     return child
 
 

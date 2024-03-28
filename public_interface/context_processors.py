@@ -25,14 +25,16 @@ def settings(request):
         if request.session.get('index') == 'solr':
             thumbnailUrl = settings.THUMBNAIL_URL_SOLR
 
+    microdataPhotoLogo = f"{settings.UCLDC_IMAGES}/photo_logo.jpg"
+
     return {
         'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
-        'ucldcImages': settings.UCLDC_IMAGES,   # still used in microdata.html
         'gaSiteCode': settings.GA_SITE_CODE,
         'ga4SiteCode': settings.GA4_SITE_CODE,
         'matomoSiteCode': settings.MATOMO_SITE_CODE,
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
+        'microdataPhotoLogo': microdataPhotoLogo,
         'permalink': permalink,
         'multiple_indexes': multiple_indexes,
         'q': '',

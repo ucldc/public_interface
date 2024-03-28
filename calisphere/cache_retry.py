@@ -9,6 +9,7 @@ from django.conf import settings
 
 from collections import namedtuple
 import urllib.request, urllib.error, urllib.parse
+import urllib3
 from retrying import retry
 import requests
 import pickle
@@ -18,7 +19,7 @@ import itertools
 import re
 from typing import Dict, List, Tuple
 
-requests.packages.urllib3.disable_warnings()
+urllib3.disable_warnings()
 
 from aws_xray_sdk.core import patch
 

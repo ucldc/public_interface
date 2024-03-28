@@ -23,7 +23,7 @@ repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
 def solr_escape(text):
-    return text.replace('?', '\\?').replace('"', '\\"')
+    return text.replace('?', '\\?').replace('"', '\\"').replace(':', '\\:')
 
 
 class FacetFilterType(object):

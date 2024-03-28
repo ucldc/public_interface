@@ -5,7 +5,7 @@ from .item_manager import ItemManager
 
 
 def solr_escape(text):
-    return text.replace('?', '\\?').replace('"', '\\"')
+    return text.replace('?', '\\?').replace('"', '\\"').replace(':', '\\:')
 
 
 class SortField(object):

@@ -19,19 +19,16 @@ def settings(request):
 
     multiple_indexes = False
     thumbnailUrl = settings.THUMBNAIL_URL
-    iiifUrl = settings.UCLDC_IIIF
 
     if settings.SOLR_URL and settings.SOLR_API_KEY:
         multiple_indexes = True
         if request.session.get('index') == 'solr':
             thumbnailUrl = settings.THUMBNAIL_URL_SOLR
-            iiifUrl = settings.UCLDC_IIIF_SOLR
 
     return {
         'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
         'ucldcImages': settings.UCLDC_IMAGES,   # still used in microdata.html
-        'ucldcIiif': iiifUrl,
         'gaSiteCode': settings.GA_SITE_CODE,
         'ga4SiteCode': settings.GA4_SITE_CODE,
         'matomoSiteCode': settings.MATOMO_SITE_CODE,

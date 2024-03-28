@@ -21,7 +21,6 @@ def settings(request):
     thumbnailUrl = settings.THUMBNAIL_URL
     iiifUrl = settings.UCLDC_IIIF
     nuxeoThumbnails = settings.UCLDC_NUXEO_THUMBS
-    mediaUrl = settings.UCLDC_MEDIA
 
     if settings.SOLR_URL and settings.SOLR_API_KEY:
         multiple_indexes = True
@@ -29,13 +28,11 @@ def settings(request):
             thumbnailUrl = settings.THUMBNAIL_URL_SOLR
             iiifUrl = settings.UCLDC_IIIF_SOLR
             nuxeoThumbnails = settings.UCLDC_NUXEO_THUMBS_SOLR
-            mediaUrl = settings.UCLDC_MEDIA_SOLR
 
     return {
         'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
         'ucldcImages': settings.UCLDC_IMAGES,   # still used in microdata.html
-        'ucldcMedia': mediaUrl,
         'ucldcIiif': iiifUrl,
         'ucldcNuxeoThumbs': nuxeoThumbnails,
         'gaSiteCode': settings.GA_SITE_CODE,

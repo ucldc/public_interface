@@ -180,7 +180,7 @@ Permalink: {{ permalink }}</textarea>
           {# {% endif %} #}
           <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ item.contentFile.url }}" download="{{ item.title.0 }}.jpg" target="_blank" data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
         {% elif item.contentFile.format == 'file' or item.contentFile.format == 'audio' or item.contentFile.format == 'video'%}
-          <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ ucldcMedia }}{{ item.contentFile.id }}" download target="_blank" data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
+          <a type="button" id="js-downloadBtn" class="btn btn-primary" href="{{ item.contentFile.url }}" download target="_blank" data-label="{% if 'structMap' in item %}{{ item.contentFile.format }}{% else %}{{ item.type.0 }}{% endif %}">Download</a>
         {% endif %}
       </div>
     </div>

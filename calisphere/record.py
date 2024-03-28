@@ -46,7 +46,8 @@ def get_solr_hosted_content_file(structmap):
     if format == 'file':
         content_file.update({
             'id': structmap['id'],
-            'url': f"{settings.UCLDC_NUXEO_THUMBS_SOLR}{structmap['id']}"
+            'url': f"{settings.UCLDC_MEDIA_SOLR}{structmap['id']}",
+            'poster': f"{settings.UCLDC_NUXEO_THUMBS_SOLR}{structmap['id']}"
         })
     if format == 'audio':
         content_file.update({
@@ -73,7 +74,8 @@ def get_hosted_content_file(media, thumbnail_md5):
     if format == 'file':
         content_file.update({
             'id': f"media/{quote(media['media_key'])}",
-            'url': f"{settings.UCLDC_NUXEO_THUMBS}thumbnails/{thumbnail_md5}"
+            'url': f"{settings.UCLDC_MEDIA}media/{quote(media['media_key'])}",
+            'poster': f"{settings.UCLDC_NUXEO_THUMBS}thumbnails/{thumbnail_md5}"
         })
     if format == 'audio':
         content_file.update({

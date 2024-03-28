@@ -146,7 +146,10 @@ class Campus(object):
 
         self.slug = slug
         self.id = campus.get('id')
-        self.featured_image = campus.get('featuredImage')
+        self.featured_image = campus.get('featuredImage', {})
+        self.featured_image['src'] = (
+            f"{settings.UCLDC_IMAGES}{self.featured_image.get('src', '')}"
+        )
         self.url = campus_template.format(self.id)
         self.index = index
 
@@ -195,7 +198,10 @@ class Repository(object):
             feat = [u for u in constants.FEATURED_UNITS
                     if u['id'] == self.id]
             if feat:
-                self.featured_image = feat[0].get('featuredImage')
+                self.featured_image = feat[0].get('featuredImage', {})
+                self.featured_image['src'] = (
+                    f"{settings.UCLDC_IMAGES}{self.featured_image.get('src', '')}"
+                )
 
         if index == 'es':
             self.basic_filter = {'repository_url': [self.id]}

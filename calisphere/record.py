@@ -1,7 +1,7 @@
 from copy import deepcopy
 import dataclasses
 from urllib.parse import quote
-from .es_cache_retry import json_loads_url
+from .utils import json_loads_url
 from typing import Any, Dict, Union, List
 from django.conf import settings
 from django.http import Http404

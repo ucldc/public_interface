@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponse, QueryDict
 from django.template.defaultfilters import urlize
 from . import constants
-from .es_cache_retry import json_loads_url
+from .utils import json_loads_url
 from .item_manager import ItemManager
 from .record import Record
 

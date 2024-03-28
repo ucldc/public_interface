@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .cache_retry import json_loads_url
+from .utils import json_loads_url
 from .item_manager import ItemManager
 from .search_form import (CampusForm, ESCampusForm, 
                           RepositoryForm, ESRepositoryForm)

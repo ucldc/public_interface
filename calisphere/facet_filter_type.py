@@ -256,7 +256,7 @@ class ESRepositoryFF(ESFacetFilterType):
     form_name = 'repository_data'
     facet_field = 'repository_data'
     display_name = 'Contributing Institution'
-    filter_field = 'repository_ids'
+    filter_field = 'repository_url'
 
     def facet_transform(self, facet_val):
         repo_id = facet_val.split('::')[0]
@@ -339,7 +339,7 @@ class ESCollectionFF(ESFacetFilterType):
     form_name = 'collection_data'
     facet_field = 'collection_data'
     display_name = 'Collection'
-    filter_field = 'collection_ids'
+    filter_field = 'collection_url'
 
     def facet_transform(self, collection_data):
         parts = collection_data.split('::')

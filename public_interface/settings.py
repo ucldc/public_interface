@@ -36,7 +36,7 @@ SECRET_KEY = getenv(
     get_random_string(50,
                       'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'))
 
-SOLR_URL = getenv('UCLDC_SOLR_URL', 'http://localhost:8983/solr')
+SOLR_URL = getenv('UCLDC_SOLR_URL', '')         # http://localhost:8983/solr
 SOLR_API_KEY = getenv('UCLDC_SOLR_API_KEY', '')
 EXHIBITS_SOLR_URL = getenv('UCLDC_EXHIBITS_SOLR_URL','http://localhost:8983/solr')
 EXHIBITS_SOLR_API_KEY = getenv('UCLDC_EXHIBITS_SOLR_API_KEY', '')
@@ -46,20 +46,43 @@ ES_USER = getenv('ES_USER', '')
 ES_PASS = getenv('ES_PASS', '')
 ES_ALIAS = getenv('ES_ALIAS', '')
 
+MULTI_INDEX = bool(SOLR_URL and ES_HOST)
+
 # Homepage images, featured images, campus images, posters
 UCLDC_IMAGES = getenv('UCLDC_IMAGES', '').rstrip('/')
 
-THUMBNAIL_URL = getenv('UCLDC_THUMBNAIL_URL', 'http://localhost:8888/')  # `python thumbnail.py`
-SOLR_THUMBNAILS = getenv('UCLDC_THUMBNAIL_URL_SOLR', 'https://calisphere.org/')
+if ES_HOST:
+    # these settings variables are exclusively for use with the ES index
+    # but the environment varibles can be used for both ES and SOLR - 
+    # this makes it so we don't have to rename all the environment
+    # variables on calisphere-test and prod. 
+    THUMBNAIL_URL = getenv('UCLDC_THUMBNAIL_URL', '')
+    UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
+    UCLDC_IIIF = getenv('UCLDC_IIIF', '')
+    UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
 
-UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
-SOLR_MEDIA = getenv('UCLDC_MEDIA_SOLR', '')
+if SOLR_URL:
+    # these settings variables are exclusively for use with the Solr
+    # index. these settings variables read from UCLDC_*_SOLR env vars
+    # if they are set, and otherwise falls back to reading from UCLDC_*
+    SOLR_THUMBNAILS = getenv(
+        'UCLDC_THUMBNAIL_URL_SOLR', getenv(
+            'UCLDC_THUMBNAIL_URL', 'https://calisphere.org/'))
+    SOLR_MEDIA = getenv('UCLDC_MEDIA_SOLR', getenv('UCLDC_MEDIA', ''))
+    SOLR_IIIF = getenv('UCLDC_IIIF_SOLR', getenv('UCLDC_IIIF', ''))
+    SOLR_NUXEO_THUMBS = getenv(
+        'UCLDC_NUXEO_THUMBS_SOLR', getenv('UCLDC_NUXEO_THUMBS', ''))
 
-UCLDC_IIIF = getenv('UCLDC_IIIF', '')
-SOLR_IIIF = getenv('UCLDC_IIIF_SOLR', '')
+if MULTI_INDEX:
+    DEFAULT_INDEX = "es"
+elif SOLR_URL:
+    DEFAULT_INDEX = "solr"
+    THUMBNAIL_URL = SOLR_THUMBNAILS
+elif ES_HOST:
+    DEFAULT_INDEX = "es"
+else:
+    raise AttributeError("No index or thumbnail server specified")
 
-UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
-SOLR_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS_SOLR', '')
 
 UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
                                'https://registry.cdlib.org/')

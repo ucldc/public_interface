@@ -17,13 +17,12 @@ def settings(request):
         if len(query_string) > 0:
             permalink = '?'.join([permalink, query_string.urlencode()])
 
-    multiple_indexes = False
     thumbnailUrl = settings.THUMBNAIL_URL
-
-    if settings.SOLR_URL and settings.SOLR_API_KEY:
-        multiple_indexes = True
+    if settings.MULTI_INDEX:
         if request.session.get('index') == 'solr':
             thumbnailUrl = settings.SOLR_THUMBNAILS
+        elif request.session.get('index') == 'es':
+            thumbnailUrl = settings.THUMBNAIL_URL
 
     microdataPhotoLogo = f"{settings.UCLDC_IMAGES}/photo_logo.jpg"
 
@@ -36,7 +35,7 @@ def settings(request):
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
         'microdataPhotoLogo': microdataPhotoLogo,
         'permalink': permalink,
-        'multiple_indexes': multiple_indexes,
+        'multiple_indexes': settings.MULTI_INDEX,
         'q': '',
         'page': None,
         'meta_image': None,

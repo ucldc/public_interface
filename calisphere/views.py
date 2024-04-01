@@ -74,7 +74,7 @@ def search_by_harvest_id(item_id, indexed_items):
 
 @cache_by_session_state
 def item_view(request, item_id=''):
-    index = request.session.get('index', 'es')
+    index = request.session.get('index')
     from_item_page = request.META.get("HTTP_X_FROM_ITEM_PAGE")
     child_index = request.GET.get('order')
 
@@ -176,7 +176,7 @@ def item_view(request, item_id=''):
 
 @cache_by_session_state
 def search(request):
-    index = request.session.get('index', 'es')
+    index = request.session.get('index')
     if len(request.GET.getlist('q')) <= 0:
         return redirect('calisphere:home')
 
@@ -228,7 +228,7 @@ def item_view_carousel_mlt(item_id, index):
 
 @cache_by_session_state
 def item_view_carousel(request):
-    index = request.session.get('index', 'es')
+    index = request.session.get('index')
     item_id = request.GET.get('itemId')
     if item_id is None:
         raise Http404("No item id specified")
@@ -301,7 +301,7 @@ repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
 def get_related_collections(request):
-    index = request.session.get('index', 'es')
+    index = request.session.get('index')
     if index == 'es':
         form = ESSearchForm(request.GET.copy())
     else:
@@ -397,7 +397,7 @@ def related_exhibitions(request):
 
 @cache_by_session_state
 def report_collection_facet(request, collection_id, facet):
-    index = request.session.get('index', 'es')
+    index = request.session.get('index')
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
     collection_url = col_template.format(collection_id)
@@ -456,7 +456,7 @@ def report_collection_facet(request, collection_id, facet):
 
 @cache_by_session_state
 def report_collection_facet_value(request, collection_id, facet, facet_value):
-    index = request.session.get('index', 'es')
+    index = request.session.get('index')
     collection = Collection(collection_id, index)
     collection_details = collection.details
 

@@ -3,11 +3,8 @@ from .cache_retry import search_solr, SOLR_get, SOLR_mlt
 
 
 class ItemManager(object):
-    def __init__(self, index='es'):
-        if index:
-            self.index = index
-        else:
-            self.index = 'es'
+    def __init__(self, index):
+        self.index = index
 
     def search(self, query):
         if self.index == "solr":

@@ -23,7 +23,7 @@ def settings(request):
     if settings.SOLR_URL and settings.SOLR_API_KEY:
         multiple_indexes = True
         if request.session.get('index') == 'solr':
-            thumbnailUrl = settings.THUMBNAIL_URL_SOLR
+            thumbnailUrl = settings.SOLR_THUMBNAILS
 
     microdataPhotoLogo = f"{settings.UCLDC_IMAGES}/photo_logo.jpg"
 

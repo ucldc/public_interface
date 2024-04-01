@@ -28,9 +28,6 @@ def getenv(variable, default):
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-THUMBNAIL_URL = getenv('UCLDC_THUMBNAIL_URL',
-                          'http://localhost:8888/')  # `python thumbnail.py`
-THUMBNAIL_URL_SOLR = getenv('UCLDC_THUMBNAIL_URL_SOLR', 'https://calisphere.org/')
 S3_STASH = getenv('UCLDC_S3_STASH', '')
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -52,14 +49,17 @@ ES_ALIAS = getenv('ES_ALIAS', '')
 # Homepage images, featured images, campus images, posters
 UCLDC_IMAGES = getenv('UCLDC_IMAGES', '').rstrip('/')
 
+THUMBNAIL_URL = getenv('UCLDC_THUMBNAIL_URL', 'http://localhost:8888/')  # `python thumbnail.py`
+SOLR_THUMBNAILS = getenv('UCLDC_THUMBNAIL_URL_SOLR', 'https://calisphere.org/')
+
 UCLDC_MEDIA = getenv('UCLDC_MEDIA', '')
-UCLDC_MEDIA_SOLR = getenv('UCLDC_MEDIA_SOLR', '')
+SOLR_MEDIA = getenv('UCLDC_MEDIA_SOLR', '')
 
 UCLDC_IIIF = getenv('UCLDC_IIIF', '')
-UCLDC_IIIF_SOLR = getenv('UCLDC_IIIF_SOLR', '')
+SOLR_IIIF = getenv('UCLDC_IIIF_SOLR', '')
 
 UCLDC_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS', '')
-UCLDC_NUXEO_THUMBS_SOLR = getenv('UCLDC_NUXEO_THUMBS_SOLR', '')
+SOLR_NUXEO_THUMBS = getenv('UCLDC_NUXEO_THUMBS_SOLR', '')
 
 UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
                                'https://registry.cdlib.org/')

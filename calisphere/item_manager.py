@@ -1,15 +1,10 @@
 from .es_cache_retry import search_es, es_get, es_mlt
-
-try:
-    from .cache_retry import search_solr, SOLR_get, SOLR_mlt
-    SOLR = True
-except ImportError:
-    SOLR = False
+from .cache_retry import search_solr, SOLR_get, SOLR_mlt
 
 
 class ItemManager(object):
     def __init__(self, index='es'):
-        if SOLR is True:
+        if index:
             self.index = index
         else:
             self.index = 'es'
@@ -22,17 +17,17 @@ class ItemManager(object):
         return results
 
     def get(self, item_id):
-        if self.index == 'es':
+        if self.index == "es":
             item_search = es_get(item_id)
-        else:
+        elif self.index == "solr":
             item_id_search_term = 'id:"{0}"'.format(item_id)
             item_search = SOLR_get(q=item_id_search_term)
         return item_search
 
     def more_like_this(self, item_id):
-        if self.index == 'es':
+        if self.index == "es":
             results = es_mlt(item_id)
-        else:
+        elif self.index == "solr":
             results = SOLR_mlt(item_id)
         return results
 

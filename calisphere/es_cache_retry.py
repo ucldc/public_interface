@@ -21,12 +21,10 @@ standard_library.install_aliases()
 if hasattr(settings, 'XRAY_RECORDER'):
     patch(('requests', ))
 
-if not settings.ES_HOST or not settings.ES_USER or not settings.ES_PASS:
-    raise ImportError("ES settings not defined")
-
-elastic_client = Elasticsearch(
-    hosts=[settings.ES_HOST],
-    http_auth=(settings.ES_USER, settings.ES_PASS))
+if settings.ES_HOST and settings.ES_USER and settings.ES_PASS:
+    elastic_client = Elasticsearch(
+        hosts=[settings.ES_HOST],
+        http_auth=(settings.ES_USER, settings.ES_PASS))
 
 ESResults = namedtuple(
     'ESResults', 'results numFound facet_counts')

@@ -41,24 +41,24 @@ def get_solr_hosted_content_file(structmap):
     content_file = {'format': format}
 
     if format == 'image':
-        iiif_url = f"{settings.UCLDC_IIIF_SOLR}{structmap['id']}/info.json"
+        iiif_url = f"{settings.SOLR_IIIF}{structmap['id']}/info.json"
         content_file.update(get_iiif(iiif_url))
     if format == 'file':
         content_file.update({
             'id': structmap['id'],
-            'url': f"{settings.UCLDC_MEDIA_SOLR}{structmap['id']}",
-            'poster': f"{settings.UCLDC_NUXEO_THUMBS_SOLR}{structmap['id']}"
+            'url': f"{settings.SOLR_MEDIA}{structmap['id']}",
+            'poster': f"{settings.SOLR_NUXEO_THUMBS}{structmap['id']}"
         })
     if format == 'audio':
         content_file.update({
             'id': structmap['id'],
-            'url': f"{settings.UCLDC_MEDIA_SOLR}{structmap['id']}"
+            'url': f"{settings.SOLR_MEDIA}{structmap['id']}"
         })
     if format == 'video':
         content_file.update({
             'id': structmap['id'],
-            'url': f"{settings.UCLDC_MEDIA_SOLR}/{structmap['id']}",
-            'poster': f"{settings.UCLDC_NUXEO_THUMBS_SOLR}{structmap['id']}"
+            'url': f"{settings.SOLR_MEDIA}{structmap['id']}",
+            'poster': f"{settings.SOLR_NUXEO_THUMBS}{structmap['id']}"
         })
 
     return content_file
@@ -97,16 +97,16 @@ def make_solr_carousel_display(child):
     child_id = child['id']
     if format == 'image':
         child['carousel_thumbnail'] = (
-            f"{ settings.UCLDC_IIIF_SOLR }{ child_id }"
+            f"{ settings.SOLR_IIIF }{ child_id }"
             "/full/,80/0/default.jpg"
         )
     if format == 'file':
         child['carousel_thumbnail'] = (
-            f"{ settings.UCLDC_NUXEO_THUMBS_SOLR }{ child_id }"
+            f"{ settings.SOLR_NUXEO_THUMBS }{ child_id }"
         )
     if format == 'video': 
         child['carousel_thumbnail'] = (
-            f"{ settings.UCLDC_NUXEO_THUMBS_SOLR }{ child_id }"
+            f"{ settings.SOLR_NUXEO_THUMBS }{ child_id }"
         )
     return child
 

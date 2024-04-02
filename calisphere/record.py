@@ -1,7 +1,8 @@
 from copy import deepcopy
+import dataclasses
 from urllib.parse import quote
 from .es_cache_retry import json_loads_url
-from typing import Any, Dict
+from typing import Any, Dict, Union, List
 from django.conf import settings
 from django.http import Http404
 from .collection_views import Collection
@@ -89,6 +90,164 @@ def get_hosted_content_file(media, thumbnail_md5):
     return content_file
 
 
+def make_solr_carousel_display(child):
+    format = child.get('format', '').lower()
+    child_id = child['id']
+    if format == 'image':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_IIIF_SOLR }{ child_id }"
+            "/full/,80/0/default.jpg"
+        )
+    if format == 'file':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS_SOLR }{ child_id }"
+        )
+    if format == 'video': 
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS_SOLR }{ child_id }"
+        )
+    return child
+
+
+def make_es_carousel_display(child):
+    # label and format are both used by the carousel - they were part
+    # of the media_json schema in the Solr index
+    media_json_schema = {
+        'label': child.get('title', [''])[0],
+        'format': child.get('media', {}).get('format', '')
+    }
+    child.update(media_json_schema)
+
+    format = child.get('media', {}).get('format', '')
+    if format == 'image':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_IIIF }{ quote(child['media']['media_key']) }"
+            "/full/,80/0/default.jpg"
+        )
+    if format == 'file':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS }{ child['thumbnail_key'] }"
+        )
+    if format == 'video':
+        child['carousel_thumbnail'] = (
+            f"{ settings.UCLDC_NUXEO_THUMBS }{ child['thumbnail_key'] }"
+        )
+    return child
+
+
+def remove_empty_values(child):
+    # remove emptry strings from child values
+    child_display: Dict[str, Any] = {}
+    for field, values in child.items():
+        if isinstance(values, list) and isinstance(values[0], str):
+            child_display[field] = [
+                val for val in values if val and val.strip()
+            ]
+    child_display = dict((k, v) for k, v in list(child_display.items()) if v)
+
+    return child_display
+
+
+@dataclasses.dataclass
+class MediaJsonSchema:
+    label: str
+    alternativeTitle: Union[list, str]
+    creator: Union[list, str]
+    contributor: Union[list, str]
+    publisher: Union[list, str]
+    rights: Union[list, str]
+    rightsHolder: Union[list, str]
+    rightsNote: Union[list, str]
+    dateCopyrighted: Union[list, str]
+    description: Union[list, str]
+    type: Union[list, str]
+    format: Union[list, str]
+    genre: Union[list, str]
+    extent: Union[list, str]
+    identifier: Union[list, str]
+    subject: Union[list, str]
+    temporalCoverage: Union[list, str]
+    spatial: Union[list, str]
+    source: Union[list, str]
+    relation: Union[list, str]
+    provenance: Union[list, str]
+    location: Union[list, str]
+    transcription: Union[list, str]
+    date: Union[list, str] 
+    # date can be a list of dictionaries with a key "displayDate"
+    # in this case, we only care about the first dictionary's display date
+    language: List[Dict[str,str]]
+    # language must be a list of dictionaries with a key "iso639_3"
+    # we only care about the first one dictionary's iso639_3
+
+
+def analyze_media_json_vs_es_child_fields(child):
+    # Temporary Analysis of MediaJsonSchema fields vs. child.keys()
+    # TODO: Remove this once analysis is complete
+    # get MediaJsonSchema field names and compare to child.keys() 
+    # print fields in MediaJsonSchema that are not in child.keys()
+    # print fields in child.keys() that are not in MediaJsonSchema
+    # and are candidates to map to missing MediaJsonSchema fields
+
+    # Collect Field Name Data
+    media_json_field_names = [
+        f.name for f in dataclasses.fields(MediaJsonSchema)]
+    es_field_names = child.keys()
+
+    # these won't be in media_json
+    known_rikolti_additions = {
+        'collection_name', 'collection_url', 'collection_data', 
+        'sort_collection_data',
+        'repository_name', 'repository_url', 'repository_data', 
+        'campus_name', 'campus_url', 'campus_data',
+        'thumbnail', 'media', 'thumbnail_key', 'carousel_thumbnail',
+        'mapper_type', 'fetcher_type', 
+        'sort_title', 'url_item', 'calisphere-id', 'id'
+    }
+    # these are known mappings
+    known_mappings = {
+        'title': 'label', 
+        'rights_holder': 'rightsHolder', 
+        'alternative_title': 'alternativeTitle'
+    }
+
+    # Start analysis
+    missing_media_json_fields = list(
+        set(media_json_field_names) - set(es_field_names)
+        - set(known_mappings.values())
+    )
+    extra_es_fields = list(
+        set(es_field_names) - set(media_json_field_names)
+        - known_rikolti_additions - set(known_mappings.keys())
+    )
+    print(
+        f"{'>'*72}\n"
+        "Missing media_json fields for this record:\n"
+        f"{missing_media_json_fields}"
+        f"\n{'-'*72}\n"
+        "Extra rikolti fields for this record:\n"
+        "(could these be mapped to any missing fields listed above?)\n"
+        f"{extra_es_fields}"
+        f"\n{'<'*72}\n"
+    )
+
+
+def map_es_child_to_media_json_schema(child):
+    # Map Rikolti Child to the Media Json Schema
+    # TODO: transition to using child schema in the future
+
+    analyze_media_json_vs_es_child_fields(child)
+
+    child['label']  = child.get('title', [''])[0]
+    child['format'] = child.get('media', {}).get('format', '')
+    if child.get('rights_holder'):
+        child['rightsHolder'] = child['rights_holder']
+    if child.get('alternative_title'):
+        child['alternativeTitle'] = child['alternative_title']
+
+    return child
+
+
 class Record(object):
     def __init__(self, indexed_record, child_index=None, index='es'):
         self.index = index
@@ -117,8 +276,12 @@ class Record(object):
             }
             if child_index:
                 complex_object_display['selectedComponentIndex'] = child_index
-                complex_object_display['selectedComponent'] = self.get_child_metadata(
-                    int(child_index))
+                selectedComponent = self.get_child(int(child_index))
+                if self.index == 'es':
+                    selectedComponent = map_es_child_to_media_json_schema(
+                        selectedComponent)
+                selectedComponent.update({'selected': True})
+                complex_object_display['selectedComponent'] = selectedComponent
 
             self.display.update(complex_object_display)
 
@@ -182,6 +345,10 @@ class Record(object):
             child = self.get_child(int(child_index))
             if self.has_media(child) and self.index == 'solr':
                 content_file = get_solr_hosted_content_file(child)
+            elif self.has_media(child):
+                content_file = get_hosted_content_file(
+                    child['media'], child['thumbnail_key']
+                )
 
         elif self.has_media():
             if self.index == 'solr':
@@ -193,8 +360,14 @@ class Record(object):
                 )
 
         elif self.is_complex():
-            if self.index == 'solr':
+            first_child = self.get_child(0)
+            if self.has_media(first_child) and self.index == 'solr':
                 content_file = get_solr_hosted_content_file(self.get_child(0))
+            elif self.has_media(first_child):
+                content_file = get_hosted_content_file(
+                    self.get_child(0)['media'], 
+                    self.get_child(0)['thumbnail_key']
+                )
 
         return content_file
 
@@ -212,9 +385,15 @@ class Record(object):
     def get_children(self):
         if not hasattr(self, 'children'):
             if self.index == 'solr':
-                self.children = self.get_media_json().get('structMap', [])
+                self.children = [
+                    make_solr_carousel_display(child) for child in
+                    self.get_media_json().get('structMap', [])
+                ]
             else:
-                self.children = []
+                self.children = [
+                    make_es_carousel_display(child) for child in 
+                    self.indexed_record.get('children', [])
+                ]
         return self.children
 
     def get_child(self, index) -> Dict[str, Any]:
@@ -227,17 +406,3 @@ class Record(object):
         if self.index == 'solr':
             return self.indexed_record.get('relation', [])
         return []
-
-    def get_child_metadata(self, child_index):
-        child = self.get_child(child_index)
-
-        child_display: Dict[str, Any] = {'selected': True}
-        # remove emptry strings from child values
-        for field, values in child.items():
-            if isinstance(values, list) and isinstance(values[0], str):
-                child_display[field] = [
-                    val for val in values if val and val.strip()
-                ]
-        child_display = dict((k, v) for k, v in list(child_display.items()) if v)
-
-        return child_display

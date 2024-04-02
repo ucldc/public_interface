@@ -4,11 +4,9 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import chr
 from builtins import object
-import urllib.request, urllib.error, urllib.parse
 from collections import namedtuple
 import string
 import random
-from .cache_retry import json_loads_url
 from .item_manager import ItemManager
 from django.core.cache import cache
 from django.conf import settings

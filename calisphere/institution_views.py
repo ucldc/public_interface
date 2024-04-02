@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .cache_retry import json_loads_url
+from .utils import json_loads_url
 from .item_manager import ItemManager
 from .search_form import (CampusForm, ESCampusForm, 
                           RepositoryForm, ESRepositoryForm)
@@ -47,7 +47,7 @@ def process_sort_collection_data(string):
 
 @cache_by_session_state
 def campus_directory(request):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
     repo_query = {"facets": ['repository_url']}
     repo_search = ItemManager(index).search(repo_query)
 
@@ -86,7 +86,7 @@ def campus_directory(request):
 
 @cache_by_session_state
 def statewide_directory(request):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
     repo_query = {"facets": ['repository_url']}
 
     repo_search = ItemManager(index).search(repo_query)
@@ -146,7 +146,10 @@ class Campus(object):
 
         self.slug = slug
         self.id = campus.get('id')
-        self.featured_image = campus.get('featuredImage')
+        self.featured_image = campus.get('featuredImage', {})
+        self.featured_image['src'] = (
+            f"{settings.UCLDC_IMAGES}{self.featured_image.get('src', '')}"
+        )
         self.url = campus_template.format(self.id)
         self.index = index
 
@@ -195,7 +198,10 @@ class Repository(object):
             feat = [u for u in constants.FEATURED_UNITS
                     if u['id'] == self.id]
             if feat:
-                self.featured_image = feat[0].get('featuredImage')
+                self.featured_image = feat[0].get('featuredImage', {})
+                self.featured_image['src'] = (
+                    f"{settings.UCLDC_IMAGES}{self.featured_image.get('src', '')}"
+                )
 
         if index == 'es':
             self.basic_filter = {'repository_url': [self.id]}
@@ -347,7 +353,7 @@ def institution_collections(request, institution, index):
 
 @cache_by_session_state
 def repository_search(request, repository_id):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
 
     institution = Repository(repository_id, index)
     if index == 'es':
@@ -374,7 +380,7 @@ def repository_search(request, repository_id):
 
 @cache_by_session_state
 def repository_collections(request, repository_id):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
 
     institution = Repository(repository_id, index)
 
@@ -401,7 +407,7 @@ def repository_collections(request, repository_id):
 
 @cache_by_session_state
 def campus_search(request, campus_slug):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
     institution = Campus(campus_slug, index)
     if index == 'es':
         form = ESCampusForm(request.GET.copy(), institution)
@@ -425,7 +431,7 @@ def campus_search(request, campus_slug):
 
 @cache_by_session_state
 def campus_collections(request, campus_slug):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
 
     institution = Campus(campus_slug, index)
 
@@ -450,7 +456,7 @@ def campus_collections(request, campus_slug):
 
 @cache_by_session_state
 def campus_institutions(request, campus_slug):
-    index = request.session.get("index", "es")
+    index = request.session.get("index")
 
     institution = Campus(campus_slug, index)
 

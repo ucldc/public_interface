@@ -41,7 +41,7 @@
     {% if campus_slug %}
       <div class="col-md-3">
         <a class="institution-intro__featured-image-link" href="{% if featuredImage.url %}{{ featuredImage.url }}{% else %}#{% endif %}">
-          <img class="institution-intro__featured-image" itemprop="image" src="{{ ucldcImages }}{{ featuredImage.src }}" alt="{{ institution.name }}" height=310 width=310>
+          <img class="institution-intro__featured-image" itemprop="image" src="{{ featuredImage.src }}" alt="{{ institution.name }}" height=310 width=310>
           <div class="institution-intro__featured-image-caption">
             View featured image
           </div>
@@ -110,7 +110,7 @@
     {% elif featuredImage %}
       <div class="col-md-3">
         <a class="institution-intro__featured-image-link" href="{% if featuredImage.url %}{{ featuredImage.url }}{% else %}#{% endif %}">
-          <img class="institution-intro__featured-image" itemprop="image" src="{{ ucldcImages }}{{ featuredImage.src }}" alt="{{ institution.name }}" height=310 width=310>
+          <img class="institution-intro__featured-image" itemprop="image" src="{{ featuredImage.src }}" alt="{{ institution.name }}" height=310 width=310>
           <div class="institution-intro__featured-image-caption">
             View featured image
           </div>

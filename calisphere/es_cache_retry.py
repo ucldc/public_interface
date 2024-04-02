@@ -6,13 +6,8 @@ from django.core.cache import cache
 from django.conf import settings
 
 from collections import namedtuple
-import urllib.request
-import urllib.error
 from urllib.parse import urlparse
-from retrying import retry
 import urllib3
-import pickle
-import hashlib
 import json
 from typing import Dict, List, Tuple, Optional
 from aws_xray_sdk.core import patch
@@ -26,12 +21,10 @@ standard_library.install_aliases()
 if hasattr(settings, 'XRAY_RECORDER'):
     patch(('requests', ))
 
-if not settings.ES_HOST or not settings.ES_USER or not settings.ES_PASS:
-    raise ImportError("ES settings not defined")
-
-elastic_client = Elasticsearch(
-    hosts=[settings.ES_HOST],
-    http_auth=(settings.ES_USER, settings.ES_PASS))
+if settings.ES_HOST and settings.ES_USER and settings.ES_PASS:
+    elastic_client = Elasticsearch(
+        hosts=[settings.ES_HOST],
+        http_auth=(settings.ES_USER, settings.ES_PASS))
 
 ESResults = namedtuple(
     'ESResults', 'results numFound facet_counts')
@@ -165,27 +158,6 @@ def es_get(item_id: str) -> Optional[ESItem]:
 def es_get_ids(ids: List[str]) -> ESResults:
     body = {'query': {'ids': {'values': ids}}}
     return es_search(body)
-
-
-# create a hash for a cache key
-def kwargs_md5(**kwargs):
-    m = hashlib.md5()
-    m.update(pickle.dumps(kwargs))
-    return m.hexdigest()
-
-
-# wrapper function for json.loads(urllib2.urlopen)
-@retry(wait_exponential_multiplier=2, stop_max_delay=10000)  # milliseconds
-def json_loads_url(url_or_req):
-    key = kwargs_md5(key='json_loads_url', url=url_or_req)
-    data = cache.get(key)
-    if not data:
-        try:
-            data = json.loads(
-                urllib.request.urlopen(url_or_req).read().decode('utf-8'))
-        except urllib.error.HTTPError:
-            data = {}
-    return data
 
 
 def es_mlt(item_id):

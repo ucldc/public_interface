@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.views.decorators.gzip import gzip_page
@@ -22,7 +23,7 @@ class HomeView(TemplateView):
         this_dir = os.path.dirname(os.path.realpath(__file__))
         this_data = os.path.join(this_dir, 'home-data.json')
         self.home_data = json.loads(open(this_data).read())
-        indexed_collections = CollectionManager("es")
+        indexed_collections = CollectionManager(settings.DEFAULT_INDEX)
         self.total_objects = intcomma(
             int(
                 math.floor((int(indexed_collections.total_objects) - 1) / 25000) *
@@ -34,6 +35,13 @@ class HomeView(TemplateView):
         random.shuffle(self.home_data['home'])
         random.shuffle(self.home_data['uc_partners'])
         random.shuffle(self.home_data['statewide_partners'])
+
+        for partner in self.home_data['uc_partners']:
+            partner['thumb'] = (
+                f"{settings.UCLDC_IMAGES}/{partner['thumb']}")
+        for partner in self.home_data['statewide_partners']:
+            partner['thumb'] = (
+                f"{settings.UCLDC_IMAGES}/{partner['thumb']}")
 
         # return one lock_up; and arrays for the featured stuff
         return render(

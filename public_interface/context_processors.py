@@ -17,33 +17,25 @@ def settings(request):
         if len(query_string) > 0:
             permalink = '?'.join([permalink, query_string.urlencode()])
 
-    multiple_indexes = False
     thumbnailUrl = settings.THUMBNAIL_URL
-    iiifUrl = settings.UCLDC_IIIF
-    nuxeoThumbnails = settings.UCLDC_NUXEO_THUMBS
-    mediaUrl = settings.UCLDC_MEDIA
-
-    if settings.SOLR_URL and settings.SOLR_API_KEY:
-        multiple_indexes = True
+    if settings.MULTI_INDEX:
         if request.session.get('index') == 'solr':
-            thumbnailUrl = settings.THUMBNAIL_URL_SOLR
-            iiifUrl = settings.UCLDC_IIIF_SOLR
-            nuxeoThumbnails = settings.UCLDC_NUXEO_THUMBS_SOLR
-            mediaUrl = settings.UCLDC_MEDIA_SOLR
+            thumbnailUrl = settings.SOLR_THUMBNAILS
+        elif request.session.get('index') == 'es':
+            thumbnailUrl = settings.THUMBNAIL_URL
+
+    microdataPhotoLogo = f"{settings.UCLDC_IMAGES}/photo_logo.jpg"
 
     return {
         'thumbnailUrl': thumbnailUrl,
         'devMode': settings.UCLDC_DEVEL,
-        'ucldcImages': settings.UCLDC_IMAGES,
-        'ucldcMedia': mediaUrl,
-        'ucldcIiif': iiifUrl,
-        'ucldcNuxeoThumbs': nuxeoThumbnails,
         'gaSiteCode': settings.GA_SITE_CODE,
         'ga4SiteCode': settings.GA4_SITE_CODE,
         'matomoSiteCode': settings.MATOMO_SITE_CODE,
         'contactFlag': settings.CONTRUBUTOR_CONTACT_FLAG,
+        'microdataPhotoLogo': microdataPhotoLogo,
         'permalink': permalink,
-        'multiple_indexes': multiple_indexes,
+        'multiple_indexes': settings.MULTI_INDEX,
         'q': '',
         'page': None,
         'meta_image': None,

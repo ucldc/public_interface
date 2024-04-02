@@ -37,9 +37,12 @@ def process_sort_collection_data(string):
     if '::' in string:
         return string.split('::', 2)
     else:
-        part1, remainder = string.split(':', 1)
-        part2, part3 = remainder.rsplit(':https:')
-        return [part1, part2, 'https:{}'.format(part3)]
+        if 'https' in string:
+            sortable_name, remainder = string.split(':', 1)
+            display_name, url = remainder.rsplit(':https:')
+            return [sortable_name, display_name, 'https:{}'.format(url)]
+        else:
+            return string.split(':')
 
 
 @cache_by_session_state
@@ -319,7 +322,7 @@ def institution_collections(request, institution, index):
         collection_parts = process_sort_collection_data(
             related_collection)
         if index == 'es':
-            col_id = collection_parts[2]
+            col_id = collection_parts[-1]
         else:
             col_id = re.match(col_regex, collection_parts[2]).group('id')
         try:

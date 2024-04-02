@@ -45,23 +45,14 @@ def process_sort_collection_data(string):
 @cache_by_session_state
 def campus_directory(request):
     index = request.session.get("index", "solr")
-    if index == 'es':
-        repo_query = {
-            "facets": ['repository_ids']
-        }
-    else:
-        repo_query = {
-            "facets": ['repository_url']
-        }
+    repo_query = {"facets": ['repository_url']}
     repo_search = ItemManager(index).search(repo_query)
 
     repositories = []
-    if index == 'es':
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_ids']
-    else:
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_url']
+    index_repositories = repo_search.facet_counts['facet_fields'][
+        'repository_url']
+
+    if index != 'es':
         index_repositories = [re.match(repo_regex, repo_url).group(
             'repository_id') for repo_url in index_repositories]
 
@@ -93,22 +84,13 @@ def campus_directory(request):
 @cache_by_session_state
 def statewide_directory(request):
     index = request.session.get("index", "solr")
-    if index == 'es':
-        repo_query = {
-            "facets": ['repository_ids']
-        }
-    else:
-        repo_query = {
-            "facets": ['repository_url']
-        }
+    repo_query = {"facets": ['repository_url']}
 
     repo_search = ItemManager(index).search(repo_query)
-    if index == 'es':
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_ids']
-    else:
-        index_repositories = repo_search.facet_counts['facet_fields'][
-            'repository_url']
+    index_repositories = repo_search.facet_counts['facet_fields'][
+        'repository_url']
+
+    if index != 'es':
         index_repositories = [re.match(repo_regex, repo_url).group(
             'repository_id') for repo_url in index_repositories]
 
@@ -178,7 +160,7 @@ class Campus(object):
             self.contact_info = ''
 
         if index == 'es':
-            self.basic_filter = {'campus_ids': [self.id]}
+            self.basic_filter = {'campus_url': [self.id]}
         else:
             self.basic_filter = {'campus_url': [self.url]}
 
@@ -213,7 +195,7 @@ class Repository(object):
                 self.featured_image = feat[0].get('featuredImage')
 
         if index == 'es':
-            self.basic_filter = {'repository_ids': [self.id]}
+            self.basic_filter = {'repository_url': [self.id]}
         else:
             self.basic_filter = {'repository_url': [self.url]}
 

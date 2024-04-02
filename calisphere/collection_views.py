@@ -144,7 +144,7 @@ class Collection(object):
         self.custom_schema_facets = self._generate_custom_schema_facets()
 
         if index == 'es':
-            self.basic_filter = {'collection_ids': [self.id]}
+            self.basic_filter = {'collection_url': [self.id]}
         else:
             self.basic_filter = {'collection_url': [self.url]}
 

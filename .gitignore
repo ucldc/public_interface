@@ -29,3 +29,6 @@ media_root/
 deployments/ucldc-*.zip
 exhibits
 .pa11yci/screencaptures/
+.python-version
+.venv/
+*.zip

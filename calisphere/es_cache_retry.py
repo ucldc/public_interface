@@ -10,15 +10,17 @@ import urllib.request
 import urllib.error
 from urllib.parse import urlparse
 from retrying import retry
-import requests
+import urllib3
 import pickle
 import hashlib
 import json
 from typing import Dict, List, Tuple, Optional
 from aws_xray_sdk.core import patch
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionError as ESConnectionError
+from elasticsearch.exceptions import RequestError as ESRequestError
 
-requests.packages.urllib3.disable_warnings()
+urllib3.disable_warnings()
 standard_library.install_aliases()
 
 if hasattr(settings, 'XRAY_RECORDER'):
@@ -37,9 +39,17 @@ ESItem = namedtuple(
     'ESItem', 'found, item, resp')
 
 
-def es_search(body):
-    results = elastic_client.search(
-        index=settings.ES_ALIAS, body=json.dumps(body))
+def es_search(body) -> ESResults:
+    try:
+        results = elastic_client.search(
+            index=settings.ES_ALIAS, body=json.dumps(body))
+    except ESConnectionError as e:
+        raise ConnectionError(
+            f"No OpenSearch connection: {settings.ES_HOST}") from e
+    except ESRequestError as e:
+        raise ValueError(
+            f"Bad request: {e}\n{json.dumps(body, indent=2)}") from e
+
     aggs = results.get('aggregations')
     facet_counts = {'facet_fields': {}}
     if aggs:
@@ -111,8 +121,16 @@ def es_get(item_id: str) -> Optional[ESItem]:
 
     # cannot use Elasticsearch.get() for multi-index alias
     body = {'query': {'match': {'_id': item_id}}}
-    item_search = elastic_client.search(
-        index=settings.ES_ALIAS, body=json.dumps(body))
+    try:
+        item_search = elastic_client.search(
+            index=settings.ES_ALIAS, body=json.dumps(body))
+    except ESConnectionError as e:
+        raise ConnectionError(
+            f"No OpenSearch connection: {settings.ES_HOST}") from e
+    except ESRequestError as e:
+        raise ValueError(
+            f"Bad request: {e}\n{json.dumps(body, indent=2)}") from e
+
     found = item_search['hits']['total']['value']
     if not found:
         return None

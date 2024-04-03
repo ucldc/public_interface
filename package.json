@@ -26,7 +26,7 @@
     "gulp-jshint": "^2.1.0",
     "gulp-modernizr": "^3.4.0",
     "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^4.0.1",
+    "gulp-sass": "^5.1.0",
     "gulp-sass-lint": "^1.4.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
@@ -38,6 +38,7 @@
     "pa11y-ci": "^2.3.0",
     "postcss-import": "^12.0.0",
     "postcss-svg": "^2.4.0",
+    "sass": "^1.49.7",
     "source-sans-pro": "^3.6.0"
   },
   "engines": {

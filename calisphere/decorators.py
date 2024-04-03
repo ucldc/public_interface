@@ -10,7 +10,7 @@ def cache_by_session_state(func):
         index = request.session.get('index', settings.DEFAULT_INDEX)
         if (
             (index == 'solr' and not settings.SOLR_URL) or
-            (index == 'es' and not settings.ES_URL)
+            (index == 'es' and not settings.ES_HOST)
         ):
             index = settings.DEFAULT_INDEX
         cached = cache_page(60 * 1, key_prefix=index)(func)

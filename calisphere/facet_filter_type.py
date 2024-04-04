@@ -170,7 +170,7 @@ class ESRelationFF(ESFacetFilterType):
     form_name = 'relation_ss'
     facet_field = 'relation'
     display_name = 'Relation'
-    filter_field = 'relation.keyword'
+    filter_field = 'relation.raw'
     sort_by = 'value'
     faceting_allowed = False
 
@@ -186,7 +186,7 @@ class ESTypeFF(ESFacetFilterType):
     form_name = 'type_ss'
     facet_field = 'type'
     display_name = 'Type of Item'
-    filter_field = 'type.keyword'
+    filter_field = 'type.raw'
 
 
 class DecadeFF(FacetFilterType):
@@ -201,7 +201,7 @@ class ESDecadeFF(ESFacetFilterType):
     form_name = 'facet_decade'
     facet_field = 'date'
     display_name = 'Decade'
-    filter_field = 'date.keyword'
+    filter_field = 'date.raw'
     sort_by = 'value'
 
 

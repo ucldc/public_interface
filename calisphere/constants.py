@@ -36,7 +36,32 @@ SORT_OPTIONS = {
 FacetDisplay = namedtuple(
     'FacetDisplay', 'facet, display')
 
-# solr schema fields that have a `_ss` varient for facets
+# index schema fields that are of type=keyword so we can get
+# facets directly without needing an _ss or .raw suffix
+UCLDC_SCHEMA_TERM_FIELDS = [
+    'calisphere-id',
+    'id',
+    'campus_name',
+    'campus_data',
+    'campus_url',
+    'campus_id',
+    'collection_name',
+    'collection_data',
+    'collection_url',
+    'collection_id',
+    'sort_collection_data',
+    'repository_name',
+    'repository_data',
+    'repository_url',
+    'repository_id',
+    'rights_uri',
+    'url_item',
+    'fetcher_type',
+    'mapper_type'
+]
+
+# index schema fields that are of type=text and thus need a 
+# solr _ss or opensearch .raw suffix to get facets
 UCLDC_SCHEMA_FACETS = [
   FacetDisplay("title", "title"),
   FacetDisplay("alternative_title", "alternative title"),
@@ -70,7 +95,7 @@ UCLDC_SOLR_SCHEMA_FACETS = [
     for fd in UCLDC_SCHEMA_FACETS
 ]
 UCLDC_ES_SCHEMA_FACETS = [
-    FacetDisplayField(fd.facet, fd.display, f"{fd.facet}.keyword")
+    FacetDisplayField(fd.facet, fd.display, f"{fd.facet}.raw")
     for fd in UCLDC_SCHEMA_FACETS
 ]
 

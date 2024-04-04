@@ -10,7 +10,7 @@ def solr_escape(text):
 
 class SortField(object):
     default = 'relevance'
-    no_keyword = 'a'
+    default_without_query_string = 'a'
 
     def __init__(self, request):
         if (request.get('q')
@@ -18,7 +18,7 @@ class SortField(object):
            or request.getlist('fq')):
             self.sort = request.get('sort', self.default)
         else:
-            self.sort = request.get('sort', self.no_keyword)
+            self.sort = request.get('sort', self.default_without_query_string)
 
 
 class SearchForm(object):
@@ -389,7 +389,7 @@ class ESCampusCarouselForm(CampusCarouselForm):
 
 class AltSortField(SortField):
     default = 'oldest-end'
-    no_keyword = 'oldest-end'
+    default_without_query_string = 'oldest-end'
 
 
 class CollectionFacetValueForm(CollectionForm):

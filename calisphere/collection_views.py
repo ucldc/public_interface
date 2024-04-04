@@ -161,10 +161,10 @@ class Collection(object):
                         {
                             'form_name': custom_facet['facet_field'],
                             'facet_field': (
-                                f"{custom_facet['facet_field'][:-3]}.keyword"),
+                                f"{custom_facet['facet_field'][:-3]}.raw"),
                             'display_name': custom_facet['label'],
                             'filter_field': (
-                                f"{custom_facet['facet_field'][:-3]}.keyword"),
+                                f"{custom_facet['facet_field'][:-3]}.raw"),
                             'sort_by': custom_facet['sort_by'],
                             'faceting_allowed': True
                         }
@@ -310,7 +310,7 @@ class Collection(object):
                 repositories.append(repository['name'])
 
         if self.index == 'es':
-            sort = ("sort_title.keyword", "asc")
+            sort = ("sort_title.raw", "asc")
         else:
             sort = ("sort_title", "asc")
 

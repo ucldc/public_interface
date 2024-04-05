@@ -300,7 +300,6 @@ campus_template = "https://registry.cdlib.org/api/v1/campus/{0}/"
 repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
-@cache_by_session_state
 def get_related_collections(request):
     index = request.session.get('index')
     if index == 'es':

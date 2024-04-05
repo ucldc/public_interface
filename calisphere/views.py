@@ -215,7 +215,6 @@ def search(request):
     return render(request, 'calisphere/searchResults.html', context)
 
 
-@cache_by_session_state
 def item_view_carousel_mlt(item_id, index):
     carousel_search = ItemManager(index).more_like_this(item_id)
     if carousel_search.numFound == 0:

@@ -215,6 +215,7 @@ def search(request):
     return render(request, 'calisphere/searchResults.html', context)
 
 
+@cache_by_session_state
 def item_view_carousel_mlt(item_id, index):
     carousel_search = ItemManager(index).more_like_this(item_id)
     if carousel_search.numFound == 0:
@@ -300,6 +301,7 @@ campus_template = "https://registry.cdlib.org/api/v1/campus/{0}/"
 repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
 
 
+@cache_by_session_state
 def get_related_collections(request):
     index = request.session.get('index')
     if index == 'es':
@@ -352,6 +354,7 @@ def get_related_collections(request):
     return three_related_collections, len(related_collections)
 
 
+@cache_by_session_state
 def related_collections(request):
     three_rcs, num_related_collections = get_related_collections(request)
 

@@ -159,9 +159,10 @@ class Campus(object):
 
         self.name = self.full_name = self.details.get('name')
         if self.details.get('ark'):
-            self.contact_info = json_loads_url(
-                "http://dsc.cdlib.org/institution-json/" +
-                self.details.get('ark'))
+            # self.contact_info = json_loads_url(
+            #     "http://dsc.cdlib.org/institution-json/" +
+            #     self.details.get('ark'))
+            self.contact_info = ''
         else:
             self.contact_info = ''
 

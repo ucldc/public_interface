@@ -1,11 +1,10 @@
 from django.conf import settings
 from functools import wraps
-from django.utils.decorators import available_attrs
 from django.views.decorators.cache import cache_page
 
 # https://stackoverflow.com/questions/27347921/in-django-can-per-view-cache-decorator-be-session-dependent-for-a-b-testings
 def cache_by_session_state(func):
-    @wraps(func, assigned=available_attrs(func))
+    @wraps(func)
     def wrapper(request, *args, **kwargs):
         index = request.session.get('index')
 

@@ -1,6 +1,7 @@
 """ logic for cache / retry for es (opensearch) and JSON from registry
 """
 
+from calisphere.constants import UCLDC_SCHEMA_TERM_FIELDS
 from future import standard_library
 from django.core.cache import cache
 from django.conf import settings
@@ -166,9 +167,9 @@ def es_mlt(item_id):
         "query": {
             "more_like_this": {
                 "fields": [
-                    "title.keyword",
+                    "title.raw",
                     "collection_data",
-                    "subject.keyword",
+                    "subject.raw",
                 ],
                 "like": [
                     {"_id": item_id}
@@ -241,14 +242,12 @@ def query_encode(query_string: str = None,
                 es_params['query'] = es_filters[0]
 
     if facets:
-        # exceptions = ['collection_url', 'repository_url', 'campus_url']
-        exceptions = []
         aggs = {}
         for facet in facets:
-            if facet in exceptions or facet[-8:] == '.keyword':
+            if facet in UCLDC_SCHEMA_TERM_FIELDS or facet[-4:] == '.raw':
                 field = facet
             else:
-                field = f'{facet}.keyword'
+                field = f'{facet}.raw'
 
             aggs[facet] = {
                 "terms": {
@@ -283,6 +282,8 @@ def query_encode(query_string: str = None,
     es_params.update({'size': rows})
     if start:
         es_params.update({'from': start})
+
+    es_params.update({'track_total_hits': True})
     return es_params
 
 

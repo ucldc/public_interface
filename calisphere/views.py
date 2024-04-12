@@ -28,7 +28,7 @@ from django.views.decorators.cache import cache_page
 import os
 import math
 import re
-import simplejson as json
+import json
 import urllib.parse
 
 standard_library.install_aliases()

@@ -1,6 +1,7 @@
 import pickle
 import hashlib
 import json
+import sys
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -17,14 +18,19 @@ def kwargs_md5(**kwargs):
 
 
 # wrapper function for json.loads(urllib2.urlopen)
-@retry(wait_exponential_multiplier=2, stop_max_delay=10000)  # milliseconds
+@retry(stop_max_delay=200)  # milliseconds
 def json_loads_url(url_or_req):
     key = kwargs_md5(key='json_loads_url', url=url_or_req)
     data = cache.get(key)
     if not data:
+        print(f"cache miss for {url_or_req}", file=sys.stderr, flush=True)
         try:
             data = json.loads(
                 urllib.request.urlopen(url_or_req).read().decode('utf-8'))
-        except urllib.error.HTTPError:
+        except urllib.error.HTTPError as e:
+            print(f'HTTPError: {url_or_req} {e}', file=sys.stderr, flush=True)
+            data = {}
+        except urllib.error.URLError as e:
+            print('URLError: ' + url_or_req + ' ' + str(e), file=sys.stderr, flush=True)
             data = {}
     return data

@@ -245,10 +245,10 @@ class Repository(object):
             return self.contact_info
 
         self.contact_info = ''
-        if self.details.get('ark'):
-            self.contact_info = json_loads_url(
-                "http://dsc.cdlib.org/institution-json/" +
-                self.details.get('ark'))
+        # if self.details.get('ark'):
+        #     self.contact_info = json_loads_url(
+        #         "http://dsc.cdlib.org/institution-json/" +
+        #         self.details.get('ark'))
         return self.contact_info
 
 

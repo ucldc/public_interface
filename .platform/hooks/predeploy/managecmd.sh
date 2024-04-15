@@ -11,4 +11,6 @@ echo "download complete; creating redirect map";
 httxt2dbm -i $filename -o CSPHERE_IDS.map
 mv CSPHERE_IDS.map /var/app/
 
-echo "TODO: still need to create off-site redirect map OFF_CSPHERE.map"
+echo "create off-site redirect map";
+httxt2dbm -i off_csphere.txt -o OFF_CSPHERE.map
+mv OFF_CSPHERE.map /var/app/

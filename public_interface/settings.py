@@ -155,17 +155,17 @@ if EC2_PRIVATE_IP:
 
 SITE_ID = 1
 
-FEATURE_POLICY = {
-    'geolocation': 'none',
-    'midi': 'none',
-    'microphone': 'none',
-    'camera': 'none',
-    'magnetometer': 'none',
-    'gyroscope': 'none',
-    'accelerometer': 'none',
-    'ambient-light-sensor': 'none',
-    'autoplay': 'none',
-    'payment': 'none',
+PERMISSIONS_POLICY = {
+    'geolocation': [],
+    'midi': [],
+    'microphone': [],
+    'camera': [],
+    'magnetometer': [],
+    'gyroscope': [],
+    'accelerometer': [],
+    'ambient-light-sensor': [],
+    'autoplay': [],
+    'payment': [],
 
     'fullscreen': 'self',
     'sync-xhr': '*',
@@ -184,7 +184,7 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django_feature_policy.FeaturePolicyMiddleware',
+    'django_permissions_policy.PermissionsPolicyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',

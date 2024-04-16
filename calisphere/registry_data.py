@@ -1,5 +1,3 @@
-from future import standard_library
-standard_library.install_aliases()
 from builtins import object
 from django.conf import settings
 from .utils import json_loads_url

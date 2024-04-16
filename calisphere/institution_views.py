@@ -1,4 +1,3 @@
-from future import standard_library
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
@@ -19,7 +18,6 @@ import math
 import re
 import string
 
-standard_library.install_aliases()
 
 repo_regex = (r'https://registry\.cdlib\.org/api/v1/repository/'
               r'(?P<repository_id>\d*)/?')

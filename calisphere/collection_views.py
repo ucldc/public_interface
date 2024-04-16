@@ -1,4 +1,3 @@
-from future import standard_library
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
@@ -16,8 +15,6 @@ import os
 import math
 import string
 import urllib.parse
-
-standard_library.install_aliases()
 
 col_regex = (r'https://registry\.cdlib\.org/api/v1/collection/'
              r'(?P<id>\d*)/?')

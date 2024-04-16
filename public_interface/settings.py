@@ -155,17 +155,17 @@ if EC2_PRIVATE_IP:
 
 SITE_ID = 1
 
-FEATURE_POLICY = {
-    'geolocation': 'none',
-    'midi': 'none',
-    'microphone': 'none',
-    'camera': 'none',
-    'magnetometer': 'none',
-    'gyroscope': 'none',
-    'accelerometer': 'none',
-    'ambient-light-sensor': 'none',
-    'autoplay': 'none',
-    'payment': 'none',
+PERMISSIONS_POLICY = {
+    'geolocation': [],
+    'midi': [],
+    'microphone': [],
+    'camera': [],
+    'magnetometer': [],
+    'gyroscope': [],
+    'accelerometer': [],
+    'ambient-light-sensor': [],
+    'autoplay': [],
+    'payment': [],
 
     'fullscreen': 'self',
     'sync-xhr': '*',
@@ -183,7 +183,8 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
 
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
-    'django_feature_policy.FeaturePolicyMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django_permissions_policy.PermissionsPolicyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     # 'django.middleware.cache.UpdateCacheMiddleware',
@@ -191,7 +192,6 @@ MIDDLEWARE = (
     # 'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', )
 
@@ -333,7 +333,7 @@ STATIC_URL = getenv('UCLDC_STATIC_URL',
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "dist"), )
 

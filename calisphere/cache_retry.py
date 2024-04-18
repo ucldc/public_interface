@@ -1,8 +1,6 @@
 """ logic for cache / retry for solr and JSON from registry
 """
 
-from future import standard_library
-standard_library.install_aliases()
 from builtins import object
 from django.core.cache import cache
 from django.conf import settings

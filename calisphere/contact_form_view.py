@@ -1,11 +1,9 @@
-from future import standard_library
-standard_library.install_aliases()
 from collections import OrderedDict
 from django import forms
 from django.conf import settings
 from django.urls import reverse
-from contact_form.views import ContactFormView
-from contact_form.forms import ContactForm
+from django_contact_form.views import ContactFormView
+from django_contact_form.forms import ContactForm
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 import urllib.parse
@@ -34,8 +32,8 @@ class CalisphereContactForm(ContactForm):
     referer = forms.CharField(widget=forms.HiddenInput())
     captcha = ReCaptchaField(widget=ReCaptchaWidget())
 
-    template_name = 'contact_form/contact_form.txt'
-    subject_template_name = "contact_form/contact_form_subject.txt"
+    template_name = 'django_contact_form/contact_form.txt'
+    subject_template_name = "django_contact_form/contact_form_subject.txt"
 
     def __init__(self, request, *args, **kwargs):
         super(CalisphereContactForm, self).__init__(

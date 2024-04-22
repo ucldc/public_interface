@@ -1,3 +1,5 @@
+{% load lockups %}
+
 {% if exhibits|length > 0 %}
 <div class="carousel__container">
   <div class="margin-bottom-20"><strong>Exhibitions</strong> containing this item ({{exhibits|length}} found)</div>
@@ -7,7 +9,7 @@
         <a href="{{ exhibit.get_absolute_url }}" class="js-relatedExhibition" data-pjax="js-pageContent">
           <div class="exhibit__lockup--med">
             <div class="exhibit__lockup--med-image">
-              <div class="aspect-ratio-content exhibit__lockup--med-image-content" style="background-image: url('{{ exhibit.exhibit_lockup }}');">
+              <div class="aspect-ratio-content exhibit__lockup--med-image-content" style="background-image: url('{% exhibit_lockup exhibit request.session.index %}');">
               </div>
             </div>
             <div class="exhibit__lockup--med-title">

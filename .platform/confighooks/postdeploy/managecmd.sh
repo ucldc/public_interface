@@ -1,5 +1,5 @@
 #!/bin/bash
-# NOTE: any changes made to this script should be copied to .platform/confighooks/postdeploy/managecmd.sh
+# NOTE: any changes made to this script should be copied to .platform/hooks/postdeploy/managecmd.sh
 source /var/app/venv/*/bin/activate
 echo "starting collectstatic";
 echo "post-deploy: python manage.py collectstatic --noinput" >> /var/log/collectstatic.log

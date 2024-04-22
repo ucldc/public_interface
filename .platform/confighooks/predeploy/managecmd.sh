@@ -1,5 +1,5 @@
 #!/bin/bash
-# NOTE: any changes made to this script should be copied to .platform/confighooks/predeploy/managecmd.sh
+# NOTE: any changes made to this script should be copied to .platform/hooks/predeploy/managecmd.sh
 source /var/app/venv/*/bin/activate
 
 echo "starting collectstatic";

@@ -31,6 +31,36 @@ ESItem = namedtuple(
     'ESItem', 'found, item, resp')
 
 
+def shim_record(metadata):
+    # TODO replace type_ss with type globally
+    metadata['type_ss'] = metadata.get('type')
+    metadata['collection_ids'] = metadata.get('collection_url')
+    metadata['repository_ids'] = metadata.get('repository_url')
+
+    thumbnail_key = get_thumbnail_key(metadata)
+    if thumbnail_key:
+        metadata['reference_image_md5'] = thumbnail_key
+
+    media_key = get_media_key(metadata)
+    if media_key:
+        metadata['media']['media_key'] = media_key
+
+    if metadata.get('children'):
+        children = metadata.pop('children')
+        updated_children = []
+        for child in children:
+            thumbnail_key = get_thumbnail_key(child)
+            if thumbnail_key:
+                child['thumbnail_key'] = thumbnail_key
+            media_key = get_media_key(child)
+            if media_key:
+                child['media']['media_key'] = media_key
+            updated_children.append(child)
+        metadata['children'] = updated_children
+
+    return metadata
+
+
 def es_search(body) -> ESResults:
     try:
         results = elastic_client.search(
@@ -53,30 +83,7 @@ def es_search(body) -> ESResults:
         facet_counts = {}
 
     for result in results['hits']['hits']:
-        metadata = result.pop('_source')
-        # TODO replace type_ss with type globally
-        metadata['type_ss'] = metadata.get('type')
-        thumbnail_key = get_thumbnail_key(metadata)
-        if thumbnail_key:
-            metadata['reference_image_md5'] = thumbnail_key
-
-        media_key = get_media_key(metadata)
-        if media_key:
-            metadata['media']['media_key'] = media_key
-
-        if metadata.get('children'):
-            children = metadata.pop('children')
-            updated_children = []
-            for child in children:
-                thumbnail_key = get_thumbnail_key(child)
-                if thumbnail_key:
-                    child['thumbnail_key'] = thumbnail_key
-                media_key = get_media_key(child)
-                if media_key:
-                    child['media']['media_key'] = media_key
-                updated_children.append(child)
-            metadata['children'] = updated_children
-
+        metadata = shim_record(result.pop('_source'))
         result.update(metadata)
 
     results = ESResults(
@@ -126,29 +133,7 @@ def es_get(item_id: str) -> Optional[ESItem]:
     found = item_search['hits']['total']['value']
     if not found:
         return None
-    item = item_search['hits']['hits'][0]['_source']
-
-    item['collection_ids'] = item.get('collection_url')
-    item['repository_ids'] = item.get('repository_url')
-    thumbnail_key = get_thumbnail_key(item)
-    if thumbnail_key:
-        item['reference_image_md5'] = thumbnail_key
-    media_key = get_media_key(item)
-    if media_key:
-        item['media']['media_key'] = media_key
-
-    if item.get('children'):
-        children = item.pop('children')
-        updated_children = []
-        for child in children:
-            thumbnail_key = get_thumbnail_key(child)
-            if thumbnail_key:
-                child['thumbnail_key'] = thumbnail_key
-            media_key = get_media_key(child)
-            if media_key:
-                child['media']['media_key'] = media_key
-            updated_children.append(child)
-        item['children'] = updated_children
+    item = shim_record(item_search['hits']['hits'][0]['_source'])
 
     results = ESItem(found, item, item_search)
     return results

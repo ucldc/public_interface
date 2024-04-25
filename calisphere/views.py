@@ -320,7 +320,7 @@ def get_related_collections(request):
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
             rc_params['query_string'] = form.query_string = (
-                f"id:{request.GET.get('itemId')}")
+                f"id:{solr_escape(request.GET.get('itemId'))}")
 
     related_collections = ItemManager(index).search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][

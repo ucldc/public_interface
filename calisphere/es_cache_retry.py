@@ -19,6 +19,8 @@ from retrying import retry
 from calisphere.constants import UCLDC_SCHEMA_TERM_FIELDS
 from calisphere.utils import kwargs_md5
 
+from calisphere.utils import kwargs_md5
+
 urllib3.disable_warnings()
 
 if hasattr(settings, 'XRAY_RECORDER'):

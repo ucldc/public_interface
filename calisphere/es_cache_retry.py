@@ -140,7 +140,7 @@ def es_get(item_id: str) -> Optional[ESItem]:
 
 
 def es_get_ids(ids: List[str]) -> ESResults:
-    body = {'query': {'ids': {'values': ids}}}
+    body = {'query': {'ids': {'values': ids}}, 'size': len(ids)}
     return es_search(body)
 
 

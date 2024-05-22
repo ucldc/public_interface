@@ -200,7 +200,9 @@ class DecadeFF(FacetFilterType):
 class ESDecadeFF(ESFacetFilterType):
     form_name = 'facet_decade'
     facet_field = 'date'
-    display_name = 'Decade'
+    #display_name = 'Decade'
+    # see https://github.com/ucldc/rikolti/issues/807
+    display_name = 'Date'
     filter_field = 'date.raw'
     sort_by = 'value'
 

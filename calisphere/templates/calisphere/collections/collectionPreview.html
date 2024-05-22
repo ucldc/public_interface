@@ -48,6 +48,8 @@
               <div class="collect-row__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
               {% elif item.type.0|lower == "image" %}
               <div class="collect-row__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-picture-o"></div>
+              {% else %}
+              <div class="collect-row__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-file"></div>
               {% endif %}
             {% endif %}
           </div>

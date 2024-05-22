@@ -45,7 +45,11 @@
       </div>
     {% else %}
       <div class="thumbnail__container">
+        {% if item.type_ss.0 %}
         <div class="obj__tile-icon {{ item.type_ss.0|lower|cut:' '}}"></div>
+        {% else %}
+        <div class="obj__tile-icon fa-file"></div>
+        {% endif %}
       </div>
     {% endif %}
     <div class="obj__caption">

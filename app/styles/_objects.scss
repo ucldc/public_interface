@@ -50,6 +50,7 @@ html.no-jquery .obj__osd-infobanner {
 .obj__tile-icon.sound { @extend .fa-volume-up; }
 .obj__tile-icon.text { @extend .fa-file-text-o; }
 .obj__tile-icon.dataset { @extend .fa-bar-chart; }
+.obj__tile-icon.image { @extend .fa-picture-o; }
 
 .obj__overlay-icon {
   @include thumbnail__overlay-icon(); // for custom icon sizes instead of defaults at xs, sm, md, and lg screen sizes, add comma separated number/unit value in parentheses, like: (20vw, 10vw, 8vw, 80px)

@@ -275,12 +275,12 @@ def query_encode(query_string: str = None,
             i = result_fields.index('type_ss')
             result_fields[i] = 'type'
 
-    # if sort:
-    #     es_params.update({
-    #         "sort": [{
-    #             sort[0]: {"order": sort[1]}
-    #         }]
-    #     })
+    if sort:
+        es_params.update({
+            "sort": [{
+            sort[0]: {"order": sort[1]}
+        }]
+    })
     
     es_params.update({'size': rows})
     if start:

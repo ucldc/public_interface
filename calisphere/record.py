@@ -369,7 +369,7 @@ class Record(object):
             elif self.has_media(first_child):
                 content_file = get_hosted_content_file(
                     self.get_child(0)['media'], 
-                    self.get_child(0)['thumbnail_key']
+                    self.get_child(0).get('thumbnail_key')
                 )
 
         return content_file

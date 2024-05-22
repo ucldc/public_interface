@@ -258,7 +258,10 @@ class Record(object):
         self.display = deepcopy(indexed_record)
 
         if 'reference_image_dimensions' in self.indexed_record:
-            split_ref = self.display['reference_image_dimensions'].split(':')
+            if isinstance(self.indexed_record['reference_image_dimensions'], str):
+                split_ref = self.display['reference_image_dimensions'].split(':')
+            else:
+                split_ref = self.indexed_record['reference_image_dimensions']
             self.display['reference_image_dimensions'] = split_ref
 
         self.display['harvest_type'] = 'hosted' if self.is_hosted() else 'harvested'

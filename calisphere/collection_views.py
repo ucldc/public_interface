@@ -307,7 +307,7 @@ class Collection(object):
                 repositories.append(repository['name'])
 
         if self.index == 'es':
-            sort = ("sort_title.raw", "asc")
+            sort = ("sort_title", "asc")
         else:
             sort = ("sort_title", "asc")
 

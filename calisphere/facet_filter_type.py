@@ -116,10 +116,12 @@ class ESFacetFilterType(FacetFilterType):
         if len(selected_filters) > 0:
             self.query = {
                 "terms": {
-                    self.filter_field: selected_filters
+                    self.filter_field: self.filter_transform(selected_filters)
                 }
             }
-            self.basic_query = {self.filter_field: selected_filters}
+            self.basic_query = {
+                self.filter_field: self.filter_transform(selected_filters)
+            }
 
     def process_facets(self, facets, sort_override=None):
         filters = list(map(self.filter_transform, self.form_context))
@@ -188,6 +190,17 @@ class ESTypeFF(ESFacetFilterType):
     display_name = 'Type of Item'
     filter_field = 'type.raw'
 
+    def facet_transform(self, facet_val):
+        if facet_val == '':
+            return ('type value not supplied')
+        return facet_val
+
+    def filter_transform(self, filter_val):
+        if 'type value not supplied' in filter_val:
+            i = filter_val.index('type value not supplied')
+            filter_val[i] = ''
+        return filter_val
+
 
 class DecadeFF(FacetFilterType):
     form_name = 'facet_decade'
@@ -205,6 +218,17 @@ class ESDecadeFF(ESFacetFilterType):
     display_name = 'Date'
     filter_field = 'date.raw'
     sort_by = 'value'
+
+    def facet_transform(self, facet_val):
+        if facet_val == '':
+            return ('date value not supplied')
+        return facet_val
+
+    def filter_transform(self, filter_val):
+        if 'date value not supplied' in filter_val:
+            i = filter_val.index('date value not supplied')
+            filter_val[i] = ''
+        return filter_val
 
 
 class RepositoryFF(FacetFilterType):

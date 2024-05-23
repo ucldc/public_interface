@@ -87,6 +87,8 @@
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-file-text-o"></div>
                 {% elif item.type.0|lower == "dataset" %}
                 <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-bar-chart"></div>
+                {% else %}
+                <div class="related-coll__tile-icon{% if forloop.counter == 1 %}--large{% endif %} fa-file"></div>
                 {% endif %}
               {% endif %}
             </div>

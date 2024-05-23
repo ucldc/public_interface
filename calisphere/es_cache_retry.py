@@ -44,6 +44,8 @@ def shim_record(metadata):
     thumbnail_key = get_thumbnail_key(metadata)
     if thumbnail_key:
         metadata['reference_image_md5'] = thumbnail_key
+        metadata['reference_image_dimensions'] = (
+            metadata.get('thumbnail', {}).get('dimensions'))
 
     media_key = get_media_key(metadata)
     if media_key:

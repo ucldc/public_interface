@@ -16,7 +16,7 @@ from .search_form import (SearchForm, ESSearchForm, solr_escape,
                           CampusForm, ESCampusForm)
 from .collection_views import Collection, get_rc_from_ids
 from .institution_views import Repository, Campus
-from .facet_filter_type import CollectionFF
+from .facet_filter_type import CollectionFF, ESCollectionFF
 from static_sitemaps.util import _lazy_load
 from static_sitemaps import conf
 from requests.exceptions import HTTPError
@@ -302,9 +302,10 @@ def get_related_collections(request):
     index = request.session.get('index')
     if index == 'es':
         form = ESSearchForm(request.GET.copy())
+        field = ESCollectionFF(request.GET.copy())
     else:
         form = SearchForm(request.GET.copy())
-    field = CollectionFF(request.GET.copy())
+        field = CollectionFF(request.GET.copy())
 
     if request.GET.get('campus_slug'):
         slug = request.GET.get('campus_slug')
@@ -320,7 +321,7 @@ def get_related_collections(request):
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
             rc_params['query_string'] = form.query_string = (
-                f"id:{request.GET.get('itemId')}")
+                f"id:{solr_escape(request.GET.get('itemId'))}")
 
     related_collections = ItemManager(index).search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][

@@ -1,19 +1,23 @@
 """ logic for cache / retry for es (opensearch) and JSON from registry
 """
 
-from calisphere.constants import UCLDC_SCHEMA_TERM_FIELDS
-from django.core.cache import cache
-from django.conf import settings
+import json
+import urllib3
 
 from collections import namedtuple
-from urllib.parse import urlparse
-import urllib3
-import json
 from typing import Dict, List, Tuple, Optional
+from urllib.parse import urlparse
+
 from aws_xray_sdk.core import patch
+from django.core.cache import cache
+from django.conf import settings
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ESConnectionError
 from elasticsearch.exceptions import RequestError as ESRequestError
+from retrying import retry
+
+from calisphere.constants import UCLDC_SCHEMA_TERM_FIELDS
+from calisphere.utils import kwargs_md5
 
 urllib3.disable_warnings()
 
@@ -61,7 +65,13 @@ def shim_record(metadata):
     return metadata
 
 
+@retry(stop_max_delay=3000)  # milliseconds
 def es_search(body) -> ESResults:
+    cache_key = f"es_search_{kwargs_md5(**body)}"
+    cached_results = cache.get(cache_key)
+    if cached_results:
+        return cached_results
+
     try:
         results = elastic_client.search(
             index=settings.ES_ALIAS, body=json.dumps(body))
@@ -91,6 +101,8 @@ def es_search(body) -> ESResults:
         results['hits']['total']['value'],
         facet_counts)
 
+    cache.set(cache_key, results, settings.DJANGO_CACHE_TIMEOUT)  # seconds
+
     return results
 
 def get_thumbnail_key(metadata):
@@ -109,14 +121,21 @@ def get_media_key(metadata):
             key_parts = uri_path.split('/')[2:]
             return '/'.join(key_parts)
 
-def es_search_nocache(**kwargs):
-    return es_search(kwargs)
+
+# def es_search_nocache(**kwargs):
+#     return es_search(kwargs)
 
 
+@retry(stop_max_delay=3000)  # milliseconds
 def es_get(item_id: str) -> Optional[ESItem]:
     # cannot search Elasticsearch with empty string
     if not item_id:
         return None
+
+    cache_key = f"es_get_{item_id}"
+    cached_results = cache.get(cache_key)
+    if cached_results:
+        return cached_results
 
     # cannot use Elasticsearch.get() for multi-index alias
     body = {'query': {'match': {'_id': item_id}}}
@@ -136,6 +155,7 @@ def es_get(item_id: str) -> Optional[ESItem]:
     item = shim_record(item_search['hits']['hits'][0]['_source'])
 
     results = ESItem(found, item, item_search)
+    cache.set(cache_key, results, settings.DJANGO_CACHE_TIMEOUT)  # seconds
     return results
 
 

@@ -128,11 +128,12 @@ def make_es_carousel_display(child):
         )
     if format == 'file':
         child['carousel_thumbnail'] = (
-            f"{ settings.UCLDC_NUXEO_THUMBS }{ child['thumbnail_key'] }"
+            f"{ settings.UCLDC_NUXEO_THUMBS }thumbnails/{ child['thumbnail_key'] }"
         )
+        print(f"child['carousel_thumbnail']: { child['carousel_thumbnail'] }")
     if format == 'video':
         child['carousel_thumbnail'] = (
-            f"{ settings.UCLDC_NUXEO_THUMBS }{ child['thumbnail_key'] }"
+            f"{ settings.UCLDC_NUXEO_THUMBS }thumbnails/{ child['thumbnail_key'] }"
         )
     return child
 

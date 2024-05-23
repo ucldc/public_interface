@@ -276,9 +276,13 @@ def query_encode(query_string: str = None,
             result_fields[i] = 'type'
 
     if sort:
+        if sort[0] == 'score':
+            sort_by = '_score'
+        else:
+            sort_by = sort[0]
         es_params.update({
             "sort": [{
-            sort[0]: {"order": sort[1]}
+            sort_by: {"order": sort[1]}
         }]
     })
     

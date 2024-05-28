@@ -4,6 +4,7 @@ import operator
 from django.apps import apps
 from django.conf import settings
 from .utils import json_loads_url
+from .utils import query_string_escape
 from calisphere.collection_data import CollectionManager
 
 # FACETS are retrieved from Solr for a user to potentially FILTER on
@@ -20,11 +21,6 @@ col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 repo_regex = (
     r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
 repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
-
-
-def solr_escape(text):
-    return text.replace('?', '\\?').replace('"', '\\"').replace(':', '\\:')
-
 
 class FacetFilterType(object):
     form_name = ''
@@ -47,7 +43,7 @@ class FacetFilterType(object):
         if len(selected_filters) > 0:
             query = list([
                 '{0}: "{1}"'.format(self.filter_field,
-                                    solr_escape(
+                                    query_string_escape(
                                         self.filter_transform(val)))
                 for val in selected_filters
             ])

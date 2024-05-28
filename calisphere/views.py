@@ -8,7 +8,7 @@ from .utils import json_loads_url
 from .item_manager import ItemManager
 from .record import Record
 
-from .search_form import (SearchForm, ESSearchForm, solr_escape, 
+from .search_form import (SearchForm, ESSearchForm, query_string_escape,
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
                           CarouselForm, ESCarouselForm,
                           CollectionCarouselForm, ESCollectionCarouselForm,
@@ -108,7 +108,7 @@ def item_view(request, item_id=''):
                     'calisphere:collectionView',
                     kwargs={'collection_id': item.collections[0].id}) +
                     "?relation_ss=" +
-                    urllib.parse.quote(solr_escape(relation)))
+                    urllib.parse.quote(query_string_escape(relation)))
                 })
         else:
             relation_links.append({
@@ -321,7 +321,7 @@ def get_related_collections(request):
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
             rc_params['query_string'] = form.query_string = (
-                f"id:{solr_escape(request.GET.get('itemId'))}")
+                f"id:{query_string_escape(request.GET.get('itemId'))}")
 
     related_collections = ItemManager(index).search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
@@ -464,7 +464,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
         raise Http404("{} does not exist".format(facet))
 
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
-    escaped_facet_value = solr_escape(parsed_facet_value)
+    escaped_facet_value = query_string_escape(parsed_facet_value)
 
     if index == 'es':
         form = ESCollectionFacetValueForm(request.GET.copy(), collection)

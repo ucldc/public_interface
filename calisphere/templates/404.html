@@ -139,18 +139,13 @@
           <nav class="footer-nav mobile-nav" aria-label="footer navigation">
             <ul>
               <li>
-                <a href="{% url 'contact_form' %}" data-pjax="js-pageContent">
-                  Contact Us
+                <a href="{% url 'calisphere:home' %}" data-pjax="js-pageContent">
+                  Home
                 </a>
               </li>
               <li>
                 <a href="{% url 'calisphere:about' %}" data-pjax="js-pageContent">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">
-                  FAQs
+                  About Calisphere
                 </a>
               </li>
               <li>
@@ -169,6 +164,11 @@
                 </a>
               </li>
               <li>
+                <a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">
+                  FAQs
+                </a>
+              </li>
+              <li>
                 <a href="{% url 'calisphere:termsOfUse' %}" data-pjax="js-pageContent">
                   Terms of Use
                 </a>
@@ -179,14 +179,19 @@
                 </a>
               </li>
               <li>
-                <a href="https://www.cdlib.org/about/accessibility.html">Accessibility</a>
+                <a href="https://cdlib.org/about/policies-and-guidelines/accessibility/">Accessibility</a>
+              </li>
+              <li>
+                <a href="{% url 'contact_form' %}" data-pjax="js-pageContent">
+                  Contact Us
+                </a>
               </li>
             </ul>
           </nav>
         </div>
 
         <div class="footer__copyright">
-          Calisphere is a service of the <a href="http://libraries.universityofcalifornia.edu/">UC Libraries</a>, powered by the <a href="http://www.cdlib.org/">California Digital Library</a>.
+          Calisphere is a service of the <a href="https://libraries.universityofcalifornia.edu/">UC Libraries</a>,<br> powered by the <a href="https://cdlib.org/">California Digital Library</a>.
         </div>
         <div class="footer__social-icons" role="group" aria-labelledby="footer-connect-label">
           <span id="footer-connect-label">Connect with us:</span>

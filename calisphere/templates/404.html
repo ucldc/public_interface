@@ -80,7 +80,7 @@
                 <h3 class="msg-404">404: Not Found</h3>
 
                 <img class="obj__simple-image" 
-                  src="{{ thumbnailUrl }}clip/800x800/79643fd3198deb689c7f6b7493bd80e9" 
+                  src="{% static 'images/404-image-md5-79643fd3198deb689c7f6b7493bd80e9.jpeg' %}"
                   alt="Toe stuck in a bowling ball [graphic]">
                 
                 <form role="search" id="js-homeForm" action="{% url 'calisphere:search' %}" method="get">
@@ -104,7 +104,7 @@
                   </div>
                 </form>
 
-                <a style="color: #fff" href="{% url 'calisphere:itemView' '8fb1debdaadcaa4ac974d9c420782669' %}">
+                <a style="color: #fff" href="{% url 'calisphere:itemView' '577c940ddc596a352f3516e408e1473e' %}">
                   <div 
                   style="display: block; position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 10px 10px; 
                   color: #fff; text-align: right; font-size: .9em; background: linear-gradient(transparent,rgba(0,0,0,.8))">
@@ -139,18 +139,13 @@
           <nav class="footer-nav mobile-nav" aria-label="footer navigation">
             <ul>
               <li>
-                <a href="{% url 'contact_form' %}" data-pjax="js-pageContent">
-                  Contact Us
+                <a href="{% url 'calisphere:home' %}" data-pjax="js-pageContent">
+                  Home
                 </a>
               </li>
               <li>
                 <a href="{% url 'calisphere:about' %}" data-pjax="js-pageContent">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">
-                  FAQs
+                  About Calisphere
                 </a>
               </li>
               <li>
@@ -169,6 +164,11 @@
                 </a>
               </li>
               <li>
+                <a href="{% url 'calisphere:help' %}" data-pjax="js-pageContent">
+                  FAQs
+                </a>
+              </li>
+              <li>
                 <a href="{% url 'calisphere:termsOfUse' %}" data-pjax="js-pageContent">
                   Terms of Use
                 </a>
@@ -179,14 +179,19 @@
                 </a>
               </li>
               <li>
-                <a href="https://www.cdlib.org/about/accessibility.html">Accessibility</a>
+                <a href="https://cdlib.org/about/policies-and-guidelines/accessibility/">Accessibility</a>
+              </li>
+              <li>
+                <a href="{% url 'contact_form' %}" data-pjax="js-pageContent">
+                  Contact Us
+                </a>
               </li>
             </ul>
           </nav>
         </div>
 
         <div class="footer__copyright">
-          Calisphere is a service of the <a href="http://libraries.universityofcalifornia.edu/">UC Libraries</a>, powered by the <a href="http://www.cdlib.org/">California Digital Library</a>.
+          Calisphere is a service of the <a href="https://libraries.universityofcalifornia.edu/">UC Libraries</a>,<br> powered by the <a href="https://cdlib.org/">California Digital Library</a>.
         </div>
         <div class="footer__social-icons" role="group" aria-labelledby="footer-connect-label">
           <span id="footer-connect-label">Connect with us:</span>

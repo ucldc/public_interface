@@ -140,6 +140,7 @@ ALLOWED_HOSTS = [
     '.cdlib.org',
     '.compute-1.amazonaws.com',
     '.elasticbeanstalk.com',
+    'd2q6gnsy5fzbu2.cloudfront.net',
     '127.0.0.1',
 ]
 

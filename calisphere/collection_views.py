@@ -306,11 +306,6 @@ class Collection(object):
             else:
                 repositories.append(repository['name'])
 
-        if self.index == 'es':
-            sort = ("sort_title.raw", "asc")
-        else:
-            sort = ("sort_title", "asc")
-
         # get 6 image items from the collection for the mosaic preview
         search_terms = {
             "filters": [
@@ -325,7 +320,7 @@ class Collection(object):
                 CollectionFF.filter_field,
                 "type"
             ],
-            "sort": sort,
+            "sort": ("sort_title", "asc"),
             "rows": 6
         }
         display_items = ItemManager(self.index).search(search_terms)

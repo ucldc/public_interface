@@ -34,6 +34,8 @@
           <span class="carousel__tile-icon fa-file-text-o"></span>
           {% elif carousel_item.type_ss.0|lower == "dataset" %}
           <span class="carousel__tile-icon fa-bar-chart"></span>
+          {% else %}
+          <span class="carousel__tile-icon fa-file"></span>
           {% endif %}
         {% endif %}
       </div>

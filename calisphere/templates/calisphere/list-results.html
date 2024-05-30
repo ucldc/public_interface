@@ -32,6 +32,8 @@
           <div class="listview__tile-icon fa-bar-chart"></div>
           {% elif item.type_ss.0|lower == "image" %}
           <div class="listview__tile-icon fa-picture-o"></div>
+          {% else %}
+          <div class="listview__tile-icon fa-file"></div>
           {% endif %}
         {% endif %}
       </a>

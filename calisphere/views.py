@@ -8,7 +8,7 @@ from .utils import json_loads_url
 from .item_manager import ItemManager
 from .record import Record
 
-from .search_form import (SearchForm, ESSearchForm, query_string_escape,
+from .search_form import (SearchForm, ESSearchForm,
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
                           CarouselForm, ESCarouselForm,
                           CollectionCarouselForm, ESCollectionCarouselForm,
@@ -23,6 +23,7 @@ from requests.exceptions import HTTPError
 from exhibits.models import ExhibitItem, Exhibit
 from .decorators import cache_by_session_state
 from django.views.decorators.cache import cache_page
+from .utils import query_string_escape
 
 import os
 import math

@@ -5,9 +5,9 @@ from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
-from .utils import json_loads_url
+from .utils import json_loads_url, query_string_escape
 from .item_manager import ItemManager
-from .search_form import CollectionForm, ESCollectionForm, query_string_escape
+from .search_form import CollectionForm, ESCollectionForm
 from builtins import range
 from .decorators import cache_by_session_state
 

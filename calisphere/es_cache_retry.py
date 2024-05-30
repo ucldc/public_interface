@@ -214,7 +214,13 @@ def query_encode(query_string: str = None,
     if query_string:
         es_query = [{
             "query_string": {
-                "query": query_string
+                "query": query_string,
+                "fields": [
+                    "title^2",
+                    "*"
+                ],
+                "default_operator": "AND",
+                "minimum_should_match": "100%"
             }
         }]
 

@@ -28,3 +28,17 @@ def json_loads_url(url_or_req):
         except urllib.error.HTTPError:
             data = {}
     return data
+
+# Escape OpenSearch `query_string` query reserved characters
+# (Solr has a smaller, overlapping subset of special characters)
+# Exceptions:
+#  - we are allowing phrase queries surrounded by ""
+#  - we are allowing wildcard expressions using *
+def query_string_escape(text):
+    for reserved in ['\\', '+', '-', '=', '&&', '||',
+                     '!', '(', ')', '{', '}',
+                     '[', ']', '^', '~', '?',
+                     "'", ':', '/']:
+        text = text.replace(reserved, f'\\{reserved}')
+
+    return text

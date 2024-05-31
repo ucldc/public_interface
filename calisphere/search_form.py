@@ -2,11 +2,7 @@ from . import constants
 from django.http import Http404
 from . import facet_filter_type as ff
 from .item_manager import ItemManager
-
-
-def solr_escape(text):
-    return text.replace('?', '\\?').replace('"', '\\"').replace(':', '\\:')
-
+from .utils import query_string_escape
 
 class SortField(object):
     default = 'relevance'
@@ -113,8 +109,8 @@ class SearchForm(object):
 
         # concatenate query terms from refine query and query box
         terms = (
-            [solr_escape(self.q)] +
-            [solr_escape(q) for q in self.rq] +
+            [query_string_escape(self.q)] +
+            [query_string_escape(q) for q in self.rq] +
             self.request.getlist('fq')
         )
         terms = [q for q in terms if q]

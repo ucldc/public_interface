@@ -313,6 +313,7 @@ class ESRepositoryFF(ESFacetFilterType):
         pslug = ''
         if len(parent):
             pslug = '{0}-'.format(parent[0].get('slug', None))
+            repo['campus'] = parent[0].get('name', None)
         repo['slug'] = pslug + repo_details.get('slug', None)
 
         return repo

@@ -52,12 +52,15 @@ class FacetFilterType(object):
                 self.filter_transform(v) for v in selected_filters]}
 
     def filter_transform(self, filter_val):
+        # transform a UI value to an indexed value
         return filter_val
 
     def facet_transform(self, facet_val):
+        # transform an indexed value to a UI value
         return facet_val
 
     def filter_display(self, filter_val):
+        # transform an indexed value to a UI value for filter pills
         return filter_val
 
     def process_facets(self, facets, sort_override=None):
@@ -185,15 +188,16 @@ class ESTypeFF(ESFacetFilterType):
     facet_field = 'type'
     display_name = 'Type of Item'
     filter_field = 'type.raw'
+    none_type_label = "type information not supplied"
 
     def facet_transform(self, facet_val):
         if facet_val == '':
-            return ('type value not supplied')
+            return (self.none_type_label)
         return facet_val
 
     def filter_transform(self, filter_val):
-        if 'type value not supplied' in filter_val:
-            i = filter_val.index('type value not supplied')
+        if self.none_type_label in filter_val:
+            i = filter_val.index(self.none_type_label)
             filter_val[i] = ''
         return filter_val
 
@@ -214,15 +218,16 @@ class ESDecadeFF(ESFacetFilterType):
     display_name = 'Date'
     filter_field = 'date.raw'
     sort_by = 'value'
+    none_date_label = "date information not supplied"
 
     def facet_transform(self, facet_val):
         if facet_val == '':
-            return ('date value not supplied')
+            return (self.none_date_label)
         return facet_val
 
     def filter_transform(self, filter_val):
-        if 'date value not supplied' in filter_val:
-            i = filter_val.index('date value not supplied')
+        if self.none_date_label in filter_val:
+            i = filter_val.index(self.none_date_label)
             filter_val[i] = ''
         return filter_val
 

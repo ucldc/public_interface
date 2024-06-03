@@ -8,9 +8,11 @@ from django.http import Http404
 from .collection_views import Collection
 from .institution_views import Repository
 
-def get_iiif(iiif_url) -> Dict[str, Any]:
+def get_iiif(iiif_url, request) -> Dict[str, Any]:
     if iiif_url.startswith('//'):
         iiif_url = ''.join(['http:', iiif_url])
+    iiif_url = request.build_absolute_uri(iiif_url)
+    print(iiif_url)
 
     iiif_info = json_loads_url(iiif_url)
     if not iiif_info:
@@ -36,13 +38,14 @@ def get_iiif(iiif_url) -> Dict[str, Any]:
     }
 
 
-def get_solr_hosted_content_file(structmap):
+def get_solr_hosted_content_file(structmap, request):
     format = structmap['format']
     content_file = {'format': format}
 
     if format == 'image':
         iiif_url = f"{settings.SOLR_IIIF}{structmap['id']}/info.json"
-        content_file.update(get_iiif(iiif_url))
+        iiif_url = request.build_absolute_uri(iiif_url)
+        content_file.update(get_iiif(iiif_url, request))
     if format == 'file':
         content_file.update({
             'id': structmap['id'],
@@ -64,13 +67,13 @@ def get_solr_hosted_content_file(structmap):
     return content_file
 
 
-def get_hosted_content_file(media, thumbnail_md5):
+def get_hosted_content_file(media, thumbnail_md5, request):
     format = media.get('format','')
     content_file = {'format': format}
 
     if format =='image':
         iiif_url = f"{settings.UCLDC_IIIF}{quote(media['media_key'])}/info.json"
-        content_file.update(get_iiif(iiif_url))
+        content_file.update(get_iiif(iiif_url, request))
     if format == 'file':
         content_file.update({
             'id': f"media/{quote(media['media_key'])}",
@@ -252,10 +255,11 @@ def map_es_child_to_media_json_schema(child):
 
 
 class Record(object):
-    def __init__(self, indexed_record, child_index=None, index='es'):
+    def __init__(self, indexed_record, request, child_index=None, index='es'):
         self.index = index
         self.indexed_record = indexed_record
         self.display = deepcopy(indexed_record)
+        self.request = request
 
         if 'reference_image_dimensions' in self.indexed_record:
             if isinstance(self.indexed_record['reference_image_dimensions'], str):
@@ -350,29 +354,34 @@ class Record(object):
         if child_index and self.is_complex():
             child = self.get_child(int(child_index))
             if self.has_media(child) and self.index == 'solr':
-                content_file = get_solr_hosted_content_file(child)
+                content_file = get_solr_hosted_content_file(
+                    child, self.request)
             elif self.has_media(child):
                 content_file = get_hosted_content_file(
-                    child['media'], child.get('thumbnail_key')
+                    child['media'], child.get('thumbnail_key'), self.request
                 )
 
         elif self.has_media():
             if self.index == 'solr':
-                content_file = get_solr_hosted_content_file(self.get_media_json())
+                content_file = get_solr_hosted_content_file(
+                    self.get_media_json(), self.request)
             else:
                 content_file = get_hosted_content_file(
                     self.indexed_record.get('media'), 
-                    self.indexed_record.get('reference_image_md5')
+                    self.indexed_record.get('reference_image_md5'),
+                    self.request
                 )
 
         elif self.is_complex():
             first_child = self.get_child(0)
             if self.has_media(first_child) and self.index == 'solr':
-                content_file = get_solr_hosted_content_file(self.get_child(0))
+                content_file = get_solr_hosted_content_file(
+                    self.get_child(0), self.request)
             elif self.has_media(first_child):
                 content_file = get_hosted_content_file(
                     self.get_child(0)['media'], 
-                    self.get_child(0).get('thumbnail_key')
+                    self.get_child(0).get('thumbnail_key'),
+                    self.request
                 )
 
         return content_file

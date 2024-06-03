@@ -82,7 +82,7 @@ def item_view(request, item_id=''):
     if not index_result:
         return search_by_harvest_id(item_id, indexed_items)
 
-    item = Record(index_result.item, child_index, index)
+    item = Record(index_result.item, request, child_index, index)
     if item.is_hosted():
         item.display['contentFile'] = item.get_media(child_index)
 

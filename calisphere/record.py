@@ -12,7 +12,6 @@ def get_iiif(iiif_url, request) -> Dict[str, Any]:
     if iiif_url.startswith('//'):
         iiif_url = ''.join(['http:', iiif_url])
     iiif_url = request.build_absolute_uri(iiif_url)
-    print(iiif_url)
 
     iiif_info = json_loads_url(iiif_url)
     if not iiif_info:

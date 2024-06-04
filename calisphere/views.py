@@ -58,10 +58,17 @@ def search_by_harvest_id(item_id, indexed_items):
     def _fixid(id):
         return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)
 
-    old_id_query = {
-        "query_string": f"harvest_id_s:*{_fixid(item_id)}",
-        "rows": 10
-    }
+    if indexed_items.index == 'es':
+        old_id_query = {
+            "query_string": f"calisphere-id:\"{_fixid(item_id)}\"",
+            "rows": 10
+        }
+    elif indexed_items.index == 'solr':
+        old_id_query = {
+            "query_string": f"harvest_id_s:*{_fixid(item_id)}",
+            "rows": 10
+        }
+
     old_id_search = indexed_items.search(old_id_query)
     if old_id_search.numFound:
         return redirect('calisphere:itemView',

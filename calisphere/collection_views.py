@@ -5,9 +5,9 @@ from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
-from .utils import json_loads_url
+from .utils import json_loads_url, query_string_escape
 from .item_manager import ItemManager
-from .search_form import CollectionForm, ESCollectionForm, solr_escape
+from .search_form import CollectionForm, ESCollectionForm
 from builtins import range
 from .decorators import cache_by_session_state
 
@@ -489,7 +489,7 @@ def collection_facet(request, collection_id, facet):
 
         values = values[start:end]
         for value in values:
-            escaped_cluster_value = solr_escape(value['label'])
+            escaped_cluster_value = query_string_escape(value['label'])
             thumb_params = {
                 "filters": [
                     collection.basic_filter, 
@@ -569,7 +569,7 @@ def collection_facet_value(request, collection_id, cluster, cluster_value):
         form = ESCollectionForm(request.GET.copy(), collection)
 
     parsed_cluster_value = urllib.parse.unquote_plus(cluster_value)
-    escaped_cluster_value = solr_escape(parsed_cluster_value)
+    escaped_cluster_value = query_string_escape(parsed_cluster_value)
     extra_filter = {cluster_type.field: [escaped_cluster_value]}
 
     form.implicit_filter.append(extra_filter)
@@ -633,7 +633,7 @@ def collection_metadata(request, collection_id):
 
 
 def get_cluster_thumbnails(collection, facet, facet_value, index):
-    escaped_cluster_value = solr_escape(facet_value)
+    escaped_cluster_value = query_string_escape(facet_value)
     thumb_params = {
         'filters': [
             collection.basic_filter,

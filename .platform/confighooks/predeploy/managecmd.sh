@@ -19,3 +19,5 @@ mv CSPHERE_IDS.map /var/app/
 echo "create off-site redirect map";
 httxt2dbm -i off_csphere.txt -o OFF_CSPHERE.map
 mv OFF_CSPHERE.map /var/app/
+
+cp /var/app/current/.platform/httpd/conf.d/csphere_redirects.conf /etc/httpd/conf.d/csphere_redirects.conf

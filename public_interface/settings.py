@@ -140,7 +140,8 @@ ALLOWED_HOSTS = [
     '.cdlib.org',
     '.compute-1.amazonaws.com',
     '.elasticbeanstalk.com',
-    'd2q6gnsy5fzbu2.cloudfront.net',
+    'd2q6gnsy5fzbu2.cloudfront.net',    # pad-prd acct calisphere-stg
+    'd8qsgtswnfjyl.cloudfront.net'      # pad-prd acct calisphere-prd
     '127.0.0.1',
 ]
 

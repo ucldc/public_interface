@@ -5,9 +5,8 @@
 
 from django.http import HttpResponseGone, HttpResponsePermanentRedirect
 from django.utils.deprecation import MiddlewareMixin
-from .create_redirect_dict import get_redirects
+from django.apps import apps
 
-REDIRECTS = get_redirects()
 
 class InMemoryRedirectMiddleware(MiddlewareMixin):
     # Defined as class-level attributes to be subclassing-friendly.
@@ -20,15 +19,15 @@ class InMemoryRedirectMiddleware(MiddlewareMixin):
             return response
 
         full_path = request.get_full_path().strip('/')
-        print(full_path)
+        calisphere_app = apps.get_app_config('calisphere')
+        redirects = calisphere_app.redirects
 
         r = None
         try:
-            r = REDIRECTS[full_path]
+            r = redirects[full_path]
         except KeyError:
             pass
 
-        print(r)
         if r is not None:
             if r == '':
                 return self.response_gone_class()

@@ -195,6 +195,7 @@ MIDDLEWARE = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'redirects.redirect_middleware.InMemoryRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', )
 
 ROOT_URLCONF = 'public_interface.urls'

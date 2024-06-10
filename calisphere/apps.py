@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 from calisphere.registry_data import RegistryManager
-from redirects.create_redirect_dict import get_redirects
+from .redirects.create_redirect_dict import get_redirects
 
 
 class CalisphereAppConfig(AppConfig):

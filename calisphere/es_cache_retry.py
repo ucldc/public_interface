@@ -220,8 +220,7 @@ def query_encode(query_string: str = None,
                     "*"
                 ],
                 "default_operator": "AND",
-                "minimum_should_match": "100%",
-                "analyzer": "asciifolded_english"
+                "minimum_should_match": "100%"
             }
         }]
 

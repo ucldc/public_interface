@@ -7,7 +7,7 @@ whitenoise==6.6.0                   # current
 django-redis==4.7.0                 # 5.4.0 is current
 redis==2.10.5                       # 5.0.3 is current
 hiredis==0.2.0                      # 2.3.2 is current
-django-static-sitemaps==4.2.1       # 5.0.0 is current
+django-static-sitemaps==4.6.0       # 5.0.0 is current
 django-health-check==3.18.1         # current
 aws-xray-sdk==0.93                  # 2.13.0 is current
 django-recaptcha2==1.4.1            # current

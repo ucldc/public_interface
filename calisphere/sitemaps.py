@@ -159,6 +159,8 @@ class ItemSitemap(object):
             hits = resp['hits']['hits']
             progress += len(hits)
 
+        elastic_client.clear_scroll(scroll_id=scroll_id)
+
     def paginate_solr(self, params):
         nextCursorMark = '*'
         while True:

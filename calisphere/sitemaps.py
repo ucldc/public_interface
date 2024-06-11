@@ -139,11 +139,18 @@ class ItemSitemap(object):
         while len(hits):
             for hit in hits:
                 thumb_path = hit['_source'].get('thumbnail', {}).get('path', '')
+                thumb_path = thumb_path.split('/thumbnails/')[-1]
+                index_date = hit['_index'].split('-')[-1]
+                index_date = re.sub(
+                    r'(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})',
+                    r'\1-\2-\3T\4:\5:\6',
+                    index_date
+                )
 
                 yield {
                     'id': hit['_id'],
-                    'reference_image_md5': thumb_path.split('/')[-1],
-                    'timestamp': hit['_index'].split('-')[-1]
+                    'reference_image_md5': thumb_path,
+                    'timestamp': index_date
                 }
 
             print(f"[{self.collection_id}]: {progress}/{total_hits} [requesting {scroll_id}]")

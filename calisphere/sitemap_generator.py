@@ -9,6 +9,7 @@ from django.contrib.sitemaps import Sitemap as RegularDjangoSitemap
 from static_sitemaps.generator import SitemapGenerator
 from static_sitemaps import conf
 from calisphere.collection_data import CollectionManager
+from django.conf import settings
 
 class CalisphereSitemapGenerator(SitemapGenerator):
     ''' subclass django-static-sitemaps '''
@@ -25,10 +26,17 @@ class CalisphereSitemapGenerator(SitemapGenerator):
             if issubclass(site, RegularDjangoSitemap):
                 parts.extend(self.write_data_regular(section, site))
             elif section == 'items':
-                collections = CollectionManager("solr").parsed
+                if settings.ES_HOST:
+                    collections = CollectionManager("es").parsed
+                else:
+                    collections = CollectionManager("solr").parsed
                 for collection in collections:
-                    parts.extend(self.write_data_fast(
-                        f"collection_{collection.id}", site, collection.url))
+                    if settings.ES_HOST:
+                        parts.extend(self.write_data_fast(
+                            f"collection_{collection.id}", site, collection.id))
+                    else:
+                        parts.extend(self.write_data_fast(
+                            f"collection_{collection.id}", site, collection.url))
             else:
                 parts.extend(self.write_data_fast(section, site))
 
@@ -84,7 +92,7 @@ class CalisphereSitemapGenerator(SitemapGenerator):
                     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
                 )
                 if (page+1 == sitemap.num_pages):
-                    limit = sitemap.solr_total % sitemap.limit
+                    limit = sitemap.indexed_item_count % sitemap.limit
                 else:
                     limit = sitemap.limit
                 for n in range(limit):

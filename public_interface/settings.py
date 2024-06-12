@@ -24,11 +24,7 @@ if not bool(os.environ.get('UCLDC_DEBUG')):
         dsn="https://31e2ccf069b4049859fb97c8784ba33c@o1065376.ingest.us.sentry.io/4507346951274496",
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
-        traces_sample_rate=1.0,
-        # Set profiles_sample_rate to 1.0 to profile 100%
-        # of sampled transactions.
-        # We recommend adjusting this value in production.
-        profiles_sample_rate=0.5,
+        traces_sample_rate=0.2,
     )
 
 def getenv(variable, default):

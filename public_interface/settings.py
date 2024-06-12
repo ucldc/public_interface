@@ -15,7 +15,8 @@ from django.utils.crypto import get_random_string  # http://stackoverflow.com/a/
 import os
 import sys
 
-if os.environ.get('UCLDC_FRONT') == 'https://calisphere.org/':
+# don't initialize Sentry if we're in a local dev environment
+if not bool(os.environ.get('UCLDC_DEBUG')):
     import sentry_sdk
 
     # https://docs.sentry.io/platforms/python/integrations/django/

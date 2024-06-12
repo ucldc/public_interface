@@ -15,19 +15,20 @@ from django.utils.crypto import get_random_string  # http://stackoverflow.com/a/
 import os
 import sys
 
-import sentry_sdk
+if os.environ.get('UCLDC_FRONT') == 'https://calisphere.org/':
+    import sentry_sdk
 
-# https://docs.sentry.io/platforms/python/integrations/django/
-sentry_sdk.init(
-    dsn="https://31e2ccf069b4049859fb97c8784ba33c@o1065376.ingest.us.sentry.io/4507346951274496",
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    traces_sample_rate=1.0,
-    # Set profiles_sample_rate to 1.0 to profile 100%
-    # of sampled transactions.
-    # We recommend adjusting this value in production.
-    profiles_sample_rate=1.0,
-)
+    # https://docs.sentry.io/platforms/python/integrations/django/
+    sentry_sdk.init(
+        dsn="https://31e2ccf069b4049859fb97c8784ba33c@o1065376.ingest.us.sentry.io/4507346951274496",
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of sampled transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+    )
 
 def getenv(variable, default):
     ''' getenv wrapper that decodes the same as python 3 in python 2

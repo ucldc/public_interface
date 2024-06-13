@@ -22,6 +22,9 @@ if not bool(os.environ.get('UCLDC_DEBUG')):
     # https://docs.sentry.io/platforms/python/integrations/django/
     sentry_sdk.init(
         dsn="https://31e2ccf069b4049859fb97c8784ba33c@o1065376.ingest.us.sentry.io/4507346951274496",
+        environment=os.environ.get('EB_ENVIRONMENT_NAME'),
+        release = os.environ.get('EB_APP_VERSION'),
+
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
         traces_sample_rate=0.2,

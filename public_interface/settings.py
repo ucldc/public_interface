@@ -16,7 +16,7 @@ import os
 import sys
 
 # don't initialize Sentry if we're in a local dev environment
-if not bool(os.environ.get('UCLDC_DEBUG')):
+if bool(os.environ.get('EB_ENVIRONMENT_NAME')):
     import sentry_sdk
 
     # https://docs.sentry.io/platforms/python/integrations/django/

@@ -21,7 +21,7 @@ if bool(os.environ.get('EB_ENVIRONMENT_NAME')):
 
     # https://docs.sentry.io/platforms/python/integrations/django/
     sentry_sdk.init(
-        dsn="https://31e2ccf069b4049859fb97c8784ba33c@o1065376.ingest.us.sentry.io/4507346951274496",
+        dsn="https://b64d9cc32ed1c798d51995829b4e17d0@o1065376.ingest.us.sentry.io/4507346951274496",
         environment=os.environ.get('EB_ENVIRONMENT_NAME'),
         release = os.environ.get('EB_APP_VERSION'),
 

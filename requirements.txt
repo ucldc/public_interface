@@ -14,3 +14,4 @@ django-recaptcha2==1.4.1            # current
 django-permissions-policy==4.19.0   # current
 elasticsearch==7.13.4               # 8.13.0 is current
 mysqlclient==2.0.1                  # current is 2.2.4
+sentry-sdk[django]==2.5.1           # current

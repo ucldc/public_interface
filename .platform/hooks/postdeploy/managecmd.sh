@@ -11,3 +11,6 @@ sitemaps=s3://calisphere-static/sitemaps/
 echo "post-deploy: aws s3 cp $sitemaps /var/app/current/sitemaps/ --recursive" >> /var/log/s3_download.log
 aws s3 cp s3://calisphere-static/sitemaps/ /var/app/current/sitemaps/ --recursive >> /var/log/s3_download.log 2>&1 || true
 echo "finished downloading sitemaps";
+
+export EB_ENVIRONMENT_NAME=$(/opt/elasticbeanstalk/bin/get-config container | jq .environment_name)
+export EB_APP_VERSION=$(jq '.RuntimeSources."eb-calisphere" | keys[0]' /opt/elasticbeanstalk/deployment/app_version_manifest.json)

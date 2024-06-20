@@ -21,7 +21,7 @@ import sentry_sdk
 # don't initialize Sentry if we're in a local dev environment
 if bool(os.environ.get('EB_ENVIRONMENT_NAME')):
     eb_env_name = os.environ.get('EB_ENVIRONMENT_NAME')
-    eb_client = boto3.client('elasticbeanstalk')
+    eb_client = boto3.client('elasticbeanstalk', region_name='us-west-2')
     eb_env_description = eb_client.describe_environments(
         ApplicationName='eb-calisphere', EnvironmentNames=[eb_env_name])
     eb_app_version = eb_env_description['Environments'][0]['VersionLabel']

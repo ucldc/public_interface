@@ -2,11 +2,13 @@ from builtins import object
 import re
 import time
 import math
+import json
 
 from django.contrib.sitemaps import Sitemap
 from django.apps import apps
 from django.urls import reverse
 from django.conf import settings
+from elasticsearch import Elasticsearch
 
 from exhibits.models import *
 
@@ -16,6 +18,10 @@ from .cache_retry import SOLR_select_nocache
 
 app = apps.get_app_config('calisphere')
 
+if settings.ES_HOST and settings.ES_USER and settings.ES_PASS:
+    elastic_client = Elasticsearch(
+        hosts=[settings.ES_HOST],
+        http_auth=(settings.ES_USER, settings.ES_PASS))
 
 class HttpsSitemap(Sitemap):
     protocol = 'https'
@@ -51,7 +57,10 @@ class InstitutionSitemap(HttpsSitemap):
 
 class CollectionSitemap(HttpsSitemap):
     def items(self):
-        return CollectionManager("solr").parsed
+        if settings.ES_HOST:
+            return CollectionManager("es").parsed
+        else:
+            return CollectionManager("solr").parsed
 
     def location(self, item):
         return reverse(
@@ -70,31 +79,89 @@ class ItemSitemap(object):
         Use a generator of solr results rather than a list, which is too memory intensive.
     '''
 
-    def __init__(self, collection_url):
+    def __init__(self, collection_id):
         self.limit = 15000  # 50,000 is google limit on urls per sitemap file
-        self.collection_filter = 'collection_url: "' + collection_url + '"'
-        self.solr_total = SOLR_select_nocache(q='', fq=[self.collection_filter]).numFound
-        self.num_pages = math.ceil(self.solr_total / self.limit)
+
+        if settings.ES_HOST:
+            self.collection_id = collection_id
+            self.collection_filter = {"match": {"collection_id": collection_id}}
+            self.indexed_item_count = elastic_client.count(
+                index=settings.ES_ALIAS,
+                body=json.dumps({"query": self.collection_filter})
+            )['count']
+            self.query_context = {
+                "query": self.collection_filter,
+                "_source": ["thumbnail"],
+                "track_total_hits": True,
+                "size": 1000,
+                "sort": [
+                    {"_score": {"order": "desc"}},
+                    {"_id": {"order": "desc"}}
+                ]
+            }
+        else:
+            self.collection_filter = 'collection_url: "' + collection_id + '"'
+            self.indexed_item_count = SOLR_select_nocache(q='', fq=[self.collection_filter]).numFound
+            self.query_context = {
+                'q': '',
+                'fl': 'id,reference_image_md5,timestamp',  # fl = field list
+                'fq': [self.collection_filter],
+                'rows': 1000,
+                'sort': 'score desc,id desc',
+            }
+
+        self.num_pages = math.ceil(self.indexed_item_count / self.limit)
 
     def items(self):
         ''' returns a generator containing data for all items in solr '''
         # https://github.com/ucldc/extent_stats/blob/master/calisphere_arks.py
-        base_query = {
-            'q': '',
-            'fl': 'id,reference_image_md5,timestamp',  # fl = field list
-            'fq': [self.collection_filter],
-            'rows': 1000,
-            'sort': 'score desc,id desc',
-        }
-
-        data_iter = self.get_iter(base_query)
-
-        return data_iter
+        if settings.ES_HOST:
+            return self.scroll_opensearch(self.query_context)
+        else:
+            return self.paginate_solr(self.query_context)
 
     def location(self, item):
         return reverse('calisphere:itemView', kwargs={'item_id': item})
 
-    def get_iter(self, params):
+    def scroll_opensearch(self, body):
+        resp = elastic_client.search(
+            index=settings.ES_ALIAS,
+            body=json.dumps(body),
+            params={"scroll": "1m"}
+        )
+
+        scroll_id = resp['_scroll_id']
+        hits = resp['hits']['hits']
+
+        total_hits = resp['hits']['total']['value']
+        progress = len(hits)
+
+        while len(hits):
+            for hit in hits:
+                thumb_path = hit['_source'].get('thumbnail', {}).get('path', '')
+                thumb_path = thumb_path.split('/thumbnails/')[-1]
+                index_date = hit['_index'].split('-')[-1]
+                index_date = re.sub(
+                    r'(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})',
+                    r'\1-\2-\3T\4:\5:\6',
+                    index_date
+                )
+
+                yield {
+                    'id': hit['_id'],
+                    'reference_image_md5': thumb_path,
+                    'timestamp': index_date
+                }
+
+            print(f"[{self.collection_id}]: {progress}/{total_hits} [requesting {scroll_id}]")
+            resp = elastic_client.scroll(scroll_id=scroll_id, scroll='1m')
+            scroll_id = resp['_scroll_id']
+            hits = resp['hits']['hits']
+            progress += len(hits)
+
+        elastic_client.clear_scroll(scroll_id=scroll_id)
+
+    def paginate_solr(self, params):
         nextCursorMark = '*'
         while True:
             solr_page = self.get_solr_page(params, nextCursorMark)

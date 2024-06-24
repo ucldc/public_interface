@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from calisphere.registry_data import RegistryManager
+from .redirects.create_redirect_dict import get_redirects
 
 
 class CalisphereAppConfig(AppConfig):
@@ -9,3 +10,4 @@ class CalisphereAppConfig(AppConfig):
 
     def ready(self):
         self.registry = RegistryManager()
+        self.redirects = get_redirects()

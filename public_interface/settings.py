@@ -15,6 +15,27 @@ from django.utils.crypto import get_random_string  # http://stackoverflow.com/a/
 import os
 import sys
 
+import boto3
+import sentry_sdk
+
+# don't initialize Sentry if we're in a local dev environment
+if bool(os.environ.get('EB_ENVIRONMENT_NAME')):
+    eb_env_name = os.environ.get('EB_ENVIRONMENT_NAME')
+    eb_client = boto3.client('elasticbeanstalk', region_name='us-west-2')
+    eb_env_description = eb_client.describe_environments(
+        ApplicationName='eb-calisphere', EnvironmentNames=[eb_env_name])
+    eb_app_version = eb_env_description['Environments'][0]['VersionLabel']
+
+    # https://docs.sentry.io/platforms/python/integrations/django/
+    sentry_sdk.init(
+        dsn="https://31e2ccf069b4049859fb97c8784ba33c@o1065376.ingest.us.sentry.io/4507346951274496",
+        environment=eb_env_name,
+        release=eb_app_version,
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        traces_sample_rate=0.2,
+    )
 
 def getenv(variable, default):
     ''' getenv wrapper that decodes the same as python 3 in python 2
@@ -140,6 +161,8 @@ ALLOWED_HOSTS = [
     '.cdlib.org',
     '.compute-1.amazonaws.com',
     '.elasticbeanstalk.com',
+    'd2q6gnsy5fzbu2.cloudfront.net',    # pad-prd acct calisphere-stg
+    'd8qsgtswnfjyl.cloudfront.net',      # pad-prd acct calisphere-prd
     '127.0.0.1',
 ]
 
@@ -193,6 +216,7 @@ MIDDLEWARE = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'calisphere.redirects.redirect_middleware.InMemoryRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', )
 
 ROOT_URLCONF = 'public_interface.urls'

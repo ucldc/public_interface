@@ -4,6 +4,7 @@ import operator
 from django.apps import apps
 from django.conf import settings
 from .utils import json_loads_url
+from .utils import query_string_escape
 from calisphere.collection_data import CollectionManager
 
 # FACETS are retrieved from Solr for a user to potentially FILTER on
@@ -20,11 +21,6 @@ col_template = "https://registry.cdlib.org/api/v1/collection/{0}/"
 repo_regex = (
     r'^https://registry\.cdlib\.org/api/v1/repository/(?P<id>\d*)/?')
 repo_template = "https://registry.cdlib.org/api/v1/repository/{0}/"
-
-
-def solr_escape(text):
-    return text.replace('?', '\\?').replace('"', '\\"').replace(':', '\\:')
-
 
 class FacetFilterType(object):
     form_name = ''
@@ -47,7 +43,7 @@ class FacetFilterType(object):
         if len(selected_filters) > 0:
             query = list([
                 '{0}: "{1}"'.format(self.filter_field,
-                                    solr_escape(
+                                    query_string_escape(
                                         self.filter_transform(val)))
                 for val in selected_filters
             ])
@@ -56,12 +52,15 @@ class FacetFilterType(object):
                 self.filter_transform(v) for v in selected_filters]}
 
     def filter_transform(self, filter_val):
+        # transform a UI value to an indexed value
         return filter_val
 
     def facet_transform(self, facet_val):
+        # transform an indexed value to a UI value
         return facet_val
 
     def filter_display(self, filter_val):
+        # transform an indexed value to a UI value for filter pills
         return filter_val
 
     def process_facets(self, facets, sort_override=None):
@@ -189,15 +188,16 @@ class ESTypeFF(ESFacetFilterType):
     facet_field = 'type'
     display_name = 'Type of Item'
     filter_field = 'type.raw'
+    none_type_label = "type information not supplied"
 
     def facet_transform(self, facet_val):
         if facet_val == '':
-            return ('type value not supplied')
+            return (self.none_type_label)
         return facet_val
 
     def filter_transform(self, filter_val):
-        if 'type value not supplied' in filter_val:
-            i = filter_val.index('type value not supplied')
+        if self.none_type_label in filter_val:
+            i = filter_val.index(self.none_type_label)
             filter_val[i] = ''
         return filter_val
 
@@ -218,15 +218,16 @@ class ESDecadeFF(ESFacetFilterType):
     display_name = 'Date'
     filter_field = 'date.raw'
     sort_by = 'value'
+    none_date_label = "date information not supplied"
 
     def facet_transform(self, facet_val):
         if facet_val == '':
-            return ('date value not supplied')
+            return (self.none_date_label)
         return facet_val
 
     def filter_transform(self, filter_val):
-        if 'date value not supplied' in filter_val:
-            i = filter_val.index('date value not supplied')
+        if self.none_date_label in filter_val:
+            i = filter_val.index(self.none_date_label)
             filter_val[i] = ''
         return filter_val
 
@@ -313,6 +314,7 @@ class ESRepositoryFF(ESFacetFilterType):
         pslug = ''
         if len(parent):
             pslug = '{0}-'.format(parent[0].get('slug', None))
+            repo['campus'] = parent[0].get('name', None)
         repo['slug'] = pslug + repo_details.get('slug', None)
 
         return repo

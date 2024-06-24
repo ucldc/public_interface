@@ -8,7 +8,7 @@ from .utils import json_loads_url
 from .item_manager import ItemManager
 from .record import Record
 
-from .search_form import (SearchForm, ESSearchForm, solr_escape, 
+from .search_form import (SearchForm, ESSearchForm,
                           CollectionFacetValueForm, ESCollectionFacetValueForm,
                           CarouselForm, ESCarouselForm,
                           CollectionCarouselForm, ESCollectionCarouselForm,
@@ -23,6 +23,7 @@ from requests.exceptions import HTTPError
 from exhibits.models import ExhibitItem, Exhibit
 from .decorators import cache_by_session_state
 from django.views.decorators.cache import cache_page
+from .utils import query_string_escape
 
 import os
 import math
@@ -58,10 +59,17 @@ def search_by_harvest_id(item_id, indexed_items):
     def _fixid(id):
         return re.sub(r'^(\d*--http:/)(?!/)', r'\1/', id)
 
-    old_id_query = {
-        "query_string": f"harvest_id_s:*{_fixid(item_id)}",
-        "rows": 10
-    }
+    if indexed_items.index == 'es':
+        old_id_query = {
+            "query_string": f"calisphere-id:\"{_fixid(item_id)}\"",
+            "rows": 10
+        }
+    elif indexed_items.index == 'solr':
+        old_id_query = {
+            "query_string": f"harvest_id_s:*{_fixid(item_id)}",
+            "rows": 10
+        }
+
     old_id_search = indexed_items.search(old_id_query)
     if old_id_search.numFound:
         return redirect('calisphere:itemView',
@@ -81,7 +89,7 @@ def item_view(request, item_id=''):
     if not index_result:
         return search_by_harvest_id(item_id, indexed_items)
 
-    item = Record(index_result.item, child_index, index)
+    item = Record(index_result.item, request, child_index, index)
     if item.is_hosted():
         item.display['contentFile'] = item.get_media(child_index)
 
@@ -108,7 +116,7 @@ def item_view(request, item_id=''):
                     'calisphere:collectionView',
                     kwargs={'collection_id': item.collections[0].id}) +
                     "?relation_ss=" +
-                    urllib.parse.quote(solr_escape(relation)))
+                    urllib.parse.quote(query_string_escape(relation)))
                 })
         else:
             relation_links.append({
@@ -321,7 +329,7 @@ def get_related_collections(request):
     if not form.query_string and not rc_params.get('filters'):
         if request.GET.get('itemId'):
             rc_params['query_string'] = form.query_string = (
-                f"id:{solr_escape(request.GET.get('itemId'))}")
+                f"id:{query_string_escape(request.GET.get('itemId'))}")
 
     related_collections = ItemManager(index).search(rc_params)
     related_collections = related_collections.facet_counts['facet_fields'][
@@ -464,7 +472,7 @@ def report_collection_facet_value(request, collection_id, facet, facet_value):
         raise Http404("{} does not exist".format(facet))
 
     parsed_facet_value = urllib.parse.unquote_plus(facet_value)
-    escaped_facet_value = solr_escape(parsed_facet_value)
+    escaped_facet_value = query_string_escape(parsed_facet_value)
 
     if index == 'es':
         form = ESCollectionFacetValueForm(request.GET.copy(), collection)

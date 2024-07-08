@@ -409,6 +409,4 @@ class Record(object):
             raise Http404(f"Child {index} not found")
 
     def get_relations(self):
-        if self.index == 'solr':
-            return self.indexed_record.get('relation', [])
-        return []
+        return self.indexed_record.get('relation', [])

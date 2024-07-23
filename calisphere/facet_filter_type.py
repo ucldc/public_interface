@@ -212,13 +212,13 @@ class DecadeFF(FacetFilterType):
 
 class ESDecadeFF(ESFacetFilterType):
     form_name = 'facet_decade'
-    facet_field = 'date'
+    facet_field = 'facet_decade'
     #display_name = 'Decade'
     # see https://github.com/ucldc/rikolti/issues/807
-    display_name = 'Date'
-    filter_field = 'date.raw'
+    display_name = 'Decade'
+    filter_field = 'facet_decade.raw'
     sort_by = 'value'
-    none_date_label = "date information not supplied"
+    none_date_label = "decade information not supplied"
 
     def facet_transform(self, facet_val):
         if facet_val == '':

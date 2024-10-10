@@ -137,18 +137,6 @@ var ComplexCarouselView = Backbone.View.extend({
     }
   },
 
-  // PJAX Event Handlers
-  // ----------------------
-
-  // on `pjax:end`, initialize the carousel if it hasn't already been initialized
-  pjax_end: function(that) {
-    return function() {
-      if ($('.carousel-complex').is(':hidden')) {
-        that.initialize();
-      }
-    };
-  },
-
   // called by `setupComponents()` on `$(document).ready()` and `pjax:end`
   initialize: function() {
     this.initCarousel();
@@ -159,15 +147,9 @@ var ComplexCarouselView = Backbone.View.extend({
         that.changeWidth();
       };
     }(this)));
-
-    // bind pjax event handlers and save as this.bound_pjax_end so as to remove
-    // later with `destroy()`
-    this.bound_pjax_end = this.pjax_end(this);
-    $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
   },
 
   destroy: function() {
-    $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
     this.undelegateEvents();
   }
 });

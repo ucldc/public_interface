@@ -200,8 +200,9 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'django.contrib.sessions', 'django.contrib.messages',
                   'django.contrib.staticfiles', 'django.contrib.sites',
                   'django.contrib.humanize', 'django.contrib.sitemaps',
-                  'easy_pjax', 'calisphere', 'static_sitemaps', 'health_check',
-                  'health_check.cache', 'health_check.storage', 'snowpenguin.django.recaptcha2', )
+                  'calisphere', 'static_sitemaps', 'health_check',
+                  'health_check.cache', 'health_check.storage',
+                  'snowpenguin.django.recaptcha2', )
 
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
@@ -229,8 +230,7 @@ TEMPLATES = [{
     "DIRS": [],
     "APP_DIRS": True,
     "OPTIONS": {
-        "builtins": ["easy_pjax.templatetags.pjax_tags",
-        "exhibits.templatetags.exhibit_extras"],
+        "builtins": ["exhibits.templatetags.exhibit_extras"],
         "context_processors": [
             "django.template.context_processors.request",
             "django.contrib.auth.context_processors.auth",

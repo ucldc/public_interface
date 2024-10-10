@@ -9,11 +9,10 @@
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
     <ul>
       <li>
-        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+        <a href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
       </li>
       <li>
-        <a href="{% url 'calisphere:collectionView' collection_id %}"
-           data-pjax="js-pageContent">
+        <a href="{% url 'calisphere:collectionView' collection_id %}">
           {{ collection.name }}
         </a>
       </li>
@@ -31,8 +30,7 @@
       <div class="collection-intro__institution">
         <h2 class="collection-intro__institution-heading">Collection:
           <a class="collection-intro__instition-heading-link" 
-           href="{% url 'calisphere:collectionView' collection_id %}" 
-           data-pjax="js-pageContent">
+           href="{% url 'calisphere:collectionView' collection_id %}">
             {{ collection.name }}
           </a>
         </h2><br/>
@@ -42,13 +40,11 @@
               <a
                 href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
                 class="collection-intro__institution-heading-link"
-                data-pjax="js-pageContent"
               >{{ repository.campus.0.name }}</a>,
             {% endif %}
             <a
               href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
               class="collection-intro__institution-heading-link"
-              data-pjax="js-pageContent"
               data-ga-code="{{ repository.google_analytics_tracking_code }}"
               data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
             >
@@ -87,16 +83,16 @@
     <div class="col-sm-6 col-md-12">
       <div class="button__institution-tabs-container">
         <a class="button__institution-tab-collections"
-        href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+        href="{% url 'calisphere:collectionBrowse' collection_id %}">
           Browse collection
         </a>
-        <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+        <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}">
           Search this collection
         </a>
       </div>
     </div>
     <div class="col-sm-6 col-md-12">
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionBrowse' collection_id %}">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Browse Collection
       </a>
@@ -149,7 +145,7 @@
         {% if page_info.start > 1 %}
           <a class="btn btn-link pag-dropdown__arrow-icon"
             aria-label="previous set"
-            href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|subtract:1 }}" data-pjax="js-pageContent">
+            href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|subtract:1 }}">
               <span class="fa fa-caret-left fa-lg">
           </a>
         {% else %}
@@ -161,7 +157,7 @@
         {% if page_info.end < unique %}
           <a class="btn btn-link pag-dropdown__arrow-icon"
             aria-label="next set"
-            href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|add:1 }}" data-pjax="js-pageContent">
+            href="{{ request.path }}?view_format={{ view_format }}&sort={{ sort }}&page={{ page_info.page|add:1 }}">
               <span class="fa fa-caret-right fa-lg">
           </a>
         {% else %}
@@ -180,7 +176,7 @@
   <div class="row">
     {% for value in values %}
       <div class="col-xs-6 col-sm-6 col-md-3">
-        <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">
+        <a href="{{ value.uri }}?view_format=list">
         <div class="cluster-container">
           <div class="cluster-thumbnail__container">
             {% for thumb in value.thumbnails %}
@@ -226,7 +222,7 @@
             {% endif %}
 
           </div>
-          <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }}</a> ({{value.count|intcomma}})
+          <a href="{{ value.uri }}?view_format=list">{{ value.label }}</a> ({{value.count|intcomma}})
         </div>
         </a>
       </div>
@@ -235,7 +231,7 @@
   {% else %}
   {% for value in values %}
   <div>
-    <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent"> {{ value.label }}</a>
+    <a href="{{ value.uri }}?view_format=list"> {{ value.label }}</a>
     ({{ value.count|intcomma }})
   </div>
   {% endfor %}

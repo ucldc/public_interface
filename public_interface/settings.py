@@ -130,7 +130,6 @@ except ValueError:
 EMAIL_USE_TLS = bool(getenv('EMAIL_USE_TLS', ''))
 CSRF_COOKIE_SECURE = bool(getenv('CSRF_COOKIE_SECURE', ''))
 
-SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')

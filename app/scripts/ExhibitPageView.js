@@ -26,22 +26,14 @@ var ExhibitPageView = Backbone.View.extend({
     // links in a new tab as normal.
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
     e.preventDefault();
-    $.pjax({
-      push: true,
-      scrollTo: false,
-      url: $(e.currentTarget).attr('href'),
-      container: '#js-exhibit-item__container'
-    });
+    // pjax replacement
+    document.location = $(e.currentTarget).attr('href');
   },
   // events: {'hidden.bs.modal #js-exhibit-item': 'exhibitView'}
   exhibitView: function() {
     if ($('#js-exhibit-item__container').children().length > 0) {
-      $.pjax({
-        push: true,
-        scrollTo: false,
-        url: $('#js-exhibit-item .close').data('url'),
-        container: '#js-exhibit-item__container'
-      });
+      // pjax replacement
+      document.location = $('#js-exhibit-item .close').data('url')
     }
   },
   // events: {'click .js-blockquote': 'showExhibitOverview'}

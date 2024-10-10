@@ -88,15 +88,13 @@ var ItemView = Backbone.View.extend({
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
     // Unset carousel/item specific information
+    // TODO: w/ pjax replacement, persist query manager state
     this.model.unsetItemInfo();
 
     e.preventDefault();
-    $.pjax({
-      url: $(e.currentTarget).children('a').attr('href').split('?')[0],
-      container: '#js-pageContent',
-      data: this.model.toJSON(),
-      traditional: true
-    });
+    // TODO: w/ pjax replacement, persist query manager state
+    document.location = $(e.currentTarget).children('a').attr('href').split('?')[0]
+      + '?' + $.param(this.model.toJSON(), true);
   },
 
   carouselAfterChange: function(e, slick) {
@@ -283,10 +281,10 @@ var ItemView = Backbone.View.extend({
       }
 
       e.preventDefault();
-      $.pjax({
-        url: $(e.currentTarget).attr('href'),
-        container: '#js-itemContainer'
-      });
+      // TODO: w/ pjax replacement, persist query manager state
+      // store this.model.toJSON() in local storage?
+      // in 
+      document.location = $(e.currentTarget).attr('href');
     }
   },
 
@@ -373,12 +371,9 @@ var ItemView = Backbone.View.extend({
     if($(e.currentTarget).data('relation') !== undefined) {
       e.preventDefault();
       this.model.set({ relation_ss: [$(e.currentTarget).data('relation')] });
-      $.pjax({
-        url: $(e.currentTarget).attr('href').split('?')[0],
-        container: '#js-pageContent',
-        data: this.model.toJSON(),
-        traditional: true
-      });
+      // TODO: w/ pjax replacement, persist query manager state
+      document.location = $(e.currentTarget).attr('href').split('?')[0] + 
+        '?' + $.param(this.model.toJSON(), true);
     } else {
       if (typeof _paq !== 'undefined') {
         _paq.push(['trackEvent',

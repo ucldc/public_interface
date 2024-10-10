@@ -150,10 +150,10 @@ var FacetFormView = Backbone.View.extend({
       }
 
       e.preventDefault();
-      $.pjax({
-        url: $(e.currentTarget).attr('href'),
-        container: '#js-pageContent'
-      });
+      // TODO: w/ pjax replacement, persist query manager state
+      // add this.model.toJSON() to local storage? 
+      // add this.model.toJSON() to the url w/ $.param(this.model.toJSON(), true);?
+      document.location = $(e.currentTarget).attr('href')
     }
   },
 
@@ -281,12 +281,9 @@ var FacetFormView = Backbone.View.extend({
   
   // **PJAX CALL TO PERFORM THE SEARCH** 
   facetSearch: function() {
-    $.pjax({
-      url: $('#js-facet').attr('action'),
-      container: '#js-pageContent',
-      data: this.model.toJSON(),
-      traditional: true
-    });
+    // pjax replacement
+    document.location = $('#js-facet').attr('action') + '?' + 
+      $.param(this.model.toJSON(), true);
   },
 
   // **RELATED COLLECTIONS**

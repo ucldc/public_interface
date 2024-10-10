@@ -238,14 +238,7 @@ TEMPLATES = [{
             'public_interface.context_processors.settings',
             'exhibits.context_processors.settings'
         ],
-        "debug":
-        UCLDC_DEVEL,
-        'loaders': [
-            ('django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ]),
-        ],
+        "debug": UCLDC_DEVEL,
     }
 }]
 

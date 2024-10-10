@@ -6,7 +6,7 @@
   <div class="row js-related-carousel exhibit__related-carousel margin-bottom-20">
     {% for exhibit in exhibits %}
       <div class="col-xs-2 col-md-3">
-        <a href="{{ exhibit.get_absolute_url }}" class="js-relatedExhibition" data-pjax="js-pageContent">
+        <a href="{{ exhibit.get_absolute_url }}" class="js-relatedExhibition">
           <div class="exhibit__lockup--med">
             <div class="exhibit__lockup--med-image">
               <div class="aspect-ratio-content exhibit__lockup--med-image-content" style="background-image: url('{% exhibit_lockup exhibit request.session.index %}');">

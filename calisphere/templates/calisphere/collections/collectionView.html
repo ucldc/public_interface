@@ -14,7 +14,7 @@
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
     <ul>
       <li>
-        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+        <a href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
       </li>
     </ul>
   </nav>
@@ -35,13 +35,11 @@
             <a
               href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
               class="collection-intro__institution-heading-link"
-              data-pjax="js-pageContent"
             >{{ repository.campus.0.name }}</a>,
           {% endif %}
           <a
             href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
             class="collection-intro__institution-heading-link"
-            data-pjax="js-pageContent"
             data-ga-code="{{ repository.google_analytics_tracking_code }}"
             data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
           >
@@ -67,7 +65,7 @@
       {% if collection.url_oac|length > 0 %}
         <span class="collection-intro__about-link">View <a href="{{ collection.url_oac }}" target="_blank">collection guide</a>.</span><br/>
       {% endif %}
-        <p>View our <a href="/overview/" data-pjax="js-pageContent">statement on digital primary resources and historical description</a>.</p>
+        <p>View our <a href="/overview/">statement on digital primary resources and historical description</a>.</p>
 
       <label for="{{ collection_id }}" aria-hidden="true" class="display-none">Current Collection ID</label>
       <input id="{{ collection_id }}" class="facet js-facet facet-collection_data display-none" form="js-facet" type="checkbox" name="collection_data" value="{{ collection_id }}" checked aria-hidden="true">
@@ -86,10 +84,10 @@
   <div class="col-sm-6 col-md-12">
     <div class="button__institution-tabs-container">
       <a class="button__institution-tab-collections"
-      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:collectionBrowse' collection_id %}">
         Browse collection
       </a>
-      <a class="button__institution-tab-search--selected" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+      <a class="button__institution-tab-search--selected" href="{% url 'calisphere:collectionView' collection_id %}">
         Search this collection
       </a>
     </div>
@@ -99,14 +97,14 @@
   <div class="col-sm-6 col-md-12">
     {% if collection.repository|length > 1 %}
     {% for repository in collection.repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Go to {{ repository.name }} Page
       </a>
     {% endfor %}
     {% else %}
     {% with collection.repository.0 as repository %}
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Go to Institution Page
       </a>

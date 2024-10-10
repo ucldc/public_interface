@@ -13,14 +13,14 @@
     <ul>
       <li>
         {% if campus_slug or uc_institution %}
-          <a href="{% url 'calisphere:campusDirectory' %}" data-pjax="js-pageContent">Institutions</a>
+          <a href="{% url 'calisphere:campusDirectory' %}">Institutions</a>
         {% else %}
-          <a href="{% url 'calisphere:statewideDirectory' %}" data-pjax="js-pageContent">Institutions</a>
+          <a href="{% url 'calisphere:statewideDirectory' %}">Institutions</a>
         {% endif %}
       </li>
       {% if repository_id and uc_institution %}
       <li>
-        <a href="{% url 'calisphere:campusCollections' uc_institution.0.slug %}" data-pjax="js-pageContent">{{ uc_institution.0.name }}</a>
+        <a href="{% url 'calisphere:campusCollections' uc_institution.0.slug %}">{{ uc_institution.0.name }}</a>
       </li>
       {% endif %}
     </ul>

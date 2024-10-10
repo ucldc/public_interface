@@ -3,31 +3,31 @@
   <div class="button__institution-tabs-container">
     {% if repository_id %}
     <a class="button__institution-tab-collections{% if mode == "collections" %}--selected{% endif %}"
-      href="{% url 'calisphere:repositoryCollections' repository_id %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:repositoryCollections' repository_id %}">
       Collections at this institution
     </a>
     {% elif campus_slug %}
     <a class="button__institution-tab-collections{% if mode == "collections" %}--selected{% endif %}"
-      href="{% url 'calisphere:campusCollections' campus_slug %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:campusCollections' campus_slug %}">
       Collections at {{ institution.name }}
     </a>
     {% endif %}
 
     {% if campus_slug %}
     <a class="button__institution-tab-contributors{% if mode == "institutions" %}--selected{% endif %}"
-      href="{% url 'calisphere:campusInstitutions' campus_slug %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:campusInstitutions' campus_slug %}">
       Contributors at {{ institution.name }}
     </a>
     {% endif %}
 
     {% if repository_id %}
     <a class="button__institution-tab-search{% if mode == "items" %}--selected{% endif %}"
-      href="{% url 'calisphere:repositorySearch' repository_id %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:repositorySearch' repository_id %}">
       Search this institution
     </a>
     {% elif campus_slug %}
     <a class="button__institution-tab-search{% if mode == "items" %}--selected{% endif %}"
-      href="{% url 'calisphere:campusSearch' campus_slug %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:campusSearch' campus_slug %}">
       Search {{ institution.name }}
     </a>
     {% endif %}

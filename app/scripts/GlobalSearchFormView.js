@@ -122,18 +122,14 @@ var GlobalSearchFormView = Backbone.View.extend({
       this.model.clear({silent: true});
       this.model.set({q: q}, {silent: true});
       //perform the search!
-      $.pjax({
-        url: $('#js-searchForm').attr('action'),
-        container: '#js-pageContent',
-        data: this.model.toJSON()
-      });
+      // pjax replacement
+      document.location = $('#js-searchForm').attr('action') + 
+        '?' + $.param(this.model.toJSON(), true);
     } else {
       this.model.clear({silent: true});
-      $.pjax({
-        url: $('#js-searchForm').attr('action'),
-        container: '#js-pageContent',
-        data: {'q': ''}
-      });
+      // pjax replacement
+      document.location = $('#js-searchForm').attr('action') + 
+        '?' + $.params({'q': ''});
     }
 
     _.each($('#js-searchForm, #js-footerSearch'), (function(model) {

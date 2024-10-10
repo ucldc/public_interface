@@ -23,4 +23,4 @@ def new_render(cls, context):
 
 URLNode.render = new_render
 
-default_app_config = 'calisphere.apps.CalisphereAppConfig'
+

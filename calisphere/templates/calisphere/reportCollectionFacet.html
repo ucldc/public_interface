@@ -6,8 +6,7 @@
 {% block content %}
 
 <h2 class="collection-intro__institution-heading">Collection:
-	<a href="{% url 'calisphere:collectionView' collection_id %}"
-	   data-pjax="js-pageContent">
+	<a href="{% url 'calisphere:collectionView' collection_id %}">
 		{{ collection.name }}
 	</a>
 </h2>
@@ -17,13 +16,11 @@
     <a
       href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
       class="collection-intro__institution-heading-link"
-      data-pjax="js-pageContent"
     >{{ repository.campus.0.name }}</a>,
   {% endif %}
   <a
     href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
     class="collection-intro__institution-heading-link"
-    data-pjax="js-pageContent"
   >
     {{ repository.name }}
   </a>

@@ -295,11 +295,8 @@ if UCLDC_REDIS_URL:
     # DJANGO_REDIS_IGNORE_EXCEPTIONS = True
     CACHES = {
         'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': UCLDC_REDIS_URL,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            }
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': UCLDC_REDIS_URL
         }
     }
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'

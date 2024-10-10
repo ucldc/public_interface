@@ -29,9 +29,6 @@ if(typeof console === 'undefined') {
   console = { log: function() { } };
 }
 
-// PJAX explained more a bit later, for now this is just a timeout
-$(document).on('pjax:timeout', function() { return false; });
-
 var qm, globalSearchForm;
 
 function timeoutGACallback(callback, opt_timeout) {
@@ -75,7 +72,7 @@ function get_inst_ga_dimensions() {
 
 $(document).ready(function() {
   // ***********************************
-  on_ready_pjax_end_handler();
+  on_ready_handler();
 
   // **Google Event Tracking**
 
@@ -187,17 +184,8 @@ $(document).ready(function() {
 
   // **Initial Setup for all Calisphere pages except the homepage**
 
-  // The homepage doesn't have pjax-y links, or JS components to initialize
+  // The homepage doesn't have JS components to initialize
   if (!$('.home').length) {
-
-    // **PJAX**
-
-    // We use pjax (pushState+ajax) to replace the inner HTML of given DOM 
-    // nodes (typically `#js-pageContent`), and update the address bar accordingly.
-    // https://github.com/defunkt/jquery-pjax
-    $.pjax.defaults.timeout = 5000;
-    // make all links with attribute `data-pjax=js-PageContent` pjax-y
-    $(document).pjax('a[data-pjax=js-pageContent]', '#js-pageContent');
 
     // **Initial Component Setup**
 
@@ -208,51 +196,6 @@ $(document).ready(function() {
     //`setupComponents()` acts as a controller to create/destroy JS components
     //based on which selectors are available/no longer available in the DOM.
     setupComponents(globalSearchForm, qm);
-
-    // **Global PJAX Event Handlers**
-
-    // https://github.com/defunkt/jquery-pjax#events
-    
-    //**Pjax Success**
-    $(document).on('pjax:success', function(e, data, x, xhr, z) {
-      var start_marker = z.context.find('meta[property=og\\:type]');
-      var variable_markup = start_marker.nextUntil($('meta[name=twitter\\:creator]'));
-      var old_start = $('head').find('meta[property=og\\:type]');
-      old_start.nextUntil($('meta[name=twitter\\:creator]')).remove();
-      $.each($(variable_markup).get().reverse(), function(i, v) {
-        $(v).insertAfter(old_start);
-      });
-    });
-
-    //**Pjax End**
-    $(document).on('pjax:end', '#js-pageContent', function() {
-      // Closes global search and nav menus in mobile
-      globalSearchForm.pjax_end();
-
-      // if we've gotten to a page without search context, clear the query manager
-      if(!$('#js-facet').length && !$('#js-objectViewport').length) {
-        qm.clear({silent: true});
-      }
-
-      //Create/destroy components based on which selectors are available in the DOM,
-      //which components exist already, and which selectors are no longer in the DOM
-      setupComponents(globalSearchForm, qm);
-      globalSearchForm.popstate = null;
-    });
-
-    //**Loading notifications**
-    /* globals NProgress: false */
-    $(document).on('pjax:send', function() {
-      NProgress.start();
-    });
-
-    $(document).on('pjax:complete', function() {
-      NProgress.done();
-    });
-
-    $(document).on('pjax:popstate', function(e) {
-      globalSearchForm.popstate = e.direction;
-    });
   }
 });
 
@@ -277,31 +220,31 @@ var cluster_search = function(col_id, facet_field) {
   });
 };
 
-var on_ready_pjax_end_handler = function() {
+var on_ready_handler = function() {
   // send google analytics on pjax pages 
   /* globals ga: false, _paq: false */
   /* jshint latedef: false */
-  if (typeof _paq !== 'undefined') {
-    _paq.push(['setCustomUrl', window.location.href]);
-    _paq.push(['setDocumentTitle', document.title]);
-    _paq.push(['trackPageView', document.title, get_cali_ga_dimensions()]);
-    _paq.push(['enableLinkTracking']);
-  }
-  if (typeof ga !== 'undefined') {
-    var dimensions = get_cali_ga_dimensions();
-    ga('caliga.set', 'location', window.location.href);
-    ga('caliga.send', 'pageview', dimensions);
+  // if (typeof _paq !== 'undefined') {
+  //   _paq.push(['setCustomUrl', window.location.href]);
+  //   _paq.push(['setDocumentTitle', document.title]);
+  //   _paq.push(['trackPageView', document.title, get_cali_ga_dimensions()]);
+  //   _paq.push(['enableLinkTracking']);
+  // }
+  // if (typeof ga !== 'undefined') {
+  //   var dimensions = get_cali_ga_dimensions();
+  //   ga('caliga.set', 'location', window.location.href);
+  //   ga('caliga.send', 'pageview', dimensions);
 
-    var inst_ga_code = $('[data-ga-code]').data('ga-code');
-    if (inst_ga_code) {
-      var inst_tracker_name = inst_ga_code.replace(/-/g,'x');
-      ga('create', inst_ga_code, 'auto', {'name': inst_tracker_name});
-      ga(inst_tracker_name + '.set', 'anonymizeIp', true);
-      ga(inst_tracker_name + '.set', 'location', window.location.href);
-      var inst_dimensions = get_inst_ga_dimensions();
-      ga( inst_tracker_name + '.send', 'pageview', inst_dimensions);
-    }
-  }
+  //   var inst_ga_code = $('[data-ga-code]').data('ga-code');
+  //   if (inst_ga_code) {
+  //     var inst_tracker_name = inst_ga_code.replace(/-/g,'x');
+  //     ga('create', inst_ga_code, 'auto', {'name': inst_tracker_name});
+  //     ga(inst_tracker_name + '.set', 'anonymizeIp', true);
+  //     ga(inst_tracker_name + '.set', 'location', window.location.href);
+  //     var inst_dimensions = get_inst_ga_dimensions();
+  //     ga( inst_tracker_name + '.send', 'pageview', inst_dimensions);
+  //   }
+  // }
 
   // **Collection Title Search**
 
@@ -353,7 +296,6 @@ var on_ready_pjax_end_handler = function() {
     });
   }
 };
-$(document).on('pjax:end', on_ready_pjax_end_handler);
 
 //************************************
 

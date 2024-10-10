@@ -291,7 +291,7 @@ var ItemView = Backbone.View.extend({
   },
 
   // `click` triggered on `.js-rc-page`
-  // also called in initialize and pjax_end with e=undefined
+  // also called in initialize with e=undefined
   paginateRelatedCollections: function(e) {
     var data_params = this.model.toJSON();
     // don't need carousel specific item data for the related collections
@@ -330,7 +330,7 @@ var ItemView = Backbone.View.extend({
   },
 
   // ultimately this will like get called from a 'click' triggered on paging exhibits
-  // as well as the initialize() and pjax_end() functions where it's called now
+  // as well as the initialize() functions where it's called now
   // for now most exhibit items really only exist in one exhibit - not so many that 
   // we need pagination
   paginateRelatedExhibitions: function() {
@@ -525,71 +525,7 @@ var ItemView = Backbone.View.extend({
   // PJAX EVENT HANDLERS
   // ---------------------
 
-  // called on `pjax:beforeSend`
-  // Navigating between item pages is one of the rare cases where instead of
-  // replacing the contents of  #js-pageContent with the results of a pjax call,
-  // we replace the contents of #js-itemContainer. When a user clicks from an
-  // item page to another item page, this event handler appends a special header
-  // to tell the server to use a different template
-  // (`/calisphere/templates/calisphere/pjaxTemplates/pjax-item.html`)
-  // for the response
-  pjax_beforeSend: function(e, xhr) {
-    xhr.setRequestHeader('X-From-Item-Page', 'true');
-  },
-
-  // called on `pjax:end`
-  pjax_end: function(that) {
-    return function() {
-      // reset the query manager's item-specific info to the previous item.
-      if (that.popstate === 'back' || that.popstate === 'forward') {
-        var queryObj;
-        if ($('#js-carouselForm').length) {
-          queryObj = that.model.getItemInfoFromDOM();
-          that.model.set(queryObj, {silet: true});
-        }
-
-        if ($('#disqus_thread').length) {
-          if ($('#disqus_thread').html().length > 0) {
-            that.resetDisqus();
-          }
-        }
-        that.popstate = null;
-      }
-
-      // when navigating between items, the carousel is *not* a part of the #js-itemContainer
-      // document fragment returned, so here we manually change which item in the carousel
-      // gets the 'selected' CSS treatment
-      var lastItem = $('.carousel__item--selected');
-      if (lastItem.children('a').data('item_id') !== that.model.get('itemId')) {
-        lastItem.find('.carousel__image--selected').toggleClass('carousel__image');
-        lastItem.find('.carousel__image--selected').toggleClass('carousel__image--selected');
-        lastItem.toggleClass('carousel__item');
-        lastItem.toggleClass('carousel__item--selected');
-
-        var linkItem = $('.js-item-link[data-item_id="' + that.model.get('itemId') + '"]');
-        linkItem.find('.carousel__image').toggleClass('carousel__image--selected');
-        linkItem.find('.carousel__image').toggleClass('carousel__image');
-        linkItem.parent().toggleClass('carousel__item--selected');
-        linkItem.parent().toggleClass('carousel__item');
-      }
-
-      // when navigating between items, the related collections is *not* a part of
-      // the #js-itemContainer document document fragment returned, so here we manually 
-      // retrieve new related collections
-      that.paginateRelatedCollections(undefined);
-      that.paginateRelatedExhibitions();
-
-      that.initMediaPlayer();
-    };
-  },
-
-  pjax_popstate: function(that) {
-    return function(e) {
-      that.popstate = e.direction;
-    };
-  },
-
-  // called via `setupComponents()` on document.ready() and pjax:end
+  // called via `setupComponents()` on document.ready()
   initialize: function() {
     // gets the query from the DOM, if present
     if ($('#js-carouselForm').length) {
@@ -609,23 +545,9 @@ var ItemView = Backbone.View.extend({
         this.resetDisqus();
       }
     }
-
-    // bind pjax handlers to `this`
-    // we need to save the bound handler to `this.bound_pjax_end` so we can later
-    // remove these handlers by name in `destroy`
-    this.bound_pjax_end = this.pjax_end(this);
-    this.bound_pjax_popstate = this.pjax_popstate(this);
-    $(document).on('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);
-    $(document).on('pjax:end', '#js-itemContainer', this.bound_pjax_end);
-    $(document).on('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
   },
 
   destroy: function() {
-    // remove pjax event handlers
-    $(document).off('pjax:beforeSend', '#js-itemContainer', this.pjax_beforeSend);
-    $(document).off('pjax:end', '#js-itemContainer', this.bound_pjax_end);
-    $(document).off('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
-
     // undelegate all user event handlers specified in `this.events`
     this.undelegateEvents();
 

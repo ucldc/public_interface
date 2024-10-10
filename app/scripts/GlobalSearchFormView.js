@@ -101,7 +101,6 @@ var GlobalSearchFormView = Backbone.View.extend({
 
   initialize: function() {
     this.listenTo(this.model, 'change:q', this.render);
-    $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
 
     var headerWidth = window.matchMedia('(min-width: 650px)');
     this.watchHeaderWidth(this)(headerWidth);
@@ -149,15 +148,5 @@ var GlobalSearchFormView = Backbone.View.extend({
     if (this.carousel !== undefined) { this.carousel.changeWidth(window_width); }
     if (this.complexCarousel !== undefined) { this.complexCarousel.changeWidth(window_width); }
   },
-
-  pjax_beforeReplace: function() {
-    if($('#js-mosaicContainer').length > 0 && $('#js-collectionPagination').children().length) {
-      $('#js-mosaicContainer').infiniteScroll('destroy');
-    }
-
-  },
-  pjax_end: function() {
-    this.closeMenu();
-  }
 });
 

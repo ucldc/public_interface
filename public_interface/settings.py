@@ -151,7 +151,7 @@ UCLDC_DEVEL = bool(os.environ.get('UCLDC_DEVEL'))
 # When EXHIBIT_PREVIEW = False, show only exhibits, themes, lesson plans, and essays marked 'published'
 # When EXHIBIT_PREVIEW = True, show ALL exhibits, themes, lesson plans, and essays
 EXHIBIT_PREVIEW = bool(os.environ.get('UCLDC_EXHIBIT_PREVIEW'))
-EXHIBIT_TEMPLATE = 'calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html'
+EXHIBIT_TEMPLATE = 'calisphere/base.html'
 CALISPHERE = True
 
 # https://dryan.com/articles/elb-django-allowed-hosts/

@@ -35,17 +35,12 @@ var ComplexCarouselView = Backbone.View.extend({
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
 
     e.preventDefault();
-    $.pjax({
-      type: 'GET',
-      url: $(e.currentTarget).attr('href'),
-      container: '#js-itemContainer',
-      traditional: true,
-      scrollTo: 440
-    });
+    // pjax replacement - previously did a scrollTo 440px after this
+    document.location = $(e.currentTarget).attr('href')
   },
   
   // `click` triggered on `.js-component-link`    
-  // retrieve a particular component by adding order parameter to pjax call
+  // retrieve a particular component by adding order parameter
   getComponent: function(e) {
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
@@ -54,14 +49,9 @@ var ComplexCarouselView = Backbone.View.extend({
     var data_params = {order: $(e.currentTarget).data('item_id')};
 
     e.preventDefault();
-    $.pjax({
-      type: 'GET',
-      url: $(e.currentTarget).attr('href').split('?')[0],
-      container: '#js-itemContainer',
-      data: data_params,
-      traditional: true,
-      scrollTo: 440
-    });
+    // pjax replacement - previously did a scrollTo 440px after this
+    document.location = $(e.currentTarget).attr('href').split('?')[0] + 
+      '?' + $.param(data_params, true);
   },
   
   // `afterChange` triggered on `.carousel-complex__item-container`
@@ -137,7 +127,7 @@ var ComplexCarouselView = Backbone.View.extend({
     }
   },
 
-  // called by `setupComponents()` on `$(document).ready()` and `pjax:end`
+  // called by `setupComponents()` on `$(document).ready()`
   initialize: function() {
     this.initCarousel();
     // once the images have loaded, change slidesToShow and slidesToScroll to 

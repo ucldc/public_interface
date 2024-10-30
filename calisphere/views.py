@@ -413,13 +413,13 @@ def report_collection_facet(request, collection_id, facet):
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
 
-    for repository in collection_details.get('repository'):
+    for repository in collection_details.get('repository', {}):
         repository['resource_id'] = repository.get('resource_uri').split(
             '/')[-2]
 
     if index == 'es':
         facet_params = {
-            "filters": [{'collection_ids': [collection_id]}],
+            "filters": [{'collection_id': [collection_id]}],
             "facets": [facet]
         }
     else:

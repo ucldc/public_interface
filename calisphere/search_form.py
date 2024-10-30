@@ -283,13 +283,28 @@ class CollectionForm(SearchForm):
         self.implicit_filter = [collection.basic_filter]
 
 
-class ESCollectionForm(CollectionForm):
+class ESCollectionForm(SearchForm):
     """ElasticSearch Search Form for /collections/<col_id>/ page"""
     facet_filter_fields = [
         ff.ESTypeFF,
         ff.ESDecadeFF
     ]
     index = 'es'
+
+    def __init__(self, request, collection):
+        super().__init__(request)
+
+        self.collection = collection
+        self.facet_filter_types += [
+            ff_field(request) for ff_field in collection.custom_facets
+        ]
+
+        # If relation_ss is not already defined as a custom facet, and is
+        # included in search parameters, add the relation_ss facet implicitly
+        if not collection.custom_facets:
+            if request.get('relation_ss'):
+                self.facet_filter_types.append(ff.ESRelationFF(request))
+        self.implicit_filter = [collection.basic_filter]
 
 
 class CarouselForm(SearchForm):

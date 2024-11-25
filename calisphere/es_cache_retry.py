@@ -110,7 +110,7 @@ def es_search(body) -> ESResults:
 def get_thumbnail_key(metadata):
     if metadata.get('thumbnail'):
         path = metadata['thumbnail'].get('path','')
-        if path.startswith('s3://'):
+        if path and path.startswith('s3://'):
             uri_path = urlparse(path).path
             key_parts = uri_path.split('/')[2:]
             return '/'.join(key_parts)
@@ -118,7 +118,7 @@ def get_thumbnail_key(metadata):
 def get_media_key(metadata):
     if metadata.get('media'):
         path = metadata['media'].get('path','')
-        if path.startswith('s3://'):
+        if path and path.startswith('s3://'):
             uri_path = urlparse(path).path
             key_parts = uri_path.split('/')[2:]
             return '/'.join(key_parts)

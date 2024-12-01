@@ -35,7 +35,6 @@
         {% for repository in item.parsed_repository_data %}
           <a
             href="{% url 'calisphere:repositoryCollections' repository.id %}"
-            data-pjax="js-pageContent"
             data-ga-code="{{ repository.ga_code }}"
             data-ga-dim2="{{ repository.slug }}"
           >
@@ -52,7 +51,6 @@
       <dd class="meta-block__defin" itemprop="isPartOf">{% for collection in item.parsed_collection_data %}
         <a
           href="{% url 'calisphere:collectionView' collection.id %}"
-          data-pjax="js-pageContent"
           class="js-relatedCollection"
           data-ga-dim1="{{ collection.local_id }}{{ collection.slug }}"
           data-ga-dim4="{{ collection.harvest_type }}"

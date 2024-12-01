@@ -26,22 +26,14 @@ var ExhibitPageView = Backbone.View.extend({
     // links in a new tab as normal.
     if ( e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
     e.preventDefault();
-    $.pjax({
-      push: true,
-      scrollTo: false,
-      url: $(e.currentTarget).attr('href'),
-      container: '#js-exhibit-item__container'
-    });
+    // pjax replacement
+    document.location = $(e.currentTarget).attr('href');
   },
   // events: {'hidden.bs.modal #js-exhibit-item': 'exhibitView'}
   exhibitView: function() {
     if ($('#js-exhibit-item__container').children().length > 0) {
-      $.pjax({
-        push: true,
-        scrollTo: false,
-        url: $('#js-exhibit-item .close').data('url'),
-        container: '#js-exhibit-item__container'
-      });
+      // pjax replacement
+      document.location = $('#js-exhibit-item .close').data('url')
     }
   },
   // events: {'click .js-blockquote': 'showExhibitOverview'}
@@ -107,58 +99,10 @@ var ExhibitPageView = Backbone.View.extend({
     });
   },
 
-  // if an exhibit item is displayed *and* the event target /isn't/ the item container
-  // we're leaving the exhibit space and need to remove the modal backdrop before we go
-  // ('go to item page', 'contributing institution' and 'collection' links)
-  pjax_beforeReplace: function(e) {
-    if (e.target !== $('#js-exhibit-item__container')[0] && $('#js-exhibit-item').is(':visible')) {
-      $('.modal-backdrop').remove();
-      $('body').removeClass('modal-open');
-    }
-  },
-
-  // this specifies to use the pjax-exhibit-item.html template in the response
-  pjax_beforeSend: function(e, xhr) {
-    xhr.setRequestHeader('X-Exhibit-Item', 'true');
-  },
-
-  // this pjax_end_pageContent is called when the event is triggered for div#js-pageContent
-  // so this includes theme pages, lesson plans, exhibit pages, etc. not just item display
-  pjax_end: function(that) {
-    return function(xhr) {
-      // if the part getting replaced is js-exhibit-item__container, do modal stuff
-      if (xhr.target.id === 'js-exhibit-item__container') {
-        if ($('#js-exhibit-item__container').children().length && !$('#js-exhibit-item').is(':visible')) {
-          $('#js-exhibit-item').modal();
-        } else if (!$('#js-exhibit-item__container').children().length) {
-          $('#js-exhibit-item').modal('hide');
-        }
-      }
-
-      // if the part getting replaced is the page content (theme pages, lesson plans, exhibit pages, etc.)
-      // init carousels and truncate exhibit overview
-      if (xhr.target.id === 'js-pageContent') {
-        that.initCarousel();
-        $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
-          if (isTruncated) {
-            $('#js-exhibit__overview').text('Read full exhibition overview');
-          } else {
-            $('.js-exhibit__overview').css('height', 'auto');
-          }
-        }});
-      }
-    };
-  },
-
   initialize: function() {
     if ($('#js-exhibit-item__container').children().length) {
       $('#js-exhibit-item').modal();
     }
-
-    this.bound_pjax_end = this.pjax_end(this);
-    $(document).on('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
-    $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
-    $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
 
     this.initCarousel();
     $('.js-exhibit__overview').dotdotdot({callback: function(isTruncated) {
@@ -171,9 +115,6 @@ var ExhibitPageView = Backbone.View.extend({
   },
 
   destroy: function() {
-    $(document).off('pjax:beforeSend', '#js-exhibit-item__container', this.pjax_beforeSend);
-    $(document).off('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
-    $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
     this.undelegateEvents();
   }
 });

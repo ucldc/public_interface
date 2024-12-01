@@ -9,10 +9,10 @@
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
     <ul>
       <li>
-        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+        <a href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
       </li>
       <li>
-        items from <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a>
+        items from <a href="{% url 'calisphere:collectionView' collection_id %}">{{ collection.name }}</a>
         with the same {{ facet }}
       </li>
     </ul>
@@ -33,13 +33,11 @@
             <a
               href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
               class="collection-intro__institution-heading-link"
-              data-pjax="js-pageContent"
             >{{ repository.campus.0.name }}</a>,
           {% endif %}
           <a
             href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
             class="collection-intro__institution-heading-link"
-            data-pjax="js-pageContent"
             data-ga-code="{{ repository.google_analytics_tracking_code }}"
             data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
           >
@@ -80,7 +78,7 @@
 {% block refineSearch %}
 <div class="row">
   <div class="col-sm-6 col-md-12">
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionView' collection_id %}">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         Go to Collection Page
       </a>

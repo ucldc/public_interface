@@ -1,4 +1,4 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+{% extends "calisphere/base.html" %}
 
 {% block page-metadata %}
 {% include "calisphere/microdata.html" with title='Frequently Asked Questions' %}
@@ -38,8 +38,8 @@
 
     <ul>
       <li><strong>Search</strong>: Find items and related collections using keyword searches. See below for search tips.</li>
-      <li><strong>Browse by institution</strong>: Explore the libraries, archives, and museums that have contributed collections to Calisphere. View all <a href="/institutions/" data-pjax="js-pageContent">University of California contributors</a> and our <a href="/institutions/statewide-partners/" data-pjax="js-pageContent">statewide partners</a>.</li>
-      <li><strong>Browse by collection</strong>: Collections are groups of items related by format, topic, or creator. They provide context for materials. Browse collections <a href="/collections/" data-pjax="js-pageContent">at random</a>, <a href="/collections/num/" data-pjax="js-pageContent">from A-Z</a>, or with a <a href="/collections/titleSearch/" data-pjax="js-pageContent">title search</a>.</li>
+      <li><strong>Browse by institution</strong>: Explore the libraries, archives, and museums that have contributed collections to Calisphere. View all <a href="/institutions/">University of California contributors</a> and our <a href="/institutions/statewide-partners/">statewide partners</a>.</li>
+      <li><strong>Browse by collection</strong>: Collections are groups of items related by format, topic, or creator. They provide context for materials. Browse collections <a href="/collections/">at random</a>, <a href="/collections/num/">from A-Z</a>, or with a <a href="/collections/titleSearch/">title search</a>.</li>
     </ul>
 
     <h2 id="2">Do you have any search tips?</h2>
@@ -68,23 +68,23 @@
 
     <p>Because Calisphere does not own any of the original materials on this site, we aren’t very helpful when it comes to questions about them. Our contributing institutions, on the other hand, are incredibly knowledgeable. If you want to learn more about an item or collection you find on this site, contact the institution that contributed it. They’ll be happy to assist you.</p>
 
-    <p>To contact the contributing institution for a given item, simply click the “contact owner” button and send a message. Or, visit the <a href="/institutions/" data-pjax="js-pageContent">institution's main page</a> for phone and email information.</p>
+    <p>To contact the contributing institution for a given item, simply click the “contact owner” button and send a message. Or, visit the <a href="/institutions/">institution's main page</a> for phone and email information.</p>
 
     <h2 id="6">How can I get a high-quality reproduction of an item I find here?</h2>
 
     <p>If you require a high-resolution image or a copy of a text, audio, or video file, contact the institution that contributed it to Calisphere. Availability, protocols, and fees for obtaining files may differ among contributing institutions.</p>
 
-    <p>To contact the contributing institution for a given item, simply click the “contact owner” button and send a message. Or, visit the <a href="/institutions/" data-pjax="js-pageContent">institution's main page</a> for phone and email information.</p>
+    <p>To contact the contributing institution for a given item, simply click the “contact owner” button and send a message. Or, visit the <a href="/institutions/">institution's main page</a> for phone and email information.</p>
 
     <p>Note that some items feature an "Order Item" button. If you see this button, you can use it to register with the contributing institution and directly place an order for a high-resolution copy.</p>
 
     <h2 id="7">Do I need permission to use items I find in Calisphere?</h2>
 
-    <p>The collections in Calisphere are intended for research, teaching, and private study. Some uses—such as use in an article, book, or website—may require permission from or be subject to restrictions by the copyright owner and/or contributing institution. For more information, consult Calisphere’s <a href="/terms/" data-pjax="js-pageContent">Terms of Use</a>.</p>
+    <p>The collections in Calisphere are intended for research, teaching, and private study. Some uses—such as use in an article, book, or website—may require permission from or be subject to restrictions by the copyright owner and/or contributing institution. For more information, consult Calisphere’s <a href="/terms/">Terms of Use</a>.</p>
 
     <p>If you determine that you require permission to publish, reproduce, or otherwise use an item you find in Calisphere&mdash;or if you need more information about the copyright status of a particular item in order to make that determination—please contact the contributing institution.</p>
 
-    <p>To contact the contributing institution for a given item, simply click the “contact owner” button and send a message. Or, visit the <a href="/institutions/" data-pjax="js-pageContent">institution's main page</a> for phone and email information.</p>
+    <p>To contact the contributing institution for a given item, simply click the “contact owner” button and send a message. Or, visit the <a href="/institutions/">institution's main page</a> for phone and email information.</p>
 
     <h2 id="8">What is the correct way to cite an item?</h2>
 
@@ -96,35 +96,35 @@
 
     <p>However, cultural heritage organizations often have limited documentation and resources available to further investigate individual items beyond the identifiable features in the sources themselves. For this reason, even significant details such as the item’s title, exact age, creator, or copyright status may not be present in the metadata record. Metadata can also reflect biases and may include culturally insensitive terminology, due to how it was originally sourced, created, described, or cataloged.</p>
 
-    <p><strong>We welcome additional information about the digital primary sources in Calisphere.</strong> Learn more <a href="/overview/" data-pjax="js-pageContent">about the collections in Calisphere</a>, including how primary source records are described; how shared community values and standards guide access to historical materials; how we strive to provide responsible access to digital primary sources--and how you can help!</p>
+    <p><strong>We welcome additional information about the digital primary sources in Calisphere.</strong> Learn more <a href="/overview/">about the collections in Calisphere</a>, including how primary source records are described; how shared community values and standards guide access to historical materials; how we strive to provide responsible access to digital primary sources--and how you can help!</p>
 
-    <p>If you have information about an item on this site that is not represented in the item’s metadata or would like to help correct an error, please <a href="/contact/" data-pjax="js-pageContent">contact us</a>.</p>
+    <p>If you have information about an item on this site that is not represented in the item’s metadata or would like to help correct an error, please <a href="/contact/">contact us</a>.</p>
 
     <h2 id="10">I found something great in Calisphere! Can I share my story?</h2>
 
-    <p>Yes! If this site has helped you advance your research, complete a project, find something meaningful, or do anything else that’s important to you, <a href="/contact/" data-pjax="js-pageContent">we'd love to hear about it</a>. Stories like yours help us obtain additional funding so we can continue to grow and improve Calisphere.</p>
+    <p>Yes! If this site has helped you advance your research, complete a project, find something meaningful, or do anything else that’s important to you, <a href="/contact/">we'd love to hear about it</a>. Stories like yours help us obtain additional funding so we can continue to grow and improve Calisphere.</p>
 
     <h2 id="11">Can I suggest improvements to the site?</h2>
 
-    <p>We are always on the lookout for new ways to enhance the user experience in Calisphere. Feel free to <a href="/contact/" data-pjax="js-pageContent">contact us</a> with feature requests, ideas, and yes&mdash;even complaints. We’ll try our best to address these in our ongoing development of the site.</p>
+    <p>We are always on the lookout for new ways to enhance the user experience in Calisphere. Feel free to <a href="/contact/">contact us</a> with feature requests, ideas, and yes&mdash;even complaints. We’ll try our best to address these in our ongoing development of the site.</p>
 
     <h2 id="12">What is the technical framework behind Calisphere?</h2>
     <p>Calisphere uses many technologies to aggregate and deliver digital collections.</p>
     <p>The public interface uses Django templates to build pages, Sass to build CSS, Backbone.js to maintain and manage query state, and Jquery-pjax to manage URL history as parts of pages are updated.</p>
     <p>Item-level metadata in Calisphere is harvested from a variety of platforms using code adapted from the <a href="http://dp.la/">Digital Public Library of America</a>. The data is indexed in Solr. Collection- and institution-level data is maintained in a Django-based <a href="http://registry.cdlib.org/">registry</a>. Calisphere uses Django and solrpy to query the Solr and registry APIs. Some of the items that appear in Calisphere are hosted in a customized implementation of the digital asset management system Nuxeo.</p>
-    <p><a href="https://github.com/ucldc/">All of our code is publicly available on GitHub.</a> For more information about our technical stack, please <a href="/contact/" data-pjax="js-pageContent">contact us</a>.</p>
+    <p><a href="https://github.com/ucldc/">All of our code is publicly available on GitHub.</a> For more information about our technical stack, please <a href="/contact/">contact us</a>.</p>
 
   </div>
 
   <div class="col-sm-4">
     <div class="sidebar">
       <h2>Share your story</h2>
-      <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it. Stories like yours can help us obtain additional funding to grow and improve the site.</p><p>Please <a href="/contact/" data-pjax="js-pageContent">send us a message</a>.</p>
+      <p>Has Calisphere helped you advance your research, complete a project, or find something meaningful? We'd love to hear about it. Stories like yours can help us obtain additional funding to grow and improve the site.</p><p>Please <a href="/contact/">send us a message</a>.</p>
     </div>
 
     <div class="sidebar">
       <h2>About the collections in Calisphere</h2>
-      <p>Learn more <a href="/overview/" data-pjax="js-pageContent">about the collections in Calisphere</a>, including how primary source records are described; how shared community values and standards guide access to historical materials; how we strive to provide responsible access to digital primary sources--and how you can help!
+      <p>Learn more <a href="/overview/">about the collections in Calisphere</a>, including how primary source records are described; how shared community values and standards guide access to historical materials; how we strive to provide responsible access to digital primary sources--and how you can help!
       </p>
     </div>
   </div>

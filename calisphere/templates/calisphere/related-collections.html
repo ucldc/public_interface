@@ -54,7 +54,7 @@
   <div class="related-coll__lockup-container">
   {% for related_collection in related_collections %}
     <div class="col-xs-12 col-sm-4" role="group" aria-labelledby="label-{{ related_collection.name|slugify }}">
-      <a class="related-coll__link js-relatedCollection" href="{% url 'calisphere:collectionView' related_collection.collection_id %}" data-pjax="js-pageContent">
+      <a class="related-coll__link js-relatedCollection" href="{% url 'calisphere:collectionView' related_collection.collection_id %}">
         <div class="related-coll__container">
           <div class="col-xs-12 col-sm-12">
 

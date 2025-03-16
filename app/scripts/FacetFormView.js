@@ -149,10 +149,10 @@ var FacetFormView = Backbone.View.extend({
       }
 
       e.preventDefault();
-      $.pjax({
-        url: $(e.currentTarget).attr('href'),
-        container: '#js-pageContent'
-      });
+      // TODO: w/ pjax replacement, persist query manager state
+      // add this.model.toJSON() to local storage? 
+      // add this.model.toJSON() to the url w/ $.param(this.model.toJSON(), true);?
+      document.location = $(e.currentTarget).attr('href')
     }
   },
 
@@ -253,12 +253,9 @@ var FacetFormView = Backbone.View.extend({
   
   // **PJAX CALL TO PERFORM THE SEARCH** 
   facetSearch: function() {
-    $.pjax({
-      url: $('#js-facet').attr('action'),
-      container: '#js-pageContent',
-      data: this.model.toJSON(),
-      traditional: true
-    });
+    // pjax replacement
+    document.location = $('#js-facet').attr('action') + '?' + 
+      $.param(this.model.toJSON(), true);
   },
 
   // **RELATED COLLECTIONS**
@@ -357,51 +354,7 @@ var FacetFormView = Backbone.View.extend({
     }
   },
 
-  // PJAX EVENT HANDLERS
-  // -----------------------
-
-  // called on `pjax:end`, only when a `FacetFormView` already exists
-  // so the user has already visited a search results page
-  pjax_end: function(that) {
-    return function() {
-      // since this is still called on pjax:end when navigating away from 
-      // the facet form to something else, we need to check for our
-      // `#js-facet` selector
-      if ($('#js-facet').length) {
-        if (that.popstate === 'back' || that.popstate === 'forward') {
-          // when a user navigates 'back' to a form, the form is still set
-          // in the state the user left the form in, which doesn't reflect
-          // the results shown in search results, so we reset the form
-          // to reflect the state the DOM left the form in, last we got a 
-          // roundtrip from the server. 
-          _.each($('form'), function(form) {
-            form.reset();
-          });
-
-          // get the query from the DOM, and silently set the model so as 
-          // to avoid calling `render` - (no need to redraw the page; the 
-          // page has already been drawn)
-          var queryObj;
-          queryObj = that.model.getQueryFromDOM('js-facet');
-          that.model.set(queryObj, {silent: true});
-          that.popstate = null;
-        }
-
-        // we do need to redraw the tooltips and the select/deselect all 
-        // buttons to reflect the current query state, though
-        that.toggleSelectDeselectAll();
-        that.toggleTooltips();
-      }
-    };
-  },
-
-  pjax_popstate: function(that) {
-    return function(e) {
-      that.popstate = e.direction;
-    };
-  },
-
-  // called via `setupComponents()` on `document.ready()` and `pjax:end`
+  // called via `setupComponents()` on `document.ready()`
   initialize: function(opts) {
     // sets `this.render` to listen to whenever `this.model` (qm) fires a `change` event
     this.listenTo(this.model, 'change', this.render);
@@ -411,22 +364,9 @@ var FacetFormView = Backbone.View.extend({
     // retrieve query from DOM,
     // toggle tooltips and select/deselect all links
     this.popstate = opts.popstate ? opts.popstate : null;
-    this.pjax_end(this)();
-
-    // bind pjax handlers to `this`   
-    // we need to save the bound handler to `this.bound_pjax_end` so we can 
-    // later remove these handlers by the same name in `destroy`
-    this.bound_pjax_end = this.pjax_end(this);
-    this.bound_pjax_popstate = this.pjax_popstate(this);
-    $(document).on('pjax:end', '#js-pageContent', this.bound_pjax_end);
-    $(document).on('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
   },
 
   destroy: function() {
-    // remove bound pjax event handlers
-    $(document).off('pjax:end', '#js-pageContent', this.bound_pjax_end);
-    $(document).off('pjax:popstate', '#js-pageContent', this.bound_pjax_popstate);
-
     // stop calling `this.render` whenever `this.model` (qm) fires a `change` event
     this.stopListening();
     // undelegate all user event handlers specified in `this.events`

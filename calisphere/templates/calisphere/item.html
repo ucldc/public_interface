@@ -49,14 +49,11 @@
 <h2 class="meta-heading">
   {% if item.harvest_type == 'harvested' %}
     Item information.
+    {% if item.oac == False %}
     <a class="meta-heading__preview-link" href="{{ item.url_item }}">
-      View source record on
-      {% if item.oac == True %}
-        the Online Archive of California.
-      {% else %}
-        contributor's website.
-      {% endif %}
+      View source record on contributor's website.
     </a>
+    {% endif %}
   {% elif item.harvest_type == 'hosted' %}
     {% if 'structMap' in item and 'selected' in item and item.selected == True %}
       Summary information.

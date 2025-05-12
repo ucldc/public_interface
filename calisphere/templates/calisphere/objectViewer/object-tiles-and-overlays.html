@@ -52,6 +52,7 @@
         {% endif %}
       </div>
     {% endif %}
+    {% if item.oac == False %}
     <div class="obj__caption">
       {% if item.harvest_type == "hosted" %}
         {% if item.contentFile.format|lower == 'file' %}
@@ -71,14 +72,10 @@
         {% else %}
           View source
         {% endif %}
-         on
-        {% if item.oac == True %}
-          the Online Archive of California.
-        {% elif item.harvest_type == 'harvested' %}
-          contributor's website.
-        {% endif %}
+         on contributor's website.
       {% endif %}
     </div>
+    {% endif %}
   </a>
 
 </div>

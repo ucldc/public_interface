@@ -98,7 +98,7 @@ def item_view(request, item_id=''):
     item.display['parsed_repository_data'] = [
         r.get_repo_data() for r in item.repositories]
     item.display['institution_contact'] = [
-        r.get_contact_info() for r in item.repositories]
+        r.details for r in item.repositories]
 
     related_collections = []
     if not from_item_page:

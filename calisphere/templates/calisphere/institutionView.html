@@ -5,7 +5,7 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block page-metadata %}
-{% include "calisphere/microdata.html" with description=contact_information.description meta_robots="noindex,follow" %}
+{% include "calisphere/microdata.html" with description=institution.description meta_robots="noindex,follow" %}
 {% endblock %}
 
 {% block pageTitle %}
@@ -56,17 +56,17 @@
 
           <h2 class="institution-intro__heading hidden" itemprop="name">{{ institution.name }} <br> {% if repository_id and uc_institution %}{{ uc_institution.0.name }}{% endif %}</h2>
           <ul class="institution-intro__location">
-            {% if contact_information.city %}
-              <li class="institution-intro__location-list" itemprop="address">Location: {{ contact_information.city }}, CA</li>
+            {% if institution.city %}
+              <li class="institution-intro__location-list" itemprop="address">Location: {{ institution.city }}, CA</li>
             {% endif %}
-            {% if contact_information.phone %}
-              <li class="institution-intro__location-list" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
+            {% if institution.phone %}
+              <li class="institution-intro__location-list" itemprop="telephone">Phone: {{ institution.phone }}</li>
             {% endif %}
-            {% if contact_information.email %}
-              <li class="institution-intro__location-list">Email: <a  itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+            {% if institution.email %}
+              <li class="institution-intro__location-list">Email: <a  itemprop="email" href="mailto:{{ institution.email }}">{{ institution.email }}</a></li>
             {% endif %}
-            {% if contact_information.url %}
-              <li class="institution-intro__location-list">Website: <a class="institution-intro__web-link"  itemprop="url" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+            {% if institution.url %}
+              <li class="institution-intro__location-list">Website: <a class="institution-intro__web-link"  itemprop="url" href="{{ institution.url }}">{{ institution.url }}</a></li>
             {% endif %}
           </ul>
           {% if numFound %}
@@ -79,17 +79,17 @@
       <div class="col-md-3">
         <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }} <br> {{ uc_institution.0.name }}</h2>
         <ul class="institution-intro__list">
-          {% if contact_information.city %}
-            <li class="institution-intro__list-item" itemprop="address">Location: {{ contact_information.city }}, CA</li>
+          {% if institution.city %}
+            <li class="institution-intro__list-item" itemprop="address">Location: {{ institution.city }}, CA</li>
           {% endif %}
-          {% if contact_information.phone %}
-            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
+          {% if institution.phone %}
+            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ institution.phone }}</li>
           {% endif %}
-          {% if contact_information.email %}
-            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+          {% if institution.email %}
+            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ institution.email }}">{{ institution.email }}</a></li>
           {% endif %}
-          {% if contact_information.url %}
-            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" itemprop="url" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+          {% if institution.url %}
+            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" itemprop="url" href="{{ institution.url }}">{{ institution.url }}</a></li>
           {% endif %}
         </ul>
         {% if numFound %}
@@ -100,9 +100,9 @@
         {% endif %}
       </div>
       <div class="col-md-6">
-        {% if contact_information.description %}
+        {% if institution.description %}
           <p class="institution-intro__description" itemprop="description">
-            {{ contact_information.description|linebreaksbr|urlize }}
+            {{ institution.description|linebreaksbr|urlize }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>
         {% endif %}
@@ -119,17 +119,17 @@
       <div class="col-md-3">
         <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }}</h2>
         <ul class="institution-intro__list">
-          {% if contact_information.city %}
-            <li class="institution-intro__list-item" itemprop="address">Location: {{ contact_information.city }}, CA</li>
+          {% if institution.city %}
+            <li class="institution-intro__list-item" itemprop="address">Location: {{ institution.city }}, CA</li>
           {% endif %}
-          {% if contact_information.phone %}
-            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
+          {% if institution.phone %}
+            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ institution.phone }}</li>
           {% endif %}
-          {% if contact_information.email %}
-            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+          {% if institution.email %}
+            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ institution.email }}">{{ institution.email }}</a></li>
           {% endif %}
-          {% if contact_information.url %}
-            <li class="institution-intro__list-item">Website: <a itemprop="url" class="institution-intro__web-link" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+          {% if institution.url %}
+            <li class="institution-intro__list-item">Website: <a itemprop="url" class="institution-intro__web-link" href="{{ institution.url }}">{{ institution.url }}</a></li>
           {% endif %}
         </ul>
         {% if numFound %}
@@ -140,9 +140,9 @@
         {% endif %}
       </div>
       <div class="col-md-6">
-        {% if contact_information.description %}
+        {% if institution.description %}
           <p class="institution-intro__description" itemprop="description">
-            {{ contact_information.description|linebreaksbr|urlize }}
+            {{ institution.description|linebreaksbr|urlize }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>
         {% endif %}
@@ -151,17 +151,17 @@
       <div class="col-md-3">
         <h2 class="institution-intro__heading" itemprop="name">{{ institution.name }}</h2>
         <ul class="institution-intro__list">
-          {% if contact_information.city %}
-            <li class="institution-intro__list-item" itemprop="address">Location: {{ contact_information.city }}, CA</li>
+          {% if institution.city %}
+            <li class="institution-intro__list-item" itemprop="address">Location: {{ institution.city }}, CA</li>
           {% endif %}
-          {% if contact_information.phone %}
-            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ contact_information.phone }}</li>
+          {% if institution.phone %}
+            <li class="institution-intro__list-item" itemprop="telephone">Phone: {{ institution.phone }}</li>
           {% endif %}
-          {% if contact_information.email %}
-            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ contact_information.email }}">{{ contact_information.email }}</a></li>
+          {% if institution.email %}
+            <li class="institution-intro__list-item">Email: <a itemprop="email" href="mailto:{{ institution.email }}">{{ institution.email }}</a></li>
           {% endif %}
-          {% if contact_information.url %}
-            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" itemprop="url" href="{{ contact_information.url }}">{{ contact_information.url }}</a></li>
+          {% if institution.url %}
+            <li class="institution-intro__list-item">Website: <a class="institution-intro__web-link" itemprop="url" href="{{ institution.url }}">{{ institution.url }}</a></li>
           {% endif %}
         </ul>
         {% if numFound %}
@@ -172,9 +172,9 @@
         {% endif %}
       </div>
       <div class="col-md-6">
-        {% if contact_information.description %}
+        {% if institution.description %}
           <p class="institution-intro__description" itemprop="description">
-            {{ contact_information.description|linebreaksbr|urlize }}
+            {{ institution.description|linebreaksbr|urlize }}
             <!-- <a class="institution-intro__web-link" href="">Read More</a> -->
           </p>
         {% endif %}

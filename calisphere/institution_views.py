@@ -156,12 +156,6 @@ class Campus(object):
             raise Http404("{0} does not exist".format(self.id))
 
         self.name = self.full_name = self.details.get('name')
-        if self.details.get('ark'):
-            self.contact_info = json_loads_url(
-                "http://dsc.cdlib.org/institution-json/" +
-                self.details.get('ark'))
-        else:
-            self.contact_info = ''
 
         if index == 'es':
             self.basic_filter = {'campus_url': [self.id]}
@@ -237,17 +231,6 @@ class Repository(object):
             pslug = '{0}-'.format(parent[0].get('slug', None))
         repository['slug'] = pslug + self.details.get('slug', None)
         return repository
-
-    def get_contact_info(self):
-        if hasattr(self, 'contact_info'):
-            return self.contact_info
-
-        self.contact_info = ''
-        if self.details.get('ark'):
-            self.contact_info = json_loads_url(
-                "http://dsc.cdlib.org/institution-json/" +
-                self.details.get('ark'))
-        return self.contact_info
 
 
 def institution_search(request, form, institution, index):
@@ -364,7 +347,6 @@ def repository_search(request, repository_id):
 
     context.update({
         'institution': institution.details,
-        'contact_information': institution.get_contact_info(),
         'repository_id': institution.id,
         'uc_institution': institution.details.get('campus', False),
         'form_action': reverse(
@@ -386,7 +368,6 @@ def repository_collections(request, repository_id):
     context = institution_collections(request, institution, index)
 
     context.update({
-        'contact_information': institution.get_contact_info(),
         'institution': institution.details,
         'repository_id': institution.id,
         'uc_institution': institution.details.get('campus', False),
@@ -416,7 +397,6 @@ def campus_search(request, campus_slug):
 
     context.update({
         'institution': institution.details,
-        'contact_information': institution.contact_info,
         'repository_id': None,
         'campus_slug': institution.slug,
         'form_action': reverse(
@@ -441,7 +421,6 @@ def campus_collections(request, campus_slug):
             f"{institution.name} Collections - page {context['page']}")
 
     context.update({
-        'contact_information': institution.contact_info,
         'institution': institution.details,
         'campus_slug': institution.slug,
         'featuredImage': institution.featured_image,
@@ -497,6 +476,5 @@ def campus_institutions(request, campus_slug):
             'campus_slug': campus_slug,
             'institutions': related_institutions,
             'institution': institution.details,
-            'contact_information': institution.contact_info,
             'repository_id': None,
         })

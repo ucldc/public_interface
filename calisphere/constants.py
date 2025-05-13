@@ -203,7 +203,7 @@ FEATURED_UNITS = [
     {
         'featuredImage': {
             'src': '/thumb-inst_la-public-library.jpg',
-            'url': '/item/2452a3b5fd22df4e5095e680626e189c/'
+            'url': '/item/fb6bd71e2cae4133a5cce04cb544b124/'
         },
         'id': '143'
     },

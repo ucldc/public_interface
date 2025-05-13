@@ -1,5 +1,6 @@
 <div class="obj-container__simple-{% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}image{% else %}tile{% endif %}">
 
+  {% if item.oac == False %}
   <a class="obj__link"
     {% if item.harvest_type == "hosted" and item.contentFile.format|lower == 'file' %}
       href="javascript: void(0)" data-toggle="modal" data-target="#downloadModal"
@@ -7,6 +8,7 @@
       href="{{ item.url_item }}"
     {% endif %}
   >
+  {% endif %}
     {% if item.reference_image_md5 or item.contentFile.format|lower == 'file' %}
       <div class="obj__icon-container">
         {% if item.reference_image_md5 %}
@@ -76,6 +78,8 @@
       {% endif %}
     </div>
     {% endif %}
+  {% if item.oac == False %}
   </a>
+  {% endif %}
 
 </div>

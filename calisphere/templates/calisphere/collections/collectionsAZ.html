@@ -1,4 +1,4 @@
-{% extends "calisphere/collections/collectionsDirectory.html,calisphere/pjaxTemplates/collectionsDirectory.html"|pjax:request %}
+{% extends "calisphere/collections/collectionsDirectory.html" %}
 {% load calisphere-extras %}
 {% load static %}
 
@@ -14,13 +14,13 @@
 
 		<nav class="alphanav" aria-label="A to Z">
 		  <ul>
-		   	<li><a {% if collection_letter == 'num' %}aria-current="page"{% endif %} href="{% url 'calisphere:collectionsAZ' 'num' %}" data-pjax="js-pageContent">#</a></li>
+		   	<li><a {% if collection_letter == 'num' %}aria-current="page"{% endif %} href="{% url 'calisphere:collectionsAZ' 'num' %}">#</a></li>
 
 			{% for char, display in alphabet %}
         {% if display %}
     		  <li>
             <a {% if char == collection_letter|upper %}aria-current="page"{% endif %}
-              href="{% url 'calisphere:collectionsAZ' char|lower %}" data-pjax="js-pageContent">
+              href="{% url 'calisphere:collectionsAZ' char|lower %}">
                 {{ char }}
             </a>
           </li>

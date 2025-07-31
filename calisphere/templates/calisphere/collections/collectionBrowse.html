@@ -14,7 +14,7 @@
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
     <ul>
       <li>
-        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+        <a href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
       </li>
     </ul>
   </nav>
@@ -35,14 +35,12 @@
                 <a
                   href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
                   class="collection-intro__institution-heading-link"
-                  data-pjax="js-pageContent"
                 >{{ repository.campus.0.name }}</a>,
               {% endif %}
             {% endif %}
             <a
               href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
               class="collection-intro__institution-heading-link"
-              data-pjax="js-pageContent"
               data-ga-code="{{ repository.google_analytics_tracking_code }}"
               data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
             >
@@ -81,10 +79,10 @@
     <div class="col-sm-6 col-md-12">
       <div class="button__institution-tabs-container">
         <a class="button__institution-tab-collections--selected"
-        href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+        href="{% url 'calisphere:collectionBrowse' collection_id %}">
           Browse collection
         </a>
-        <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+        <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}">
           Search this collection
         </a>
       </div>
@@ -92,14 +90,14 @@
     <div class="col-sm-6 col-md-12">
       {% if collection.repository|length > 1 %}
       {% for repository in collection.repository %}
-        <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
+        <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}">
           <span class="fa fa-angle-left fa-lg fa-fw"></span>
           Go to {{ repository.name }} Page
         </a>
       {% endfor %}
       {% else %}
       {% with collection.repository.0 as repository %}
-        <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}" data-pjax="js-pageContent">
+        <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:repositoryCollections' repository.resource_id %}">
           <span class="fa fa-angle-left fa-lg fa-fw"></span>
           Go to Institution Page
         </a>
@@ -129,14 +127,14 @@
           {% if forloop.counter0 < 3 %}
           <li>
             {% if forloop.counter0 == 0 %}<strong>{% endif %}
-              <a href="{{ value.uri }}?view_format=list" data-pjax="js-pageContent">{{ value.label }} ({{ value.count|intcomma }} items)</a>
+              <a href="{{ value.uri }}?view_format=list">{{ value.label }} ({{ value.count|intcomma }} items)</a>
             {% if forloop.counter0 == 0 %}</strong>{% endif %}
           </li>
           {% endif %}
         {% endfor %}
       </ol>
 
-      <a href="{{ form_action }}{{ cluster.facet_field.facet }}/" data-pjax="js-pageContent" class="btn-default btn btn button__cluster-values">See all {{ cluster.unique|intcomma }} {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}{{ cluster.unique|pluralize }}{% endif %}</a>
+      <a href="{{ form_action }}{{ cluster.facet_field.facet }}/" class="btn-default btn btn button__cluster-values">See all {{ cluster.unique|intcomma }} {{ cluster.facet_field.display|lower }}{% if cluster.facet_field.display != 'rights' %}{{ cluster.unique|pluralize }}{% endif %}</a>
 
       {% if cluster.unique > 3 %}
       <h4 class="sr-only">Search for a {{cluster.facet_field.display}}</h4>
@@ -156,7 +154,7 @@
       {% endif %}
 
     </div>
-    <a href="{{cluster.values.0.uri}}" data-pjax="js-pageContent">
+    <a href="{{cluster.values.0.uri}}">
     <div class="col-md-7">
       <div class="browse-cluster-thumbnail__container">
         {% for thumb in cluster.thumbnails %}

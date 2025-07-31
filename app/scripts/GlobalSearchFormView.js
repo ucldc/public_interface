@@ -101,7 +101,6 @@ var GlobalSearchFormView = Backbone.View.extend({
 
   initialize: function() {
     this.listenTo(this.model, 'change:q', this.render);
-    $(document).on('pjax:beforeReplace', '#js-pageContent', this.pjax_beforeReplace);
 
     var headerWidth = window.matchMedia('(min-width: 650px)');
     this.watchHeaderWidth(this)(headerWidth);
@@ -123,18 +122,14 @@ var GlobalSearchFormView = Backbone.View.extend({
       this.model.clear({silent: true});
       this.model.set({q: q}, {silent: true});
       //perform the search!
-      $.pjax({
-        url: $('#js-searchForm').attr('action'),
-        container: '#js-pageContent',
-        data: this.model.toJSON()
-      });
+      // pjax replacement
+      document.location = $('#js-searchForm').attr('action') + 
+        '?' + $.param(this.model.toJSON(), true);
     } else {
       this.model.clear({silent: true});
-      $.pjax({
-        url: $('#js-searchForm').attr('action'),
-        container: '#js-pageContent',
-        data: {'q': ''}
-      });
+      // pjax replacement
+      document.location = $('#js-searchForm').attr('action') + 
+        '?' + $.params({'q': ''});
     }
 
     _.each($('#js-searchForm, #js-footerSearch'), (function(model) {
@@ -149,15 +144,5 @@ var GlobalSearchFormView = Backbone.View.extend({
     if (this.carousel !== undefined) { this.carousel.changeWidth(window_width); }
     if (this.complexCarousel !== undefined) { this.complexCarousel.changeWidth(window_width); }
   },
-
-  pjax_beforeReplace: function() {
-    if($('#js-mosaicContainer').length > 0 && $('#js-collectionPagination').children().length) {
-      $('#js-mosaicContainer').infiniteScroll('destroy');
-    }
-
-  },
-  pjax_end: function() {
-    this.closeMenu();
-  }
 });
 

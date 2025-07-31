@@ -1,4 +1,4 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+{% extends "calisphere/base.html" %}
 {% load calisphere-extras %}
 {% load static %}
 
@@ -19,8 +19,7 @@
       {% for repository in repos %}
           <li class="inst-textboxes__list-item">
             <a class="inst-textboxes__link"
-            href="{% url 'calisphere:repositoryCollections' repository.repository_id %}"
-            data-pjax="js-pageContent">
+            href="{% url 'calisphere:repositoryCollections' repository.repository_id %}">
               {{ repository.name }}
             </a>
           </li>

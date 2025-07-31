@@ -1,4 +1,4 @@
-{% extends "calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html"|pjax:request %}
+{% extends "calisphere/base.html" %}
 {% load calisphere-extras %}
 {% load static %}
 
@@ -14,13 +14,13 @@
 {% for campus in campuses %}
 	<div class="inst-textboxes__box">
 		<h2 class="inst-textboxes__box-heading">
-      <a href="{% url 'calisphere:campusCollections' campus.slug %}" data-pjax="js-pageContent">{{ campus.name }}</a>
+      <a href="{% url 'calisphere:campusCollections' campus.slug %}">{{ campus.name }}</a>
     </h2>
 		<ul class="inst-textboxes__list">
   {% for repository in repositories %}
     {% if repository.campus == campus.name %}
       <li class="inst-textboxes__list-item">
-        <a class="inst-textboxes__link" href="{% url 'calisphere:repositoryCollections' repository.repository_id %}" data-pjax="js-pageContent">
+        <a class="inst-textboxes__link" href="{% url 'calisphere:repositoryCollections' repository.repository_id %}">
           {{ repository.name }}
         </a>
       </li>

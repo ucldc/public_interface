@@ -9,10 +9,10 @@
   <nav class="breadcrumb--style1" aria-label="breadcrumb navigation">
     <ul>
       <li>
-        <a href="{% url 'calisphere:collectionsDirectory' %}" data-pjax="js-pageContent">Collections</a>
+        <a href="{% url 'calisphere:collectionsDirectory' %}">Collections</a>
       </li>
       <li>
-        <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a>
+        <a href="{% url 'calisphere:collectionView' collection_id %}">{{ collection.name }}</a>
       <li>
         Items with {{ cluster }} "{{ cluster_value }}"
       </li>
@@ -30,8 +30,7 @@
     <div class="collection-intro__institution">
       <h2 class="collection-intro__institution-heading">Collection:
         <a class="collection-intro__instition-heading-link" 
-           href="{% url 'calisphere:collectionView' collection_id %}" 
-           data-pjax="js-pageContent">
+           href="{% url 'calisphere:collectionView' collection_id %}" >
             {{ collection.name }}
           </a>
       </h2><br/>
@@ -42,13 +41,11 @@
             <a
               href="{% url 'calisphere:campusCollections' repository.campus.0.slug %}"
               class="collection-intro__institution-heading-link"
-              data-pjax="js-pageContent"
             >{{ repository.campus.0.name }}</a>,
           {% endif %}
           <a
             href="{% url 'calisphere:repositoryCollections' repository.resource_id %}"
             class="collection-intro__institution-heading-link"
-            data-pjax="js-pageContent"
             data-ga-code="{{ repository.google_analytics_tracking_code }}"
             data-ga-dim2="{%if 'campus' in repository and repository.campus.0.name %}{{ repository.campus.0.slug }}-{% endif %}{{ repository.slug }}"
           >
@@ -89,16 +86,16 @@
   <div class="col-sm-6 col-md-12">
     <div class="button__institution-tabs-container">
       <a class="button__institution-tab-collections"
-      href="{% url 'calisphere:collectionBrowse' collection_id %}" data-pjax="js-pageContent">
+      href="{% url 'calisphere:collectionBrowse' collection_id %}">
         Browse collection
       </a>
-      <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">
+      <a class="button__institution-tab-search" href="{% url 'calisphere:collectionView' collection_id %}">
         Search this collection
       </a>
     </div>
   </div>
   <div class="col-sm-6 col-md-12">
-      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionFacet' collection_id cluster %}" data-pjax="js-pageContent">
+      <a class="btn btn-default button__back-to-institution" href="{% url 'calisphere:collectionFacet' collection_id cluster %}">
         <span class="fa fa-angle-left fa-lg fa-fw"></span>
         View {{ cluster|title }}{% if cluster != 'rights'%}s{% endif %} List
       </a>
@@ -128,7 +125,7 @@
 {% block objectsFound %}
 {{ numFound|intcomma }} item{{ numFound|pluralize }} from this collection all share the same {{cluster}}: {{cluster_value}}
 
-<!-- <p>These items from the <a href="{% url 'calisphere:collectionView' collection_id %}" data-pjax="js-pageContent">{{ collection.name }}</a> all share the same {{ cluster }}: {{ cluster_value }}.</p> -->
+<!-- <p>These items from the <a href="{% url 'calisphere:collectionView' collection_id %}">{{ collection.name }}</a> all share the same {{ cluster }}: {{ cluster_value }}.</p> -->
 {% endblock %}
 
 {% block relatedCollections %}

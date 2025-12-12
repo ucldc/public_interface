@@ -310,7 +310,7 @@ class ESRepositoryFF(ESFacetFilterType):
         else:
             repo['aeon_url'] = repo_details.get('aeon_test', None)
 
-        parent = repo_details['campus']
+        parent = repo_details.get('campus', [])
         pslug = ''
         if len(parent):
             pslug = '{0}-'.format(parent[0].get('slug', None))

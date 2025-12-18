@@ -273,8 +273,8 @@ class RepositoryFF(FacetFilterType):
         if len(parent):
             pslug = f"{parent[0].get('slug', None)}-"
             pname = f"{parent[0].get('name', '')} "
-        repo['slug'] = pslug + repo_details.get('slug', None)
-        repo['name'] = pname + repo_details.get('name', None)
+        repo['slug'] = pslug + repo_details.get('slug', "")
+        repo['name'] = pname + repo_details.get('name', "")
 
         return repo
 
@@ -313,9 +313,9 @@ class ESRepositoryFF(ESFacetFilterType):
         parent = repo_details.get('campus', [])
         pslug = ''
         if len(parent):
-            pslug = '{0}-'.format(parent[0].get('slug', None))
+            pslug = '{0}-'.format(parent[0].get('slug', ""))
             repo['campus'] = parent[0].get('name', None)
-        repo['slug'] = pslug + repo_details.get('slug', None)
+        repo['slug'] = pslug + repo_details.get('slug', "")
 
         return repo
 

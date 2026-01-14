@@ -1,6 +1,9 @@
 <div class="meta-block" itemscope itemtype="https://schema.org/CreativeWork">
 
   <dl class="meta-block__list">
+    <!-- Indexed At: {{ item.rikolti.indexed_at }} -->
+    <!-- Page: {{ item.rikolti.page }} -->
+    <!-- Version Path: {{ item.rikolti.version_path }} -->
     <dt class="meta-block__type">Title</dt>
     <dd class="meta-block__defin" itemprop="name">{% for title in item.title %}{{ title|urlize }}<br/> {% endfor %}</dd>
 

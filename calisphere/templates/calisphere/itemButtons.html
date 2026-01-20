@@ -203,7 +203,6 @@ Permalink: {{ permalink }}</textarea>
       href="javascript: void(0)" data-toggle="modal" data-target="#contactOwnerModal"
       {% else %}
       href="{% url 'calisphere:repositoryCollections' item.parsed_repository_data.0.id %}"
-      data-pjax="js-pageContent"
       {% endif %}>
       <span class="fa fa-envelope"></span>
       Contact Owner

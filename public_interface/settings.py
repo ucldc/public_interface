@@ -130,7 +130,6 @@ except ValueError:
 EMAIL_USE_TLS = bool(getenv('EMAIL_USE_TLS', ''))
 CSRF_COOKIE_SECURE = bool(getenv('CSRF_COOKIE_SECURE', ''))
 
-SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 DEFAULT_FROM_EMAIL = getenv('DEFAULT_FROM_EMAIL', 'project@example.edu')
@@ -152,7 +151,7 @@ UCLDC_DEVEL = bool(os.environ.get('UCLDC_DEVEL'))
 # When EXHIBIT_PREVIEW = False, show only exhibits, themes, lesson plans, and essays marked 'published'
 # When EXHIBIT_PREVIEW = True, show ALL exhibits, themes, lesson plans, and essays
 EXHIBIT_PREVIEW = bool(os.environ.get('UCLDC_EXHIBIT_PREVIEW'))
-EXHIBIT_TEMPLATE = 'calisphere/base.html,calisphere/pjaxTemplates/pjax-base.html'
+EXHIBIT_TEMPLATE = 'calisphere/base.html'
 CALISPHERE = True
 
 # https://dryan.com/articles/elb-django-allowed-hosts/
@@ -201,8 +200,9 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'django.contrib.sessions', 'django.contrib.messages',
                   'django.contrib.staticfiles', 'django.contrib.sites',
                   'django.contrib.humanize', 'django.contrib.sitemaps',
-                  'easy_pjax', 'calisphere', 'static_sitemaps', 'health_check',
-                  'health_check.cache', 'health_check.storage', 'snowpenguin.django.recaptcha2', )
+                  'calisphere', 'static_sitemaps', 'health_check',
+                  'health_check.cache', 'health_check.storage',
+                  'snowpenguin.django.recaptcha2', )
 
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
@@ -230,8 +230,7 @@ TEMPLATES = [{
     "DIRS": [],
     "APP_DIRS": True,
     "OPTIONS": {
-        "builtins": ["easy_pjax.templatetags.pjax_tags",
-        "exhibits.templatetags.exhibit_extras"],
+        "builtins": ["exhibits.templatetags.exhibit_extras"],
         "context_processors": [
             "django.template.context_processors.request",
             "django.contrib.auth.context_processors.auth",
@@ -239,14 +238,7 @@ TEMPLATES = [{
             'public_interface.context_processors.settings',
             'exhibits.context_processors.settings'
         ],
-        "debug":
-        UCLDC_DEVEL,
-        'loaders': [
-            ('django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ]),
-        ],
+        "debug": UCLDC_DEVEL,
     }
 }]
 
@@ -296,11 +288,8 @@ if UCLDC_REDIS_URL:
     # DJANGO_REDIS_IGNORE_EXCEPTIONS = True
     CACHES = {
         'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': UCLDC_REDIS_URL,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            }
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': UCLDC_REDIS_URL
         }
     }
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -336,10 +325,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.MemoryFileUploadHandler",

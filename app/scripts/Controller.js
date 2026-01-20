@@ -8,8 +8,7 @@
 
 // `setupComponents()` acts as a controller to create/destroy JS components 
 // based on which selectors are available/no longer available in the DOM.
-// `setupComponents()` is called on `$(document).ready()` and also on `pjax:end`.
-// https://github.com/defunkt/jquery-pjax#events
+// `setupComponents()` is called on `$(document).ready()`
 
 var setupComponents = function(globalSearchForm, qm) {
   // **CALISPHERE COMPONENTS**
@@ -21,8 +20,7 @@ var setupComponents = function(globalSearchForm, qm) {
 
   // Calisphere components all have constructors (called using the new 
   // keyword here) as well as a `destroy` function. Additionally, each has 
-  // pjax event handlers (bound in that component's initializer, and unbound 
-  // in `destroy`), as well as various user-action handlers - click, submit, etc. 
+  // various user-action handlers - click, submit, etc. 
 
   if ($('#js-facet').length) {
     globalSearchForm.facetForm = globalSearchForm.facetForm || new FacetFormView({model: qm, popstate: globalSearchForm.popstate});

@@ -302,6 +302,11 @@ html.svg .check__input:checked + .check__label {
    background-size: 18px 12px; // constrains SVG canvas for positioning
 }
 
+html.svg .check__input:focus + .check__label {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+
 .check__update {
   width: 100%;
   border: 1px solid $design-dark-gray-color;

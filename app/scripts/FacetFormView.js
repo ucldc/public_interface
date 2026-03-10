@@ -230,6 +230,8 @@ var FacetFormView = Backbone.View.extend({
   // in tablet and mobile, this method opens a list of facets of a given type
   // (no model update)
   toggleFacetDropdown: function(e) {
+    e.preventDefault();
+
     //close all expanded checkbox groups
     var allSelected = $('.check__popdown--selected');
     for (var i=0; i<allSelected.length; i++) {
@@ -314,6 +316,13 @@ var FacetFormView = Backbone.View.extend({
   changeWidth: function(window_width) {
     if (window_width > 900) { this.desktop = true; }
     else { this.desktop = false; }
+
+    // dsiable facet header button on desktop
+    if (this.desktop) {
+      $('.js-a-check__header').attr('disabled', 'true');
+    } else {
+      $('.js-a-check__header').removeAttr('disabled');
+    }
   },
 
   // RENDER METHOD

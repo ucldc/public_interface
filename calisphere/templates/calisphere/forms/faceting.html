@@ -29,14 +29,14 @@
           <div class="display-none" id="{{ form_name }}-aria-label">
           Facet search results by {{ facet_type_display }} - {% if filters|get_item:form_name|length > 0 %}({{ filters|get_item:form_name|length }} selected){% endif %}
           </div>
-          <div class="check__header js-a-check__header">
+          <button class="check__header js-a-check__header">
             <p class="check__header-text js-a-check__header-text">{{ facet_type_display }} {% if filters|get_item:form_name|length > 0 %}({{ filters|get_item:form_name|length }} selected){% endif %}</p>
             <i class="check__header-arrow-icon js-a-check__header-arrow-icon fa fa-angle-down"></i>
             <div class="check__header-links">
               <a class="js-a-check__link-select-all check__link-select-all--selected" href="#">Select all</a>
               <a class="js-a-check__link-deselect-all check__link-deselect-all--not-selected" href="#">Deselect all</a>
             </div>
-          </div>
+          </button>
 
           <div class="check__popdown js-a-check__popdown">
 

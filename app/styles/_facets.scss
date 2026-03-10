@@ -92,6 +92,8 @@
   background: $design-dark-gray-color;
   overflow: hidden;
   cursor: pointer;
+  border: 0;
+  width: 100%;
 
   @include bp(md-screen) {
     padding: 10px 0;

@@ -324,28 +324,29 @@ var FacetFormView = Backbone.View.extend({
     // if the model has changed, but the primary query hasn't.
     // ie: a search for dogs hasn't become a search for cats
     if(!_.isEmpty(this.model.changed) && !_.has(this.model.changed, 'q')) {
-      // if we're in desktop view, just perform the search
-      if(this.desktop) {
-        this.facetSearch();
-      }
-      // if we're in mobile view, and a facet selection has changed
-      else if(_.has(this.model.changed, 'type_ss') ||
-      _.has(this.model.changed, 'facet_decade') ||
-      _.has(this.model.changed, 'repository_data') ||
-      _.has(this.model.changed, 'collection_data')) {
-        var attrUndefined = false;
-        _.each(this.model.changed, function(value) {
-          if (value === undefined) {
-            attrUndefined = true;
-          }
-        });
-        // if the user has un-checked a previously selected facet, perform search
-        if (attrUndefined) {
-          this.facetSearch();
+      // make a list of facet types from the DOM, since this is dynamic
+      var facetTypes = [];
+      var facetElements = $('.js-facet');
+      for (var i=0; i<facetElements.length; i++) {
+        var facetName = $(facetElements[i]).attr('name');
+        if (!_.contains(facetTypes, facetName)) {
+          facetTypes.push(facetName);
         }
+      }
+
+      // if _.has(this.model.changed, <facet type>) for any facet type,
+      // set facetChanged to true
+      var facetChanged = false;
+      for (var j=0; j<facetTypes.length; j++) {
+        if (_.has(this.model.changed, facetTypes[j])) {
+          facetChanged = true;
+        }
+      }
+
+      if(facetChanged) {
         // modify the UI
         _.each(this.model.changed, function(value, key) {
-          if (key === 'type_ss' || key === 'facet_decade' || key === 'repository_data' || key === 'collection_data') {
+          if (facetTypes.includes(key)) {
             $('.facet-' + key).parents('.check').find('.js-a-check__update').prop('disabled', false);
           }
         });

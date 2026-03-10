@@ -319,9 +319,9 @@ html.svg .check__input:focus + .check__label {
     background: #fff;
   }
 
-  @include bp(md-screen) {
-    display: none;
-  }
+  // @include bp(md-screen) {
+  //   display: none;
+  // }
 
 }
 

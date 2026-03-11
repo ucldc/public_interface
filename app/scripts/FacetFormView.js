@@ -247,6 +247,7 @@ var FacetFormView = Backbone.View.extend({
     var filterElements = $('.js-facet');
     filterElements.prop('checked', false);
     filterElements.trigger('change');
+    this.facetSearch();
   },
   
   // **MOBILE EVENT HANDLERS**

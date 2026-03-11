@@ -60,6 +60,7 @@ var FacetFormView = Backbone.View.extend({
     var filterType = $(e.currentTarget).attr('name');
     var attributes = {start: 0};
     attributes[filterType] = $.map($('input[name=' + filterType + ']:checked'), function(el) { return $(el).val(); });
+    this.deferSearch = true;
     this.model.set(attributes);
   },
   // `click` triggered on `.js-filter-pill` (filter pills, chiclets)
@@ -192,7 +193,7 @@ var FacetFormView = Backbone.View.extend({
         $(facetTypes[i]).find('.js-a-check__link-deselect-all').toggleClass('check__link-deselect-all--not-selected check__link-deselect-all--selected');
         $(facetTypes[i]).find('.js-a-check__link-select-all').toggleClass('check__link-select-all--selected check__link-select-all--not-selected');
         $(facetTypes[i]).find('.js-a-check__button-select-all').prop('disabled', true);
-        $(facetTypes[i]).find('.js-a-check__update').prop('disabled', false);
+        $(facetTypes[i]).find('.js-a-check__update').prop('disabled', true);
       }
       var oneSelected = $(facetTypes[i]).find('.js-facet').is(':checked');
       if (oneSelected === true) {
@@ -343,22 +344,15 @@ var FacetFormView = Backbone.View.extend({
         }
       }
 
-      // if _.has(this.model.changed, <facet type>) for any facet type,
-      // set facetChanged to true
-      var facetChanged = false;
-      for (var j=0; j<facetTypes.length; j++) {
-        if (_.has(this.model.changed, facetTypes[j])) {
-          facetChanged = true;
-        }
-      }
-
-      if(facetChanged) {
-        // modify the UI
+      if(this.deferSearch) {
+        // we've clicked a checkbox - modify the UI, but defer the search
         _.each(this.model.changed, function(value, key) {
           if (facetTypes.includes(key)) {
             $('.facet-' + key).parents('.check').find('.js-a-check__update').prop('disabled', false);
           }
         });
+        // reset deferSearch
+        this.deferSearch = false;
       } 
       // just perform the search
       else {

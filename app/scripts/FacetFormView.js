@@ -352,17 +352,17 @@ var FacetFormView = Backbone.View.extend({
     // if the model has changed, but the primary query hasn't.
     // ie: a search for dogs hasn't become a search for cats
     if(!_.isEmpty(this.model.changed) && !_.has(this.model.changed, 'q')) {
-      // make a list of facet types from the DOM, since this is dynamic
-      var facetTypes = [];
-      var facetElements = $('.js-facet');
-      for (var i=0; i<facetElements.length; i++) {
-        var facetName = $(facetElements[i]).attr('name');
-        if (!_.contains(facetTypes, facetName)) {
-          facetTypes.push(facetName);
-        }
-      }
-
       if(this.deferSearch) {
+        // make a list of facet types from the DOM, since this is dynamic
+        var facetTypes = [];
+        var facetElements = $('.js-facet');
+        for (var i=0; i<facetElements.length; i++) {
+          var facetName = $(facetElements[i]).attr('name');
+          if (!_.contains(facetTypes, facetName)) {
+            facetTypes.push(facetName);
+          }
+        }
+
         // we've clicked a checkbox - modify the UI, but defer the search
         _.each(this.model.changed, function(value, key) {
           if (facetTypes.includes(key)) {
@@ -374,6 +374,11 @@ var FacetFormView = Backbone.View.extend({
       } 
       // just perform the search
       else {
+        // filter out empty rq values
+        if(_.has(this.model.changed, 'rq')) {
+          this.model.set({rq: _.filter(this.model.get('rq'), function(v) { return v !== ''; })}, {silent: true});
+        }
+
         this.facetSearch();
       }
     }

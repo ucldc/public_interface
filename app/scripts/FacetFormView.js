@@ -216,6 +216,30 @@ var FacetFormView = Backbone.View.extend({
     });
   },
 
+  // switch accordion headers between buttons (mobile) and divs (desktop)
+  toggleAccordionHeader: function() {
+    // disable facet header button on desktop
+    if (this.desktop) {
+      $('.js-a-check__header').replaceWith(function() {
+        var newDiv = $('<div/></div>');
+        $.each(this.attributes, function(i, attrib) {
+          newDiv.attr(attrib.name, attrib.value);
+        });
+        $(newDiv).append($(this).contents());
+        return newDiv;
+      });
+    } else {
+      $('.js-a-check__header').replaceWith(function() {
+        var newButton = $('<button/></button>');
+        $.each(this.attributes, function(i, attrib) {
+          newButton.attr(attrib.name, attrib.value);
+        });
+        $(newButton).append($(this).contents());
+        return newButton;
+      });
+    }
+  },
+
   // `click` triggered on `.js-clear-filters`   
   // programmatically clear all filters, and trigger `change` on `.js-facet` 
   // (model change)
@@ -317,13 +341,7 @@ var FacetFormView = Backbone.View.extend({
   changeWidth: function(window_width) {
     if (window_width > 900) { this.desktop = true; }
     else { this.desktop = false; }
-
-    // dsiable facet header button on desktop
-    if (this.desktop) {
-      $('.js-a-check__header').attr('disabled', 'true');
-    } else {
-      $('.js-a-check__header').removeAttr('disabled');
-    }
+    this.toggleAccordionHeader();
   },
 
   // RENDER METHOD
@@ -395,6 +413,7 @@ var FacetFormView = Backbone.View.extend({
         // buttons to reflect the current query state, though
         that.toggleSelectDeselectAll();
         that.toggleTooltips();
+        that.toggleAccordionHeader();
       }
     };
   },

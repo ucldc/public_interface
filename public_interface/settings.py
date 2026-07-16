@@ -202,7 +202,7 @@ INSTALLED_APPS = ('exhibits.apps.ExhibitsConfig', 'django.contrib.admin',
                   'django.contrib.humanize', 'django.contrib.sitemaps',
                   'calisphere', 'static_sitemaps', 'health_check',
                   'health_check.cache', 'health_check.storage',
-                  'snowpenguin.django.recaptcha2', )
+                  'django_recaptcha', )
 
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',

@@ -4,8 +4,8 @@ from django.conf import settings
 from django.urls import reverse
 from django_contact_form.views import ContactFormView
 from django_contact_form.forms import ContactForm
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
 import urllib.parse
 
 
@@ -30,7 +30,7 @@ class CalisphereContactForm(ContactForm):
         label='Message',
     )
     referer = forms.CharField(widget=forms.HiddenInput())
-    captcha = ReCaptchaField(widget=ReCaptchaWidget())
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
     template_name = 'django_contact_form/contact_form.txt'
     subject_template_name = "django_contact_form/contact_form_subject.txt"

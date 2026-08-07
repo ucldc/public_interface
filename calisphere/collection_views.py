@@ -5,7 +5,7 @@ from django.http import Http404, JsonResponse
 from calisphere.collection_data import CollectionManager
 from . import constants
 from .facet_filter_type import FacetFilterType, TypeFF, CollectionFF
-from .utils import json_loads_url, query_string_escape
+from .utils import json_loads_url, query_string_escape, registry_request
 from .item_manager import ItemManager
 from .search_form import CollectionForm, ESCollectionForm
 from builtins import range
@@ -130,7 +130,7 @@ class Collection(object):
         self.id = collection_id
         self.url = col_template.format(collection_id)
         self.index = index
-        self.details = json_loads_url(f"{self.url}?format=json")
+        self.details = registry_request(f"{self.url}?format=json")
         if not self.details:
             raise Http404(f"{collection_id} does not exist.")
 

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 from . import constants
-from .utils import json_loads_url
+from .utils import registry_request
 from .item_manager import ItemManager
 from .search_form import (CampusForm, ESCampusForm, 
                           RepositoryForm, ESRepositoryForm)
@@ -151,7 +151,7 @@ class Campus(object):
         self.url = campus_template.format(self.id)
         self.index = index
 
-        self.details = json_loads_url(self.url + "?format=json")
+        self.details = registry_request(self.url + "?format=json")
         if not self.details:
             raise Http404("{0} does not exist".format(self.id))
 
@@ -174,7 +174,7 @@ class Repository(object):
             int(self.id), None)
 
         if not self.details:
-            self.details = json_loads_url(self.url + "?format=json")
+            self.details = registry_request(self.url + "?format=json")
 
         if not self.details:
             raise Http404("{0} does not exist".format(id))

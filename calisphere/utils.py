@@ -6,6 +6,7 @@ import urllib.error
 import urllib.parse
 
 from django.core.cache import cache
+from django.conf import settings
 from retrying import retry
 
 
@@ -28,6 +29,16 @@ def json_loads_url(url_or_req):
         except urllib.error.HTTPError:
             data = {}
     return data
+
+
+def registry_request(url):
+    registry_api_key = settings.REGISTRY_API_KEY
+    registry_user = settings.REGISTRY_USER
+    request = urllib.request.Request(url)
+    if registry_api_key and registry_user:
+        request.add_header('Authorization', f'ApiKey {registry_user}:{registry_api_key}')
+    return json_loads_url(request)
+
 
 # Escape OpenSearch `query_string` query reserved characters
 # (Solr has a smaller, overlapping subset of special characters)

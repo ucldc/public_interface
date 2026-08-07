@@ -107,6 +107,8 @@ else:
 
 UCLDC_REGISTRY_URL = getenv('UCLDC_REGISTRY_URL',
                                'https://registry.cdlib.org/')
+UCLDC_REGISTRY_USER = getenv('UCLDC_REGISTRY_USER', 'calisphere')
+UCLDC_REGISTRY_API_KEY = getenv('UCLDC_REGISTRY_API_KEY', '')
 
 UCLDC_FRONT = getenv('UCLDC_FRONT', '')
 UCLDC_REDIS_URL = getenv('UCLDC_REDIS_URL', False)

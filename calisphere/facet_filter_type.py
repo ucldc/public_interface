@@ -3,7 +3,7 @@ import operator
 
 from django.apps import apps
 from django.conf import settings
-from .utils import json_loads_url
+from .utils import registry_request
 from .utils import query_string_escape
 from calisphere.collection_data import CollectionManager
 
@@ -355,7 +355,7 @@ class CollectionFF(FacetFilterType):
             collection['url'])
 
         if not collection['name']:
-            collection_details = json_loads_url("{0}?format=json".format(
+            collection_details = registry_request("{0}?format=json".format(
                 collection['url']))
             collection['name'] = collection_details.get(
                 'name', '[no collection name]')
@@ -389,7 +389,7 @@ class ESCollectionFF(ESFacetFilterType):
             collection['url'])
 
         if not collection['name']:
-            collection_details = json_loads_url("{0}?format=json".format(
+            collection_details = registry_request("{0}?format=json".format(
                 collection['url']))
             collection['name'] = collection_details.get(
                 'name', '[no collection name]')

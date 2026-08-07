@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponse, QueryDict
 from django.template.defaultfilters import urlize
 from . import constants
-from .utils import json_loads_url
+from .utils import registry_request
 from .item_manager import ItemManager
 from .record import Record
 
@@ -409,7 +409,7 @@ def report_collection_facet(request, collection_id, facet):
     if facet not in [f.facet for f in constants.UCLDC_SCHEMA_FACETS]:
         raise Http404("{} does not exist".format(facet))
     collection_url = col_template.format(collection_id)
-    collection_details = json_loads_url(collection_url + '?format=json')
+    collection_details = registry_request(collection_url + '?format=json')
     if not collection_details:
         raise Http404("{0} does not exist".format(collection_id))
 

@@ -1,17 +1,17 @@
 from builtins import object
 from django.conf import settings
-from .utils import json_loads_url
+from .utils import registry_request
 import urllib.parse
 
 
 class RegistryManager(object):
     def init_registry_data(self, path):
         base = settings.UCLDC_REGISTRY_URL
-        page_one = json_loads_url(urllib.parse.urljoin(base, path))
+        page_one = registry_request(urllib.parse.urljoin(base, path))
         out = dict((x['id'], x) for x in page_one['objects'])
         next_path = page_one['meta']['next']
         while next_path:
-            next_page = json_loads_url(urllib.parse.urljoin(base, next_path))
+            next_page = registry_request(urllib.parse.urljoin(base, next_path))
             out.update(dict((x['id'], x) for x in next_page['objects']))
             next_path = next_page['meta']['next']
 

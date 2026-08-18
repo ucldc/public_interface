@@ -32,8 +32,8 @@ def json_loads_url(url_or_req):
 
 
 def registry_request(url):
-    registry_api_key = settings.REGISTRY_API_KEY
-    registry_user = settings.REGISTRY_USER
+    registry_api_key = settings.UCLDC_REGISTRY_API_KEY
+    registry_user = settings.UCLDC_REGISTRY_USER
     request = urllib.request.Request(url)
     if registry_api_key and registry_user:
         request.add_header('Authorization', f'ApiKey {registry_user}:{registry_api_key}')

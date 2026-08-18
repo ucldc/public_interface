@@ -34,10 +34,20 @@ def json_loads_url(url_or_req):
 def registry_request(url):
     registry_api_key = settings.UCLDC_REGISTRY_API_KEY
     registry_user = settings.UCLDC_REGISTRY_USER
-    request = urllib.request.Request(url)
+    request = url
     if registry_api_key and registry_user:
-        request.add_header('Authorization', f'ApiKey {registry_user}:{registry_api_key}')
-    return json_loads_url(request)
+        # add username and api_key get parameters
+        url_parts = urllib.parse.urlparse(url)
+        qs = dict(urllib.parse.parse_qsl(url_parts.query))
+        qs.update({
+            "username": registry_user,
+            "api_key": registry_api_key
+        })
+        url_parts = list(url_parts)
+        url_parts[4] = urllib.parse.urlencode(qs)
+        request = str(urllib.parse.urlunparse(url_parts))
+    resp = json_loads_url(request)
+    return resp
 
 
 # Escape OpenSearch `query_string` query reserved characters

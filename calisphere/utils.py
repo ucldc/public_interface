@@ -38,13 +38,13 @@ def registry_request(url):
     if registry_api_key and registry_user:
         # add username and api_key get parameters
         url_parts = urllib.parse.urlparse(url)
-        qs = dict(urllib.parse.parse_qsl(url_parts.query))
+        qs = dict(urllib.parse.parse_qs(url_parts.query))
         qs.update({
             "username": registry_user,
             "api_key": registry_api_key
         })
         url_parts = list(url_parts)
-        url_parts[4] = urllib.parse.urlencode(qs)
+        url_parts[4] = urllib.parse.urlencode(qs, doseq=True)
         request = str(urllib.parse.urlunparse(url_parts))
     resp = json_loads_url(request)
     return resp
